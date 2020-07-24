@@ -2,7 +2,7 @@ class ApplicationController < ActionController::API
         include DeviseTokenAuth::Concerns::SetUserByToken
 
         def order_and_direction
-                @order ||= (params[:order].underscore + ' ' + params[:direction]) || 'created_at asc'
+                @order ||= (params[:order] + ' ' + params[:direction]) || 'created_at asc'
               end
             
               def page

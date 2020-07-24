@@ -1,16 +1,28 @@
-class SlugsController < ApplicationController
+class Api::V1::SlugsController < ApplicationController
   before_action :set_slug, only: [:show, :update, :destroy]
 
   # GET /slugs
   def index
-    @slugs = Slug.all
+    @slugs = 
+    if params[:search].blank?
+      Slug.order(order_and_direction).page(page).per(per_page)
+    else
+      Slug.order(order_and_direction).page(page).per(per_page)
+          .where(['lower(name) like ? ',
+                           '%' + params[:search].downcase + '%'
+                           ])
+    end
+    set_pagination_headers :slugs
+    json_string = SlugSerializer.new(@slugs).serialized_json
+    render  json: json_string
 
-    render json: @slugs
+
   end
 
   # GET /slugs/1
   def show
-    render json: @slug
+      json_string = SlugSerializer.new(@slugs).serialized_json
+      render  json: json_string
   end
 
   # POST /slugs
@@ -18,7 +30,7 @@ class SlugsController < ApplicationController
     @slug = Slug.new(slug_params)
 
     if @slug.save
-      render json: @slug, status: :created, location: @slug
+      render json: @slug, status: :created
     else
       render json: @slug.errors, status: :unprocessable_entity
     end
@@ -38,6 +50,13 @@ class SlugsController < ApplicationController
     @slug.destroy
   end
 
+
+  def destroy_all
+      Park.where(id: params[:ids]).destroy_all
+  end
+
+
+
   private
     # Use callbacks to share common setup or constraints between actions.
     def set_slug
@@ -46,6 +65,6 @@ class SlugsController < ApplicationController
 
     # Only allow a trusted parameter "white list" through.
     def slug_params
-      params.require(:slug).permit(:name)
+      params.permit(:name)
     end
 end
