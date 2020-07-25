@@ -8,4 +8,9 @@ class User < ActiveRecord::Base
          :recoverable, :rememberable, :trackable, :validatable
   include DeviseTokenAuth::Concerns::User
   belongs_to :slug
+
+  
+  def token_validation_response
+    as_json(include: :slug)
+  end
 end
