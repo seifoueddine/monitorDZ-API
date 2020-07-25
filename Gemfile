@@ -40,6 +40,12 @@ end
 group :development do
 end
 
+
+group :production do 
+gem 'pg', '>= 0.18', '< 2.0'
+gem 'rails_12factor'
+end
+
 group :test do
   gem 'factory_bot_rails'
   gem 'faker', :git => 'https://github.com/faker-ruby/faker.git', :branch => 'master'
