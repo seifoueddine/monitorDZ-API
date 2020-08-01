@@ -13,13 +13,14 @@ class Api::V1::MediaController < ApplicationController
                            ])
     end
     set_pagination_headers :media
-    json_string = MediaSerializer.new(@media).serialized_json
+    json_string = MediaSerializer.new(@media, include: [:sectors]).serialized_json
     render  json: json_string
   end
 
   # GET /media/1
   def show
-    render json: @medium
+    json_string = MediaSerializer.new(@medium, include: [:sectors]).serialized_json
+    render  json: json_string
   end
 
   # POST /media
