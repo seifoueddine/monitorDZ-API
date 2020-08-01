@@ -52,7 +52,7 @@ class Api::V1::SlugsController < ApplicationController
 
 
   def destroy_all
-      Park.where(id: params[:ids]).destroy_all
+      Slug.where(id: params[:ids]).destroy_all
   end
 
 

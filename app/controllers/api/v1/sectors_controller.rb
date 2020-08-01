@@ -3,9 +3,21 @@ class Api::V1::SectorsController < ApplicationController
 
   # GET /sectors
   def index
-    @sectors = Sector.all
 
-    render json: @sectors
+    @sectors = 
+    if params[:search].blank?
+      Sector.order(order_and_direction).page(page).per(per_page)
+    else
+      Sector.order(order_and_direction).page(page).per(per_page)
+          .where(['lower(name) like ? ',
+                           '%' + params[:search].downcase + '%'
+                           ])
+    end
+    set_pagination_headers :sectors
+    json_string = SectorSerializer.new(@sectors).serialized_json
+    render  json: json_string
+
+
   end
 
   # GET /sectors/1
@@ -33,10 +45,16 @@ class Api::V1::SectorsController < ApplicationController
     end
   end
 
-  # DELETE /sectors/1
-  def destroy
+   # DELETE /slugs/1
+   def destroy
     @sector.destroy
   end
+
+
+  def destroy_all
+      Sector.where(id: params[:ids]).destroy_all
+  end
+
 
   private
     # Use callbacks to share common setup or constraints between actions.
