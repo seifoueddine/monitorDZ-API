@@ -68,6 +68,6 @@ end
 
     # Only allow a trusted parameter "white list" through.
     def medium_params
-      params.permit(:name, :type, :orientation)
+      params.permit(:name, :media_type, :orientation)
     end
 end
