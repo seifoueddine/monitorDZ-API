@@ -27,6 +27,14 @@ class Api::V1::MediaController < ApplicationController
   def create
     @medium = Medium.new(medium_params)
 
+    ids = params[:sector_id].split(',')
+    if ids.length != 1
+      @sector = Sector.where(id: ids)
+    else
+      @sector = Sector.where(id: params[:sector_id])
+    end
+
+    @medium.sectors = @sector 
     if @medium.save
       render json: @medium, status: :created
     else
