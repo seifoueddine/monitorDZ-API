@@ -13,7 +13,7 @@ class Api::V1::CampaignsController < ApplicationController
                            ])
     end
     set_pagination_headers :campaigns
-    json_string = CampaignSerializer.new(@campaigns, include: [:sectors, :media]).serialized_json
+    json_string = CampaignSerializer.new(@campaigns, include: [:sectors, :media, :slug]).serialized_json
 
     render  json: json_string
   end
@@ -35,14 +35,15 @@ class Api::V1::CampaignsController < ApplicationController
       @sector = Sector.where(id: params[:sector_id])
     end
 
-    madia_ids = params[:madia_id].split(',')
+    madia_ids = params[:media_id].split(',')
     if sector_ids.length != 1
       @media = Medium.where(id: madia_ids)
     else
-      @media = Medium.where(id: params[:madia_id])
+      @media = Medium.where(id: params[:media_id])
     end
 
     @campaign.media = @media 
+    @campaign.sectors = @sector 
     if @campaign.save
       render json: @campaign, status: :created
     else
@@ -72,6 +73,6 @@ class Api::V1::CampaignsController < ApplicationController
 
     # Only allow a trusted parameter "white list" through.
     def campaign_params
-      params.permit(:name, :start_date, :end_date)
+      params.permit(:name, :start_date, :end_date, :slug_id)
     end
 end

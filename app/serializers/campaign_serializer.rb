@@ -5,4 +5,5 @@ class CampaignSerializer
   has_many :media, through: :campaign_media
   has_many :campaign_sectors
   has_many :sectors, through: :campaign_sectors
+  belongs_to :slug
 end

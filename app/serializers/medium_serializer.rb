@@ -1,4 +1,4 @@
-class MediaSerializer
+class MediumSerializer
   include FastJsonapi::ObjectSerializer
   attributes :name, :media_type, :orientation
   has_many :media_sectors
