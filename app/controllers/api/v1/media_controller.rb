@@ -45,6 +45,18 @@ class Api::V1::MediaController < ApplicationController
   # PATCH/PUT /media/1
   def update
     if @medium.update(medium_params)
+
+
+
+      @medium.sectors.clear
+      ids = params[:sector_id].split(',')
+    if ids.length != 1
+      @sector = Sector.where(id: ids)
+    else
+      @sector = Sector.where(id: params[:sector_id])
+    end
+
+    @medium.sectors = @sector 
       render json: @medium
     else
       render json: @medium.errors, status: :unprocessable_entity
