@@ -47,7 +47,25 @@ class Api::V1::SectorsController < ApplicationController
 
    # DELETE /slugs/1
    def destroy
-    @sector.destroy
+
+   check_media = @sector.media.count > 0
+   check_campaign = @sector.campaigns.count > 0
+    if check_media === true
+      render json: {
+        code:  'E001',
+        message: 'This sector belongs to media'
+    },  status: 406
+      elsif check_campaign === true
+        render json: {
+          code:  'E002',
+          message: 'This sector belongs to campaign'
+      },  status: 406
+     
+        else 
+          @sector.destroy
+    end
+
+   
   end
 
 

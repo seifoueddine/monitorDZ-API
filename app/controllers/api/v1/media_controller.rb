@@ -65,7 +65,20 @@ class Api::V1::MediaController < ApplicationController
 
   # DELETE /media/1
   def destroy
-    @medium.destroy
+  
+
+    check_campaign = @medium.campaigns.count > 0
+     if check_campaign === true
+       render json: {
+         code:  'E003',
+         message: 'This media belongs to campaign'
+     },  status: 406
+       
+         else 
+           @medium.destroy
+     end
+ 
+
   end
 
   def destroy_all
