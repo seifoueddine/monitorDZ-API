@@ -43,13 +43,12 @@ class Api::V1::ArticlesController < ApplicationController
       @doc = Nokogiri::HTML(URI.open(@media.url_crawling))
       get_articles
     else
-      render json: {media: 'No url_crawling for media ' + @media.name}
+      render json: { media: 'No url_crawling for media ' + @media.name }
     end
 
     # doc = doc_autobip.css('div.article-head__media-content div a').map { |link| link['href'] }
     # render json: { render: doc }
     end
-
 
   # DELETE /articles/1
   def destroy
@@ -73,13 +72,27 @@ class Api::V1::ArticlesController < ApplicationController
   def set_article
     @article = Article.find(params[:id])
   end
-  # start methode to get autobip articles
+
+  # start method to get autobip articles
   def get_articles_autobip
     articles_url_doc_autobip = @doc.css('div.post__text a').map do |link|
     link['href'] if link['itemprop'] == 'url'
     end
-    articles_url_doc_autobip = articles_url_doc_autobip.reject(&:nil?)
-    articles_url_doc_autobip.map do |link|
+    articles_url_autobip = articles_url_doc_autobip.reject(&:nil?)
+
+    if @media.last_article.nil?
+      articles_url_autobip_after_check = articles_url_autobip
+    else
+      index_article = articles_url_autobip.index(@media.last_article)
+      articles_url_autobip_after_check = articles_url_cherouk.slice(0, index_article)
+    end
+    unless articles_url_autobip_after_check.empty?
+      @media.last_article = articles_url_autobip_after_check.first
+      @media.save!
+    end
+
+
+    articles_url_autobip_after_check.map do |link|
       article = Nokogiri::HTML(URI.open(URI.escape(link)))
       new_article = Article.new
       new_article.title = article.css('h1.entry-title').text
@@ -90,16 +103,27 @@ class Api::V1::ArticlesController < ApplicationController
     end
     render json: { crawling_status_autobip: 'ok' }
   end
-  # end methode to get autobip articles
+  # end method to get autobip articles
 
-  # start methode to get elcherouk articles
+  # start method to get elcherouk articles
   def get_articles_elcherouk
+
     articles_url_cherouk = @doc.css('article div div h2.title.title--small a').map do |link|
       link['href']
     end
     articles_url_cherouk = articles_url_cherouk.reject(&:nil?)
 
-    articles_url_cherouk.map do |link|
+    if @media.last_article.nil?
+      articles_url_cherouk_after_check = articles_url_cherouk
+    else
+      index_article = articles_url_cherouk.index(@media.last_article)
+      articles_url_cherouk_after_check = articles_url_cherouk.slice(0, index_article)
+    end
+    unless articles_url_cherouk_after_check.empty?
+      @media.last_article = articles_url_cherouk_after_check.first
+      @media.save!
+    end
+    articles_url_cherouk_after_check.map do |link|
       article = Nokogiri::HTML(URI.open(link))
       new_article = Article.new
       new_article.title = article.css('h2.title.title--middle.unshrink em').text
@@ -113,7 +137,9 @@ class Api::V1::ArticlesController < ApplicationController
     end
     render json: { crawling_status_elcherouk: 'ok' }
   end
-  # end methode to get elcherouk articles
+  # end method to get elcherouk articles
+
+
 
 
   # Only allow a trusted parameter "white list" through.

@@ -117,7 +117,6 @@ GEM
     bootsnap (1.4.7)
       msgpack (~> 1.0)
     builder (3.2.4)
-    byebug (11.1.3)
     carrierwave (2.1.0)
       activemodel (>= 5.0.0)
       activesupport (>= 5.0.0)
@@ -270,7 +269,6 @@ PLATFORMS
 
 DEPENDENCIES
   bootsnap (>= 1.4.2)
-  byebug
   carrierwave (~> 2.0)
   database_cleaner
   devise_token_auth
