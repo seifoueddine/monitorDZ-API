@@ -10,15 +10,21 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2020_08_05_100927) do
+ActiveRecord::Schema.define(version: 2020_08_10_100521) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
   create_table "articles", force: :cascade do |t|
-    t.string "name"
+    t.string "title"
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
+    t.text "body"
+    t.string "author"
+    t.string "date_published"
+    t.string "article_tags"
+    t.string "url_image"
+    t.string "language"
   end
 
   create_table "campaign_media", force: :cascade do |t|
@@ -51,6 +57,7 @@ ActiveRecord::Schema.define(version: 2020_08_05_100927) do
     t.string "orientation"
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
+    t.string "url_crawling"
   end
 
   create_table "media_sectors", force: :cascade do |t|

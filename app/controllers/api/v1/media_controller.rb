@@ -3,7 +3,7 @@ class Api::V1::MediaController < ApplicationController
 
   # GET /media
   def index
-    @media = 
+    @media =
     if params[:search].blank?
       Medium.order(order_and_direction).page(page).per(per_page)
     else
@@ -34,7 +34,7 @@ class Api::V1::MediaController < ApplicationController
       @sector = Sector.where(id: params[:sector_id])
     end
 
-    @medium.sectors = @sector 
+    @medium.sectors = @sector
     if @medium.save
       render json: @medium, status: :created
     else
@@ -56,7 +56,7 @@ class Api::V1::MediaController < ApplicationController
       @sector = Sector.where(id: params[:sector_id])
     end
 
-    @medium.sectors = @sector 
+    @medium.sectors = @sector
       render json: @medium
     else
       render json: @medium.errors, status: :unprocessable_entity
@@ -65,7 +65,7 @@ class Api::V1::MediaController < ApplicationController
 
   # DELETE /media/1
   def destroy
-  
+
 
     check_campaign = @medium.campaigns.count > 0
      if check_campaign === true
@@ -73,11 +73,11 @@ class Api::V1::MediaController < ApplicationController
          code:  'E003',
          message: 'This media belongs to campaign'
      },  status: 406
-       
-         else 
+
+         else
            @medium.destroy
      end
- 
+
 
   end
 
