@@ -278,6 +278,7 @@ DEPENDENCIES
   faker!
   fast_jsonapi
   kaminari
+  nokogiri
   pg (>= 0.18, < 2.0)
   pry-rails
   puma (~> 4.1)

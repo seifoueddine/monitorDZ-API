@@ -8,6 +8,7 @@ gem 'rails', '~> 6.0.2', '>= 6.0.2.1'
 # Use postgresql as the database for Active Record
 gem 'pg', '>= 0.18', '< 2.0'
 # Use Puma as the app server
+gem 'nokogiri'
 gem 'puma', '~> 4.1'
 # Build JSON APIs with ease. Read more: https://github.com/rails/jbuilder
 # gem 'jbuilder', '~> 2.7'
@@ -18,10 +19,10 @@ gem 'puma', '~> 4.1'
 gem 'devise_token_auth'
 # Use Active Storage variant
 # gem 'image_processing', '~> 1.2'
-gem 'fast_jsonapi'
 gem 'carrierwave', '~> 2.0'
-gem 'rmagick'
+gem 'fast_jsonapi'
 gem 'kaminari'
+gem 'rmagick'
 # Reduces boot times through caching; required in config/boot.rb
 gem 'bootsnap', '>= 1.4.2', require: false
 
@@ -47,9 +48,9 @@ gem 'rails_12factor'
 end
 
 group :test do
+  gem 'database_cleaner'
   gem 'factory_bot_rails'
   gem 'faker', :git => 'https://github.com/faker-ruby/faker.git', :branch => 'master'
-  gem 'database_cleaner'
 end
 
 # Windows does not include zoneinfo files, so bundle the tzinfo-data gem
