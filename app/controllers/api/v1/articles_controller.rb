@@ -13,7 +13,9 @@ class Api::V1::ArticlesController < ApplicationController
 
   # GET /articles/1
   def show
-    render json: @article
+    json_string = ArticleSerializer.new(@article).serialized_json
+    
+    render json: json_string
   end
 
   # POST /articles
@@ -37,16 +39,17 @@ class Api::V1::ArticlesController < ApplicationController
   end
 
   def crawling
-    # doc_autobip = Nokogiri::HTML(URI.open('https://www.echoroukonline.com/%d8%a3%d8%b3%d8%b9%d8%a7%d8%b1-%d8%a7%d9%84%d9%86%d9%81%d8%b7-%d8%aa%d8%b1%d8%aa%d9%81%d8%b9-%d9%88%d8%aa%d9%84%d8%a7%d9%85%d8%b3-45-%d8%af%d9%88%d9%84%d8%a7%d8%b1%d8%a7-%d9%84%d9%84%d8%a8%d8%b1%d9%85/'))
-    @media = Medium.find(params[:media_id])
-    if @media.url_crawling?
-      @doc = Nokogiri::HTML(URI.open(@media.url_crawling))
-      get_articles
-    else
-      render json: { media: 'No url_crawling for media ' + @media.name }
-    end
+    # doc_autobip = Nokogiri::HTML(URI.open('https://www.autobip.com/fr/actualite/covid_19_reamenagement_des_horaires_du_confinement_pour_6_communes_de_tebessa/16767'))
+     @media = Medium.find(params[:media_id])
+     if @media.url_crawling?
+       @doc = Nokogiri::HTML(URI.open(@media.url_crawling))
+       get_articles
+     else
+       render json: { media: 'No url_crawling for media ' + @media.name }
+     end
 
-    # doc = doc_autobip.css('div.article-head__media-content div a').map { |link| link['href'] }
+    #  doc = doc_autobip.css('.fotorama.mnmd-gallery-slider.mnmd-post-media-wide img').map { |link| link['src'] }
+    #  doc = doc_autobip.at("//div[@class = 'fotorama__stage__frame']")
     # render json: { render: doc }
     end
 
@@ -84,7 +87,7 @@ class Api::V1::ArticlesController < ApplicationController
       articles_url_autobip_after_check = articles_url_autobip
     else
       index_article = articles_url_autobip.index(@media.last_article)
-      articles_url_autobip_after_check = articles_url_cherouk.slice(0, index_article)
+      articles_url_autobip_after_check = articles_url_autobip.slice(0, index_article)
     end
     unless articles_url_autobip_after_check.empty?
       @media.last_article = articles_url_autobip_after_check.first
@@ -96,10 +99,13 @@ class Api::V1::ArticlesController < ApplicationController
       article = Nokogiri::HTML(URI.open(URI.escape(link)))
       new_article = Article.new
       new_article.title = article.css('h1.entry-title').text
+      new_article.author = article.at("//a[@itemprop = 'author']").text
       new_article.body = article.css('div.pt-4.bp-2.entry-content.typography-copy').inner_html
       new_article.date_published = article.at("//span[@itemprop = 'datePublished']").text
+      url_array = article.css('.fotorama.mnmd-gallery-slider.mnmd-post-media-wide img').map { |link| link['src'] }
+      new_article.url_image = url_array[0]
       new_article.article_tags = article.css('a.post-tag').map(&:text).join(',')
-      new_article.save!
+      new_article.save! 
     end
     render json: { crawling_status_autobip: 'ok' }
   end
@@ -144,7 +150,7 @@ class Api::V1::ArticlesController < ApplicationController
 
   # Only allow a trusted parameter "white list" through.
   def article_params
-    params.permit(:title, :date_published, :author, :body,
+    params.permit(:title, :date_published, :author, :body, 
                   :article_tags, :language, :url_image)
   end
 end
