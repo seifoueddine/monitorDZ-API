@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2020_08_12_074727) do
+ActiveRecord::Schema.define(version: 2020_08_14_095901) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -25,6 +25,9 @@ ActiveRecord::Schema.define(version: 2020_08_12_074727) do
     t.string "article_tags"
     t.string "url_image"
     t.string "language"
+    t.bigint "medium_id", null: false
+    t.string "url_article"
+    t.index ["medium_id"], name: "index_articles_on_medium_id"
   end
 
   create_table "campaign_media", force: :cascade do |t|
@@ -112,6 +115,7 @@ ActiveRecord::Schema.define(version: 2020_08_12_074727) do
     t.index ["uid", "provider"], name: "index_users_on_uid_and_provider", unique: true
   end
 
+  add_foreign_key "articles", "media"
   add_foreign_key "campaigns", "slugs"
   add_foreign_key "users", "slugs"
 end

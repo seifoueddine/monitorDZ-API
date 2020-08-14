@@ -7,13 +7,13 @@ class Api::V1::ArticlesController < ApplicationController
   def index
     @articles = Article.order(order_and_direction).page(page).per(per_page)
     set_pagination_headers :articles
-    json_string = ArticleSerializer.new(@articles).serialized_json
+    json_string = ArticleSerializer.new(@articles, include: [:medium]).serialized_json
     render  json: json_string
   end
 
   # GET /articles/1
   def show
-    json_string = ArticleSerializer.new(@article).serialized_json
+    json_string = ArticleSerializer.new(@article, include: [:medium]).serialized_json
     
     render json: json_string
   end
@@ -45,7 +45,7 @@ class Api::V1::ArticlesController < ApplicationController
        @doc = Nokogiri::HTML(URI.open(@media.url_crawling))
        get_articles
      else
-       render json: { media: 'No url_crawling for media ' + @media.name }
+       render json: { crawling_status: 'No url_crawling' , media: @media.name , status: 'error' }
      end
 
     #  doc = doc_autobip.css('.fotorama.mnmd-gallery-slider.mnmd-post-media-wide img').map { |link| link['src'] }
@@ -67,7 +67,7 @@ class Api::V1::ArticlesController < ApplicationController
     when 'ELCHEROUK'
       get_articles_elcherouk
     else
-      render json: { crawling_status: 'No media name found!! '}
+      render json: { crawling_status: 'No media name found!! ', status: 'error'}
     end
   end
 
@@ -98,6 +98,8 @@ class Api::V1::ArticlesController < ApplicationController
     articles_url_autobip_after_check.map do |link|
       article = Nokogiri::HTML(URI.open(URI.escape(link)))
       new_article = Article.new
+      new_article.url_article = link
+      new_article.medium_id = @media.id
       new_article.title = article.css('h1.entry-title').text
       new_article.author = article.at("//a[@itemprop = 'author']").text
       new_article.body = article.css('div.pt-4.bp-2.entry-content.typography-copy').inner_html
@@ -132,6 +134,8 @@ class Api::V1::ArticlesController < ApplicationController
     articles_url_cherouk_after_check.map do |link|
       article = Nokogiri::HTML(URI.open(link))
       new_article = Article.new
+      new_article.url_article = link
+      new_article.medium_id = @media.id      
       new_article.title = article.css('h2.title.title--middle.unshrink em').text
       new_article.author = article.css('div.article-head__author div em a').text
       new_article.body = article.css('div.the-content').inner_html
