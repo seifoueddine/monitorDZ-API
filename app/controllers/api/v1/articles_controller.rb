@@ -5,7 +5,11 @@ class Api::V1::ArticlesController < ApplicationController
   require 'open-uri'
   # GET /articles
   def index
+    if params[:media_id].blank?
     @articles = Article.order(order_and_direction).page(page).per(per_page)
+    else
+    @articles = Article.order(order_and_direction).where(medium_id: params[:media_id].split(',') ).page(page).per(per_page)
+    end  
     set_pagination_headers :articles
     json_string = ArticleSerializer.new(@articles, include: [:medium]).serialized_json
     render  json: json_string
