@@ -21,7 +21,7 @@ class Api::V1::SlugsController < ApplicationController
 
   # GET /slugs/1
   def show
-      json_string = SlugSerializer.new(@slugs).serialized_json
+      json_string = SlugSerializer.new(@slug).serialized_json
       render  json: json_string
   end
 
