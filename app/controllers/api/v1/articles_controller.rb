@@ -113,7 +113,7 @@ class Api::V1::ArticlesController < ApplicationController
       new_article.date_published = article.at("//span[@itemprop = 'datePublished']").text
       url_array = article.css('.fotorama.mnmd-gallery-slider.mnmd-post-media-wide img').map { |link| link['src'] }
       new_article.url_image = url_array[0]
-      new_article.article_tags = article.css('a.post-tag').map(&:text).join(',')
+      new_article.media_tags = article.css('a.post-tag').map(&:text).join(',')
       new_article.save!
     end
     render json: { crawling_status_autobip: 'ok' }
@@ -155,8 +155,7 @@ class Api::V1::ArticlesController < ApplicationController
       |link| link['href']
       end
       new_article.url_image = url_array[0]
-      new_article.article_tags = article.css('div.article-core__tags a')
-                                        .map(&:text).join(',')
+      new_article.media_tags = article.css('div.article-core__tags a').map(&:text).join(',')
       new_article.save!
     end
     render json: { crawling_status_elcherouk: 'ok' }
@@ -169,6 +168,6 @@ class Api::V1::ArticlesController < ApplicationController
   # Only allow a trusted parameter "white list" through.
   def article_params
     params.permit(:title, :date_published, :author, :body,
-                  :article_tags, :language, :url_image)
+                  :media_tags, :language, :url_image)
   end
 end
