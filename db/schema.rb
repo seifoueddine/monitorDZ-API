@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2020_08_14_095901) do
+ActiveRecord::Schema.define(version: 2020_08_19_093119) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -27,6 +27,7 @@ ActiveRecord::Schema.define(version: 2020_08_14_095901) do
     t.string "language"
     t.bigint "medium_id", null: false
     t.string "url_article"
+    t.string "category_article"
     t.index ["medium_id"], name: "index_articles_on_medium_id"
   end
 
