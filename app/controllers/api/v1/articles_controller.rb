@@ -15,9 +15,10 @@ class Api::V1::ArticlesController < ApplicationController
     render  json: json_string
   end
 
+
   # GET /articles/1
   def show
-    json_string = ArticleSerializer.new(@article, include: [:medium]).serialized_json
+    json_string = ArticleSerializer.new(@article, include: [:medium, :tags]).serialized_json
 
     render json: json_string
   end
@@ -41,6 +42,34 @@ class Api::V1::ArticlesController < ApplicationController
       render json: @article.errors, status: :unprocessable_entity
     end
   end
+
+  # auto tags
+  def auto_tag
+    all_tags = Tag.all
+    articles_not_tagged = Article.all.where(is_tagged: nil)
+    articles_not_tagged.map do |article|
+      all_tags.map do |tag|
+        @tags = []
+        @tags_objects = []
+        if article.body.include? tag.name
+          @tags << tag.name unless @tags.include? tag.name
+          @tags_objects << tag unless @tags_objects.include? tag.name
+        end
+        if article.title.include? tag.name
+          @tags << tag.name unless @tags.include? tag.name
+          @tags_objects << tag unless @tags_objects.include? tag.name
+        end
+      end
+      old_tags = article.media_tags.split(',')
+      old_tags << @tags
+      article.media_tags = old_tags.join(',')
+      article.tags = @tags_objects
+      article.is_tagged = true if @tags_objects.length.positive?
+      article.save!
+    end
+    render json: { tags: 'ok' }
+  end
+  # auto tags
 
   def crawling
     # doc_autobip = Nokogiri::HTML(URI.open('https://www.autobip.com/fr/actualite/covid_19_reamenagement_des_horaires_du_confinement_pour_6_communes_de_tebessa/16767'))
@@ -116,11 +145,13 @@ class Api::V1::ArticlesController < ApplicationController
       tags_array = article.css('a.post-tag').map(&:text)
       new_article.media_tags = tags_array.join(',')
       new_article.save!
+=begin
       tags_array.map do |t|
         tag = Tag.new
         tag.name = t
         tag.save!
       end
+=end
     end
 
     render json: { crawling_status_autobip: 'ok' }
@@ -174,9 +205,6 @@ class Api::V1::ArticlesController < ApplicationController
     render json: { crawling_status_elcherouk: 'ok' }
   end
   # end method to get elcherouk articles
-
-
-
 
   # Only allow a trusted parameter "white list" through.
   def article_params

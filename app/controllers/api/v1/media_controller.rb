@@ -28,11 +28,11 @@ class Api::V1::MediaController < ApplicationController
     @medium = Medium.new(medium_params)
 
     ids = params[:sector_id].split(',')
-    if ids.length != 1
-      @sector = Sector.where(id: ids)
-    else
-      @sector = Sector.where(id: params[:sector_id])
-    end
+    @sector = if ids.length != 1
+                Sector.where(id: ids)
+              else
+                Sector.where(id: params[:sector_id])
+              end
 
     @medium.sectors = @sector
     if @medium.save
@@ -50,13 +50,13 @@ class Api::V1::MediaController < ApplicationController
 
       @medium.sectors.clear
       ids = params[:sector_id].split(',')
-    if ids.length != 1
-      @sector = Sector.where(id: ids)
-    else
-      @sector = Sector.where(id: params[:sector_id])
-    end
+      @sector = if ids.length != 1
+                  Sector.where(id: ids)
+                else
+                  Sector.where(id: params[:sector_id])
+                end
 
-    @medium.sectors = @sector
+      @medium.sectors = @sector
       render json: @medium
     else
       render json: @medium.errors, status: :unprocessable_entity
@@ -68,15 +68,15 @@ class Api::V1::MediaController < ApplicationController
 
 
     check_campaign = @medium.campaigns.count > 0
-     if check_campaign === true
-       render json: {
-         code:  'E003',
-         message: 'This media belongs to campaign'
-     },  status: 406
+    if check_campaign === true
+      render json: {
+        code:  'E003',
+        message: 'This media belongs to campaign'
+    },  status: 406
 
-         else
-           @medium.destroy
-     end
+    else
+      @medium.destroy
+    end
 
 
   end
@@ -87,12 +87,12 @@ end
 
   private
     # Use callbacks to share common setup or constraints between actions.
-    def set_medium
-      @medium = Medium.find(params[:id])
-    end
+  def set_medium
+    @medium = Medium.find(params[:id])
+  end
 
     # Only allow a trusted parameter "white list" through.
-    def medium_params
-      params.permit(:name, :media_type, :orientation, :last_article, :url_crawling)
-    end
+  def medium_params
+    params.permit(:name, :media_type, :orientation, :last_article, :url_crawling)
+  end
 end

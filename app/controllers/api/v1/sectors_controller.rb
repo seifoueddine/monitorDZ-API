@@ -46,42 +46,42 @@ class Api::V1::SectorsController < ApplicationController
   end
 
    # DELETE /slugs/1
-   def destroy
+  def destroy
 
-   check_media = @sector.media.count > 0
-   check_campaign = @sector.campaigns.count > 0
-    if check_media === true
+    check_media = @sector.media.count.positive?
+    check_campaign = @sector.campaigns.positive?
+    if check_media == true
       render json: {
-        code:  'E001',
+        code: 'E001',
         message: 'This sector belongs to media'
     },  status: 406
-      elsif check_campaign === true
-        render json: {
-          code:  'E002',
-          message: 'This sector belongs to campaign'
-      },  status: 406
+    elsif check_campaign == true
+      render json: {
+        code: 'E002',
+        message: 'This sector belongs to campaign'
+    },  status: 406
      
-        else 
-          @sector.destroy
+    else 
+      @sector.destroy
     end
 
-   
-  end
+  
+ end
 
 
   def destroy_all
-      Sector.where(id: params[:ids]).destroy_all
+    Sector.where(id: params[:ids]).destroy_all
   end
 
 
   private
     # Use callbacks to share common setup or constraints between actions.
-    def set_sector
-      @sector = Sector.find(params[:id])
-    end
+  def set_sector
+    @sector = Sector.find(params[:id])
+  end
 
     # Only allow a trusted parameter "white list" through.
-    def sector_params
-      params.permit(:name)
-    end
+  def sector_params
+    params.permit(:name)
+  end
 end
