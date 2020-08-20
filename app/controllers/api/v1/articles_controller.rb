@@ -113,9 +113,16 @@ class Api::V1::ArticlesController < ApplicationController
       new_article.date_published = article.at("//span[@itemprop = 'datePublished']").text
       url_array = article.css('.fotorama.mnmd-gallery-slider.mnmd-post-media-wide img').map { |link| link['src'] }
       new_article.url_image = url_array[0]
-      new_article.media_tags = article.css('a.post-tag').map(&:text).join(',')
+      tags_array = article.css('a.post-tag').map(&:text)
+      new_article.media_tags = tags_array.join(',')
       new_article.save!
+      tags_array.map do |t|
+        tag = Tag.new
+        tag.name = t
+        tag.save!
+      end
     end
+
     render json: { crawling_status_autobip: 'ok' }
   end
   # end method to get autobip articles
@@ -155,8 +162,14 @@ class Api::V1::ArticlesController < ApplicationController
       |link| link['href']
       end
       new_article.url_image = url_array[0]
-      new_article.media_tags = article.css('div.article-core__tags a').map(&:text).join(',')
+      tags_array = article.css('div.article-core__tags a').map(&:text)
+      new_article.media_tags = tags_array.join(',')
       new_article.save!
+      tags_array.map do |t|
+        tag = Tag.new
+        tag.name = t
+        tag.save!
+      end
     end
     render json: { crawling_status_elcherouk: 'ok' }
   end
