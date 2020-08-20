@@ -145,13 +145,11 @@ class Api::V1::ArticlesController < ApplicationController
       tags_array = article.css('a.post-tag').map(&:text)
       new_article.media_tags = tags_array.join(',')
       new_article.save!
-=begin
       tags_array.map do |t|
         tag = Tag.new
         tag.name = t
         tag.save!
       end
-=end
     end
 
     render json: { crawling_status_autobip: 'ok' }
