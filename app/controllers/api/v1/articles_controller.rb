@@ -15,7 +15,6 @@ class Api::V1::ArticlesController < ApplicationController
     render  json: json_string
   end
 
-
   # GET /articles/1
   def show
     json_string = ArticleSerializer.new(@article, include: [:medium, :tags]).serialized_json
@@ -45,22 +44,22 @@ class Api::V1::ArticlesController < ApplicationController
 
   # auto tags
   def auto_tag
-    all_tags = Tag.all
+    all_tags = Tag.where(status: true)
     articles_not_tagged = Article.all.where(is_tagged: nil)
     articles_not_tagged.map do |article|
       all_tags.map do |tag|
         @tags = []
         @tags_objects = []
-        if article.body.include? tag.name
+        if article.body.downcase.include? tag.name.downcase
           @tags << tag.name unless @tags.include? tag.name
           @tags_objects << tag unless @tags_objects.include? tag.name
         end
-        if article.title.include? tag.name
+        if article.title.downcase.include? tag.name.downcase
           @tags << tag.name unless @tags.include? tag.name
           @tags_objects << tag unless @tags_objects.include? tag.name
         end
       end
-      old_tags = article.media_tags.split(',')
+      old_tags = article.media_tags.nil? ? [] : article.media_tags.split(',')
       old_tags << @tags
       article.media_tags = old_tags.join(',')
       article.tags = @tags_objects
@@ -72,6 +71,7 @@ class Api::V1::ArticlesController < ApplicationController
   # auto tags
 
   def crawling
+    @all_tags = Tag.all
     # doc_autobip = Nokogiri::HTML(URI.open('https://www.autobip.com/fr/actualite/covid_19_reamenagement_des_horaires_du_confinement_pour_6_communes_de_tebessa/16767'))
     @media = Medium.find(params[:media_id])
     if @media.url_crawling?
@@ -83,7 +83,7 @@ class Api::V1::ArticlesController < ApplicationController
    # last_articles = Article.where("created_at <= :start AND created_at > :end", start: Date.today, end: 1.week.ago.to_date )
     #  doc = doc_autobip.css('.fotorama.mnmd-gallery-slider.mnmd-post-media-wide img').map { |link| link['src'] }
     #  doc = doc_autobip.at("//div[@class = 'fotorama__stage__frame']")
-    #render json: { render: last_articles }
+    # render json: { render: last_articles }
     end
 
   # DELETE /articles/1
@@ -143,13 +143,9 @@ class Api::V1::ArticlesController < ApplicationController
       url_array = article.css('.fotorama.mnmd-gallery-slider.mnmd-post-media-wide img').map { |link| link['src'] }
       new_article.url_image = url_array[0]
       tags_array = article.css('a.post-tag').map(&:text)
-      new_article.media_tags = tags_array.join(',')
+      # new_article.media_tags = tags_array.join(',')
       new_article.save!
-      tags_array.map do |t|
-        tag = Tag.new
-        tag.name = t
-        tag.save!
-      end
+      tag_check_and_save(tags_array)
     end
 
     render json: { crawling_status_autobip: 'ok' }
@@ -192,13 +188,9 @@ class Api::V1::ArticlesController < ApplicationController
       end
       new_article.url_image = url_array[0]
       tags_array = article.css('div.article-core__tags a').map(&:text)
-      new_article.media_tags = tags_array.join(',')
+      # new_article.media_tags = tags_array.join(',')
       new_article.save!
-      tags_array.map do |t|
-        tag = Tag.new
-        tag.name = t
-        tag.save!
-      end
+      tag_check_and_save(tags_array)
     end
     render json: { crawling_status_elcherouk: 'ok' }
   end
@@ -208,5 +200,18 @@ class Api::V1::ArticlesController < ApplicationController
   def article_params
     params.permit(:title, :date_published, :author, :body,
                   :media_tags, :language, :url_image)
+  end
+
+  # tag_check_and_save
+  def tag_check_and_save(tags_array)
+    tags_array.map do |t|
+      tag_exist = Tag.where(['lower(name) like ? ',
+                              t.downcase.lstrip.chop ]).count
+      if tag_exist.zero?
+        tag = Tag.new
+        tag.name = t.lstrip.chop
+        tag.save!
+      end
+    end
   end
 end

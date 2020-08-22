@@ -9,8 +9,7 @@ class Api::V1::TagsController < ApplicationController
         else
           Tag.order(order_and_direction).page(page).per(per_page)
               .where(['lower(name) like ? ',
-                      '%' + params[:search].downcase + '%'
-                     ])
+                      '%' + params[:search].downcase + '%'])
         end
     set_pagination_headers :tags
     json_string = TagSerializer.new(@tags).serialized_json
@@ -26,6 +25,10 @@ class Api::V1::TagsController < ApplicationController
 
   # POST /tags
   def create
+
+    tag_exist = Tag.where(['lower(name) like ? ',
+                            params[:name].downcase ]).count
+    if tag_exist.zero?
     @tag = Tag.new(tag_params)
 
     if @tag.save
@@ -33,14 +36,37 @@ class Api::V1::TagsController < ApplicationController
     else
       render json: @tag.errors, status: :unprocessable_entity
     end
+    else
+      render json: {
+          code: 'E001',
+          message: 'tag exist'
+      },  status: 406
+    end
   end
 
   # PATCH/PUT /tags/1
   def update
-    if @tag.update(tag_params)
-      render json: @tag
+    if params[:name].blank?
+      if @tag.update(tag_params)
+        render json: @tag
+      else
+        render json: @tag.errors, status: :unprocessable_entity
+      end
     else
-      render json: @tag.errors, status: :unprocessable_entity
+      tag_exist = Tag.where(['lower(name) like ? ',
+                             params[:name].downcase]).count
+      if tag_exist.zero?
+        if @tag.update(tag_params)
+          render json: @tag
+        else
+          render json: @tag.errors, status: :unprocessable_entity
+        end
+      else
+        render json: {
+            code: 'E001',
+            message: 'tag exist'
+        },  status: 406
+      end
     end
   end
 
@@ -57,6 +83,6 @@ class Api::V1::TagsController < ApplicationController
 
     # Only allow a trusted parameter "white list" through.
   def tag_params
-    params.permit(:name)
+    params.permit(:name, :status)
   end
 end
