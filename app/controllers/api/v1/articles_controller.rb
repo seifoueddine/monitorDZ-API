@@ -11,13 +11,13 @@ class Api::V1::ArticlesController < ApplicationController
       @articles = Article.order(order_and_direction).where(medium_id: params[:media_id].split(',') ).page(page).per(per_page)
     end
     set_pagination_headers :articles
-    json_string = ArticleSerializer.new(@articles, include: [:medium]).serialized_json
+    json_string = ArticleSerializer.new(@articles, include: %i[medium tags]).serialized_json
     render  json: json_string
   end
 
   # GET /articles/1
   def show
-    json_string = ArticleSerializer.new(@article, include: [:medium, :tags]).serialized_json
+    json_string = ArticleSerializer.new(@article, include: %i[medium tags author]).serialized_json
 
     render json: json_string
   end
@@ -137,7 +137,20 @@ class Api::V1::ArticlesController < ApplicationController
       new_article.medium_id = @media.id
       new_article.category_article = article.css('header.single-header a.cat-theme-bg').text
       new_article.title = article.css('h1.entry-title').text
-      new_article.author = article.at("//a[@itemprop = 'author']").text
+
+      author_exist = Author.where(['lower(name) like ? ',
+                                   article.at("//a[@itemprop = 'author']").text.downcase ])
+      new_author = Author.new
+      if author_exist.count.zero?
+
+        new_author.name = article.at("//a[@itemprop = 'author']").text
+        new_author.save!
+      else
+
+        new_author.id = author_exist.first.id
+        new_author.name = author_exist.first.name
+      end
+      new_article.author_id = new_author.id
       new_article.body = article.css('div.pt-4.bp-2.entry-content.typography-copy').inner_html
       new_article.date_published = article.at("//span[@itemprop = 'datePublished']").text
       url_array = article.css('.fotorama.mnmd-gallery-slider.mnmd-post-media-wide img').map { |link| link['src'] }
