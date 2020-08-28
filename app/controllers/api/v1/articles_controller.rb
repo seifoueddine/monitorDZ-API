@@ -11,8 +11,8 @@ class Api::V1::ArticlesController < ApplicationController
       @articles = Article.order(order_and_direction).where(medium_id: params[:media_id].split(',') ).page(page).per(per_page)
     end
     set_pagination_headers :articles
-    json_string = ArticleSerializer.new(@articles, include: %i[medium tags]).serialized_json
-    render  json: json_string
+    json_string = ArticleSerializer.new(@articles, include: %i[medium ]).serialized_json
+    render json: json_string
   end
 
   # GET /articles/1
@@ -78,7 +78,7 @@ class Api::V1::ArticlesController < ApplicationController
       url_media_array = @media.url_crawling.split(',')
       get_articles(url_media_array)
     else
-      render json: { crawling_status: 'No url_crawling' , media: @media.name , status: 'error' }
+      render json: { crawling_status: 'No url_crawling', media: @media.name, status: 'error' }
     end
    # last_articles = Article.where("created_at <= :start AND created_at > :end", start: Date.today, end: 1.week.ago.to_date )
     #  doc = doc_autobip.css('.fotorama.mnmd-gallery-slider.mnmd-post-media-wide img').map { |link| link['src'] }
@@ -91,6 +91,20 @@ class Api::V1::ArticlesController < ApplicationController
     @article.destroy
   end
 
+  def search_article
+    result_articles = Article.search params[:search],
+                                     page: params[:page],
+                                     per_page: params[:per_page]
+    @articles_res = result_articles
+
+    set_pagination_headers :articles_res
+    json_string = ArticleSerializer.new(@articles_res, include: %i[medium tags]).serialized_json
+
+    render json: {result_articles: result_articles, time: result_articles.took}
+
+  end
+
+
   private
 
   def get_articles(url_media_array)
@@ -100,7 +114,7 @@ class Api::V1::ArticlesController < ApplicationController
     when 'ELCHEROUK'
       get_articles_elcherouk(url_media_array)
     else
-      render json: { crawling_status: 'No media name found!! ', status: 'error'}
+      render json: { crawling_status: 'No media name found!! ', status: 'error' }
     end
   end
 
@@ -150,6 +164,7 @@ class Api::V1::ArticlesController < ApplicationController
         new_author.id = author_exist.first.id
         new_author.name = author_exist.first.name
       end
+
       new_article.author_id = new_author.id
       new_article.body = article.css('div.pt-4.bp-2.entry-content.typography-copy').inner_html
       new_article.date_published = article.at("//span[@itemprop = 'datePublished']").text
@@ -193,7 +208,23 @@ class Api::V1::ArticlesController < ApplicationController
       new_article.medium_id = @media.id
       new_article.category_article = article.css('div.around.around--section ul li a span').text
       new_article.title = article.css('h2.title.title--middle.unshrink em').text
-      new_article.author = article.css('div.article-head__author div em a').text
+      #new_article.author = article.css('div.article-head__author div em a').text
+
+      author_exist = Author.where(['lower(name) like ? ',
+                                   article.css('div.article-head__author div em a').text.downcase ])
+
+      new_author = Author.new
+      if author_exist.count.zero?
+
+        new_author.name = article.css('div.article-head__author div em a').text
+        new_author.save!
+      else
+
+        new_author.id = author_exist.first.id
+        new_author.name = author_exist.first.name
+
+      end
+      new_article.author_id = new_author.id
       new_article.body = article.css('div.the-content').inner_html
       new_article.date_published = article.css('ul.article-head__details time').text
       url_array = article.css('div.article-head__media-content div a').map do
