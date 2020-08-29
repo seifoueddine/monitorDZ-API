@@ -1,6 +1,7 @@
 class Api::V1::ArticlesController < ApplicationController
   # before_action :authenticate_user!
   before_action :set_article, only: %i[show update destroy]
+  # after_action :indexing, only: %i[auto_tag crawling]
   require 'nokogiri'
   require 'open-uri'
   # GET /articles
@@ -44,12 +45,13 @@ class Api::V1::ArticlesController < ApplicationController
 
   # auto tags
   def auto_tag
+    @article_for_indexing = []
     all_tags = Tag.where(status: true)
     articles_not_tagged = Article.all.where(is_tagged: nil)
     articles_not_tagged.map do |article|
+      @tags = []
+      @tags_objects = []
       all_tags.map do |tag|
-        @tags = []
-        @tags_objects = []
         if article.body.downcase.include? tag.name.downcase
           @tags << tag.name unless @tags.include? tag.name
           @tags_objects << tag unless @tags_objects.include? tag.name
@@ -65,12 +67,14 @@ class Api::V1::ArticlesController < ApplicationController
       article.tags = @tags_objects
       article.is_tagged = true if @tags_objects.length.positive?
       article.save!
+      @article_for_indexing << article
     end
     render json: { tags: 'ok' }
   end
   # auto tags
 
   def crawling
+    @article_for_indexing = []
     @all_tags = Tag.all
     # doc_autobip = Nokogiri::HTML(URI.open('https://www.autobip.com/fr/actualite/covid_19_reamenagement_des_horaires_du_confinement_pour_6_communes_de_tebessa/16767'))
     @media = Medium.find(params[:media_id])
@@ -174,6 +178,7 @@ class Api::V1::ArticlesController < ApplicationController
       # new_article.media_tags = tags_array.join(',')
       new_article.save!
       tag_check_and_save(tags_array)
+      @article_for_indexing << new_article
     end
 
     render json: { crawling_status_autobip: 'ok' }
@@ -208,7 +213,7 @@ class Api::V1::ArticlesController < ApplicationController
       new_article.medium_id = @media.id
       new_article.category_article = article.css('div.around.around--section ul li a span').text
       new_article.title = article.css('h2.title.title--middle.unshrink em').text
-      #new_article.author = article.css('div.article-head__author div em a').text
+      # new_article.author = article.css('div.article-head__author div em a').text
 
       author_exist = Author.where(['lower(name) like ? ',
                                    article.css('div.article-head__author div em a').text.downcase ])
@@ -235,6 +240,7 @@ class Api::V1::ArticlesController < ApplicationController
       # new_article.media_tags = tags_array.join(',')
       new_article.save!
       tag_check_and_save(tags_array)
+      @article_for_indexing << new_article
     end
     render json: { crawling_status_elcherouk: 'ok' }
   end
@@ -257,5 +263,10 @@ class Api::V1::ArticlesController < ApplicationController
         tag.save!
       end
     end
+  end
+
+    # indexing
+  def indexing
+    Article.reindex
   end
 end
