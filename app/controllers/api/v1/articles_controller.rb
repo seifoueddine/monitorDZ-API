@@ -43,9 +43,8 @@ class Api::V1::ArticlesController < ApplicationController
     end
   end
 
-  # auto tags
+  # auto tags@article_for_indexing
   def auto_tag
-    @article_for_indexing = []
     all_tags = Tag.where(status: true)
     articles_not_tagged = Article.all.where(is_tagged: nil)
     articles_not_tagged.map do |article|
@@ -67,14 +66,12 @@ class Api::V1::ArticlesController < ApplicationController
       article.tags = @tags_objects
       article.is_tagged = true if @tags_objects.length.positive?
       article.save!
-      @article_for_indexing << article
     end
     render json: { tags: 'ok' }
   end
   # auto tags
 
   def crawling
-    @article_for_indexing = []
     @all_tags = Tag.all
     # doc_autobip = Nokogiri::HTML(URI.open('https://www.autobip.com/fr/actualite/covid_19_reamenagement_des_horaires_du_confinement_pour_6_communes_de_tebessa/16767'))
     @media = Medium.find(params[:media_id])
@@ -178,7 +175,6 @@ class Api::V1::ArticlesController < ApplicationController
       # new_article.media_tags = tags_array.join(',')
       new_article.save!
       tag_check_and_save(tags_array)
-      @article_for_indexing << new_article
     end
 
     render json: { crawling_status_autobip: 'ok' }
@@ -240,7 +236,6 @@ class Api::V1::ArticlesController < ApplicationController
       # new_article.media_tags = tags_array.join(',')
       new_article.save!
       tag_check_and_save(tags_array)
-      @article_for_indexing << new_article
     end
     render json: { crawling_status_elcherouk: 'ok' }
   end
@@ -266,7 +261,7 @@ class Api::V1::ArticlesController < ApplicationController
   end
 
     # indexing
-  def indexing
-    Article.reindex
-  end
+  #def indexing
+    #  Article.reindex
+  #end
 end

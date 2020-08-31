@@ -1,6 +1,6 @@
 class Article < ApplicationRecord
   searchkick
-   after_commit :indexing
+  #after_commit :indexing
   scope :search_import, -> { includes(:author, :medium) }
   has_many :article_tags
   has_many :tags, through: :article_tags
@@ -10,9 +10,10 @@ class Article < ApplicationRecord
 
   protected
 
-  def indexing
-    Article.reindex
-  end
+  #def indexing
+  # Article.reindex
+  #  Medium.reindex
+  # end
 
 
 end
