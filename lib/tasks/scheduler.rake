@@ -1,4 +1,3 @@
 task indexing: :environment do
-  #Article.reindex
-  put 'alooooooooo'
+  Article.reindex
 end
