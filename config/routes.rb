@@ -12,6 +12,8 @@ Rails.application.routes.draw do
 
   namespace :api do
     namespace :v1 do
+      put 'users/change_password/:id', to: 'users#change_password'
+      resources :users
       resources :authors
       resources :slugs
       resources :sectors
