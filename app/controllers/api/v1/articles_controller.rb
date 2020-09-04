@@ -81,10 +81,10 @@ class Api::V1::ArticlesController < ApplicationController
     else
       render json: { crawling_status: 'No url_crawling', media: @media.name, status: 'error' }
     end
-   # last_articles = Article.where("created_at <= :start AND created_at > :end", start: Date.today, end: 1.week.ago.to_date )
-    #  doc = doc_autobip.css('.fotorama.mnmd-gallery-slider.mnmd-post-media-wide img').map { |link| link['src'] }
-    #  doc = doc_autobip.at("//div[@class = 'fotorama__stage__frame']")
-    # render json: { render: last_articles }
+      # last_articles = Article.where("created_at <= :start AND created_at > :end", start: Date.today, end: 1.week.ago.to_date )
+      #  doc = doc_autobip.css('.fotorama.mnmd-gallery-slider.mnmd-post-media-wide img').map { |link| link['src'] }
+      #  doc = doc_autobip.at("//div[@class = 'fotorama__stage__frame']")
+      # render json: { render: last_articles }
     end
 
   # DELETE /articles/1
@@ -109,11 +109,11 @@ class Api::V1::ArticlesController < ApplicationController
    ids = params[:ids].split(',')
    Article.where(id: [ids]).update_all(status: params[:status])
 
-   if a.positive?
-     render json: {message: 'Change status succeed'}
-   else
-     render json: 'Change status failed', status: :unprocessable_entity
-   end
+    #  if a.positive?
+    #   render json: {message: 'Change status succeed'}
+    #  else
+    #   render json: 'Change status failed', status: :unprocessable_entity
+    #  end
   end
 
   # GET /articles_for_sorting
@@ -285,8 +285,8 @@ class Api::V1::ArticlesController < ApplicationController
     end
   end
 
-    # indexing
+  # indexing
   #def indexing
-    #  Article.reindex
+  #  Article.reindex
   #end
 end
