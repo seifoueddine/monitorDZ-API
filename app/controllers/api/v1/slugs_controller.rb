@@ -50,7 +50,6 @@ class Api::V1::SlugsController < ApplicationController
     @slug.destroy
   end
 
-
   def destroy_all
       Slug.where(id: params[:ids]).destroy_all
   end
