@@ -37,7 +37,8 @@ class Api::V1::ArticlesController < ApplicationController
   # PATCH/PUT /articles/1
   def update
     if @article.update(article_params)
-      render json: @article
+      json_string = ArticleSerializer.new(@article).serialized_json
+      render json: json_string
     else
       render json: @article.errors, status: :unprocessable_entity
     end
@@ -119,9 +120,12 @@ class Api::V1::ArticlesController < ApplicationController
   # GET /articles_for_sorting
   def articles_for_sorting
     if params[:media_id].blank?
-      @articles = Article.order(order_and_direction).where.not(status: 'checked').page(page).per(per_page)
+      #  @articles = Article.order(order_and_direction).where.not(status: 'checked').page(page).per(per_page)
+        @articles = Article.order(order_and_direction).page(page).per(per_page)
     else
-      @articles = Article.order(order_and_direction).where.not(status: 'checked').where(medium_id: params[:media_id].split(',') ).page(page).per(per_page)
+      # @articles = Article.order(order_and_direction).where.not(status: 'checked').where(medium_id: params[:media_id].split(',') ).page(page).per(per_page)
+      @articles = Article.order(order_and_direction).where(medium_id: params[:media_id].split(',') ).page(page).per(per_page)
+
     end
     set_pagination_headers :articles
     json_string = ArticleSerializer.new(@articles).serialized_json
