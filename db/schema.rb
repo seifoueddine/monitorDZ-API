@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2020_09_02_220703) do
+ActiveRecord::Schema.define(version: 2020_09_04_094543) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -37,6 +37,7 @@ ActiveRecord::Schema.define(version: 2020_09_02_220703) do
     t.string "category_article"
     t.boolean "is_tagged"
     t.bigint "author_id"
+    t.string "status"
     t.index ["author_id"], name: "index_articles_on_author_id"
     t.index ["medium_id"], name: "index_articles_on_medium_id"
   end
@@ -79,6 +80,7 @@ ActiveRecord::Schema.define(version: 2020_09_02_220703) do
     t.datetime "updated_at", precision: 6, null: false
     t.string "url_crawling"
     t.string "last_article"
+    t.string "avatar"
   end
 
   create_table "media_sectors", force: :cascade do |t|

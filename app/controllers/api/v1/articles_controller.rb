@@ -173,6 +173,7 @@ class Api::V1::ArticlesController < ApplicationController
       new_article.url_image = url_array[0]
       tags_array = article.css('a.post-tag').map(&:text)
       # new_article.media_tags = tags_array.join(',')
+      new_article.status = 'pending'
       new_article.save!
       tag_check_and_save(tags_array)
     end
@@ -234,6 +235,7 @@ class Api::V1::ArticlesController < ApplicationController
       new_article.url_image = url_array[0]
       tags_array = article.css('div.article-core__tags a').map(&:text)
       # new_article.media_tags = tags_array.join(',')
+      new_article.status = 'pending'
       new_article.save!
       tag_check_and_save(tags_array)
     end
