@@ -107,9 +107,13 @@ class Api::V1::ArticlesController < ApplicationController
 
   def change_status
     ids = params[:ids].split(',')
-    p = Article.where(id: [ids]).update_all(status: params[:status])
+    a = Article.where(id: [ids]).update_all(status: params[:status])
 
-    render json: p
+    if a.positive?
+      render json: 'change status succeed'
+    else
+      render json: 'change status failed', status: :unprocessable_entity
+    end
     end
 
 
