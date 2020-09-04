@@ -22,6 +22,7 @@ Rails.application.routes.draw do
       resources :articles
       resources :tags
       post 'articles/change_status', to: 'articles#change_status'
+      get 'articles/articles_for_sorting', to: 'articles#articles_for_sorting'
       get 'get_articles/crawling', to: 'articles#crawling'
       get 'auto_tags', to: 'articles#auto_tag'
       get 'search_article', to: 'articles#search_article'

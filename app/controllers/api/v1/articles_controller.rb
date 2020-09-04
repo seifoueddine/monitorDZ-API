@@ -106,15 +106,27 @@ class Api::V1::ArticlesController < ApplicationController
   end
 
   def change_status
-    ids = params[:ids].split(',')
-    a = Article.where(id: [ids]).update_all(status: params[:status])
+   ids = params[:ids].split(',')
+   a = Article.where(id: [ids]).update_all(status: params[:status])
 
-    if a.positive?
-      render json: 'change status succeed'
+   if a.positive?
+     render json: 'Change status succeed'
+   else
+     render json: 'Change status failed', status: :unprocessable_entity
+   end
+  end
+
+  # GET /articles_for_sorting
+  def articles_for_sorting
+    if params[:media_id].blank?
+      @articles = Article.order(order_and_direction).where.not(status: 'checked').page(page).per(per_page)
     else
-      render json: 'change status failed', status: :unprocessable_entity
+      @articles = Article.order(order_and_direction).where.not(status: 'checked').where(medium_id: params[:media_id].split(',') ).page(page).per(per_page)
     end
-    end
+    set_pagination_headers :articles
+    json_string = ArticleSerializer.new(@articles).serialized_json
+    render json: json_string
+  end
 
 
   private
