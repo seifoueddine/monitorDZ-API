@@ -127,9 +127,14 @@ class Api::V1::ArticlesController < ApplicationController
       @articles = Article.order(order_and_direction).where(medium_id: params[:media_id].split(',') ).page(page).per(per_page)
 
     end
+    archived = Article.where(status: 'archived').count
+    pending = Article.where(status: 'pending').count
     set_pagination_headers :articles
-    json_string = ArticleSerializer.new(@articles).serialized_json
-    render json: json_string
+    json_string = ArticleSerializer.new(@articles)
+    stats = { stats: { archived: archived,
+                       pending: pending,
+                        } }
+    render json: [json_string, stats]
   end
 
 
