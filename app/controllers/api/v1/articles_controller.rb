@@ -100,9 +100,9 @@ class Api::V1::ArticlesController < ApplicationController
     @articles_res = result_articles
 
     set_pagination_headers :articles_res
-    json_string = ArticleSerializer.new(@articles_res, include: %i[medium tags]).serialized_json
+    json_string = ArticleSerializer.new(@articles_res).serialized_json
 
-    render json: { result_articles: result_articles, time: result_articles.took }
+    render json: { result_articles: json_string, time: result_articles.took }
 
   end
 

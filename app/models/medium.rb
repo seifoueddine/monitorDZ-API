@@ -4,4 +4,5 @@ class Medium < ApplicationRecord
   has_many :campaign_media
   has_many :campaigns, through: :campaign_media
   has_many :articles
+  mount_uploader :avatar, IconUploader
 end
