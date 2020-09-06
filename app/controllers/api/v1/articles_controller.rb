@@ -132,9 +132,8 @@ class Api::V1::ArticlesController < ApplicationController
     set_pagination_headers :articles
     json_string = ArticleSerializer.new(@articles)
     stats = { stats: { archived: archived,
-                       pending: pending,
-                        } }
-    render json: [json_string, stats]
+                       pending: pending } }
+    render json: { articles: json_string, archived: archived, pending: pending }
   end
 
 
