@@ -45,7 +45,7 @@ class Api::V1::ArticlesController < ApplicationController
     options = { status: 'checked'}
     options.delete_if { |k, v| v.nil? }
 
-    @articles = Article.search '*', where: {status: 'checked', medium_id: media_ids_params}, page: params[:page], per_page: params[:per_page]
+    @articles = Article.search '*', where: {status: 'seif'}, page: params[:page], per_page: params[:per_page]
 
 
     set_pagination_headers :articles
