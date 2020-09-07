@@ -15,28 +15,29 @@ class Api::V1::ArticlesController < ApplicationController
     media.map do |media|
       media_ids << media['id']
     end
-#     @articles = Article.joins(:article_tags).where(article_tags: { tag_id: 3696 })
-#                        .order(order_and_direction)
-#                        .where(medium_id: media_ids).where(status: 'checked')
-#                        .page(page).per(per_page)
+    @articles = Article.joins(:article_tags).where(article_tags: { tag_id: 3696 })
+                       .order(order_and_direction)
+                       .where(medium_id: media_ids).where(status: 'checked')
+                       .page(page).per(per_page)
 
 
-#   @articles = Article.order(order_and_direction)
-#                      .where(medium_id: media_ids).where(status: 'checked')
-#   .page(page).per(per_page)
+    #@articles = Article.order(order_and_direction)
+    #                  .where(medium_id: media_ids).where(status: 'confirmed')
+    #                  .page(page).per(per_page)
 
 
-    # if params[:media_id].blank?
-    #   @articles = Article.order(order_and_direction)
-    #                      .where(medium_id: media_ids).where(status: 'checked')
-    #                      .page(page).per(per_page)
-    # else
-    #   @articles = Article.order(order_and_direction).where(medium_id: media_ids)
-    #                      .where(status: 'checked')
-    #                      .where(medium_id: params[:media_id].split(','))
-    #                      .page(page).per(per_page)
-    # end
+    if params[:media_id].blank?
+      @articles = Article.order(order_and_direction)
+                         .where(medium_id: media_ids).where(status: 'confirmed')
+                         .page(page).per(per_page)
+    else
+      @articles = Article.order(order_and_direction).where(medium_id: media_ids)
+                         .where(status: 'confirmed')
+                         .where(medium_id: params[:media_id].split(','))
+                         .page(page).per(per_page)
+    end
 
+=begin
     media_ids_params = if params[:media_id].nil?
                          media_ids
                        else
@@ -45,7 +46,8 @@ class Api::V1::ArticlesController < ApplicationController
     options = { status: 'checked'}
     options.delete_if { |k, v| v.nil? }
 
-    @articles = Article.search '*', where: {status: 'confirmed', medium_id: media_ids_params}, page: params[:page], per_page: params[:per_page]
+    @articles = Article.search '*', where: { medium_id: media_ids_params}, page: params[:page], per_page: params[:per_page]
+=end
 
 
     set_pagination_headers :articles
