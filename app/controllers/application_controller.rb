@@ -5,6 +5,11 @@ class ApplicationController < ActionController::API
     @order ||= (params[:order] + ' ' + params[:direction]) || 'created_at asc'
   end
 
+  def get_slug_id
+    @slug_id = request.headers['slug-id']
+  end
+
+
   def page
     @page ||= params[:page] || 1
   end

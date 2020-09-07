@@ -4,12 +4,62 @@ class Api::V1::ArticlesController < ApplicationController
   # after_action :indexing, only: %i[auto_tag crawling]
   require 'nokogiri'
   require 'open-uri'
+  require 'json'
+
+  # GET / client articles
+  def articles_client
+    slug_id = get_slug_id
+    campaign = Campaign.where(slug_id: slug_id)
+    media = campaign[0].media
+    media_ids = []
+    media.map do |media|
+      media_ids << media['id']
+    end
+#     @articles = Article.joins(:article_tags).where(article_tags: { tag_id: 3696 })
+#                        .order(order_and_direction)
+#                        .where(medium_id: media_ids).where(status: 'checked')
+#                        .page(page).per(per_page)
+
+
+#   @articles = Article.order(order_and_direction)
+#                      .where(medium_id: media_ids).where(status: 'checked')
+#   .page(page).per(per_page)
+
+
+    # if params[:media_id].blank?
+    #   @articles = Article.order(order_and_direction)
+    #                      .where(medium_id: media_ids).where(status: 'checked')
+    #                      .page(page).per(per_page)
+    # else
+    #   @articles = Article.order(order_and_direction).where(medium_id: media_ids)
+    #                      .where(status: 'checked')
+    #                      .where(medium_id: params[:media_id].split(','))
+    #                      .page(page).per(per_page)
+    # end
+
+    media_ids_params = if params[:media_id].nil?
+                         media_ids
+                       else
+                         params[:media_id].split(',')
+                       end
+    options = { status: 'checked'}
+    options.delete_if { |k, v| v.nil? }
+
+    @articles = Article.search '*', where: {status: 'checked', medium_id: media_ids_params}, page: params[:page], per_page: params[:per_page]
+
+
+    set_pagination_headers :articles
+    json_string = ArticleSerializer.new(@articles)
+    media_serializer = MediumSerializer.new(media)
+    render json: { articles: json_string, media: media_serializer }
+  end
+
   # GET /articles
   def index
     if params[:media_id].blank?
       @articles = Article.order(order_and_direction).page(page).per(per_page)
     else
-      @articles = Article.order(order_and_direction).where(medium_id: params[:media_id].split(',') ).page(page).per(per_page)
+      @articles = Article.order(order_and_direction).where(medium_id: params[:media_id].split(',')).page(page).per(per_page)
     end
     set_pagination_headers :articles
     json_string = ArticleSerializer.new(@articles, include: %i[medium ]).serialized_json
@@ -100,15 +150,15 @@ class Api::V1::ArticlesController < ApplicationController
     @articles_res = result_articles
 
     set_pagination_headers :articles_res
-    json_string = ArticleSerializer.new(@articles_res).serialized_json
+    json_string = ArticleSerializer.new(@articles_res)
 
-    render json: { result_articles: result_articles, time: result_articles.took }
+    render json: { result_articles: json_string, time: result_articles.took }
 
   end
 
   def change_status
-   ids = params[:ids].split(',')
-   Article.where(id: [ids]).update_all(status: params[:status])
+    ids = params[:ids].split(',')
+    Article.where(id: [ids]).update_all(status: params[:status])
 
     #  if a.positive?
     #   render json: {message: 'Change status succeed'}
@@ -121,10 +171,10 @@ class Api::V1::ArticlesController < ApplicationController
   def articles_for_sorting
     if params[:media_id].blank?
       #  @articles = Article.order(order_and_direction).where.not(status: 'checked').page(page).per(per_page)
-        @articles = Article.order(order_and_direction).page(page).per(per_page)
+      @articles = Article.order(order_and_direction).page(page).per(per_page)
     else
       # @articles = Article.order(order_and_direction).where.not(status: 'checked').where(medium_id: params[:media_id].split(',') ).page(page).per(per_page)
-      @articles = Article.order(order_and_direction).where(medium_id: params[:media_id].split(',') ).page(page).per(per_page)
+      @articles = Article.order(order_and_direction).where(medium_id: params[:media_id].split(',')).page(page).per(per_page)
 
     end
     archived = Article.where(status: 'archived').count
@@ -170,7 +220,7 @@ class Api::V1::ArticlesController < ApplicationController
     end
     articles_url_autobip = articles_url_autobip.reject(&:nil?)
     last_dates = last_dates.uniq
-    last_articles = Article.where(medium_id: @media.id).where(date_published: last_dates )
+    last_articles = Article.where(medium_id: @media.id).where(date_published: last_dates)
     list_articles_url = []
     last_articles.map do |article|
       list_articles_url << article.url_article
@@ -228,7 +278,7 @@ class Api::V1::ArticlesController < ApplicationController
        end
     articles_url_cherouk = articles_url_cherouk.reject(&:nil?)
     last_dates = last_dates.uniq
-    last_articles = Article.where(medium_id: @media.id).where(date_published: last_dates )
+    last_articles = Article.where(medium_id: @media.id).where(date_published: last_dates)
     list_articles_url = []
     last_articles.map do |article|
       list_articles_url << article.url_article

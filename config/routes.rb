@@ -26,6 +26,7 @@ Rails.application.routes.draw do
       get 'get_articles/crawling', to: 'articles#crawling'
       get 'auto_tags', to: 'articles#auto_tag'
       get 'search_article', to: 'articles#search_article'
+      get 'articles_client', to: 'articles#articles_client'
     end
   end
 
