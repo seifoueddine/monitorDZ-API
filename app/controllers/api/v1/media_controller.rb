@@ -67,7 +67,7 @@ class Api::V1::MediaController < ApplicationController
   def destroy
 
 
-    check_campaign = @medium.campaigns.count > 0
+    check_campaign = @medium.campaigns.count.positive?
     if check_campaign === true
       render json: {
         code:  'E003',
@@ -94,6 +94,6 @@ end
     # Only allow a trusted parameter "white list" through.
   def medium_params
     params.permit(:name, :media_type, :orientation, :last_article,
-                         :url_crawling, :avatar)
+                  :url_crawling, :avatar, :language, :zone)
   end
 end

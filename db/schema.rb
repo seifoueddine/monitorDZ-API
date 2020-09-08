@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2020_09_04_094543) do
+ActiveRecord::Schema.define(version: 2020_09_08_105502) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -81,6 +81,8 @@ ActiveRecord::Schema.define(version: 2020_09_04_094543) do
     t.string "url_crawling"
     t.string "last_article"
     t.string "avatar"
+    t.string "zone"
+    t.string "language"
   end
 
   create_table "media_sectors", force: :cascade do |t|
