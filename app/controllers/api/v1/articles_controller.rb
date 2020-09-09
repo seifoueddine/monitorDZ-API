@@ -201,6 +201,9 @@ class Api::V1::ArticlesController < ApplicationController
       get_articles_tsa(url_media_array)
     when 'APS'
       get_articles_aps(url_media_array)
+    when 'MAGHREBEMERGENT'
+      get_articles_maghrebemergent(url_media_array)
+
     else
       render json: { crawling_status: 'No media name found!! ', status: 'error' }
     end
