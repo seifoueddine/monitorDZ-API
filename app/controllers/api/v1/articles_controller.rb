@@ -342,8 +342,8 @@ class Api::V1::ArticlesController < ApplicationController
     articles_url_ennahar = []
     last_dates = []
     url_media_array.map do |url|
-      doc = Nokogiri::HTML(URI.open(url, 'User-Agent' => 'firefox'))
-      doc.css('body > div.article-section > div > section > ul > li > article > div.article__meta > h2 > a').map do |link|
+      doc = Nokogiri::HTML(URI.open(URI.escape((url))))
+      doc.css('div.article__meta > h2 > a').map do |link|
         articles_url_ennahar << link['href']
       end
       doc.css('ul.article-horiz__meta li time').map do |date|
@@ -359,7 +359,7 @@ class Api::V1::ArticlesController < ApplicationController
     end
     articles_url_ennahar_after_check = articles_url_ennahar - list_articles_url
     articles_url_ennahar_after_check.map do |link|
-      article = Nokogiri::HTML(URI.open(link, 'User-Agent' => 'firefox'))
+      article = Nokogiri::HTML(URI.open(URI.escape((link))))
       new_article = Article.new
       new_article.url_article = link
       new_article.medium_id = @media.id
