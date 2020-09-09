@@ -425,13 +425,17 @@ class Api::V1::ArticlesController < ApplicationController
       new_article.title = article.css('div.article__title').text
       # new_article.author = article.css('div.article-head__author div em a').text
 
-      author_exist = Author.where(['lower(name) like ? ',
-                                   article.at('span.article__meta-author').text.downcase ])
+      if article.at('span.article__meta-author').nil?
+        author_exist = Author.where(['lower(name) like ? ', ('TSA auteur').downcase ])
+      else
+        author_exist = Author.where(['lower(name) like ? ',
+                                     article.at('span.article__meta-author').text.downcase ])
+      end
 
       new_author = Author.new
       if author_exist.count.zero?
 
-        new_author.name = article.at('span.article__meta-author').text
+        new_author.name = article.at('span.article__meta-author').nil? ? 'TSA auteur' :  article.at('span.article__meta-author').text
         new_author.save!
       else
 
