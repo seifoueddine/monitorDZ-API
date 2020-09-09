@@ -8,7 +8,7 @@ class Article < ApplicationRecord
   belongs_to :medium
 
 
-  protected
+    # protected
 
   #def indexing
   # Article.reindex

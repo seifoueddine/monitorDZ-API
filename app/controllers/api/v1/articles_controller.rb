@@ -1,10 +1,8 @@
 class Api::V1::ArticlesController < ApplicationController
   # before_action :authenticate_user!
   before_action :set_article, only: %i[show update destroy]
-  # after_action :indexing, only: %i[auto_tag crawling]
   require 'nokogiri'
   require 'open-uri'
-  require 'json'
 
   # GET / client articles
   def articles_client
@@ -15,10 +13,10 @@ class Api::V1::ArticlesController < ApplicationController
     media.map do |media|
       media_ids << media['id']
     end
-    @articles = Article.joins(:article_tags).where(article_tags: { tag_id: 3696 })
-                       .order(order_and_direction)
-                       .where(medium_id: media_ids).where(status: 'checked')
-                       .page(page).per(per_page)
+    # @articles = Article.joins(:article_tags).where(article_tags: { tag_id: 3696 })
+    #                    .order(order_and_direction)
+    #                    .where(medium_id: media_ids).where(status: 'checked')
+    #                    .page(page).per(per_page)
 
 
     #@articles = Article.order(order_and_direction)
@@ -197,6 +195,10 @@ class Api::V1::ArticlesController < ApplicationController
       get_articles_autobip(url_media_array)
     when 'ELCHEROUK'
       get_articles_elcherouk(url_media_array)
+    when 'ENNAHAR'
+      get_articles_ennahar(url_media_array)
+    when 'TSA'
+      get_articles_tsa(url_media_array)
     else
       render json: { crawling_status: 'No media name found!! ', status: 'error' }
     end
@@ -326,6 +328,136 @@ class Api::V1::ArticlesController < ApplicationController
   end
   # end method to get elcherouk articles
 
+
+
+
+
+  # start method to get ennahar articles
+  def get_articles_ennahar(url_media_array)
+    articles_url_ennahar = []
+    last_dates = []
+    url_media_array.map do |url|
+      doc = Nokogiri::HTML(URI.open(url))
+      doc.css('body > div.article-section > div > section > ul > li > article > div.article__meta > h2 > a').map do |link|
+        articles_url_ennahar << link['href']
+      end
+      doc.css('ul.article-horiz__meta li time').map do |date|
+        last_dates << date.text
+      end
+    end
+    articles_url_ennahar = articles_url_ennahar.reject(&:nil?)
+    last_dates = last_dates.uniq
+    last_articles = Article.where(medium_id: @media.id).where(date_published: last_dates)
+    list_articles_url = []
+    last_articles.map do |article|
+      list_articles_url << article.url_article
+    end
+    articles_url_ennahar_after_check = articles_url_ennahar - list_articles_url
+    articles_url_ennahar_after_check.map do |link|
+      article = Nokogiri::HTML(URI.open(link))
+      new_article = Article.new
+      new_article.url_article = link
+      new_article.medium_id = @media.id
+      new_article.category_article = article.css('div.article-section > div > div.article-section__main.wrap__main > article > div.full-article__meta > div.article__category > a').text
+      new_article.title = article.css('body > div.article-section > div > div.article-section__main.wrap__main > article > h2').text
+      # new_article.author = article.css('div.article-head__author div em a').text
+
+      author_exist = Author.where(['lower(name) like ? ',
+                                   article.at('body > div.article-section > div > div.article-section__main.wrap__main > article > div.full-article__author-share > div > span > em').text.downcase ])
+
+      new_author = Author.new
+      if author_exist.count.zero?
+
+        new_author.name = article.at('body > div.article-section > div > div.article-section__main.wrap__main > article > div.full-article__author-share > div > span > em').text
+        new_author.save!
+      else
+
+        new_author.id = author_exist.first.id
+        new_author.name = author_exist.first.name
+
+      end
+      new_article.author_id = new_author.id
+      new_article.body = article.css('body > div.article-section > div > div.article-section__main.wrap__main > article > div.full-article__content').inner_html
+      new_article.date_published = article.at('time[datetime]')['datetime']
+      url_array = article.css('body > div.article-section > div > div.article-section__main.wrap__main > article > div.full-article__featured-image > img').map { |link| link['src'] }
+      new_article.url_image = url_array[0]
+      # tags_array = article.css('div.article-core__tags a').map(&:text)
+      # new_article.media_tags = tags_array.join(',')
+      new_article.status = 'pending'
+      new_article.save!
+        # tag_check_and_save(tags_array)
+    end
+    render json: { crawling_status_elcherouk: 'ok' }
+  end
+  # end method to get ennahar articles
+
+
+
+
+
+  # start method to get TSA articles
+  def get_articles_tsa(url_media_array)
+    articles_url_tsafr = []
+    last_dates = []
+    url_media_array.map do |url|
+      doc = Nokogiri::HTML(URI.open(url))
+      doc.css('h1.article-preview__title.title-middle.transition a').map do |link|
+        articles_url_tsafr <<  link['href']# if link['class'] == 'main_article'
+      end
+      doc.css('ul.article-horiz__meta li time').map do |date|
+        last_dates << date.text
+      end
+    end
+    articles_url_tsafr = articles_url_tsafr.reject(&:nil?)
+    last_dates = last_dates.uniq
+    last_articles = Article.where(medium_id: @media.id).where(date_published: last_dates)
+    list_articles_url = []
+    last_articles.map do |article|
+      list_articles_url << article.url_article
+    end
+    articles_url_tsa_after_check = articles_url_tsafr - list_articles_url
+    articles_url_tsa_after_check.map do |link|
+      article = Nokogiri::HTML(URI.open(link))
+      new_article = Article.new
+      new_article.url_article = link
+      new_article.medium_id = @media.id
+      new_article.category_article = article.css('div.article__meta a.article__meta-category').text
+      new_article.title = article.css('div.article__title').text
+      # new_article.author = article.css('div.article-head__author div em a').text
+
+      author_exist = Author.where(['lower(name) like ? ',
+                                   article.at('span.article__meta-author').text.downcase ])
+
+      new_author = Author.new
+      if author_exist.count.zero?
+
+        new_author.name = article.at('span.article__meta-author').text
+        new_author.save!
+      else
+
+        new_author.id = author_exist.first.id
+        new_author.name = author_exist.first.name
+
+      end
+      new_article.author_id = new_author.id
+      new_article.body = article.css('div.article__content').inner_html
+      new_article.date_published = article.at('time[datetime]')['datetime']
+      url_array = article.css('body > div.article-section > div > div.article-section__main.wrap__main > article > div.full-article__featured-image > img').map { |link| link['src'] }
+      new_article.url_image = url_array[0]
+      # tags_array = article.css('div.article-core__tags a').map(&:text)
+      # new_article.media_tags = tags_array.join(',')
+      new_article.status = 'pending'
+      new_article.save!
+      # tag_check_and_save(tags_array)
+    end
+    render json: { crawling_status_tsa: 'ok' }
+  end
+  # end method to get TSA articles
+
+
+
+
+
   # Only allow a trusted parameter "white list" through.
   def article_params
     params.permit(:title, :date_published, :author, :body,
@@ -345,8 +477,5 @@ class Api::V1::ArticlesController < ApplicationController
     end
   end
 
-  # indexing
-  #def indexing
-  #  Article.reindex
-  #end
+
 end
