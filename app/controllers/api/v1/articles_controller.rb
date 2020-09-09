@@ -199,6 +199,8 @@ class Api::V1::ArticlesController < ApplicationController
       get_articles_ennahar(url_media_array)
     when 'TSA'
       get_articles_tsa(url_media_array)
+    when 'APS'
+      get_articles_aps(url_media_array)
     else
       render json: { crawling_status: 'No media name found!! ', status: 'error' }
     end
@@ -402,11 +404,11 @@ class Api::V1::ArticlesController < ApplicationController
     url_media_array.map do |url|
       doc = Nokogiri::HTML(URI.open(url))
       doc.css('h1.article-preview__title.title-middle.transition a').map do |link|
-        articles_url_tsafr <<  link['href']# if link['class'] == 'main_article'
+        articles_url_tsafr << link['href']# if link['class'] == 'main_article'
       end
-      doc.css('ul.article-horiz__meta li time').map do |date|
-        last_dates << date.text
-      end
+      # doc.css('ul.article-horiz__meta li time').map do |date|
+        #last_dates << date.text
+        #   end
     end
     articles_url_tsafr = articles_url_tsafr.reject(&:nil?)
     last_dates = last_dates.uniq
@@ -457,6 +459,76 @@ class Api::V1::ArticlesController < ApplicationController
     render json: { crawling_status_tsa: 'ok' }
   end
   # end method to get TSA articles
+
+
+
+
+
+  # start method to get APS articles
+  def get_articles_aps(url_media_array)
+    articles_url_aps = []
+    last_dates = []
+    url_media_array.map do |url|
+      doc = Nokogiri::HTML(URI.open(url))
+      doc.css('#itemListLeading h3 a').map do |link|
+        articles_url_aps << 'http://www.aps.dz' + link['href']# if link['class'] == 'main_article'
+      end
+      doc.css('span.catItemDateCreated').map do |date|
+     last_dates << date.text
+        end
+    end
+    articles_url_aps = articles_url_aps.reject(&:nil?)
+    last_dates = last_dates.uniq
+    last_articles = Article.where(medium_id: @media.id).where(date_published: last_dates)
+    list_articles_url = []
+    last_articles.map do |article|
+      list_articles_url << article.url_article
+    end
+    articles_url_aps_after_check = articles_url_aps - list_articles_url
+    articles_url_aps_after_check.map do |link|
+      article = Nokogiri::HTML(URI.open(link))
+      new_article = Article.new
+      new_article.url_article = link
+      new_article.medium_id = @media.id
+      new_article.category_article = article.css('nav.wrap.t3-navhelper > div > ol > li a').text
+      new_article.title = article.css('div.itemHeader h2.itemTitle').text
+      # new_article.author = article.css('div.article-head__author div em a').text
+
+      if article.at('span.article__meta-author').nil?
+        author_exist = Author.where(['lower(name) like ? ', ('APS auteur').downcase ])
+      else
+        author_exist = Author.where(['lower(name) like ? ',
+                                     article.at('span.article__meta-author').text.downcase ])
+      end
+
+      new_author = Author.new
+      if author_exist.count.zero?
+
+        new_author.name = article.at('span.article__meta-author').nil? ? 'APS auteur' :  article.at('span.article__meta-author').text
+        new_author.save!
+      else
+
+        new_author.id = author_exist.first.id
+        new_author.name = author_exist.first.name
+
+      end
+      new_article.author_id = new_author.id
+      new_article.body = article.css('div.itemIntroText strong').inner_html + article.css('div.itemFullText').inner_html
+      new_article.date_published = article.css('span.itemDateCreated').text
+      url_array = article.css('div.itemImageBlock span.itemImage img').map  {  |link| 'http://www.aps.dz'+ link['src'] }
+      new_article.url_image = url_array[0]
+       tags_array = article.css('ul.itemTags li').map(&:text)
+      # new_article.media_tags = tags_array.join(',')
+      new_article.status = 'pending'
+      new_article.save!
+      tag_check_and_save(tags_array)
+    end
+    render json: { crawling_status_aps: 'ok' }
+  end
+  # end method to get APS articles
+
+
+
 
 
 
