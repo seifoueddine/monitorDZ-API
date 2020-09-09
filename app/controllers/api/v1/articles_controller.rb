@@ -203,7 +203,8 @@ class Api::V1::ArticlesController < ApplicationController
       get_articles_aps(url_media_array)
     when 'MAGHREBEMERGENT'
       get_articles_maghrebemergent(url_media_array)
-
+    when 'ELBILAD'
+      get_articles_bilad(url_media_array)
     else
       render json: { crawling_status: 'No media name found!! ', status: 'error' }
     end
@@ -342,7 +343,7 @@ class Api::V1::ArticlesController < ApplicationController
     articles_url_ennahar = []
     last_dates = []
     url_media_array.map do |url|
-      doc = Nokogiri::HTML(URI.open(URI.escape(url), 'User-Agent' => 'firefox'))
+      doc = Nokogiri::HTML(URI.open(url))
       doc.css('div.article__meta > h2 > a').map do |link|
         articles_url_ennahar << link['href']
       end
@@ -359,7 +360,7 @@ class Api::V1::ArticlesController < ApplicationController
     end
     articles_url_ennahar_after_check = articles_url_ennahar - list_articles_url
     articles_url_ennahar_after_check.map do |link|
-      article = Nokogiri::HTML(URI.open(URI.escape(link), 'User-Agent' => 'firefox'))
+      article = Nokogiri::HTML(URI.open(link))
       new_article = Article.new
       new_article.url_article = link
       new_article.medium_id = @media.id
@@ -532,6 +533,73 @@ class Api::V1::ArticlesController < ApplicationController
 
 
 
+  # start method to get bilad articles
+  def get_articles_bilad(url_media_array)
+    articles_url_bilad = []
+    last_dates = []
+    url_media_array.map do |url|
+      doc = Nokogiri::HTML(URI.open(url))
+      doc.css('div.typo a').map do |link|
+        articles_url_bilad << 'http://www.elbilad.net' + link['href']
+      end
+      doc.css('span.date').map do |date|
+        last_dates << date.text
+      end
+    end
+    articles_url_bilad = articles_url_bilad.reject(&:nil?)
+    last_dates = last_dates.uniq
+    last_articles = Article.where(medium_id: @media.id).where(date_published: last_dates)
+    list_articles_url = []
+    last_articles.map do |article|
+      list_articles_url << article.url_article
+    end
+    articles_url_bilad_after_check = articles_url_bilad - list_articles_url
+    articles_url_bilad_after_check.map do |link|
+      article = Nokogiri::HTML(URI.open(link))
+      new_article = Article.new
+      new_article.url_article = link
+      new_article.medium_id = @media.id
+      new_article.category_article = article.css('div#right_area a').text
+      new_article.title = article.css('div.right_area h1').text
+      # new_article.author = article.css('div.article-head__author div em a').text
+      auteur_date = article.css('div#post_conteur .date_heure').map { |link| link.text}
+      if auteur_date[1].nil?
+        author_exist = Author.where(['lower(name) like ? ', ('Bilad auteur').downcase ])
+      else
+        author_exist = Author.where(['lower(name) like ? ',
+                                     auteur_date[1].downcase ])
+      end
+
+      new_author = Author.new
+      if author_exist.count.zero?
+
+        new_author.name = auteur_date[1].nil? ? 'Bilad auteur' :  auteur_date[1]
+        new_author.save!
+      else
+
+        new_author.id = author_exist.first.id
+        new_author.name = author_exist.first.name
+
+      end
+      new_article.author_id = new_author.id
+      new_article.body = article.css('#flash_post_head p').inner_html + article.css('#text_space p').inner_html
+
+      new_article.date_published = auteur_date[0]
+      url_array = article.css('#post_banner img').map { |link| link['src'] }
+      new_article.url_image = url_array[0]
+      tags_array = article.css('#tags a').map(&:text)
+      # new_article.media_tags = tags_array.join(',')
+      new_article.status = 'pending'
+      new_article.save!
+      tag_check_and_save(tags_array)
+    end
+    render json: { crawling_status_aps: 'ok' }
+  end
+  # end method to get bilad articles
+
+
+
+
   # start method to get maghrebemergent articles
   def get_articles_maghrebemergent(url_media_array)
     articles_url_maghrebemergent = []
@@ -592,11 +660,14 @@ class Api::V1::ArticlesController < ApplicationController
       # new_article.media_tags = tags_array.join(',')
       new_article.status = 'pending'
       new_article.save!
-        # tag_check_and_save(tags_array)
+      # tag_check_and_save(tags_array)
     end
     render json: { crawling_status_aps: 'ok' }
   end
   # end method to get APS articles
+
+
+
 
 
 
