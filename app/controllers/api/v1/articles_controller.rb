@@ -3,7 +3,7 @@ class Api::V1::ArticlesController < ApplicationController
   before_action :set_article, only: %i[show update destroy]
   require 'nokogiri'
   require 'open-uri'
-
+  require 'openssl'
   # GET / client articles
   def articles_client
     slug_id = get_slug_id
@@ -337,7 +337,7 @@ class Api::V1::ArticlesController < ApplicationController
     articles_url_ennahar = []
     last_dates = []
     url_media_array.map do |url|
-      doc = Nokogiri::HTML(URI.open(url))
+      doc = Nokogiri::HTML(URI.open(url, 'User-Agent' => 'firefox'))
       doc.css('body > div.article-section > div > section > ul > li > article > div.article__meta > h2 > a').map do |link|
         articles_url_ennahar << link['href']
       end
@@ -354,7 +354,7 @@ class Api::V1::ArticlesController < ApplicationController
     end
     articles_url_ennahar_after_check = articles_url_ennahar - list_articles_url
     articles_url_ennahar_after_check.map do |link|
-      article = Nokogiri::HTML(URI.open(link))
+      article = Nokogiri::HTML(URI.open(link, 'User-Agent' => 'firefox'))
       new_article = Article.new
       new_article.url_article = link
       new_article.medium_id = @media.id
