@@ -518,7 +518,10 @@ class Api::V1::ArticlesController < ApplicationController
       end
       new_article.author_id = new_author.id
       new_article.body = article.css('div.itemIntroText strong').inner_html + article.css('div.itemFullText').inner_html
-      new_article.date_published = article.css('span.itemDateCreated').text
+      date = article.css('span.itemDateCreated').text
+      date['Publié le : '] = ''
+      new_article.date_published = date
+      # new_article.date_published =
       url_array = article.css('div.itemImageBlock span.itemImage img').map  {  |link| 'http://www.aps.dz'+ link['src'] }
       new_article.url_image = url_array[0]
       tags_array = article.css('ul.itemTags li').map(&:text)
