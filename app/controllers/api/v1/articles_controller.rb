@@ -335,9 +335,6 @@ class Api::V1::ArticlesController < ApplicationController
   # end method to get elcherouk articles
 
 
-
-
-
   # start method to get ennahar articles
   def get_articles_ennahar(url_media_array)
     articles_url_ennahar = []
@@ -396,8 +393,6 @@ class Api::V1::ArticlesController < ApplicationController
     render json: { crawling_status_elcherouk: 'ok' }
   end
   # end method to get ennahar articles
-
-
 
 
 
@@ -467,7 +462,6 @@ class Api::V1::ArticlesController < ApplicationController
 
 
 
-
   # start method to get APS articles
   def get_articles_aps(url_media_array)
     articles_url_aps = []
@@ -479,7 +473,7 @@ class Api::V1::ArticlesController < ApplicationController
       end
       doc.css('span.catItemDateCreated').map do |date|
           last_dates << date.text
-        end
+      end
     end
     articles_url_aps = articles_url_aps.reject(&:nil?)
     last_dates = last_dates.uniq
@@ -644,7 +638,7 @@ class Api::V1::ArticlesController < ApplicationController
       new_author = Author.new
       if author_exist.count.zero?
 
-        new_author.name = article.at('p.text-muted').nil? ? 'APS auteur' :  article.at('p.text-muted').text
+        new_author.name = article.at('p.text-muted').nil? ? 'Maghrebemergent auteur' :  article.at('p.text-muted').text
         new_author.save!
       else
 
@@ -654,9 +648,9 @@ class Api::V1::ArticlesController < ApplicationController
       end
       new_article.author_id = new_author.id
       new_article.body = article.css('section.entry.pad-2').inner_html
-      date = article.at('p.text-capitalize span').text
-      date[','] = ''
-      new_article.date_published = date
+      # date = article.at('p.text-capitalize span').text
+      # date[','] = ''
+      new_article.date_published = article.at('p.text-capitalize span').text
       url_array = article.css('div.entry-img img').map  {  |link| link['data-lazy-src']  }
       new_article.url_image = url_array[0]
       # tags_array = article.css('ul.itemTags li').map(&:text)
@@ -668,10 +662,6 @@ class Api::V1::ArticlesController < ApplicationController
     render json: { crawling_status_aps: 'ok' }
   end
   # end method to get APS articles
-
-
-
-
 
 
 
