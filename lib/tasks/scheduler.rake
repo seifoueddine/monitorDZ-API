@@ -1,3 +1,3 @@
-#task indexing: :environment do
-#  Article.reindex
-#end
+task indexing: :environment do
+  Article.reindex
+end

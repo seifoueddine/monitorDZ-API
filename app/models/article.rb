@@ -1,5 +1,5 @@
 class Article < ApplicationRecord
-  # searchkick
+   searchkick
   #after_commit :indexing
   # scope :search_import, -> { includes(:author, :medium) }
   has_many :article_tags
