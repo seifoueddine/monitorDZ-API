@@ -478,7 +478,7 @@ class Api::V1::ArticlesController < ApplicationController
         articles_url_aps << 'http://www.aps.dz' + link['href']# if link['class'] == 'main_article'
       end
       doc.css('span.catItemDateCreated').map do |date|
-     last_dates << date.text
+          last_dates << date.text
         end
     end
     articles_url_aps = articles_url_aps.reject(&:nil?)
@@ -521,7 +521,7 @@ class Api::V1::ArticlesController < ApplicationController
       new_article.date_published = article.css('span.itemDateCreated').text
       url_array = article.css('div.itemImageBlock span.itemImage img').map  {  |link| 'http://www.aps.dz'+ link['src'] }
       new_article.url_image = url_array[0]
-       tags_array = article.css('ul.itemTags li').map(&:text)
+      tags_array = article.css('ul.itemTags li').map(&:text)
       # new_article.media_tags = tags_array.join(',')
       new_article.status = 'pending'
       new_article.save!
@@ -679,16 +679,16 @@ class Api::V1::ArticlesController < ApplicationController
                   :media_tags, :language, :url_image)
   end
 
-  # tag_check_and_save
+  # tag_check_and_savetag_check_and_save
   def tag_check_and_save(tags_array)
     tags_array.map do |t|
-      tag_exist = Tag.where(['lower(name) like ? ',
-                              t.downcase.lstrip.chop ]).count
-      if tag_exist.zero?
-        tag = Tag.new
+      # tag_exist = Tag.where(['lower(name) like ? ',
+      #                       t.downcase.lstrip.chop ]).count
+      # if tag_exist.zero?
+      tag = Tag.new
         tag.name = t.lstrip.chop
         tag.save!
-      end
+      # end
     end
   end
 
