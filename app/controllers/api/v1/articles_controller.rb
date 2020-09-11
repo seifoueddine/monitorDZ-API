@@ -283,12 +283,12 @@ class Api::V1::ArticlesController < ApplicationController
     last_dates = []
     url_media_array.map do |url|
       doc = Nokogiri::HTML(URI.open(url))
-    doc.css('article div div h2.title.title--small a').map do |link| 
-      articles_url_cherouk << link['href']
-    end
-    doc.css('ul.article-horiz__meta li time').map do |date|
-      last_dates << DateTime.parse(date.text)
-    end
+      doc.css('article div div h2.title.title--small a').map do |link| 
+        articles_url_cherouk << link['href']
+      end
+      doc.css('ul.article-horiz__meta li time').map do |date|
+        last_dates << DateTime.parse(date.text)
+      end
     end
     articles_url_cherouk = articles_url_cherouk.reject(&:nil?)
     last_dates = last_dates.uniq
@@ -479,7 +479,6 @@ class Api::V1::ArticlesController < ApplicationController
         last_dates << date.text
       end
     end
-    a = 1
     last_dates =  last_dates.map { |d| change_date_autobip_aps(d) }
     last_dates = last_dates.map(&:to_datetime)
     articles_url_aps = articles_url_aps.reject(&:nil?)
@@ -630,45 +629,48 @@ class Api::V1::ArticlesController < ApplicationController
     end
     articles_url_maghrebemergent_after_check = articles_url_maghrebemergent - list_articles_url
     articles_url_maghrebemergent_after_check.map do |link|
-      article = Nokogiri::HTML(URI.open(link))
-      new_article = Article.new
-      new_article.url_article = link
-      new_article.medium_id = @media.id
-      new_article.category_article = article.css('span.post-category').text
-      new_article.title = article.css('h1.page-title').text
-      # new_article.author = article.css('div.article-head__author div em a').text
+    article = Nokogiri::HTML(URI.open(link))
+    new_article = Article.new
+    new_article.url_article = link
+    new_article.medium_id = @media.id
+    new_article.category_article = article.css('span.post-category').text
+    new_article.title = article.css('h1.page-title').text
+    # new_article.author = article.css('div.article-head__author div em a').text
 
-      if article.at('p.text-muted').nil?
-        author_exist = Author.where(['lower(name) like ? ', ('Maghrebemergent auteur').downcase ])
-      else
-        author_exist = Author.where(['lower(name) like ? ',
-                                     article.at('p.text-muted').text.downcase ])
-      end
-
-      new_author = Author.new
-      if author_exist.count.zero?
-
-        new_author.name = article.at('p.text-muted').nil? ? 'Maghrebemergent auteur' :  article.at('p.text-muted').text
-        new_author.save!
-      else
-
-        new_author.id = author_exist.first.id
-        new_author.name = author_exist.first.name
-
-      end
-      new_article.author_id = new_author.id
-      new_article.body = article.css('section.entry.pad-2').inner_html
-      # date = article.at('p.text-capitalize span').text
-      # date[','] = ''
-      new_article.date_published = article.at('p.text-capitalize span').text.to_datetime
-      url_array = article.css('div.entry-img img').map  {  |link| link['data-lazy-src']  }
-      new_article.url_image = url_array[0]
-      # tags_array = article.css('ul.itemTags li').map(&:text)
-      # new_article.media_tags = tags_array.join(',')
-      new_article.status = 'pending'
-      new_article.save!
-      # tag_check_and_save(tags_array)
+    if article.at('p.text-muted').nil?
+      author_exist = Author.where(['lower(name) like ? ', ('Maghrebemergent auteur').downcase ])
+    else
+      author_exist = Author.where(['lower(name) like ? ',
+                                   article.at('p.text-muted').text.downcase ])
     end
+
+    new_author = Author.new
+    if author_exist.count.zero?
+
+      new_author.name = article.at('p.text-muted').nil? ? 'Maghrebemergent auteur' :  article.at('p.text-muted').text
+      new_author.save!
+    else
+
+      new_author.id = author_exist.first.id
+      new_author.name = author_exist.first.name
+
+    end
+    new_article.author_id = new_author.id
+    new_article.body = article.css('section.entry.pad-2').inner_html
+    # date = article.at('p.text-capitalize span').text
+    # date[','] = ''
+    date = article.at('p.text-capitalize span').text
+    d = change_date_autobip_aps(date)
+    new_article.date_published = d.to_datetime
+    new_article.date_published =
+    url_array = article.css('div.entry-img img').map  {  |link| link['data-lazy-src']  }
+    new_article.url_image = url_array[0]
+    # tags_array = article.css('ul.itemTags li').map(&:text)
+    # new_article.media_tags = tags_array.join(',')
+    new_article.status = 'pending'
+    new_article.save!
+    # tag_check_and_save(tags_array)
+  end
     render json: { crawling_status_aps: 'ok' }
   end
   # end method to get APS articles
@@ -723,6 +725,8 @@ class Api::V1::ArticlesController < ApplicationController
       when 'Septembre'.downcase
         'September'
       when 'Aout'.downcase
+        'August'
+      when 'août'.downcase
         'August'
       else
         m
