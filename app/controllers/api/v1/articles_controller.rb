@@ -619,7 +619,7 @@ class Api::V1::ArticlesController < ApplicationController
       end
     end
     last_dates =  last_dates.map { |d| change_date_maghrebemergen(d) }
-    last_dates = last_dates.map(&:to_datetime.change({ hour: 0, min: 0, sec: 0 }))
+    last_dates = last_dates.map{ |d| d.to_datetime.change({ hour: 0, min: 0, sec: 0 })}
     articles_url_maghrebemergent = articles_url_maghrebemergent.reject(&:nil?)
     last_dates = last_dates.uniq
     last_articles = Article.where(medium_id: @media.id).where(date_published: last_dates)
