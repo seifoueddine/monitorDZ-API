@@ -228,6 +228,9 @@ class Api::V1::ArticlesController < ApplicationController
         last_dates << date.text
       end
     end
+
+    last_dates =  last_dates.map { |d| change_date_autobip_aps(d) }
+    last_dates = last_dates.map(&:to_datetime)
     articles_url_autobip = articles_url_autobip.reject(&:nil?)
     last_dates = last_dates.uniq
     last_articles = Article.where(medium_id: @media.id).where(date_published: last_dates)
@@ -259,7 +262,8 @@ class Api::V1::ArticlesController < ApplicationController
 
       new_article.author_id = new_author.id
       new_article.body = article.css('div.pt-4.bp-2.entry-content.typography-copy').inner_html
-      new_article.date_published = article.at("//span[@itemprop = 'datePublished']").text
+      d = change_date_autobip_aps(article.at("//span[@itemprop = 'datePublished']").text)
+      new_article.date_published = d.to_datetime
       url_array = article.css('.fotorama.mnmd-gallery-slider.mnmd-post-media-wide img').map { |link| link['src'] }
       new_article.url_image = url_array[0]
       tags_array = article.css('a.post-tag').map(&:text)
@@ -278,14 +282,14 @@ class Api::V1::ArticlesController < ApplicationController
     articles_url_cherouk = []
     last_dates = []
     url_media_array.map do |url|
-         doc = Nokogiri::HTML(URI.open(url))
-         doc.css('article div div h2.title.title--small a').map do |link|
-          articles_url_cherouk << link['href']
-        end
-         doc.css('ul.article-horiz__meta li time').map do |date|
-           last_dates << date.text
-         end
-       end
+      doc = Nokogiri::HTML(URI.open(url))
+    doc.css('article div div h2.title.title--small a').map do |link| 
+      articles_url_cherouk << link['href']
+    end
+    doc.css('ul.article-horiz__meta li time').map do |date|
+      last_dates << DateTime.parse(date.text)
+    end
+    end
     articles_url_cherouk = articles_url_cherouk.reject(&:nil?)
     last_dates = last_dates.uniq
     last_articles = Article.where(medium_id: @media.id).where(date_published: last_dates)
@@ -319,7 +323,7 @@ class Api::V1::ArticlesController < ApplicationController
       end
       new_article.author_id = new_author.id
       new_article.body = article.css('div.the-content').inner_html
-      new_article.date_published = article.css('ul.article-head__details time').text
+      new_article.date_published = DateTime.parse article.css('ul.article-head__details time').text
       url_array = article.css('div.article-head__media-content div a').map do
       |link| link['href']
       end
@@ -410,8 +414,8 @@ class Api::V1::ArticlesController < ApplicationController
         #   end
     end
     articles_url_tsafr = articles_url_tsafr.reject(&:nil?)
-    last_dates = last_dates.uniq
-    last_articles = Article.where(medium_id: @media.id).where(date_published: last_dates)
+    # last_dates = last_dates.uniq
+    last_articles = Article.where(medium_id: @media.id)
     list_articles_url = []
     last_articles.map do |article|
       list_articles_url << article.url_article
@@ -446,7 +450,7 @@ class Api::V1::ArticlesController < ApplicationController
       end
       new_article.author_id = new_author.id
       new_article.body = article.css('div.article__content').inner_html
-      new_article.date_published = article.at('time[datetime]')['datetime']
+      new_article.date_published = article.at('time[datetime]')['datetime'].to_datetime
       url_array = article.css('body > div.article-section > div > div.article-section__main.wrap__main > article > div.full-article__featured-image > img').map { |link| link['src'] }
       new_article.url_image = url_array[0]
       # tags_array = article.css('div.article-core__tags a').map(&:text)
@@ -472,9 +476,12 @@ class Api::V1::ArticlesController < ApplicationController
         articles_url_aps << 'http://www.aps.dz' + link['href']# if link['class'] == 'main_article'
       end
       doc.css('span.catItemDateCreated').map do |date|
-          last_dates << date.text
+        last_dates << date.text
       end
     end
+    a = 1
+    last_dates =  last_dates.map { |d| change_date_autobip_aps(d) }
+    last_dates = last_dates.map(&:to_datetime)
     articles_url_aps = articles_url_aps.reject(&:nil?)
     last_dates = last_dates.uniq
     last_articles = Article.where(medium_id: @media.id).where(date_published: last_dates)
@@ -514,7 +521,8 @@ class Api::V1::ArticlesController < ApplicationController
       new_article.body = article.css('div.itemIntroText strong').inner_html + article.css('div.itemFullText').inner_html
       date = article.css('span.itemDateCreated').text
       date['Publié le : '] = ''
-      new_article.date_published = date
+      d = change_date_autobip_aps(date)
+      new_article.date_published = d.to_datetime
       # new_article.date_published =
       url_array = article.css('div.itemImageBlock span.itemImage img').map  {  |link| 'http://www.aps.dz'+ link['src'] }
       new_article.url_image = url_array[0]
@@ -559,7 +567,7 @@ class Api::V1::ArticlesController < ApplicationController
       new_article.category_article = article.css('div#right_area a').text
       new_article.title = article.css('div.right_area h1').text
       # new_article.author = article.css('div.article-head__author div em a').text
-      auteur_date = article.css('div#post_conteur .date_heure').map { |link| link.text}
+      auteur_date = article.css('div#post_conteur .date_heure').map(&:text)
       if auteur_date[1].nil?
         author_exist = Author.where(['lower(name) like ? ', ('Bilad auteur').downcase ])
       else
@@ -679,11 +687,45 @@ class Api::V1::ArticlesController < ApplicationController
       #                       t.downcase.lstrip.chop ]).count
       # if tag_exist.zero?
       tag = Tag.new
-        tag.name = t.lstrip.chop
-        tag.save!
+      tag.name = t.lstrip.chop
+      tag.save!
       # end
     end
   end
 
+  #change_date_autobip_aps
+  def change_date_autobip_aps(d)
 
+    d.split.map { |m|
+      case m.downcase
+      when 'Janvier'.downcase
+        'January'
+      when 'Février'.downcase
+        'February'
+      when 'Mars'.downcase
+        'March'
+      when 'Avril'.downcase
+        'April'
+      when 'Mai'.downcase
+        'May'
+      when 'Juin'.downcase
+        'June'
+      when 'Juillet'.downcase
+        'July'
+      when 'Octobre'.downcase
+        'October'
+      when 'Novembre'.downcase
+        'November'
+      when 'Décembre'.downcase
+        'December'
+      when 'Septembre'.downcase
+        'September'
+      when 'Aout'.downcase
+        'August'
+      else
+        m
+      end
+    }.join(' ')
+  end
+  #change_date_autobip_aps
 end

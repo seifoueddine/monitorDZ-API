@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2020_09_08_105502) do
+ActiveRecord::Schema.define(version: 2020_09_11_090618) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -28,7 +28,6 @@ ActiveRecord::Schema.define(version: 2020_09_08_105502) do
     t.datetime "updated_at", precision: 6, null: false
     t.text "body"
     t.string "author"
-    t.string "date_published"
     t.string "media_tags"
     t.string "url_image"
     t.string "language"
@@ -38,6 +37,7 @@ ActiveRecord::Schema.define(version: 2020_09_08_105502) do
     t.boolean "is_tagged"
     t.bigint "author_id"
     t.string "status"
+    t.datetime "date_published"
     t.index ["author_id"], name: "index_articles_on_author_id"
     t.index ["medium_id"], name: "index_articles_on_medium_id"
   end
