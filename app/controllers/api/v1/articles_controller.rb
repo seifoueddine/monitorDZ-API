@@ -618,7 +618,7 @@ class Api::V1::ArticlesController < ApplicationController
         last_dates << date.text
       end
     end
-    last_dates =  last_dates.map { |d| change_date_autobip_aps(d) }
+    last_dates =  last_dates.map { |d| change_date_maghrebemergen(d) }
     last_dates = last_dates.map(&:to_datetime)
     articles_url_maghrebemergent = articles_url_maghrebemergent.reject(&:nil?)
     last_dates = last_dates.uniq
@@ -660,7 +660,7 @@ class Api::V1::ArticlesController < ApplicationController
     # date = article.at('p.text-capitalize span').text
     # date[','] = ''
     date = article.at('p.text-capitalize span').text
-    d = change_date_autobip_aps(date)
+    d = change_date_maghrebemergen(date)
     new_article.date_published = d.to_datetime
     url_array = article.css('div.entry-img img').map  {  |link| link['data-lazy-src']  }
     new_article.url_image = url_array[0]
@@ -725,7 +725,7 @@ class Api::V1::ArticlesController < ApplicationController
         'September'
       when 'Aout'.downcase
         'August'
-      when 'août'.downcase
+      when 'août,'.downcase
         'August'
       else
         m
@@ -733,4 +733,41 @@ class Api::V1::ArticlesController < ApplicationController
     }.join(' ')
   end
   #change_date_autobip_aps
+  #
+
+  #change_date_maghrebemergent
+  def change_date_maghrebemergen(d)
+
+    d.split.map { |m|
+      case m.downcase
+      when 'Janvier,'.downcase
+        'January'
+      when 'Février,'.downcase
+        'February'
+      when 'Mars,'.downcase
+        'March'
+      when 'Avril,'.downcase
+        'April'
+      when 'Mai,'.downcase
+        'May'
+      when 'Juin,'.downcase
+        'June'
+      when 'Juillet,'.downcase
+        'July'
+      when 'Octobre,'.downcase
+        'October'
+      when 'Novembre,'.downcase
+        'November'
+      when 'Décembre,'.downcase
+        'December'
+      when 'Septembre,'.downcase
+        'September'
+      when 'août,'.downcase
+        'August'
+      else
+        m
+      end
+    }.join(' ')
+  end
+  #change_date_maghrebemergents
 end
