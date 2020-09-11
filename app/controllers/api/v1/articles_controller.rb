@@ -661,7 +661,7 @@ class Api::V1::ArticlesController < ApplicationController
     # date[','] = ''
     date = article.at('p.text-capitalize span').text
     d = change_date_maghrebemergen(date)
-    new_article.date_published = d.to_datetime
+    new_article.date_published = d.to_datetime.change({ hour: 0, min: 0, sec: 0 })
     url_array = article.css('div.entry-img img').map  {  |link| link['data-lazy-src']  }
     new_article.url_image = url_array[0]
     # tags_array = article.css('ul.itemTags li').map(&:text)
