@@ -19,7 +19,7 @@ class Api::V1::ArticlesController < ApplicationController
     #                    .page(page).per(per_page)
 
 
-    #@articles = Article.order(order_and_direction)
+    # @articles = Article.order(order_and_direction)
     #                  .where(medium_id: media_ids).where(status: 'confirmed')
     #                  .page(page).per(per_page)
 
@@ -410,7 +410,7 @@ class Api::V1::ArticlesController < ApplicationController
         articles_url_tsafr << link['href']# if link['class'] == 'main_article'
       end
       # doc.css('ul.article-horiz__meta li time').map do |date|
-        #last_dates << date.text
+        # last_dates << date.text
         #   end
     end
     articles_url_tsafr = articles_url_tsafr.reject(&:nil?)
@@ -696,7 +696,7 @@ class Api::V1::ArticlesController < ApplicationController
     end
   end
 
-  #change_date_autobip_aps
+  # change_date_autobip_aps
   def change_date_autobip_aps(d)
 
     d.split.map { |m|
@@ -732,10 +732,10 @@ class Api::V1::ArticlesController < ApplicationController
       end
     }.join(' ')
   end
-  #change_date_autobip_aps
+  # change_date_autobip_aps
   #
 
-  #change_date_maghrebemergent
+  # change_date_maghrebemergent
   def change_date_maghrebemergen(d)
 
     d.split.map { |m|
@@ -764,10 +764,34 @@ class Api::V1::ArticlesController < ApplicationController
         'September'
       when 'août,'.downcase
         'August'
+      when 'Janvier'.downcase
+        'January'
+      when 'Février'.downcase
+        'February'
+      when 'Mars'.downcase
+        'March'
+      when 'Avril'.downcase
+        'April'
+      when 'Mai'.downcase
+        'May'
+      when 'Juin'.downcase
+        'June'
+      when 'Juillet'.downcase
+        'July'
+      when 'Octobre'.downcase
+        'October'
+      when 'Novembre'.downcase
+        'November'
+      when 'Décembre'.downcase
+        'December'
+      when 'Septembre'.downcase
+        'September'
+      when 'août'.downcase
+        'August'
       else
         m
       end
     }.join(' ')
   end
-  #change_date_maghrebemergents
+  # change_date_maghrebemergents
 end
