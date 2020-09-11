@@ -619,6 +619,8 @@ class Api::V1::ArticlesController < ApplicationController
         last_dates << date.text
       end
     end
+    last_dates =  last_dates.map { |d| change_date_autobip_aps(d) }
+    last_dates = last_dates.map(&:to_datetime)
     articles_url_maghrebemergent = articles_url_maghrebemergent.reject(&:nil?)
     last_dates = last_dates.uniq
     last_articles = Article.where(medium_id: @media.id).where(date_published: last_dates)
@@ -658,7 +660,7 @@ class Api::V1::ArticlesController < ApplicationController
       new_article.body = article.css('section.entry.pad-2').inner_html
       # date = article.at('p.text-capitalize span').text
       # date[','] = ''
-      new_article.date_published = article.at('p.text-capitalize span').text
+      new_article.date_published = article.at('p.text-capitalize span').text.to_datetime
       url_array = article.css('div.entry-img img').map  {  |link| link['data-lazy-src']  }
       new_article.url_image = url_array[0]
       # tags_array = article.css('ul.itemTags li').map(&:text)
