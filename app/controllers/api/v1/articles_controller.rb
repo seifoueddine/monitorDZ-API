@@ -345,13 +345,14 @@ class Api::V1::ArticlesController < ApplicationController
     last_dates = []
     url_media_array.map do |url|
       doc = Nokogiri::HTML(open(url, 'User-Agent' => 'opera'))
-      doc.css('div.article__meta > h2 > a').map do |link|
+      doc.css('div.article__image.article__image--medium a').map do |link|
         articles_url_ennahar << link['href']
       end
-      doc.css('ul.article-horiz__meta li time').map do |date|
-        last_dates << date.text
+      doc.css('time').map do |date|
+        last_dates << date['datetime']
       end
     end
+    last_dates = last_dates.map { |d| d.to_datetime.change({ hour: 0, min: 0, sec: 0 })}
     articles_url_ennahar = articles_url_ennahar.reject(&:nil?)
     last_dates = last_dates.uniq
     last_articles = Article.where(medium_id: @media.id).where(date_published: last_dates)
@@ -385,7 +386,7 @@ class Api::V1::ArticlesController < ApplicationController
       end
       new_article.author_id = new_author.id
       new_article.body = article.css('body > div.article-section > div > div.article-section__main.wrap__main > article > div.full-article__content').inner_html
-      new_article.date_published = article.at('time[datetime]')['datetime']
+      new_article.date_published = article.at('time[datetime]')['datetime'].to_datetime.change({ hour: 0, min: 0, sec: 0 })
       url_array = article.css('body > div.article-section > div > div.article-section__main.wrap__main > article > div.full-article__featured-image > img').map { |link| link['src'] }
       new_article.url_image = url_array[0]
       # tags_array = article.css('div.article-core__tags a').map(&:text)
