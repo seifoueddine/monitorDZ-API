@@ -3,7 +3,7 @@ class Api::V1::CampaignsController < ApplicationController
 
   # GET /campaigns
   def index
-    @campaigns = 
+    @campaigns =
     if params[:search].blank?
       Campaign.order(order_and_direction).page(page).per(per_page)
     else
@@ -29,21 +29,28 @@ class Api::V1::CampaignsController < ApplicationController
     @campaign = Campaign.new(campaign_params)
 
     sector_ids = params[:sector_id].split(',')
-    if sector_ids.length != 1
-      @sector = Sector.where(id: sector_ids)
-    else
-      @sector = Sector.where(id: params[:sector_id])
-    end
+    @sector = if sector_ids.length != 1
+                Sector.where(id: sector_ids)
+              else
+                Sector.where(id: params[:sector_id])
+              end
 
     madia_ids = params[:media_id].split(',')
-    if sector_ids.length != 1
-      @media = Medium.where(id: madia_ids)
-    else
-      @media = Medium.where(id: params[:media_id])
-    end
+    @media = if sector_ids.length != 1
+               Medium.where(id: madia_ids)
+             else
+               Medium.where(id: params[:media_id])
+             end
 
-    @campaign.media = @media 
-    @campaign.sectors = @sector 
+    tag_ids = params[:tag_id].split(',')
+    @tag = if tag_ids.length != 1
+             Tag.where(id: tag_ids)
+           else
+             Tag.where(id: params[:tag_id])
+           end
+    @campaign.tags = @tag
+    @campaign.media = @media
+    @campaign.sectors = @sector
     if @campaign.save
       render json: @campaign, status: :created
     else
@@ -58,27 +65,34 @@ class Api::V1::CampaignsController < ApplicationController
 
       @campaign.media.clear
       @campaign.sectors.clear
-
+      @campaign.tags.clear
       sector_ids = params[:sector_id].split(',')
-      if sector_ids.length != 1
-        @sector = Sector.where(id: sector_ids)
-      else
-        @sector = Sector.where(id: params[:sector_id])
-      end
-  
+      @sector = if sector_ids.length != 1
+                  Sector.where(id: sector_ids)
+                else
+                  Sector.where(id: params[:sector_id])
+                end
+
       madia_ids = params[:media_id].split(',')
-      if madia_ids.length != 1
-        @media = Medium.where(id: madia_ids)
-      else
-        @media = Medium.where(id: params[:media_id])
-      end
-  
-      @campaign.media = @media 
-      @campaign.sectors = @sector 
+      @media = if madia_ids.length != 1
+                 Medium.where(id: madia_ids)
+               else
+                 Medium.where(id: params[:media_id])
+               end
+
+      tag_ids = params[:tag_id].split(',')
+      @tag = if tag_ids.length != 1
+               Tag.where(id: tag_ids)
+             else
+               Tag.where(id: params[:tag_id])
+             end
+      @campaign.tags = @tag
+      @campaign.media = @media
+      @campaign.sectors = @sector
 
       json_string = CampaignSerializer.new(@campaign, include: [:sectors, :media]).serialized_json
       render  json: json_string
-   
+
     else
       render json: @campaign.errors, status: :unprocessable_entity
     end
@@ -91,12 +105,12 @@ class Api::V1::CampaignsController < ApplicationController
 
   private
     # Use callbacks to share common setup or constraints between actions.
-    def set_campaign
-      @campaign = Campaign.find(params[:id])
-    end
+  def set_campaign
+    @campaign = Campaign.find(params[:id])
+  end
 
     # Only allow a trusted parameter "white list" through.
-    def campaign_params
-      params.permit(:name, :start_date, :end_date, :slug_id)
-    end
+  def campaign_params
+    params.permit(:name, :start_date, :end_date, :slug_id)
+  end
 end
