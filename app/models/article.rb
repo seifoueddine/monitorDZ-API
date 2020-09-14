@@ -7,11 +7,7 @@ class Article < ApplicationRecord
   belongs_to :author
   belongs_to :medium
 
-  def search_data
-    attributes.merge(
-    tags_id: tags
-    )
-  end
+ 
 
     # protected
 

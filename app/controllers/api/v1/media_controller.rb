@@ -27,6 +27,7 @@ class Api::V1::MediaController < ApplicationController
   def create
     @medium = Medium.new(medium_params)
 
+=begin
     ids = params[:sector_id].split(',')
     @sector = if ids.length != 1
                 Sector.where(id: ids)
@@ -35,6 +36,7 @@ class Api::V1::MediaController < ApplicationController
               end
 
     @medium.sectors = @sector
+=end
     if @medium.save
       render json: @medium, status: :created
     else
@@ -48,7 +50,8 @@ class Api::V1::MediaController < ApplicationController
 
 
 
-      @medium.sectors.clear
+      #  @medium.sectors.clear
+=begin
       ids = params[:sector_id].split(',')
       @sector = if ids.length != 1
                   Sector.where(id: ids)
@@ -57,6 +60,7 @@ class Api::V1::MediaController < ApplicationController
                 end
 
       @medium.sectors = @sector
+=end
       render json: @medium
     else
       render json: @medium.errors, status: :unprocessable_entity
