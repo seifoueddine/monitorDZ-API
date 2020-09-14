@@ -58,9 +58,8 @@ class Api::V1::ArticlesController < ApplicationController
 
     set_pagination_headers :articles
     json_string = ArticleSerializer.new(@articles)
-      # media_serializer = MediumSerializer.new(media)
-      #  render json: { articles: json_string, media: media_serializer }
-    render json: { articles: json_string }
+    media_serializer = MediumSerializer.new(media)
+    render json: { articles: json_string, media: media_serializer }
   end
 
   # GET /articles
@@ -153,7 +152,7 @@ class Api::V1::ArticlesController < ApplicationController
   end
 
   def search_article
-    result_articles = Article.search params[:search], match: :text_middle,
+    result_articles = Article.search params[:search], 
                                      #  where: { status: 'confirmed' },
                                      fields: %i[title body author.name],
                                      page: params[:page],
@@ -409,7 +408,7 @@ class Api::V1::ArticlesController < ApplicationController
       # new_article.media_tags = tags_array.join(',')
       new_article.status = 'pending'
       new_article.save!
-        # tag_check_and_save(tags_array)
+      # tag_check_and_save(tags_array)
     end
     render json: { crawling_status_elcherouk: 'ok' }
   end
@@ -427,8 +426,8 @@ class Api::V1::ArticlesController < ApplicationController
         articles_url_tsafr << link['href']# if link['class'] == 'main_article'
       end
       # doc.css('ul.article-horiz__meta li time').map do |date|
-        # last_dates << date.text
-        #   end
+      # last_dates << date.text
+      #   end
     end
     articles_url_tsafr = articles_url_tsafr.reject(&:nil?)
     # last_dates = last_dates.uniq
