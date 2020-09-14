@@ -164,7 +164,7 @@ class Api::V1::ArticlesController < ApplicationController
     set_pagination_headers :articles_res
     json_string = ArticleSerializer.new(@articles_res)
 
-    render json: { result_articles: json_string, time: result_articles.took  }
+    render json: { result_articles: json_string, time: result_articles.took }
 
   end
 
@@ -220,7 +220,7 @@ class Api::V1::ArticlesController < ApplicationController
     when 'ELMOUDJAHID'
       get_articles_elmoudjahid(url_media_array)
     when 'ELMOUDJAHID-FR'
-      get_articles_elmoudjahid_fr(url_media_array)
+      get_articles_elmoudjahid(url_media_array)
     else
       render json: { crawling_status: 'No media name found!! ', status: 'error' }
     end
@@ -245,7 +245,7 @@ class Api::V1::ArticlesController < ApplicationController
       end
     end
 
-    last_dates =  last_dates.map { |d| change_date_autobip_aps(d) }
+    last_dates = last_dates.map { |d| change_date_autobip_aps(d) }
     last_dates = last_dates.map(&:to_datetime)
     articles_url_autobip = articles_url_autobip.reject(&:nil?)
     last_dates = last_dates.uniq
@@ -457,7 +457,7 @@ class Api::V1::ArticlesController < ApplicationController
       new_author = Author.new
       if author_exist.count.zero?
 
-        new_author.name = article.at('span.article__meta-author').nil? ? 'TSA auteur' :  article.at('span.article__meta-author').text
+        new_author.name = article.at('span.article__meta-author').nil? ? 'TSA auteur' : article.at('span.article__meta-author').text
         new_author.save!
       else
 
@@ -496,7 +496,7 @@ class Api::V1::ArticlesController < ApplicationController
         last_dates << date.text
       end
     end
-    last_dates =  last_dates.map { |d| change_date_autobip_aps(d) }
+    last_dates = last_dates.map { |d| change_date_autobip_aps(d) }
     last_dates = last_dates.map(&:to_datetime)
     articles_url_aps = articles_url_aps.reject(&:nil?)
     last_dates = last_dates.uniq
@@ -525,7 +525,7 @@ class Api::V1::ArticlesController < ApplicationController
       new_author = Author.new
       if author_exist.count.zero?
 
-        new_author.name = article.at('span.article__meta-author').nil? ? 'APS auteur' :  article.at('span.article__meta-author').text
+        new_author.name = article.at('span.article__meta-author').nil? ? 'APS auteur' : article.at('span.article__meta-author').text
         new_author.save!
       else
 
@@ -540,7 +540,7 @@ class Api::V1::ArticlesController < ApplicationController
       d = change_date_autobip_aps(date)
       new_article.date_published = d.to_datetime
       # new_article.date_published =
-      url_array = article.css('div.itemImageBlock span.itemImage img').map  {  |link| 'http://www.aps.dz'+ link['src'] }
+      url_array = article.css('div.itemImageBlock span.itemImage img').map { |link| 'http://www.aps.dz'+ link['src'] }
       new_article.url_image = url_array[0]
       tags_array = article.css('ul.itemTags li').map(&:text)
       # new_article.media_tags = tags_array.join(',')
@@ -594,7 +594,7 @@ class Api::V1::ArticlesController < ApplicationController
       new_author = Author.new
       if author_exist.count.zero?
 
-        new_author.name = auteur_date[1].nil? ? 'Bilad auteur' :  auteur_date[1]
+        new_author.name = auteur_date[1].nil? ? 'Bilad auteur' : auteur_date[1]
         new_author.save!
       else
 
@@ -664,7 +664,7 @@ class Api::V1::ArticlesController < ApplicationController
     new_author = Author.new
     if author_exist.count.zero?
 
-      new_author.name = article.at('p.text-muted').nil? ? 'Maghrebemergent auteur' :  article.at('p.text-muted').text
+      new_author.name = article.at('p.text-muted').nil? ? 'Maghrebemergent auteur' : article.at('p.text-muted').text
       new_author.save!
     else
 
@@ -679,7 +679,7 @@ class Api::V1::ArticlesController < ApplicationController
     date = article.at('p.text-capitalize span').text
     d = change_date_maghrebemergen(date)
     new_article.date_published = d.to_datetime.change({ hour: 0, min: 0, sec: 0 })
-    url_array = article.css('div.entry-img img').map  {  |link| link['data-lazy-src']  }
+    url_array = article.css('div.entry-img img').map  { |link| link['data-lazy-src'] }
     new_article.url_image = url_array[0]
     # tags_array = article.css('ul.itemTags li').map(&:text)
     # new_article.media_tags = tags_array.join(',')
@@ -701,13 +701,13 @@ class Api::V1::ArticlesController < ApplicationController
     url_media_array.map do |url|
       doc = Nokogiri::HTML(URI.open(url))
       doc.css('#main > div.UnCat > ul > li:nth-child(1) > h1 > a').map do |link|
-        articles_url_elmoudjahid <<  link['href'] # if link['class'] == 'main_article'
+        articles_url_elmoudjahid << link['href'] # if link['class'] == 'main_article'
       end
       doc.css('#main > div.UnCat > div > ul > li > a').map do |link|
-        articles_url_elmoudjahid6 <<  link['href'] # if link['class'] == 'main_article'
+        articles_url_elmoudjahid6 << link['href'] # if link['class'] == 'main_article'
       end
       doc.css('#main > div.CBox > div > h4 > a').map do |link|
-        articles_url_elmoudjahid <<  link['href'] # if link['class'] == 'main_article'
+        articles_url_elmoudjahid << link['href'] # if link['class'] == 'main_article'
       end
       if doc.at('li p')['style'] == 'width: 520px;'
         first_date = doc.at('li p span').text
@@ -754,7 +754,7 @@ class Api::V1::ArticlesController < ApplicationController
       new_author = Author.new
       if author_exist.count.zero?
 
-        new_author.name = article.at('p.text-muted').nil? ? 'Elmoudjahid auteur' :  article.at('p.text-muted').text
+        new_author.name = article.at('p.text-muted').nil? ? 'Elmoudjahid auteur' : article.at('p.text-muted').text
         new_author.save!
       else
         new_author.id = author_exist.first.id
@@ -763,7 +763,7 @@ class Api::V1::ArticlesController < ApplicationController
       new_article.author_id = new_author.id
       new_article.body = article.css('#text_article').inner_html
       new_article.date_published = article.css('#contenu > div.At > span').text.split(':')[1].to_datetime.change({ hour: 0, min: 0, sec: 0 })
-      url_array = article.css('#articlecontent > div.TxArtcile > div.ImgCapt > img').map  {  |link| link['src'] }
+      url_array = article.css('#articlecontent > div.TxArtcile > div.ImgCapt > img').map { |link| link['src'] }
       new_article.url_image = url_array[0]
 
       new_article.status = 'pending'
@@ -782,13 +782,13 @@ class Api::V1::ArticlesController < ApplicationController
     url_media_array.map do |url|
       doc = Nokogiri::HTML(URI.open(url))
       doc.css('#main > div.UnCat > ul > li:nth-child(1) > h1 > a').map do |link|
-        articles_url_elmoudjahid <<  link['href'] # if link['class'] == 'main_article'
+        articles_url_elmoudjahid << link['href'] # if link['class'] == 'main_article'
       end
       doc.css('#main > div.UnCat > div > ul > li > a').map do |link|
-        articles_url_elmoudjahid6 <<  link['href'] # if link['class'] == 'main_article'
+        articles_url_elmoudjahid6 << link['href'] # if link['class'] == 'main_article'
       end
       doc.css('#main > div.CBox > div > h4 > a').map do |link|
-        articles_url_elmoudjahid <<  link['href'] # if link['class'] == 'main_article'
+        articles_url_elmoudjahid << link['href'] # if link['class'] == 'main_article'
       end
       if doc.at('li p')['style'] == 'width: 520px;'
         first_date = doc.at('li p span').text
@@ -835,7 +835,7 @@ class Api::V1::ArticlesController < ApplicationController
       new_author = Author.new
       if author_exist.count.zero?
 
-        new_author.name = article.at('p.text-muted').nil? ? 'Elmoudjahid auteur' :  article.at('p.text-muted').text
+        new_author.name = article.at('p.text-muted').nil? ? 'Elmoudjahid auteur' : article.at('p.text-muted').text
         new_author.save!
       else
         new_author.id = author_exist.first.id
@@ -844,7 +844,7 @@ class Api::V1::ArticlesController < ApplicationController
       new_article.author_id = new_author.id
       new_article.body = article.css('#text_article').inner_html
       new_article.date_published = article.css('#contenu > div.At > span').text.split(':')[1].to_datetime.change({ hour: 0, min: 0, sec: 0 })
-      url_array = article.css('#articlecontent > div.TxArtcile > div.ImgCapt > img').map  {  |link| link['src'] }
+      url_array = article.css('#articlecontent > div.TxArtcile > div.ImgCapt > img').map { |link| link['src'] }
       new_article.url_image = url_array[0]
 
       new_article.status = 'pending'
