@@ -44,14 +44,23 @@ class Api::V1::ArticlesController < ApplicationController
     options = { status: 'checked'}
     options.delete_if { |k, v| v.nil? }
 
-    @articles = Article.search '*', where: { medium_id: media_ids_params}, page: params[:page], per_page: params[:per_page]
-=end
 
+    @articles = Article.search '*',
+                               where: { status: 'confirmed',
+                                        medium_id: [9],
+                                        author_id: 275,
+                                        date_published: {gte: '1/09/2020'.to_datetime, lte: '15/09/2020'.to_datetime},
+                                         },
+                               page: params[:page],
+                               per_page: params[:per_page]
+
+=end
 
     set_pagination_headers :articles
     json_string = ArticleSerializer.new(@articles)
-    media_serializer = MediumSerializer.new(media)
-    render json: { articles: json_string, media: media_serializer }
+      # media_serializer = MediumSerializer.new(media)
+      #  render json: { articles: json_string, media: media_serializer }
+    render json: { articles: json_string }
   end
 
   # GET /articles
@@ -145,14 +154,17 @@ class Api::V1::ArticlesController < ApplicationController
 
   def search_article
     result_articles = Article.search params[:search],
+                                     where: { status: 'confirmed' },
+                                     fields: %i[title body author.name],
                                      page: params[:page],
                                      per_page: params[:per_page]
+
     @articles_res = result_articles
 
     set_pagination_headers :articles_res
     json_string = ArticleSerializer.new(@articles_res)
 
-    render json: { result_articles: json_string, time: result_articles.took }
+    render json: { result_articles: json_string, time: result_articles.took  }
 
   end
 
@@ -207,7 +219,8 @@ class Api::V1::ArticlesController < ApplicationController
       get_articles_bilad(url_media_array)
     when 'ELMOUDJAHID'
       get_articles_elmoudjahid(url_media_array)
-
+    when 'ELMOUDJAHID-FR'
+      get_articles_elmoudjahid_fr(url_media_array)
     else
       render json: { crawling_status: 'No media name found!! ', status: 'error' }
     end
@@ -761,6 +774,86 @@ class Api::V1::ArticlesController < ApplicationController
   end
   # end method to get elmoudjahid articles
 
+  # start method to get elmoudjahid_fr articles
+  def get_articles_elmoudjahid_fr(url_media_array)
+    articles_url_elmoudjahid = []
+    articles_url_elmoudjahid6 = []
+    last_dates = []
+    url_media_array.map do |url|
+      doc = Nokogiri::HTML(URI.open(url))
+      doc.css('#main > div.UnCat > ul > li:nth-child(1) > h1 > a').map do |link|
+        articles_url_elmoudjahid <<  link['href'] # if link['class'] == 'main_article'
+      end
+      doc.css('#main > div.UnCat > div > ul > li > a').map do |link|
+        articles_url_elmoudjahid6 <<  link['href'] # if link['class'] == 'main_article'
+      end
+      doc.css('#main > div.CBox > div > h4 > a').map do |link|
+        articles_url_elmoudjahid <<  link['href'] # if link['class'] == 'main_article'
+      end
+      if doc.at('li p')['style'] == 'width: 520px;'
+        first_date = doc.at('li p span').text
+      end
+      last_dates << first_date.split(':')[0].to_datetime
+      doc.css('div.ModliArtilUne span').map do |date|
+        last_dates << date.text.split(':')[0].to_datetime
+      end
+    end
+    # last_dates = last_dates.map { |d| change_date_maghrebemergen(d) }
+    # last_dates = last_dates.map { |d| d.to_datetime.change({ hour: 0, min: 0, sec: 0 })}
+    articles_url_elmoudjahid = articles_url_elmoudjahid.reject(&:nil?)
+    last_dates = last_dates.uniq
+    last_articles = Article.where(medium_id: @media.id).where(date_published: last_dates)
+
+    list_articles_url = []
+    last_articles.map do |article|
+      list_articles_url << article.url_article
+    end
+    articles_url_elmoudjahid_after_check = articles_url_elmoudjahid - list_articles_url
+
+    articles_url_elmoudjahid6.map do |article|
+
+      if Article.where(medium_id: @media.id).where(url_article: article)[0].nil?
+        articles_url_elmoudjahid_after_check << article
+      end
+    end
+    articles_url_elmoudjahid_after_check.map do |link|
+      article = Nokogiri::HTML(URI.open(link))
+      new_article = Article.new
+      new_article.url_article = link
+      new_article.medium_id = @media.id
+      new_article.category_article = article.css('#contenu > div.path > ul > li:nth-child(3)').text
+      new_article.title = article.css('div.At h1 a').text
+
+
+      if article.at('p.text-muted').nil?
+        author_exist = Author.where(['lower(name) like ? ', ('Elmoudjahid auteur').downcase ])
+      else
+        author_exist = Author.where(['lower(name) like ? ',
+                                     article.at('p.text-muted').text.downcase ])
+      end
+
+      new_author = Author.new
+      if author_exist.count.zero?
+
+        new_author.name = article.at('p.text-muted').nil? ? 'Elmoudjahid auteur' :  article.at('p.text-muted').text
+        new_author.save!
+      else
+        new_author.id = author_exist.first.id
+        new_author.name = author_exist.first.name
+      end
+      new_article.author_id = new_author.id
+      new_article.body = article.css('#text_article').inner_html
+      new_article.date_published = article.css('#contenu > div.At > span').text.split(':')[1].to_datetime.change({ hour: 0, min: 0, sec: 0 })
+      url_array = article.css('#articlecontent > div.TxArtcile > div.ImgCapt > img').map  {  |link| link['src'] }
+      new_article.url_image = url_array[0]
+
+      new_article.status = 'pending'
+      new_article.save!
+      # tag_check_and_save(tags_array)
+    end
+    render json: { crawling_status_aps: 'ok' }
+  end
+  # end method to get elmoudjahid_fr articles
 
 
 
