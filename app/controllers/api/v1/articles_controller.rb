@@ -152,7 +152,7 @@ class Api::V1::ArticlesController < ApplicationController
   end
 
   def search_article
-    result_articles = Article.search params[:search], 
+    result_articles = Article.search params[:search],
                                      #  where: { status: 'confirmed' },
                                      fields: %i[title body author.name],
                                      page: params[:page],
@@ -510,7 +510,7 @@ class Api::V1::ArticlesController < ApplicationController
       new_article = Article.new
       new_article.url_article = link
       new_article.medium_id = @media.id
-      new_article.category_article = article.css('nav.wrap.t3-navhelper > div > ol > li a').text == "" ? article.css('nav.wrap.t3-navhelper > div > ol > li a').text : article.css('body > div.t3-wrapper > nav.wrap.t3-navhelper > div > ol > li:nth-child(2) > span').text
+      new_article.category_article = article.css('nav.wrap.t3-navhelper > div > ol > li a').text == "" ? article.css('body > div.t3-wrapper > nav.wrap.t3-navhelper > div > ol > li:nth-child(2) > span').text  : article.css('nav.wrap.t3-navhelper > div > ol > li a').text
       new_article.title = article.css('div.itemHeader h2.itemTitle').text
       # new_article.author = article.css('div.article-head__author div em a').text
 
