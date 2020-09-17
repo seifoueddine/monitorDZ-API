@@ -7,12 +7,14 @@ class Api::V1::ArticlesController < ApplicationController
   # GET / client articles
   def articles_client
     slug_id = get_slug_id
+
     campaign = Campaign.where(slug_id: slug_id)
     media = campaign[0].media
     media_ids = []
     media.map do |media|
       media_ids << media['id']
     end
+
     # @articles = Article.joins(:article_tags).where(article_tags: { tag_id: 3696 })
     #                    .order(order_and_direction)
     #                    .where(medium_id: media_ids).where(status: 'checked')
@@ -24,6 +26,7 @@ class Api::V1::ArticlesController < ApplicationController
     #                  .page(page).per(per_page)
 
 
+=begin
     if params[:media_id].blank?
       @articles = Article.order(order_and_direction)
                          .where(medium_id: media_ids).where(status: 'confirmed')
@@ -34,6 +37,7 @@ class Api::V1::ArticlesController < ApplicationController
                          .where(medium_id: params[:media_id].split(','))
                          .page(page).per(per_page)
     end
+=end
 
 =begin
     media_ids_params = if params[:media_id].nil?
@@ -44,22 +48,33 @@ class Api::V1::ArticlesController < ApplicationController
     options = { status: 'checked'}
     options.delete_if { |k, v| v.nil? }
 
+=end
+    conditions = {}
+    #conditions[:status] = 'confirmed'
+    unless params[:media_id].blank?
+      conditions[:medium_id] = params[:media_id].split(',')
+    end
+    unless params[:start_date].blank?
+      conditions[:date_published] = { gte: params[:start_date].to_datetime, lte: params[:end_date].to_datetime }
+    end
 
     @articles = Article.search '*',
-                               where: { status: 'confirmed',
-                                        medium_id: [9],
-                                        author_id: 275,
-                                        date_published: {gte: '1/09/2020'.to_datetime, lte: '15/09/2020'.to_datetime},
-                                         },
+                               where: conditions,
+                                   #status: 'confirmed',
+                                   #    medium_id: [9],
+                                   #    author_id: 275,
+                                   #  date_published: {gte: '1/09/2020'.to_datetime, lte: '15/09/2020'.to_datetime},
+
                                page: params[:page],
                                per_page: params[:per_page]
 
-=end
+
 
     set_pagination_headers :articles
     json_string = ArticleSerializer.new(@articles)
     media_serializer = MediumSerializer.new(media)
-    render json: { articles: json_string, media: media_serializer }
+
+    render json: { articles: json_string , media: media_serializer }
   end
 
   # GET /articles
