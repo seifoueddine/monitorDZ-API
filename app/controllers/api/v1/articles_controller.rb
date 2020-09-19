@@ -15,15 +15,15 @@ class Api::V1::ArticlesController < ApplicationController
       media_ids << media['id']
     end
 
-    # @articles = Article.joins(:article_tags).where(article_tags: { tag_id: 3696 })
-    #                    .order(order_and_direction)
-    #                    .where(medium_id: media_ids).where(status: 'checked')
-    #                    .page(page).per(per_page)
+# @articles = Article.joins(:article_tags).where(article_tags: { tag_id: 3696 })
+#                    .order(order_and_direction)
+#                    .where(medium_id: media_ids).where(status: 'checked')
+#                    .page(page).per(per_page)
 
 
-    # @articles = Article.order(order_and_direction)
-    #                  .where(medium_id: media_ids).where(status: 'confirmed')
-    #                  .page(page).per(per_page)
+# @articles = Article.order(order_and_direction)
+#                  .where(medium_id: media_ids).where(status: 'confirmed')
+#                  .page(page).per(per_page)
 
 
 =begin
@@ -54,16 +54,20 @@ class Api::V1::ArticlesController < ApplicationController
     unless params[:media_id].blank?
       conditions[:medium_id] = params[:media_id].split(',')
     end
+
+    unless params[:authors_ids].blank?
+      conditions[:author_id] = params[:authors_ids].split(',')
+    end
     unless params[:start_date].blank?
       conditions[:date_published] = { gte: params[:start_date].to_datetime, lte: params[:end_date].to_datetime }
     end
-
+    # conditions[:tags] = params[:tag] unless params[:tag].blank?
     @articles = Article.search '*',
                                where: conditions,
-                                   #status: 'confirmed',
-                                   #    medium_id: [9],
-                                   #    author_id: 275,
-                                   #  date_published: {gte: '1/09/2020'.to_datetime, lte: '15/09/2020'.to_datetime},
+                               #status: 'confirmed',
+                               #    medium_id: [9],
+                               #    author_id: 275,
+                               #  date_published: {gte: '1/09/2020'.to_datetime, lte: '15/09/2020'.to_datetime},
 
                                page: params[:page],
                                per_page: params[:per_page]
@@ -85,7 +89,7 @@ class Api::V1::ArticlesController < ApplicationController
       @articles = Article.order(order_and_direction).where(medium_id: params[:media_id].split(',')).page(page).per(per_page)
     end
     set_pagination_headers :articles
-    json_string = ArticleSerializer.new(@articles, include: %i[medium ]).serialized_json
+    json_string = ArticleSerializer.new(@articles, include: %i[medium]).serialized_json
     render json: json_string
   end
 
@@ -283,6 +287,7 @@ class Api::V1::ArticlesController < ApplicationController
       if author_exist.count.zero?
 
         new_author.name = article.at("//a[@itemprop = 'author']").text
+        new_author.medium_id = @media.id
         new_author.save!
       else
 
@@ -344,6 +349,7 @@ class Api::V1::ArticlesController < ApplicationController
       if author_exist.count.zero?
 
         new_author.name = article.css('div.article-head__author div em a').text
+        new_author.medium_id = @media.id
         new_author.save!
       else
 
@@ -407,6 +413,7 @@ class Api::V1::ArticlesController < ApplicationController
       if author_exist.count.zero?
 
         new_author.name = article.at('body > div.article-section > div > div.article-section__main.wrap__main > article > div.full-article__author-share > div > span > em').text
+        new_author.medium_id = @media.id
         new_author.save!
       else
 
@@ -472,6 +479,7 @@ class Api::V1::ArticlesController < ApplicationController
       if author_exist.count.zero?
 
         new_author.name = article.at('span.article__meta-author').nil? ? 'TSA auteur' : article.at('span.article__meta-author').text
+        new_author.medium_id = @media.id
         new_author.save!
       else
 
@@ -540,6 +548,7 @@ class Api::V1::ArticlesController < ApplicationController
       if author_exist.count.zero?
 
         new_author.name = article.at('span.article__meta-author').nil? ? 'APS auteur' : article.at('span.article__meta-author').text
+        new_author.medium_id = @media.id
         new_author.save!
       else
 
@@ -609,6 +618,7 @@ class Api::V1::ArticlesController < ApplicationController
       if author_exist.count.zero?
 
         new_author.name = auteur_date[1].nil? ? 'Bilad auteur' : auteur_date[1]
+        new_author.medium_id = @media.id
         new_author.save!
       else
 
@@ -679,6 +689,7 @@ class Api::V1::ArticlesController < ApplicationController
     if author_exist.count.zero?
 
       new_author.name = article.at('p.text-muted').nil? ? 'Maghrebemergent auteur' : article.at('p.text-muted').text
+      new_author.medium_id = @media.id
       new_author.save!
     else
 
@@ -771,6 +782,7 @@ class Api::V1::ArticlesController < ApplicationController
       if author_exist.count.zero?
 
         new_author.name = article.at('p.text-muted').nil? ? 'Elmoudjahid auteur' : article.at('p.text-muted').text
+        new_author.medium_id = @media.id
         new_author.save!
       else
         new_author.id = author_exist.first.id
@@ -845,7 +857,7 @@ class Api::V1::ArticlesController < ApplicationController
 
 
       if article.at('p.text-muted').nil?
-        author_exist = Author.where(['lower(name) like ? ', ('Elmoudjahid auteur').downcase ])
+        author_exist = Author.where(['lower(name) like ? ', ('Elmoudjahid-fr auteur').downcase ])
       else
         author_exist = Author.where(['lower(name) like ? ',
                                      article.at('p.text-muted').text.downcase ])
@@ -854,7 +866,8 @@ class Api::V1::ArticlesController < ApplicationController
       new_author = Author.new
       if author_exist.count.zero?
 
-        new_author.name = article.at('p.text-muted').nil? ? 'Elmoudjahid auteur' : article.at('p.text-muted').text
+        new_author.name = article.at('p.text-muted').nil? ? 'Elmoudjahid-fr auteur' : article.at('p.text-muted').text
+        new_author.medium_id = @media.id
         new_author.save!
       else
         new_author.id = author_exist.first.id

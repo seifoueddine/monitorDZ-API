@@ -10,7 +10,21 @@ class Api::V1::AuthorsController < ApplicationController
     render json: json_string
   end
 
-  # GET /authors/1
+
+  def authors_client
+    slug_id = get_slug_id
+    campaign = Campaign.where(slug_id: slug_id)
+    media = campaign[0].media
+    media_ids = []
+    media.map do |media|
+      media_ids << media['id']
+    end
+    @authors = Author.where(medium_id: media_ids)
+    json_string = AuthorSerializer.new(@authors).serialized_json
+    render json: json_string
+    end
+
+    # GET /authors/1
   def show
     render json: @author
   end

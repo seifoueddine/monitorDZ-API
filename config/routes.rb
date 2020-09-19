@@ -27,6 +27,7 @@ Rails.application.routes.draw do
       get 'auto_tags', to: 'articles#auto_tag'
       get 'search_article', to: 'articles#search_article'
       get 'articles_client', to: 'articles#articles_client'
+      get 'authors_client', to: 'authors#authors_client'
     end
   end
 
