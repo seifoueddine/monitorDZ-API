@@ -58,6 +58,11 @@ class Api::V1::ArticlesController < ApplicationController
     unless params[:authors_ids].blank?
       conditions[:author_id] = params[:authors_ids].split(',')
     end
+
+    unless params[:language].blank?
+      conditions[:language] = params[:language].split(',')
+    end
+
     unless params[:start_date].blank?
       conditions[:date_published] = { gte: params[:start_date].to_datetime, lte: params[:end_date].to_datetime }
     end
@@ -278,6 +283,7 @@ class Api::V1::ArticlesController < ApplicationController
       new_article = Article.new
       new_article.url_article = link
       new_article.medium_id = @media.id
+      new_article.language = @media.language
       new_article.category_article = article.css('header.single-header a.cat-theme-bg').text
       new_article.title = article.css('h1.entry-title').text
 
@@ -338,6 +344,7 @@ class Api::V1::ArticlesController < ApplicationController
       new_article = Article.new
       new_article.url_article = link
       new_article.medium_id = @media.id
+      new_article.language = @media.language
       new_article.category_article = article.css('div.around.around--section ul li a span').text
       new_article.title = article.css('h2.title.title--middle.unshrink em').text
       # new_article.author = article.css('div.article-head__author div em a').text
@@ -402,6 +409,7 @@ class Api::V1::ArticlesController < ApplicationController
       new_article = Article.new
       new_article.url_article = link
       new_article.medium_id = @media.id
+      new_article.language = @media.language
       new_article.category_article = article.css('div.article-section > div > div.article-section__main.wrap__main > article > div.full-article__meta > div.article__category > a').text
       new_article.title = article.css('body > div.article-section > div > div.article-section__main.wrap__main > article > h2').text
       # new_article.author = article.css('div.article-head__author div em a').text
@@ -437,7 +445,6 @@ class Api::V1::ArticlesController < ApplicationController
   # end method to get ennahar articles
 
 
-
   # start method to get TSA articles
   def get_articles_tsa(url_media_array)
     articles_url_tsafr = []
@@ -464,6 +471,7 @@ class Api::V1::ArticlesController < ApplicationController
       new_article = Article.new
       new_article.url_article = link
       new_article.medium_id = @media.id
+      new_article.language = @media.language
       new_article.category_article = article.css('div.article__meta a.article__meta-category').text
       new_article.title = article.css('div.article__title').text
       # new_article.author = article.css('div.article-head__author div em a').text
@@ -503,8 +511,6 @@ class Api::V1::ArticlesController < ApplicationController
   # end method to get TSA articles
 
 
-
-
   # start method to get APS articles
   def get_articles_aps(url_media_array)
     articles_url_aps = []
@@ -533,6 +539,7 @@ class Api::V1::ArticlesController < ApplicationController
       new_article = Article.new
       new_article.url_article = link
       new_article.medium_id = @media.id
+      new_article.language = @media.language
       new_article.category_article = article.css('nav.wrap.t3-navhelper > div > ol > li a').text == "" ? article.css('body > div.t3-wrapper > nav.wrap.t3-navhelper > div > ol > li:nth-child(2) > span').text  : article.css('nav.wrap.t3-navhelper > div > ol > li a').text
       new_article.title = article.css('div.itemHeader h2.itemTitle').text
       # new_article.author = article.css('div.article-head__author div em a').text
@@ -603,6 +610,7 @@ class Api::V1::ArticlesController < ApplicationController
       new_article = Article.new
       new_article.url_article = link
       new_article.medium_id = @media.id
+      new_article.language = @media.language
       new_article.category_article = article.css('div#right_area a').text
       new_article.title = article.css('div.right_area h1').text
       # new_article.author = article.css('div.article-head__author div em a').text
@@ -644,7 +652,6 @@ class Api::V1::ArticlesController < ApplicationController
 
 
 
-
   # start method to get maghrebemergent articles
   def get_articles_maghrebemergent(url_media_array)
     articles_url_maghrebemergent = []
@@ -674,6 +681,7 @@ class Api::V1::ArticlesController < ApplicationController
     new_article = Article.new
     new_article.url_article = link
     new_article.medium_id = @media.id
+    new_article.language = @media.language
     new_article.category_article = article.css('span.post-category').text
     new_article.title = article.css('h1.page-title').text
     # new_article.author = article.css('div.article-head__author div em a').text
@@ -765,6 +773,7 @@ class Api::V1::ArticlesController < ApplicationController
       new_article = Article.new
       new_article.url_article = link
       new_article.medium_id = @media.id
+      new_article.language = @media.language
       category = article.css('#contenu > div.path > ul > li:nth-child(3)').text
       category['>'] = ''
       new_article.category_article = category
@@ -849,7 +858,7 @@ class Api::V1::ArticlesController < ApplicationController
       new_article = Article.new
       new_article.url_article = link
       new_article.medium_id = @media.id
-
+      new_article.language = @media.language
       category = article.css('#contenu > div.path > ul > li:nth-child(3)').text
       category['>'] = ''
       new_article.category_article = category
