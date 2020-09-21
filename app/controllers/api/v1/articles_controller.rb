@@ -51,8 +51,10 @@ class Api::V1::ArticlesController < ApplicationController
 =end
     conditions = {}
     #conditions[:status] = 'confirmed'
-    unless params[:media_id].blank?
-      conditions[:medium_id] = params[:media_id].split(',')
+    conditions[:medium_id] = unless params[:media_id].blank?
+      params[:media_id].split(',')
+    else
+      media_ids.split(',')
     end
 
     unless params[:authors_ids].blank?
@@ -615,12 +617,12 @@ class Api::V1::ArticlesController < ApplicationController
       new_article.title = article.css('div.right_area h1').text
       # new_article.author = article.css('div.article-head__author div em a').text
       auteur_date = article.css('div#post_conteur .date_heure').map(&:text)
-      if auteur_date[1].nil?
-        author_exist = Author.where(['lower(name) like ? ', ('Bilad auteur').downcase ])
+      author_exist = if auteur_date[1].nil?
+        Author.where(['lower(name) like ? ', ('Bilad auteur').downcase ])
       else
-        author_exist = Author.where(['lower(name) like ? ',
+        Author.where(['lower(name) like ? ',
                                      auteur_date[1].downcase ])
-      end
+                     end
 
       new_author = Author.new
       if author_exist.count.zero?
