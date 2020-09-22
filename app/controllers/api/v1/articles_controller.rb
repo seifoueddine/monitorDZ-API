@@ -10,7 +10,7 @@ class Api::V1::ArticlesController < ApplicationController
 
     campaign = Campaign.where(slug_id: slug_id)
     media = campaign[0].media
-    all_tags = media.tags
+    all_tags = campaign[0].tags
     media_ids = []
     media.map do |media|
       media_ids << media['id']
