@@ -10,11 +10,10 @@ class Api::V1::ArticlesController < ApplicationController
 
     campaign = Campaign.where(slug_id: slug_id)
     media = campaign[0].media
+    all_tags = media.tags
     media_ids = []
-    all_tags = []
     media.map do |media|
       media_ids << media['id']
-      all_tags << media.tags
     end
 
 # @articles = Article.joins(:article_tags).where(article_tags: { tag_id: 3696 })
