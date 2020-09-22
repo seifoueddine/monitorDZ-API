@@ -11,8 +11,10 @@ class Api::V1::ArticlesController < ApplicationController
     campaign = Campaign.where(slug_id: slug_id)
     media = campaign[0].media
     media_ids = []
+    all_tags = []
     media.map do |media|
       media_ids << media['id']
+      all_tags << media.tags
     end
 
 # @articles = Article.joins(:article_tags).where(article_tags: { tag_id: 3696 })
@@ -53,8 +55,8 @@ class Api::V1::ArticlesController < ApplicationController
     #conditions[:status] = 'confirmed'
     conditions[:medium_id] = if params[:media_id].blank?
                                media_ids
-    else
-      params[:media_id].split(',')
+                             else
+                               params[:media_id].split(',')
     end
 
     unless params[:authors_ids].blank?
@@ -85,7 +87,7 @@ class Api::V1::ArticlesController < ApplicationController
     json_string = ArticleSerializer.new(@articles)
     media_serializer = MediumSerializer.new(media)
 
-    render json: { articles: json_string , media: media_serializer }
+    render json: { articles: json_string , media: media_serializer, tags: all_tags }
   end
 
   # GET /articles
@@ -619,9 +621,9 @@ class Api::V1::ArticlesController < ApplicationController
       auteur_date = article.css('div#post_conteur .date_heure').map(&:text)
       author_exist = if auteur_date[1].nil?
                        Author.where(['lower(name) like ? ', ('Bilad auteur').downcase ])
-      else
-        Author.where(['lower(name) like ? ',
-                                     auteur_date[1].downcase ])
+                     else
+                       Author.where(['lower(name) like ? ',
+                                                    auteur_date[1].downcase ])
                      end
 
       new_author = Author.new
