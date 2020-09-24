@@ -16,46 +16,20 @@ class Api::V1::ArticlesController < ApplicationController
       media_ids << media['id']
     end
 
-# @articles = Article.joins(:article_tags).where(article_tags: { tag_id: 3696 })
-#                    .order(order_and_direction)
-#                    .where(medium_id: media_ids).where(status: 'checked')
-#                    .page(page).per(per_page)
-
-
-# @articles = Article.order(order_and_direction)
-#                  .where(medium_id: media_ids).where(status: 'confirmed')
-#                  .page(page).per(per_page)
-
-
-=begin
-    if params[:media_id].blank?
-      @articles = Article.order(order_and_direction)
-                         .where(medium_id: media_ids).where(status: 'confirmed')
-                         .page(page).per(per_page)
-    else
-      @articles = Article.order(order_and_direction).where(medium_id: media_ids)
-                         .where(status: 'confirmed')
-                         .where(medium_id: params[:media_id].split(','))
-                         .page(page).per(per_page)
-    end
-=end
-
-=begin
-    media_ids_params = if params[:media_id].nil?
-                         media_ids
-                       else
-                         params[:media_id].split(',')
-                       end
-    options = { status: 'checked'}
-    options.delete_if { |k, v| v.nil? }
-
-=end
     conditions = {}
     #conditions[:status] = 'confirmed'
     conditions[:medium_id] = if params[:media_id].blank?
                                media_ids
                              else
                                params[:media_id].split(',')
+    end
+
+    unless params[:medium_type].blank?
+      conditions[:medium_type] = params[:medium_type].split(',')
+    end
+
+    unless params[:media_area].blank?
+      conditions[:media_area] = params[:media_area]
     end
 
     unless params[:authors_ids].blank?
@@ -66,20 +40,21 @@ class Api::V1::ArticlesController < ApplicationController
       conditions[:language] = params[:language].split(',')
     end
 
+
     unless params[:start_date].blank?
       conditions[:date_published] = { gte: params[:start_date].to_datetime.change({ hour: 0, min: 0, sec: 0 }), lte: params[:end_date].to_datetime.change({ hour: 0, min: 0, sec: 0 }) }
     end
+
+    unless params[:tag_name].blank?
+      conditions[:tag_name] = params[:tag_name]
+    end
     # conditions[:tags] = params[:tag] unless params[:tag].blank?
-    @articles = Article.search '*',
-                               where: conditions,
-                               #status: 'confirmed',
-                               #    medium_id: [9],
-                               #    author_id: 275,
-                               #  date_published: {gte: '1/09/2020'.to_datetime, lte: '15/09/2020'.to_datetime},
 
-                               page: params[:page],
-                               per_page: params[:per_page]
-
+    @articles = Article.search '*', where: conditions,
+                              suggest: true,
+                              fields: %i[title body tag_name],
+                              page: params[:page],
+                              per_page: params[:per_page]
 
 
     set_pagination_headers :articles
@@ -216,8 +191,8 @@ class Api::V1::ArticlesController < ApplicationController
 
   def search_article
     result_articles = Article.search params[:search],
-                                     #  where: { status: 'confirmed' },
-                                     fields: %i[title body author.name],
+                                     fields: %i[title body author_name],
+                                     suggest: true,
                                      page: params[:page],
                                      per_page: params[:per_page]
 
@@ -226,7 +201,7 @@ class Api::V1::ArticlesController < ApplicationController
     set_pagination_headers :articles_res
     json_string = ArticleSerializer.new(@articles_res)
 
-    render json: { result_articles: json_string, time: result_articles.took }
+    render json: { result_articles: json_string, time: result_articles.took, suggestions: @articles_res.suggestions }
 
   end
 
