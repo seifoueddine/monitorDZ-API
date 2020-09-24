@@ -93,6 +93,6 @@ test:
 #
 production:
   <<: *default
-  database: postgreSQL_api_production
-  username: postgreSQL_api
-  password: <%= ENV['POSTGRESQL_API_DATABASE_PASSWORD'] %>
+  database: monitordz
+  username: root
+  password: 'N7RvvyVpzcPMtKbx'
