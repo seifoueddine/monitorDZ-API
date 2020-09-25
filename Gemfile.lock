@@ -158,6 +158,8 @@ GEM
       rails (>= 4.2.0, < 6.1)
       sprockets (= 3.7.2)
     diff-lcs (1.4.4)
+    down (5.2.0)
+      addressable (~> 2.5)
     elasticsearch (7.9.0)
       elasticsearch-api (= 7.9.0)
       elasticsearch-transport (= 7.9.0)
@@ -319,6 +321,7 @@ DEPENDENCIES
   carrierwave (~> 2.0)
   database_cleaner
   devise_token_auth
+  down (~> 5.0)
   factory_bot_rails
   faker!
   fast_jsonapi

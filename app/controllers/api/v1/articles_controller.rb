@@ -310,6 +310,7 @@ class Api::V1::ArticlesController < ApplicationController
       new_article.date_published = d.to_datetime
       url_array = article.css('.fotorama.mnmd-gallery-slider.mnmd-post-media-wide img').map { |link| link['src'] }
       new_article.url_image = url_array[0]
+      new_article.image = Down.download(url_array[0])
       tags_array = article.css('a.post-tag').map(&:text)
       # new_article.media_tags = tags_array.join(',')
       new_article.status = 'pending'
@@ -374,6 +375,7 @@ class Api::V1::ArticlesController < ApplicationController
       |link| link['href']
       end
       new_article.url_image = url_array[0]
+      new_article.image = Down.download(url_array[0])
       tags_array = article.css('div.article-core__tags a').map(&:text)
       # new_article.media_tags = tags_array.join(',')
       new_article.status = 'pending'
@@ -437,6 +439,7 @@ class Api::V1::ArticlesController < ApplicationController
       new_article.date_published = article.at('time[datetime]')['datetime'].to_datetime.change({ hour: 0, min: 0, sec: 0 })
       url_array = article.css('body > div.article-section > div > div.article-section__main.wrap__main > article > div.full-article__featured-image > img').map { |link| link['src'] }
       new_article.url_image = url_array[0]
+      new_article.image = Down.download(url_array[0])
       # tags_array = article.css('div.article-core__tags a').map(&:text)
       # new_article.media_tags = tags_array.join(',')
       new_article.status = 'pending'
@@ -503,6 +506,7 @@ class Api::V1::ArticlesController < ApplicationController
       new_article.date_published = article.at('time[datetime]')['datetime'].to_datetime
       url_array = article.css('body > div.article-section > div > div.article-section__main.wrap__main > article > div.full-article__featured-image > img').map { |link| link['src'] }
       new_article.url_image = url_array[0]
+      new_article.image = Down.download(url_array[0])
       # tags_array = article.css('div.article-core__tags a').map(&:text)
       # new_article.media_tags = tags_array.join(',')
       new_article.status = 'pending'
@@ -575,6 +579,7 @@ class Api::V1::ArticlesController < ApplicationController
       # new_article.date_published =
       url_array = article.css('div.itemImageBlock span.itemImage img').map { |link| 'http://www.aps.dz'+ link['src'] }
       new_article.url_image = url_array[0]
+      new_article.image = Down.download(url_array[0])
       tags_array = article.css('ul.itemTags li').map(&:text)
       # new_article.media_tags = tags_array.join(',')
       new_article.status = 'pending'
@@ -643,6 +648,7 @@ class Api::V1::ArticlesController < ApplicationController
       new_article.date_published = auteur_date[0]
       url_array = article.css('#post_banner img').map { |link| link['src'] }
       new_article.url_image = url_array[0]
+      new_article.image = Down.download(url_array[0])
       tags_array = article.css('#tags a').map(&:text)
       # new_article.media_tags = tags_array.join(',')
       new_article.status = 'pending'
@@ -717,6 +723,7 @@ class Api::V1::ArticlesController < ApplicationController
     new_article.date_published = d.to_datetime.change({ hour: 0, min: 0, sec: 0 })
     url_array = article.css('div.entry-img img').map  { |link| link['data-lazy-src'] }
     new_article.url_image = url_array[0]
+    new_article.image = Down.download(url_array[0])
     # tags_array = article.css('ul.itemTags li').map(&:text)
     # new_article.media_tags = tags_array.join(',')
     new_article.status = 'pending'
@@ -805,7 +812,7 @@ class Api::V1::ArticlesController < ApplicationController
       new_article.date_published = article.css('#contenu > div.At > span').text.split(':')[1].to_datetime.change({ hour: 0, min: 0, sec: 0 })
       url_array = article.css('#articlecontent > div.TxArtcile > div.ImgCapt > img').map { |link| link['src'] }
       new_article.url_image = url_array[0]
-
+      new_article.image = Down.download(url_array[0])
       new_article.status = 'pending'
       new_article.save!
       # tag_check_and_save(tags_array)
@@ -890,7 +897,7 @@ class Api::V1::ArticlesController < ApplicationController
       new_article.date_published = article.css('#contenu > div.At > span').text.split(':')[1].to_datetime.change({ hour: 0, min: 0, sec: 0 })
       url_array = article.css('#articlecontent > div.TxArtcile > div.ImgCapt > img').map { |link| link['src'] }
       new_article.url_image = url_array[0]
-
+      new_article.image = Down.download(url_array[0])
       new_article.status = 'pending'
       new_article.save!
       # tag_check_and_save(tags_array)

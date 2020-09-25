@@ -6,7 +6,7 @@ class Article < ApplicationRecord
   has_many :tags, through: :article_tags
   belongs_to :author
   belongs_to :medium
-
+  mount_uploader :image, ImageUploader
 =begin
   def search_data
     attributes.merge(tags: tags.map(&:name))
