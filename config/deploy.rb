@@ -6,7 +6,7 @@ set :application, "monitordz"
 set :repo_url, "https://github.com/seifoueddine/monitorDZ-API.git"
 
 # Deploy to the user's home directory
-set :deploy_to, "/root/#{fetch :application}"
+set :deploy_to, "/var/www/html/#{fetch :application}"
 
 append :linked_dirs, 'log', 'tmp/pids', 'tmp/cache', 'tmp/sockets', 'vendor/bundle', '.bundle', 'public/system', 'public/uploads'
 
