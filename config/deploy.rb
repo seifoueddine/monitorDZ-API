@@ -1,13 +1,13 @@
 # config valid for current version and patch releases of Capistrano
 lock "~> 3.14.1"
-
+require "whenever/capistrano"
 
 set :application, "monitordz"
 set :repo_url, "https://github.com/seifoueddine/monitorDZ-API.git"
 
 # Deploy to the user's home directory
 set :deploy_to, "/var/www/html/#{fetch :application}"
-
+set :whenever_identifier, ->{ "#{fetch(:application)}_#{fetch(:stage)}" }
 append :linked_dirs, 'log', 'tmp/pids', 'tmp/cache', 'tmp/sockets', 'vendor/bundle', '.bundle', 'public/system', 'public/uploads'
 
 # Only keep the last 5 releases to save disk space

@@ -598,7 +598,7 @@ class Api::V1::ArticlesController < ApplicationController
     articles_url_bilad = []
     last_dates = []
     url_media_array.map do |url|
-      doc = Nokogiri::HTML(open(url, 'User-Agent' => 'ruby/2.6.5'))
+      doc = Nokogiri::HTML(open(url, 'User-Agent' => 'firefox'))
       doc.css('div.typo a').map do |link|
         articles_url_bilad << 'http://www.elbilad.net' + link['href']
       end

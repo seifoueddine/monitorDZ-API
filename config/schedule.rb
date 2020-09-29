@@ -13,8 +13,8 @@
 #   rake "some:great:rake:task"
 # end
 
-every 1.minute do
-   Article.reindex
-end
+#every 10.minutes do
+#   runner 'Article.reindex'
+#end
 
 # Learn more: http://github.com/javan/whenever
