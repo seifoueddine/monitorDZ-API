@@ -67,7 +67,7 @@ class Api::V1::ArticlesController < ApplicationController
     end
 
     unless params[:start_date].blank?
-      conditions[:date_published] = { gte: params[:start_date].to_datetime, lte: params[:end_date].to_datetime }
+      conditions[:date_published] = { gte: params[:start_date].to_datetime.change({ hour: 0, min: 0, sec: 0 }), lte: params[:end_date].to_datetime.change({ hour: 0, min: 0, sec: 0 }) }
     end
     # conditions[:tags] = params[:tag] unless params[:tag].blank?
     @articles = Article.search '*',
