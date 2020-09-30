@@ -21,11 +21,6 @@ server '161.97.114.39', user: 'root', roles: %w{app db web}
 # role :web, %w{user1@primary.com user2@additional.com}, other_property: :other_value
 # role :db,  %w{deploy@example.com}
 
-config.lograge.custom_options = lambda do |event|
-  options = {}
-  options[:search] = event.payload[:searchkick_runtime] if event.payload[:searchkick_runtime].to_f > 0
-  options
-end
 
 # Configuration
 # =============
