@@ -533,7 +533,7 @@ class Api::V1::ArticlesController < ApplicationController
       end
     end
     last_dates = last_dates.map { |d| change_date_autobip_aps(d) }
-    last_dates = last_dates.map(&:to_datetime)
+    last_dates = last_dates.map(&:to_datetime.change({ hour: 0, min: 0, sec: 0 }))
     articles_url_aps = articles_url_aps.reject(&:nil?)
     last_dates = last_dates.uniq
     last_articles = Article.where(medium_id: @media.id).where(date_published: last_dates)
@@ -576,7 +576,7 @@ class Api::V1::ArticlesController < ApplicationController
       date = article.css('span.itemDateCreated').text
       date['Publié le : '] = ''
       d = change_date_autobip_aps(date)
-      new_article.date_published = d.to_datetime
+      new_article.date_published = d.to_datetime.change({ hour: 0, min: 0, sec: 0 })
       # new_article.date_published =
       url_array = article.css('div.itemImageBlock span.itemImage img').map { |link| 'http://www.aps.dz'+ link['src'] }
       new_article.url_image = url_array[0]
