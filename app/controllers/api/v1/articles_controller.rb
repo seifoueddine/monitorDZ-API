@@ -316,7 +316,7 @@ class Api::V1::ArticlesController < ApplicationController
       # new_article.media_tags = tags_array.join(',')
       new_article.status = 'pending'
       new_article.save!
-      tag_check_and_save(tags_array)
+      tag_check_and_save(tags_array) if @media.tag_status == true
       end
 
     render json: { crawling_status_autobip: 'ok' }
@@ -381,7 +381,7 @@ class Api::V1::ArticlesController < ApplicationController
       # new_article.media_tags = tags_array.join(',')
       new_article.status = 'pending'
       new_article.save!
-      tag_check_and_save(tags_array)
+      tag_check_and_save(tags_array)if @media.tag_status == true
     end
     render json: { crawling_status_elcherouk: 'ok' }
   end
@@ -585,7 +585,7 @@ class Api::V1::ArticlesController < ApplicationController
       # new_article.media_tags = tags_array.join(',')
       new_article.status = 'pending'
       new_article.save!
-      tag_check_and_save(tags_array)
+      tag_check_and_save(tags_array)if @media.tag_status == true
     end
     render json: { crawling_status_aps: 'ok' }
   end
@@ -654,7 +654,7 @@ class Api::V1::ArticlesController < ApplicationController
       # new_article.media_tags = tags_array.join(',')
       new_article.status = 'pending'
       new_article.save!
-      tag_check_and_save(tags_array)
+      tag_check_and_save(tags_array)if @media.tag_status == true
     end
     render json: { crawling_status_aps: 'ok' }
   end
