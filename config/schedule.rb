@@ -13,7 +13,7 @@
 #   rake "some:great:rake:task"
 # end
 
-every 10.seconds do
+every 1.minute do
    runner 'Article.reindex()'
 end
 
