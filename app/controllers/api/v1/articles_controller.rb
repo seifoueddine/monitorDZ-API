@@ -179,9 +179,9 @@ class Api::V1::ArticlesController < ApplicationController
   end
 
   def search_article
-    result_articles = Article.search "*",
+    result_articles = Article.search params[:search],
                                      #  where: { status: 'confirmed' },
-                                     #fields: %i[title body author.name],
+                                     fields: %i[title body author.name],
                                      page: params[:page],
                                      per_page: params[:per_page]
 
