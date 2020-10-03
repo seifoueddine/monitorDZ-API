@@ -5,5 +5,5 @@ if Rails.env == 'production'
   transport_options = { request: { timeout: 250 } }
   options = { hosts: url, retry_on_failure: true, transport_options: transport_options }
   Searchkick.client = Elasticsearch::Client.new(options)
-  ENV['ELASTICSEARCH_URL'] = 'http://localhost:9200'
+  ENV['ELASTICSEARCH_URL'] = 'http://161.97.114.39:9200'
 end
