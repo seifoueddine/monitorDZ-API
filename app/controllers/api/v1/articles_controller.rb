@@ -247,6 +247,8 @@ class Api::V1::ArticlesController < ApplicationController
       get_articles_elmoudjahid(url_media_array)
     when 'ELMOUDJAHID-FR'
       get_articles_elmoudjahid(url_media_array)
+    when 'ELKHABAR'
+      get_articles_elkhabar(url_media_array)
     else
       render json: { crawling_status: 'No media name found!! ', status: 'error' }
     end
@@ -822,8 +824,12 @@ class Api::V1::ArticlesController < ApplicationController
     render json: { crawling_status_aps: 'ok' }
   end
   # end method to get elmoudjahid articles
-
   # start method to get elmoudjahid_fr articles
+  #
+  #
+  #
+
+
   def get_articles_elmoudjahid_fr(url_media_array)
     articles_url_elmoudjahid = []
     articles_url_elmoudjahid6 = []
@@ -907,6 +913,88 @@ class Api::V1::ArticlesController < ApplicationController
     render json: { crawling_status_aps: 'ok' }
   end
   # end method to get elmoudjahid_fr articles
+
+
+
+
+
+  # start method to get elkhabar articles
+  def get_articles_elkhabar(url_media_array)
+    articles_url_elkhabar = []
+    last_dates = []
+    url_media_array.map do |url|
+      doc = Nokogiri::HTML(URI.open(url))
+      doc.css('a').map do |link|
+
+        if link['class'] == 'main_article'
+          articles_url_elkhabar << 'https://www.elkhabar.com' + link['href']
+        end
+      end
+      doc.css('time').map do |date|
+        last_dates << date['datetime']
+      end
+    end
+    # last_dates = last_dates.map { |d| change_date_maghrebemergen(d) }
+    last_dates = last_dates.map { |d| d.to_datetime.change({ hour: 0, min: 0, sec: 0 })}
+    articles_url_elkhabar = articles_url_elkhabar.reject(&:nil?)
+    last_dates = last_dates.uniq
+    last_articles = Article.where(medium_id: @media.id).where(date_published: last_dates)
+    list_articles_url = []
+    last_articles.map do |article|
+      list_articles_url << article.url_article
+    end
+    articles_url_elkhabar_after_check = articles_url_elkhabar - list_articles_url
+    articles_url_elkhabar_after_check.map do |link|
+      article = Nokogiri::HTML(URI.open(link))
+      new_article = Article.new
+      new_article.url_article = link
+      new_article.medium_id = @media.id
+      new_article.language = @media.language
+      new_article.category_article = article.css('div#article_info a').text
+      new_article.title = article.css('div.stuff_container h2').text
+      # new_article.author = article.css('div.article-head__author div em a').text
+
+      if article.at("div.subinfo b").text.nil?
+        author_exist = Author.where(['lower(name) like ? ', ('Elkhabar auteur').downcase ])
+      else
+        author_exist = Author.where(['lower(name) like ? ',
+                                     article.at("div.subinfo b").text.downcase ])
+      end
+
+      new_author = Author.new
+      if author_exist.count.zero?
+
+        new_author.name = article.at("div.subinfo b").text.nil? ? 'Elkhabar auteur' : article.at("div.subinfo b").text
+        new_author.medium_id = @media.id
+        new_author.save!
+      else
+
+        new_author.id = author_exist.first.id
+        new_author.name = author_exist.first.name
+
+      end
+      new_article.author_id = new_author.id
+      new_article.body = article.css('div#article_body_content').inner_html
+      # date = article.at('p.text-capitalize span').text
+      # date[','] = ''
+      date = article.at('time[datetime]')['datetime']
+      # d = change_date_maghrebemergen(date)
+      new_article.date_published = date.to_datetime.change({ hour: 0, min: 0, sec: 0 })
+      url_array = article.css('div#article_img img').map { |link| 'https://www.elkhabar.com'+ link['src'] }
+      url_image = url_array[0]
+      new_article.image = Down.download(url_array[0]) if url_array[0].present?
+       tags_array = article.css('div#article_tags_title').map(&:text)
+      # new_article.media_tags = tags_array.join(',')
+      new_article.status = 'pending'
+      new_article.save!
+       tag_check_and_save(tags_array)
+    end
+    render json: { crawling_status_aps: 'ok' }
+  end
+  # end method to get elkhabar articles
+  #
+
+
 
 
 
