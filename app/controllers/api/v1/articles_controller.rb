@@ -251,6 +251,9 @@ class Api::V1::ArticlesController < ApplicationController
       get_articles_elkhabar(url_media_array)
     when 'ELIKHABARIA'
       get_articles_elikhbaria(url_media_array)
+    when 'ALGERIECO'
+      get_articles_algerieco(url_media_array)
+
     else
       render json: { crawling_status: 'No media name found!! ', status: 'error' }
     end
@@ -1151,6 +1154,90 @@ class Api::V1::ArticlesController < ApplicationController
     render json: { crawling_status_aps: 'ok' }
   end
   # end method to get elikhbaria articles
+
+
+
+  # start method to get algerieco articles
+  def get_articles_algerieco(url_media_array)
+    articles_url_algerieco = []
+    last_dates = []
+    url_media_array.map do |url|
+      doc = Nokogiri::HTML(URI.open(url))
+      doc.css('div.td-pb-span8 h3.entry-title a.td-eco-title').map do |link|
+
+
+      articles_url_algerieco << link['href']
+
+      end
+      doc.css('time').map do |date|
+        last_dates << date['datetime']
+      end
+    end
+    # last_dates = last_dates.map { |d| change_date_maghrebemergen(d) }
+    last_dates = last_dates.map { |d| d.to_datetime.change({ hour: 0, min: 0, sec: 0 })}
+    articles_url_algerieco = articles_url_algerieco.reject(&:nil?)
+    last_dates = last_dates.uniq
+    last_articles = Article.where(medium_id: @media.id).where(date_published: last_dates)
+    list_articles_url = []
+    last_articles.map do |article|
+      list_articles_url << article.url_article
+    end
+    articles_url_algerieco_after_check = articles_url_algerieco - list_articles_url
+    articles_url_algerieco_after_check.map do |link|
+      article = Nokogiri::HTML(URI.open(link))
+      new_article = Article.new
+      new_article.url_article = link
+      new_article.medium_id = @media.id
+      new_article.language = @media.language
+      new_article.category_article = article.css('ul.td-category li:nth-child(1).entry-category a').text
+      new_article.title = article.css('header.td-post-title h1.entry-title').text
+      # new_article.author = article.css('div.article-head__author div em a').text
+
+      if article.at('div.td-module-meta-info div').text.nil?
+        author_exist = Author.where(['lower(name) like ? ', ('Algerieco auteur').downcase ])
+      else
+        author = article.at('div.td-module-meta-info div').text
+        author['Par '] = ''
+        author[' - '] = ''
+        author_exist = Author.where(['lower(name) like ? ',
+                                     author.downcase ])
+      end
+
+      new_author = Author.new
+      if author_exist.count.zero?
+        author = article.at('div.td-module-meta-info div').text
+        author['Par '] = ''
+        author[' - '] = ''
+        new_author.name = article.at('div.td-module-meta-info div').text.nil? ? 'Algerieco auteur' : author
+        new_author.medium_id = @media.id
+        new_author.save!
+      else
+
+        new_author.id = author_exist.first.id
+        new_author.name = author_exist.first.name
+
+      end
+      new_article.author_id = new_author.id
+      new_article.body = article.css('div.td-post-content').inner_html
+      # date = article.at('p.text-capitalize span').text
+      # date[','] = ''
+      date = article.at('time[datetime]')['datetime']
+      # d = change_date_maghrebemergen(date)
+      new_article.date_published = date.to_datetime.change({ hour: 0, min: 0, sec: 0 })
+      url_array = article.css('div.td-post-featured-image img').map  {  |link| link['src']  }
+      url_image = url_array[0]
+      new_article.image = Down.download(url_array[0]) if url_array[0].present?
+      #tags_array = article.css('div#article_tags_title').map(&:text)
+      # new_article.media_tags = tags_array.join(',')
+      new_article.status = 'pending'
+      new_article.save!
+        #tag_check_and_save(tags_array)
+    end
+    render json: { crawling_status_aps: 'ok' }
+  end
+  # end method to get algerieco articles
+
+
 
 
 
