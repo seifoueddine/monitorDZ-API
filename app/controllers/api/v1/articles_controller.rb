@@ -255,6 +255,10 @@ class Api::V1::ArticlesController < ApplicationController
       get_articles_algerieco(url_media_array)
     when 'CHIFFREAFFAIRE'
       get_articles_chiffreaffaire(url_media_array)
+    when 'ELHIWAR'
+      get_articles_elhiwar(url_media_array)
+    when 'VISAALGERIE'
+      get_articles_visadz(url_media_array)
     else
       render json: { crawling_status: 'No media name found!! ', status: 'error' }
     end
@@ -1258,7 +1262,7 @@ class Api::V1::ArticlesController < ApplicationController
       end
     end
     # last_dates = last_dates.map { |d| change_date_maghrebemergen(d) }
-    last_dates = last_dates.map { |d| d.to_datetime.change({ hour: 0, min: 0, sec: 0 })}
+    last_dates = last_dates.map { |d| d.to_datetime.change({ hour: 0, min: 0, sec: 0 }) + (2.0/24)}
     articles_url_chiffreaffaire = articles_url_chiffreaffaire.reject(&:nil?)
     last_dates = last_dates.uniq
     last_articles = Article.where(medium_id: @media.id).where(date_published: last_dates)
@@ -1305,7 +1309,7 @@ class Api::V1::ArticlesController < ApplicationController
       # date[','] = ''
       date = article.at('time[datetime]')['datetime']
       # d = change_date_maghrebemergen(date)
-      new_article.date_published = date.to_datetime.change({ hour: 0, min: 0, sec: 0 })
+      new_article.date_published = date.to_datetime.change({ hour: 0, min: 0, sec: 0 }) + (2.0/24)
       url_array = article.css('div.single-featured a').map  {  |link| link['href']  }
       url_image = url_array[0]
       new_article.image = Down.download(url_array[0]) if url_array[0].present?
@@ -1318,6 +1322,172 @@ class Api::V1::ArticlesController < ApplicationController
     render json: { crawling_status_aps: 'ok' }
   end
   # end method to get chiffreaffaire articles
+
+
+
+
+
+
+  # start method to get elhiwar articles
+  def get_articles_elhiwar(url_media_array)
+    articles_url_elhiwar = []
+    last_dates = []
+    url_media_array.map do |url|
+      doc = Nokogiri::HTML(URI.open(url))
+      doc.css('header.entry-header h2.entry-title a').map do |link|
+
+
+        articles_url_elhiwar << link['href']
+
+      end
+      doc.css('time').map do |date|
+        last_dates << date['datetime']
+      end
+    end
+    # last_dates = last_dates.map { |d| change_date_maghrebemergen(d) }
+    last_dates = last_dates.map { |d| d.to_datetime.change({ hour: 0, min: 0, sec: 0 })+ (1.0/24)}
+    articles_url_elhiwar = articles_url_elhiwar.reject(&:nil?)
+    last_dates = last_dates.uniq
+    last_articles = Article.where(medium_id: @media.id).where(date_published: last_dates)
+    list_articles_url = []
+    last_articles.map do |article|
+      list_articles_url << article.url_article
+    end
+    articles_url_elhiwar_after_check = articles_url_elhiwar - list_articles_url
+    articles_url_elhiwar_after_check.map do |link|
+      article = Nokogiri::HTML(URI.open(link))
+      new_article = Article.new
+      new_article.url_article = link
+      new_article.medium_id = @media.id
+      new_article.language = @media.language
+      new_article.category_article = article.css('header > div.penci-entry-categories > span > a:nth-child(1)').text
+      new_article.title = article.css('header > h1.entry-title').text
+      # new_article.author = article.css('div.article-head__author div em a').text
+
+      if article.at('span.author').text.nil?
+        author_exist = Author.where(['lower(name) like ? ', ('Elhiwar auteur').downcase ])
+      else
+        author = article.at('span.author').text
+        author_exist = Author.where(['lower(name) like ? ',
+                                     author.downcase ])
+      end
+
+      new_author = Author.new
+      if author_exist.count.zero?
+        author = article.at('span.author').text
+        new_author.name = article.at('span.author').text.nil? ? 'Elhiwar auteur' : author
+        new_author.medium_id = @media.id
+        new_author.save!
+      else
+
+        new_author.id = author_exist.first.id
+        new_author.name = author_exist.first.name
+
+      end
+      new_article.author_id = new_author.id
+      new_article.body = article.css('div.penci-entry-content').inner_html
+      # date = article.at('p.text-capitalize span').text
+      # date[','] = ''
+      date = article.at('time[datetime]')['datetime']
+      # d = change_date_maghrebemergen(date)
+      new_article.date_published = date.to_datetime.change({ hour: 0, min: 0, sec: 0})+ (1.0/24)
+      url_array = article.css('div.entry-media img').map {  |link| link['src'] }
+      url_image = url_array[0]
+      new_article.image = Down.download(url_array[0]) if url_array[0].present?
+      # tags_array = article.css('div.entry-terms a').map(&:text)
+      # new_article.media_tags = tags_array.join(',')
+      new_article.status = 'pending'
+      new_article.save!
+        # tag_check_and_save(tags_array)
+    end
+    render json: { crawling_status_aps: 'ok' }
+  end
+  # end method to get elhiwar articles
+
+
+
+
+
+  # start method to get visadz articles
+  def get_articles_visadz(url_media_array)
+    articles_url_visadz = []
+    last_dates = []
+    url_media_array.map do |url|
+      doc = Nokogiri::HTML(URI.open(url))
+      doc.css('div.mnar__list > ul.d-f.fxw-w li article.arcd > a').map do |link|
+
+
+        articles_url_visadz << link['href']
+
+      end
+      doc.css('div.mnar__laar article.arcd.d-f.fxd-c.arcd--large > a.arcd__link').map do |link|
+        articles_url_visadz << link['href']
+      end
+      doc.css('time').map do |date|
+        last_dates << date['datetime']
+      end
+    end
+    # last_dates = last_dates.map { |d| change_date_maghrebemergen(d) }
+    last_dates = last_dates.map { |d| d.to_datetime.change({ hour: 0, min: 0, sec: 0 }) + (1.0/24)}
+    articles_url_visadz = articles_url_visadz.reject(&:nil?)
+    last_dates = last_dates.uniq
+    last_articles = Article.where(medium_id: @media.id).where(date_published: last_dates)
+    list_articles_url = []
+    last_articles.map do |article|
+      list_articles_url << article.url_article
+    end
+    articles_url_visadz_after_check = articles_url_visadz - list_articles_url
+    articles_url_visadz_after_check.map do |link|
+      article = Nokogiri::HTML(URI.open(link))
+      new_article = Article.new
+      new_article.url_article = link
+      new_article.medium_id = @media.id
+      new_article.language = @media.language
+      new_article.category_article = article.css('div.article__cat').text
+      new_article.title = article.css('h1.article__title').text
+      # new_article.author = article.css('div.article-head__author div em a').text
+
+      if article.at('em.article__atnm').text.nil?
+        author_exist = Author.where(['lower(name) like ? ', ('Visa Algérie auteur').downcase ])
+      else
+        author = article.at('em.article__atnm').text
+        author_exist = Author.where(['lower(name) like ? ',
+                                     author.downcase ])
+      end
+
+      new_author = Author.new
+      if author_exist.count.zero?
+        author = article.at('em.article__atnm').text
+        new_author.name = article.at('em.article__atnm').text.nil? ? 'Visa Algérie auteur' : author
+        new_author.medium_id = @media.id
+        new_author.save!
+      else
+
+        new_author.id = author_exist.first.id
+        new_author.name = author_exist.first.name
+
+      end
+      new_article.author_id = new_author.id
+      new_article.body = article.css('p.article__desc').inner_html + article.css('div.article__cntn').inner_html
+      # date = article.at('p.text-capitalize span').text
+      # date[','] = ''
+      date = article.at('time[datetime]')['datetime']
+      # d = change_date_maghrebemergen(date)
+      new_article.date_published = date.to_datetime.change({ hour: 0, min: 0, sec: 0}) + (1.0/24)
+      #url_array = article.css('div.entry-media img').map {  |link| link['src'] }
+      # url_image = url_array[0]
+      # new_article.image = Down.download(url_array[0]) if url_array[0].present?
+      # tags_array = article.css('div.entry-terms a').map(&:text)
+      # new_article.media_tags = tags_array.join(',')
+      new_article.status = 'pending'
+      new_article.save!
+      # tag_check_and_save(tags_array)
+    end
+    render json: { crawling_status_aps: 'ok' }
+  end
+  # end method to get elhiwar articles
+
+
 
 
 
