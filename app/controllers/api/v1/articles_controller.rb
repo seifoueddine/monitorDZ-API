@@ -103,9 +103,12 @@ class Api::V1::ArticlesController < ApplicationController
 
   # GET /articles/1
   def show
-    json_string = ArticleSerializer.new(@article, include: %i[medium tags author]).serialized_json
 
-    render json: json_string
+    similar = @article.similar(fields: [:title])
+    similar_json_string = ArticleSerializer.new(similar)
+    json_string = ArticleSerializer.new(@article, include: %i[medium tags author])
+
+    render json: {article:json_string , similar: similar_json_string }
   end
 
   # POST /articles
