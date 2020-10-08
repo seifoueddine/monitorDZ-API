@@ -104,7 +104,7 @@ class Api::V1::ArticlesController < ApplicationController
   # GET /articles/1
   def show
 
-    similar = @article.similar(fields: [:title])
+    similar = @article.similar(fields: [:body])
     similar_json_string = ArticleSerializer.new(similar)
     json_string = ArticleSerializer.new(@article, include: %i[medium tags author])
 
@@ -614,7 +614,7 @@ class Api::V1::ArticlesController < ApplicationController
     articles_url_bilad = []
     last_dates = []
     url_media_array.map do |url|
-      doc = Nokogiri::HTML(open(url, 'User-Agent' => 'safari'))
+      doc = Nokogiri::HTML(open(url, 'User-Agent' => 'ruby'))
       doc.css('div.typo a').map do |link|
         articles_url_bilad << 'http://www.elbilad.net' + link['href']
       end
@@ -631,7 +631,7 @@ class Api::V1::ArticlesController < ApplicationController
     end
     articles_url_bilad_after_check = articles_url_bilad - list_articles_url
     articles_url_bilad_after_check.map do |link|
-      article = Nokogiri::HTML(open(link, 'User-Agent' => 'safari'))
+      article = Nokogiri::HTML(open(link, 'User-Agent' => 'ruby'))
       new_article = Article.new
       new_article.url_article = link
       new_article.medium_id = @media.id
