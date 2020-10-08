@@ -614,7 +614,7 @@ class Api::V1::ArticlesController < ApplicationController
     articles_url_bilad = []
     last_dates = []
     url_media_array.map do |url|
-      doc = Nokogiri::HTML(open(url, 'User-Agent' => 'firefox'))
+      doc = Nokogiri::HTML(open(url, 'User-Agent' => 'safari'))
       doc.css('div.typo a').map do |link|
         articles_url_bilad << 'http://www.elbilad.net' + link['href']
       end
@@ -631,7 +631,7 @@ class Api::V1::ArticlesController < ApplicationController
     end
     articles_url_bilad_after_check = articles_url_bilad - list_articles_url
     articles_url_bilad_after_check.map do |link|
-      article = Nokogiri::HTML(open(link, 'User-Agent' => 'ruby/2.6.5'))
+      article = Nokogiri::HTML(open(link, 'User-Agent' => 'safari'))
       new_article = Article.new
       new_article.url_article = link
       new_article.medium_id = @media.id
