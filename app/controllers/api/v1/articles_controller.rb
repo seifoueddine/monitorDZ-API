@@ -89,7 +89,7 @@ class Api::V1::ArticlesController < ApplicationController
     render json: { articles: json_string , media: media_serializer, tags: all_tags }
   end
 
-  # GET /articles
+  # GET /articlesclass
   def index
     if params[:media_id].blank?
       @articles = Article.order(order_and_direction).page(page).per(per_page)
@@ -162,7 +162,6 @@ class Api::V1::ArticlesController < ApplicationController
 
   def crawling
     @all_tags = Tag.all
-    # doc_autobip = Nokogiri::HTML(URI.open('https://www.autobip.com/fr/actualite/covid_19_reamenagement_des_horaires_du_confinement_pour_6_communes_de_tebessa/16767'))
     @media = Medium.find(params[:media_id])
     if @media.url_crawling?
       url_media_array = @media.url_crawling.split(',')
@@ -170,11 +169,25 @@ class Api::V1::ArticlesController < ApplicationController
     else
       render json: { crawling_status: 'No url_crawling', media: @media.name, status: 'error' }
     end
-      # last_articles = Article.where("created_at <= :start AND created_at > :end", start: Date.today, end: 1.week.ago.to_date )
-      #  doc = doc_autobip.css('.fotorama.mnmd-gallery-slider.mnmd-post-media-wide img').map { |link| link['src'] }
-      #  doc = doc_autobip.at("//div[@class = 'fotorama__stage__frame']")
-      # render json: { render: last_articles }
+   
+  end
+
+  def self.crawling_job
+    # @all_tags = Tag.all
+    @media = Medium.all
+
+    @media.map do |m|
+      if m.url_crawling?
+        url_media_array = m.url_crawling.split(',')
+        get_articles(url_media_array)
+      else
+        render json: { crawling_status: 'No url_crawling', media: m.name, status: 'error' }
+      end
     end
+
+
+
+  end
 
   # DELETE /articles/1
   def destroy

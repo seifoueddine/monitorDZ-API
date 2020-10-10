@@ -17,4 +17,9 @@ every 1.minute do
    runner 'Article.reindex()'
 end
 
+every 10.minute do
+   runner 'Article.crawling_job'
+end
+
+
 # Learn more: http://github.com/javan/whenever
