@@ -13,11 +13,11 @@
 #   rake "some:great:rake:task"
 # end
 
-every 1.minute do
+every 10.minutes do
    runner 'Article.reindex()'
 end
 
-every 10.minute do
+every 5.minutes do
    runner 'Article.crawling_job'
 end
 

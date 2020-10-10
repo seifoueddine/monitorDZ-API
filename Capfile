@@ -17,9 +17,11 @@ require 'capistrano/bundler'
 require 'capistrano/rails/migrations'
 require 'capistrano/passenger'
 require 'capistrano/rbenv'
+require 'whenever/capistrano'
 set :rbenv_type, :user
 set :rbenv_ruby, '2.6.5'
 install_plugin Capistrano::SCM::Git
+set :whenever_command, 'bundle exec whenever'
 
 # Include tasks from other gems included in your Gemfile
 #
