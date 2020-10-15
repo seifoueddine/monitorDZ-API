@@ -64,12 +64,12 @@
 <div class="container-fluid">
   <div class="panel panel-default">
     <span style="padding: 5px;font-size: 15px;">Bonjour</span>
-    <span style="font-size: 15px; font-weight:bold;">Utilisateur</span>,<br><br>
+    <span style="font-size: 15px; font-weight:bold;"><%= @user.name %></span>,<br>
 
     <!--    <span style="background-color:#FFDE32; font-size: 15px; font-weight:bold;padding: 5px 18px;"><%#= @user.name %></span>,<br><br>-->
 
     <br><br>
-    <span style="font-weight:bold;">Voici ce qui se dit sur tout les media par rapport a vos tags</span>
+    <span style="font-weight:bold;">Voici ce qui se dit sur tout les media par rapport a vos tags</span> <br><br>
  <!--   <%# @camp_tags.each do |tag| %>
     <%#= tag.name %>
     <%#end %>-->
@@ -133,16 +133,16 @@
                   </div>
                   </p>
                   <hr />
-                  <div class="row">
-                    <div class="col-md-4">
-                   <div style="min-height: 40px; background: #2a93d5;color: white;text-decoration: none;border-radius: 7px;padding: 3px 3px 3px 3px;"><%= article.medium.name %></div>
-                    </div>
+                </div>
+              </div>
+              <div class="row">
+                <div class="col-md-4">
+                  <div style="background: #2a93d5;color: white;text-decoration: none;border-radius-: 30px;padding: 3px 7px 3px 7px;"><%= article.medium.name %></div>
+                </div>
 
-                      <span class="separator">|</span>
-                    <div class="col-md-4">
-                      <div style="min-height: 40px; background: brown;color: white;text-decoration: none;border-radius: 7px;padding: 3px 3px 3px 3px;" > <%= article.author.name %></div>
-                    </div>
-                  </div>
+                <span class="separator">|</span>
+                <div class="col-md-4">
+                  <div style="background: brown;color: white;text-decoration: none;border-radius-: 30px;padding: 3px 7px 3px 7px;" > <%= article.author.name %></div>
                 </div>
               </div>
             </div>
@@ -162,7 +162,7 @@
 
   <br><br>
   Si vous avez le moindre souci avec l'accès ou autres types de problèmes, merci de nous écrire sur ce mail :
-  nouaraseifeddine@gmail.com<br>
+  nouaraseifeddine@gmail.com hihihihihihi<br>
 </div>
 </body>
 </html>
