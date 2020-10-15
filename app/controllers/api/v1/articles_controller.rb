@@ -172,7 +172,7 @@ class Api::V1::ArticlesController < ApplicationController
         end
       end
 =end
-      UserMailer.taggedarticles(articles).deliver
+      UserMailer.taggedarticles(articles,camp_tags).deliver
     end
 
 
