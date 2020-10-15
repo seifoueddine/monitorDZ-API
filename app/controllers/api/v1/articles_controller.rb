@@ -164,15 +164,16 @@ class Api::V1::ArticlesController < ApplicationController
       camp_tags = camp.tags
       article_to_send = []
       camp_tags_array = camp_tags.map(&:id)
-=begin
+
       articles.map do |article|
-        article_tags = ArticleTag.where(article_id: article.id).map(&:tag_id)
-        unless (article_tags - camp_tags_array).empty?
+        article_tags = article.tags.map(&:id)
+        status =  camp_tags_array.any? { |i| article_tags.include? i }
+        if status === true
           article_to_send << article
         end
       end
-=end
-      UserMailer.taggedarticles(articles,camp_tags).deliver
+
+      UserMailer.taggedarticles(article_to_send).deliver
     end
 
 

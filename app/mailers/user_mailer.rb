@@ -1,7 +1,6 @@
 class UserMailer < ApplicationMailer
-  def taggedarticles(articles,camp_tags)
+  def taggedarticles(articles)
     @articles = articles
-    @camp_tags = camp_tags
     # @user = user
     mail to: 'nouaraseifeddine@gmail.com', subject: 'test email after auto tag'
   end
