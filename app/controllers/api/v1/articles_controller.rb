@@ -134,6 +134,7 @@ class Api::V1::ArticlesController < ApplicationController
 
   # auto tags@article_for_indexing
   def auto_tag
+    articles = []
     all_tags = Tag.where(status: true)
     articles_not_tagged = Article.all.where(is_tagged: nil)
     articles_not_tagged.map do |article|
@@ -151,11 +152,28 @@ class Api::V1::ArticlesController < ApplicationController
       end
       old_tags = article.media_tags.nil? ? [] : article.media_tags.split(',')
       old_tags << @tags
-      article.media_tags = old_tags.join(',')
+      #  article.media_tags = old_tags.join(',')
       article.tags = @tags_objects
       article.is_tagged = true if @tags_objects.length.positive?
       article.save!
+      articles << article if @tags_objects.length.positive?
     end
+    campaigns = Campaign.all
+    campaigns.map do |camp|
+      users = User.where(slug_id: camp.slug_id)
+      camp_tags = camp.tags
+      article_to_send = []
+      camp_tags_array = camp_tags.map(&:id)
+      articles.map do |article|
+        article_tags = ArticleTag.where(article_id: article ).map(&:tag_id)
+        unless (article_tags - camp_tags_array).empty?
+          article_to_send << article
+        end
+      end
+      UserMailer.taggedarticles(article_to_send).deliver
+    end
+
+
     render json: { tags: 'ok' }
   end
   # auto tags
@@ -275,6 +293,8 @@ class Api::V1::ArticlesController < ApplicationController
       get_articles_elhiwar(url_media_array)
     when 'VISAALGERIE'
       get_articles_visadz(url_media_array)
+    when 'SANTENEWS'
+      get_articles_santenews(url_media_array)
     else
       render json: { crawling_status: 'No media name found!! ', status: 'error' }
     end
@@ -1505,6 +1525,78 @@ class Api::V1::ArticlesController < ApplicationController
 
 
 
+  # start method to get santenews articles
+  def get_articles_santenews(url_media_array)
+    articles_url_santenews = []
+    last_dates = []
+    url_media_array.map do |url|
+      doc = Nokogiri::HTML(URI.open(url))
+      doc.css('article.item-list h2.post-box-title a').map do |link|
+
+
+        articles_url_santenews << link['href']
+
+      end
+
+      doc.css('span.tie-date').map do |date|
+        last_dates << date.text
+      end
+    end
+    last_dates = last_dates.map { |d| change_date_autobip_aps(d) }
+    last_dates = last_dates.map { |d| d.to_datetime.change({ hour: 0, min: 0, sec: 0 })}
+    articles_url_santenews = articles_url_santenews.reject(&:nil?)
+    last_dates = last_dates.uniq
+    last_articles = Article.where(medium_id: @media.id).where(date_published: last_dates)
+    list_articles_url = []
+    last_articles.map do |article|
+      list_articles_url << article.url_article
+    end
+    articles_url_santenews_after_check = articles_url_santenews - list_articles_url
+    articles_url_santenews_after_check.map do |link|
+      article = Nokogiri::HTML(URI.open(link))
+      new_article = Article.new
+      new_article.url_article = link
+      new_article.medium_id = @media.id
+      new_article.language = @media.language
+      new_article.category_article = article.css('#crumbs > span:nth-child(3) > a').text
+      new_article.title = article.css('div.post-inner h1.name').text
+      # new_article.author = article.css('div.article-head__author div em a').text
+
+
+        author_exist = Author.where(['lower(name) like ? ', ('Santenews auteur').downcase ])
+
+
+      new_author = Author.new
+      if author_exist.count.zero?
+
+        new_author.name = 'Santenews auteur'
+        new_author.medium_id = @media.id
+        new_author.save!
+      else
+
+        new_author.id = author_exist.first.id
+        new_author.name = author_exist.first.name
+
+      end
+      new_article.author_id = new_author.id
+      new_article.body = article.css('#the-post > div.post-inner > div.entry').inner_html
+      # date = article.at('p.text-capitalize span').text
+      # date[','] = ''
+      date = article.at('span.tie-date').text
+      date = change_date_autobip_aps(date)
+      new_article.date_published = date.to_datetime.change({ hour: 0, min: 0, sec: 0})
+      url_array = article.css('div.single-post-thumb  img').map  {  |link| link['src']  }
+      url_image = url_array[0]
+      new_article.image = Down.download(url_array[0]) if url_array[0].present?
+      # tags_array = article.css('div.entry-terms a').map(&:text)
+      # new_article.media_tags = tags_array.join(',')
+      new_article.status = 'pending'
+      new_article.save!
+      # tag_check_and_save(tags_array)
+    end
+    render json: { crawling_status_aps: 'ok' }
+  end
+  # end method to get elhiwar articles
 
 
 
