@@ -165,7 +165,7 @@ class Api::V1::ArticlesController < ApplicationController
       article_to_send = []
       camp_tags_array = camp_tags.map(&:id)
       articles.map do |article|
-        article_tags = ArticleTag.where(article_id: article ).map(&:tag_id)
+        article_tags = ArticleTag.where(article_id: article.id).map(&:tag_id)
         unless (article_tags - camp_tags_array).empty?
           article_to_send << article
         end
