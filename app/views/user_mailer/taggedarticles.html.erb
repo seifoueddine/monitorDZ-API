@@ -27,7 +27,7 @@
         </td>
       </tr>
       <tr>
-        <td colSpan="2" style="padding-top:10px; border-top:1px solid #e4e2e2">
+        <td colSpan="2" style="padding-top:10px; border-top:3px solid #e4e2e2">
           <table>
             <tr>
               <td colSpan="2" style="padding-bottom:20px;">
@@ -39,19 +39,14 @@
             </tr>
 
             <% @articles.each do |article| %>
-
+          <% if article.language == 'fr' %>
             <tr>
-              <td style="padding-top:0px; padding-bottom:20px; width:140px ">
-         <!--       <img src="#{artice.email}"
-                     style="width: 113px; height: 85px; object-fit: cover; border-radius: 3px;" />-->
-
+              <td style="padding-top:0px; padding-bottom:20px; width:100% ">
                 <%= image_tag article.url_image, style:"width: 113px; height: 85px; object-fit: cover; border-radius: 3px;" %>
               </td>
               <td style="padding-top:0px; padding-bottom:20px;">
                 <h4 style="font-size: 16px; line-height: 1; margin-bottom:20px;">
                  <a href="#" style="text-decoration: none; color:#303030; font-weight:500;"><%=article.title %></a>
-                  <%#= link_to "#{article.title}", 'http://161.97.114.39/app/articles/details?id=' + article.id.to_s , style: "text-decoration: none; color:#303030; font-weight:500;" %>
-
                 </h4>
                 <p href="#"
                    style="font-size: 12px; text-decoration: none; line-height: 1; color:#909090; margin-top:0px; margin-bottom:0;">
@@ -66,10 +61,39 @@
                 </p>
               </td>
             </tr>
-            <tr>
+                <tr>
+                  <td colSpan="3" style="border-top:1px solid #e4e2e2;">&nbsp;</td>
+                </tr>
+              <% end %>
 
-              <td colSpan="3" style="border-top:1px solid #e4e2e2">&nbsp;</td>
-            </tr>
+
+              <% if article.language == 'ar' %>
+                <tr>
+                  <td style="padding-top:0px; padding-bottom:20px; width:140px;direction: rtl; ">
+                    <%= image_tag article.url_image, style:"width: 113px; height: 85px; object-fit: cover; border-radius: 3px;" %>
+                  </td>
+                  <td style="padding-top:0px; padding-bottom:20px;direction: rtl;">
+                    <h4 style="font-size: 16px; line-height: 1; margin-bottom:20px;direction: rtl;">
+                      <a href="#" style="text-decoration: none; color:#303030; font-weight:500;direction: rtl;"><%=article.title %></a>
+                    </h4>
+                    <p href="#"
+                       style="font-size: 12px; text-decoration: none; line-height: 1; color:#909090; margin-top:0px; margin-bottom:0;direction: rtl;">
+                      <%= article.medium.name %></p>
+                    <p style="font-size: 12px; line-height: 1; color:#909090; margin-top:5px;direction: rtl;"><%= article.author.name %></p>
+                  </td>
+                  <td style="padding-top:0px; padding-bottom:20px; text-align: right;direction: rtl;">
+                    <p
+                      style="font-size: 13px; line-height: 1; color:#00365a;  margin-top:5px; vertical-align:top; white-space:nowrap;direction: rtl;">
+                      <%= link_to "Lire l'article", 'http://161.97.114.39/app/articles/details?id=' + article.id.to_s %>
+
+                    </p>
+                  </td>
+                </tr>
+                <tr>
+                  <td colSpan="3" style="border-top:1px solid #e4e2e2;direction: rtl;">&nbsp;</td>
+                </tr>
+              <% end %>
+
 
            <% end %>
 
