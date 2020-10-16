@@ -42,7 +42,7 @@
           <% if article.language == 'fr' %>
             <tr>
               <td style="padding-top:0px; padding-bottom:20px; width:140px; ">
-                <%= image_tag article.url_image != nil ? article.url_image : 'https://tutaki.org.nz/wp-content/uploads/2019/04/no-image-1.png' , style:"width: 113px; height: 85px; object-fit: cover; border-radius: 3px;" %>
+                <%= image_tag article.url_image != nil ? article.url_image : 'https://www.nicomatic.com/themes/custom/jango_sub/img/no-image.png' , style:"width: 113px; height: 85px; object-fit: cover; border-radius: 3px;" %>
               </td>
               <td style="padding-top:0px; padding-bottom:20px;">
                 <h4 style="font-size: 16px; line-height: 1; margin-bottom:20px;">
@@ -80,7 +80,7 @@
                     </p>
                   </td>
                   <td style="padding-top:0px; padding-bottom:20px;">
-                    <h4 style="font-size: 16px; line-height: 1; margin-bottom:20px;">
+                    <h4 style="font-size: 16px; line-height: 1; margin-bottom:20px;direction: rtl;">
                       <a href="#" style="text-decoration: none; color:#303030; font-weight:500;direction: rtl;"><%=article.title %></a>
                     </h4>
                     <p href="#"
@@ -89,8 +89,8 @@
                     <p style="font-size: 12px; line-height: 1; color:#909090; margin-top:5px;direction: rtl;"><%= article.author.name %></p>
                   </td>
 
-                  <td style="padding-top:0px; padding-bottom:20px; width:140px">
-                    <%= image_tag article.url_image != nil ? article.url_image : 'https://tutaki.org.nz/wp-content/uploads/2019/04/no-image-1.png', style:"width: 113px; height: 85px; object-fit: cover; border-radius: 3px;" %>
+                  <td style="padding-top:0px; padding-bottom:20px; padding-left: 28px;">
+                    <%= image_tag article.url_image != nil ? article.url_image : 'https://www.nicomatic.com/themes/custom/jango_sub/img/no-image.png', style:"width: 113px; height: 85px; object-fit: cover; border-radius: 3px;" %>
                   </td>
 
 
