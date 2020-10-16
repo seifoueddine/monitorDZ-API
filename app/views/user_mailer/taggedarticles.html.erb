@@ -41,7 +41,7 @@
             <% @articles.each do |article| %>
           <% if article.language == 'fr' %>
             <tr>
-              <td style="padding-top:0px; padding-bottom:20px; width:100% ">
+              <td style="padding-top:0px; padding-bottom:20px; width:140px; ">
                 <%= image_tag article.url_image != nil ? article.url_image : 'https://tutaki.org.nz/wp-content/uploads/2019/04/no-image-1.png' , style:"width: 113px; height: 85px; object-fit: cover; border-radius: 3px;" %>
               </td>
               <td style="padding-top:0px; padding-bottom:20px;">
@@ -69,7 +69,7 @@
 
               <% if article.language == 'ar' %>
                 <tr>
-                  <td style="padding-top:0px; padding-bottom:20px; width:140px;direction: rtl; ">
+                  <td style="padding-top:0px; padding-bottom:20px; width:140px ">
                     <%= image_tag article.url_image != nil ? article.url_image : 'https://tutaki.org.nz/wp-content/uploads/2019/04/no-image-1.png', style:"width: 113px; height: 85px; object-fit: cover; border-radius: 3px;" %>
                   </td>
                   <td style="padding-top:0px; padding-bottom:20px;direction: rtl;">
