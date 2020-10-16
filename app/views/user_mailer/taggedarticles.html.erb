@@ -69,8 +69,15 @@
 
               <% if article.language == 'ar' %>
                 <tr>
-                  <td style="padding-top:0px; padding-bottom:20px; width:140px ">
-                    <%= image_tag article.url_image != nil ? article.url_image : 'https://tutaki.org.nz/wp-content/uploads/2019/04/no-image-1.png', style:"width: 113px; height: 85px; object-fit: cover; border-radius: 3px;" %>
+
+
+
+                  <td style="padding-top:0px; padding-bottom:20px; text-align: right;">
+                    <p
+                      style="font-size: 13px; line-height: 1; color:#00365a;  margin-top:5px; vertical-align:top; white-space:nowrap;">
+                      <%= link_to "اقرأ المقال", 'http://161.97.114.39/app/articles/details?id=' + article.id.to_s %>
+
+                    </p>
                   </td>
                   <td style="padding-top:0px; padding-bottom:20px;direction: rtl;">
                     <h4 style="font-size: 16px; line-height: 1; margin-bottom:20px;direction: rtl;">
@@ -81,13 +88,12 @@
                       <%= article.medium.name %></p>
                     <p style="font-size: 12px; line-height: 1; color:#909090; margin-top:5px;direction: rtl;"><%= article.author.name %></p>
                   </td>
-                  <td style="padding-top:0px; padding-bottom:20px; text-align: right;direction: rtl;">
-                    <p
-                      style="font-size: 13px; line-height: 1; color:#00365a;  margin-top:5px; vertical-align:top; white-space:nowrap;direction: rtl;">
-                      <%= link_to "Lire l'article", 'http://161.97.114.39/app/articles/details?id=' + article.id.to_s %>
 
-                    </p>
+                  <td style="padding-top:0px; padding-bottom:20px; width:140px ">
+                    <%= image_tag article.url_image != nil ? article.url_image : 'https://tutaki.org.nz/wp-content/uploads/2019/04/no-image-1.png', style:"width: 113px; height: 85px; object-fit: cover; border-radius: 3px;" %>
                   </td>
+
+
                 </tr>
                 <tr>
                   <td colSpan="3" style="border-top:1px solid #e4e2e2;direction: rtl;">&nbsp;</td>
