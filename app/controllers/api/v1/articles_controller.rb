@@ -86,7 +86,7 @@ class Api::V1::ArticlesController < ApplicationController
     json_string = ArticleSerializer.new(@articles)
     media_serializer = MediumSerializer.new(media)
 
-    render json: { articles: json_string , media: media_serializer, tags: all_tags }
+    render json: { articles: json_string, media: media_serializer, tags: all_tags }
   end
 
   # GET /articlesclass
@@ -108,7 +108,7 @@ class Api::V1::ArticlesController < ApplicationController
     similar_json_string = ArticleSerializer.new(similar)
     json_string = ArticleSerializer.new(@article, include: %i[medium tags author])
 
-    render json: {article:json_string , similar: similar_json_string }
+    render json: {article:json_string, similar: similar_json_string }
   end
 
   # POST /articles
@@ -162,13 +162,15 @@ class Api::V1::ArticlesController < ApplicationController
     campaigns.map do |camp|
       users = User.where(slug_id: camp.slug_id)
       camp_tags = camp.tags
+      camp_media = camp.media
       article_to_send = []
       camp_tags_array = camp_tags.map(&:id)
-
+      camp_media_array = camp_media.map(&:id)
       articles.map do |article|
         article_tags = article.tags.map(&:id)
-        status =  camp_tags_array.any? { |i| article_tags.include? i }
-        article_to_send << article if status === true
+        status_tag = camp_tags_array.any? { |i| article_tags.include? i }
+        status_media = camp_media_array.any? { |i| [article.medium_id].include? i }
+        article_to_send << article if status_tag == true && status_media == true
       end
       users.map { |user| UserMailer.taggedarticles(article_to_send, user).deliver }
     end
@@ -597,7 +599,7 @@ class Api::V1::ArticlesController < ApplicationController
       new_article.url_article = link
       new_article.medium_id = @media.id
       new_article.language = @media.language
-      new_article.category_article = article.css('nav.wrap.t3-navhelper > div > ol > li a').text == "" ? article.css('body > div.t3-wrapper > nav.wrap.t3-navhelper > div > ol > li:nth-child(2) > span').text  : article.css('nav.wrap.t3-navhelper > div > ol > li a').text
+      new_article.category_article = article.css('nav.wrap.t3-navhelper > div > ol > li a').text == "" ? article.css('body > div.t3-wrapper > nav.wrap.t3-navhelper > div > ol > li:nth-child(2) > span').text : article.css('nav.wrap.t3-navhelper > div > ol > li a').text
       new_article.title = article.css('div.itemHeader h2.itemTitle').text
       # new_article.author = article.css('div.article-head__author div em a').text
 
@@ -1183,7 +1185,7 @@ class Api::V1::ArticlesController < ApplicationController
       date = article.at('time[datetime]')['datetime']
       # d = change_date_maghrebemergen(date)
       new_article.date_published = date.to_datetime.change({ hour: 0, min: 0, sec: 0 })
-      url_array = article.css('div.post-header div.single-featured > a').map  {  |link| link['href']  }# and link['class'] == 'b-loaded'
+      url_array = article.css('div.post-header div.single-featured > a').map  { |link| link['href'] }# and link['class'] == 'b-loaded'
       url_image = url_array[0]
       new_article.image = Down.download(url_array[0]) if url_array[0].present?
       tags_array = article.css('div.entry-terms a').map(&:text)
@@ -1265,7 +1267,7 @@ class Api::V1::ArticlesController < ApplicationController
       date = article.at('time[datetime]')['datetime']
       # d = change_date_maghrebemergen(date)
       new_article.date_published = date.to_datetime.change({ hour: 0, min: 0, sec: 0 })
-      url_array = article.css('div.td-post-featured-image img').map  {  |link| link['src']  }
+      url_array = article.css('div.td-post-featured-image img').map { |link| link['src'] }
       url_image = url_array[0]
       new_article.image = Down.download(url_array[0]) if url_array[0].present?
       #tags_array = article.css('div#article_tags_title').map(&:text)
@@ -1346,7 +1348,7 @@ class Api::V1::ArticlesController < ApplicationController
       date = article.at('time[datetime]')['datetime']
       # d = change_date_maghrebemergen(date)
       new_article.date_published = date.to_datetime.change({ hour: 0, min: 0, sec: 0 }) + (2.0/24)
-      url_array = article.css('div.single-featured a').map  {  |link| link['href']  }
+      url_array = article.css('div.single-featured a').map { |link| link['href'] }
       url_image = url_array[0]
       new_article.image = Down.download(url_array[0]) if url_array[0].present?
       tags_array = article.css('div.entry-terms a').map(&:text)
@@ -1427,7 +1429,7 @@ class Api::V1::ArticlesController < ApplicationController
       date = article.at('time[datetime]')['datetime']
       # d = change_date_maghrebemergen(date)
       new_article.date_published = date.to_datetime.change({ hour: 0, min: 0, sec: 0})+ (1.0/24)
-      url_array = article.css('div.entry-media img').map {  |link| link['src'] }
+      url_array = article.css('div.entry-media img').map { |link| link['src'] }
       url_image = url_array[0]
       new_article.image = Down.download(url_array[0]) if url_array[0].present?
       # tags_array = article.css('div.entry-terms a').map(&:text)
@@ -1585,7 +1587,7 @@ class Api::V1::ArticlesController < ApplicationController
       date = article.at('span.tie-date').text
       date = change_date_autobip_aps(date)
       new_article.date_published = date.to_datetime.change({ hour: 0, min: 0, sec: 0})
-      url_array = article.css('div.single-post-thumb  img').map  {  |link| link['src']  }
+      url_array = article.css('div.single-post-thumb  img').map { |link| link['src'] }
       url_image = url_array[0]
       new_article.image = Down.download(url_array[0]) if url_array[0].present?
       # tags_array = article.css('div.entry-terms a').map(&:text)
