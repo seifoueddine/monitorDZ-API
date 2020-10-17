@@ -34,7 +34,11 @@
                 <h3 style="color:#303030; font-size:18px; line-height: 1.6; font-weight:500;">Bonjour <%= @user.name %> </h3>
                 <p
                   style="color:#8f8f8f; font-size: 14px; padding-bottom: 20px; line-height: 1.4; margin-bottom:0;">
-                  Voici ce qui se dit sur tout les media par rapport a vos tags.</p>
+                  Voici ce qui se dit sur tout les media par rapport a vos tags :
+                  <% @tag.each do |tag| %>
+                   <%= tag.name + ' ' %>
+                  <% end %>
+                </p>
               </td>
             </tr>
 
@@ -49,7 +53,7 @@
                  <a href="#" style="text-decoration: none; color:#303030; font-weight:500;"><%=article.title %></a>
                 </h4>
                 <p href="#"
-                   style="font-size: 12px; text-decoration: none; line-height: 1; color:#909090; margin-top:0px; margin-bottom:0;">
+                   style="font-size: 12px; text-decoration: none; line-height: 1; color:#0d1590; margin-top:0px; margin-bottom:0;">
                   <%= article.medium.name %></p>
                 <p style="font-size: 12px; line-height: 1; color:#909090; margin-top:5px;"><%= article.author.name %></p>
               </td>
@@ -84,7 +88,7 @@
                       <a href="#" style="text-decoration: none; color:#303030; font-weight:500;direction: rtl;"><%=article.title %></a>
                     </h4>
                     <p href="#"
-                       style="font-size: 12px; text-decoration: none; line-height: 1; color:#909090; margin-top:0px; margin-bottom:0;direction: rtl;">
+                       style="font-size: 12px; text-decoration: none; line-height: 1; color:#0d1590; margin-top:0px; margin-bottom:0;direction: rtl;">
                       <%= article.medium.name %></p>
                     <p style="font-size: 12px; line-height: 1; color:#909090; margin-top:5px;direction: rtl;"><%= article.author.name %></p>
                   </td>

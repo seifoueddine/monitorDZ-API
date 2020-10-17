@@ -172,7 +172,7 @@ class Api::V1::ArticlesController < ApplicationController
         status_media = camp_media_array.any? { |i| [article.medium_id].include? i }
         article_to_send << article if status_tag == true && status_media == true
       end
-      users.map { |user| UserMailer.taggedarticles(article_to_send, user).deliver }
+      users.map { |user| UserMailer.taggedarticles(article_to_send, user, camp_tags).deliver }
     end
 
 
