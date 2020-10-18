@@ -52,11 +52,13 @@
                 <h4 style="font-size: 16px; line-height: 1; margin-bottom:20px;">
                  <a href="#" style="text-decoration: none; color:#303030; font-weight:500;"><%=article.title %></a>
                 </h4>
-                <% article.tags.map(&:name).uniq.each do |tag| %>
-                <div style=" border: 1px solid brown;padding: 5px;border-radius: 25px;">
-                <%= tag %>
-                </div>
+                <p style="font-size: 12px; line-height: 1; color:#909090; margin-top:5px;direction: rtl;">
+                  <% article.tags.map(&:name).uniq.each do |tag| %>
+                  <div style=" border: 1px solid brown;padding: 5px;border-radius: 25px;direction: rtl;">
+                    <%= tag %>
+                  </div>
                 <%end%>
+                </p>
                 <p href="#"
                    style="font-size: 12px; text-decoration: none; line-height: 1; color:#0d1590; margin-top:0px; margin-bottom:0;">
                   <%= article.medium.name %></p>
@@ -92,13 +94,13 @@
                     <h4 style="font-size: 16px; line-height: 1; margin-bottom:20px;direction: rtl;">
                       <a href="#" style="text-decoration: none; color:#303030; font-weight:500;direction: rtl;"><%=article.title %></a>
                     </h4>
-
+                    <p style="font-size: 12px; line-height: 1; color:#909090; margin-top:5px;direction: rtl;">
                     <% article.tags.map(&:name).uniq.each do |tag| %>
-                      <div style=" border: 1px solid brown;padding: 5px;border-radius: 25px;">
-                        <%= tag %>
+                      <div style=" border: 1px solid brown;padding: 5px;border-radius: 25px;direction: rtl;">
+                       <%= tag %>
                       </div>
                     <%end%>
-
+                    </p>
 
                     <p href="#"
                        style="font-size: 12px; text-decoration: none; line-height: 1; color:#0d1590; margin-top:0px; margin-bottom:0;direction: rtl;">
