@@ -1,5 +1,5 @@
 class CampaignSerializer
-  include FastJsonapi::ObjectSerializer
+  include JSONAPI::Serializer
   attributes :name, :start_date, :end_date, :slug_id, :media, :slug, :tags
   has_many :campaign_media
   has_many :media, through: :campaign_media

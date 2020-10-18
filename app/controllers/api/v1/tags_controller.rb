@@ -12,14 +12,14 @@ class Api::V1::TagsController < ApplicationController
                       '%' + params[:search].downcase + '%'])
         end
     set_pagination_headers :tags
-    json_string = TagSerializer.new(@tags).serialized_json
+    json_string = TagSerializer.new(@tags).serializable_hash.to_json
     render  json: json_string
 
   end
 
   # GET /tags/1
   def show
-    json_string = TagSerializer.new(@tag).serialized_json
+    json_string = TagSerializer.new(@tag).serializable_hash.to_json
     render  json: json_string
   end
 

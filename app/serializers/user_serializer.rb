@@ -1,5 +1,6 @@
 class UserSerializer
-  include FastJsonapi::ObjectSerializer
+  # include JSONAPI::Serializer
+  include JSONAPI::Serializer
   # set_key_transform :camel
   attributes :name, :created_at, :updated_at, :role, :avatar, :slug_id, :email
 

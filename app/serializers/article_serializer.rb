@@ -1,5 +1,6 @@
 class ArticleSerializer
-  include FastJsonapi::ObjectSerializer
+  #include JSONAPI::Serializer
+  include JSONAPI::Serializer
   attributes :title, :date_published, :author, :body, :medium,
              :media_tags, :language, :url_image, :url_article, :tags,
              :category_article, :is_tagged, :status, :image

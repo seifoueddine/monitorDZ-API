@@ -1,4 +1,4 @@
 class AuthorSerializer
-  include FastJsonapi::ObjectSerializer
+  include JSONAPI::Serializer
   attributes :name
 end

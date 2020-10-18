@@ -6,7 +6,7 @@ class Api::V1::AuthorsController < ApplicationController
     @authors = Author.all
 
     # set_pagination_headers :authors
-    json_string = AuthorSerializer.new(@authors).serialized_json
+    json_string = AuthorSerializer.new(@authors).serializable_hash.to_json
     render json: json_string
   end
 
@@ -20,7 +20,7 @@ class Api::V1::AuthorsController < ApplicationController
       media_ids << media['id']
     end
     @authors = Author.where(medium_id: media_ids)
-    json_string = AuthorSerializer.new(@authors).serialized_json
+    json_string = AuthorSerializer.new(@authors).serializable_hash.to_json
     render json: json_string
     end
 

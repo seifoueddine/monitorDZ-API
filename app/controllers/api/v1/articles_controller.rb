@@ -97,7 +97,7 @@ class Api::V1::ArticlesController < ApplicationController
       @articles = Article.order(order_and_direction).where(medium_id: params[:media_id].split(',')).page(page).per(per_page)
     end
     set_pagination_headers :articles
-    json_string = ArticleSerializer.new(@articles, include: %i[medium]).serialized_json
+    json_string = ArticleSerializer.new(@articles, include: %i[medium]).serializable_hash.to_json
     render json: json_string
   end
 
@@ -125,7 +125,7 @@ class Api::V1::ArticlesController < ApplicationController
   # PATCH/PUT /articles/1
   def update
     if @article.update(article_params)
-      json_string = ArticleSerializer.new(@article).serialized_json
+      json_string = ArticleSerializer.new(@article).serializable_hash.to_json
       render json: json_string
     else
       render json: @article.errors, status: :unprocessable_entity

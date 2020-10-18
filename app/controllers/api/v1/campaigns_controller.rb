@@ -1,5 +1,5 @@
 class Api::V1::CampaignsController < ApplicationController
-  before_action :set_campaign, only: [:show, :update, :destroy]
+  before_action :set_campaign, only: %i[show update destroy]
 
   # GET /campaigns
   def index
@@ -13,15 +13,15 @@ class Api::V1::CampaignsController < ApplicationController
                            ])
     end
     set_pagination_headers :campaigns
-    json_string = CampaignSerializer.new(@campaigns, include: [:sectors, :media, :slug]).serialized_json
+    json_string = CampaignSerializer.new(@campaigns, include: %i[media slug]).serializable_hash.to_json
 
-    render  json: json_string
+    render json: json_string
   end
 
   # GET /campaigns/1
   def show
-    json_string = CampaignSerializer.new(@campaigns, include: [:sectors, :media]).serialized_json
-    render  json: json_string
+    json_string = CampaignSerializer.new(@campaigns, include: [:media]).serializable_hash.to_json
+    render json: json_string
   end
 
   # POST /campaigns
@@ -90,8 +90,8 @@ class Api::V1::CampaignsController < ApplicationController
       @campaign.media = @media
       @campaign.sectors = @sector
 
-      json_string = CampaignSerializer.new(@campaign, include: [:sectors, :media]).serialized_json
-      render  json: json_string
+      json_string = CampaignSerializer.new(@campaign, include: %i[sectors media]).serializable_hash.to_json
+      render json: json_string
 
     else
       render json: @campaign.errors, status: :unprocessable_entity
@@ -104,12 +104,12 @@ class Api::V1::CampaignsController < ApplicationController
   end
 
   private
-    # Use callbacks to share common setup or constraints between actions.
+  # Use callbacks to share common setup or constraints between actions.
   def set_campaign
     @campaign = Campaign.find(params[:id])
   end
 
-    # Only allow a trusted parameter "white list" through.
+  # Only allow a trusted parameter "white list" through.
   def campaign_params
     params.permit(:name, :start_date, :end_date, :slug_id)
   end

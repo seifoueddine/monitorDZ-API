@@ -14,7 +14,7 @@ class Api::V1::SectorsController < ApplicationController
                            ])
     end
     set_pagination_headers :sectors
-    json_string = SectorSerializer.new(@sectors).serialized_json
+    json_string = SectorSerializer.new(@sectors).serializable_hash.to_json
     render  json: json_string
 
 

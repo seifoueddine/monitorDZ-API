@@ -13,7 +13,7 @@ class Api::V1::SlugsController < ApplicationController
                            ])
     end
     set_pagination_headers :slugs
-    json_string = SlugSerializer.new(@slugs).serialized_json
+    json_string = SlugSerializer.new(@slugs).serializable_hash.to_json
     render  json: json_string
 
 
@@ -21,7 +21,7 @@ class Api::V1::SlugsController < ApplicationController
 
   # GET /slugs/1
   def show
-      json_string = SlugSerializer.new(@slug).serialized_json
+      json_string = SlugSerializer.new(@slug).serializable_hash.to_json
       render  json: json_string
   end
 
