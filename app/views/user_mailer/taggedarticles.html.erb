@@ -36,7 +36,7 @@
                   style="color:#8f8f8f; font-size: 14px; padding-bottom: 20px; line-height: 1.4; margin-bottom:0;">
                   Voici ce qui se dit sur tout les media par rapport a vos tags :
                   <%# @tags.each do |tag| %>
-                   <%= @tags.map(&:name).join('-') %>
+                   <%= @tags.map(&:name).join(' - ') %>
                   <%# end %>
                 </p>
               </td>
@@ -52,15 +52,11 @@
                 <h4 style="font-size: 16px; line-height: 1; margin-bottom:20px;">
                  <a href="#" style="text-decoration: none; color:#303030; font-weight:500;"><%=article.title %></a>
                 </h4>
-              <td style="width:auto; ">
                 <% article.tags.map(&:name).uniq.each do |tag| %>
-
-                <div style=" border: 2px solid brown;padding: 10px;border-radius: 25px;">
+                <div style=" border: 1px solid brown;padding: 5px;border-radius: 25px;">
                 <%= tag %>
                 </div>
-
                 <%end%>
-              </td>
                 <p href="#"
                    style="font-size: 12px; text-decoration: none; line-height: 1; color:#0d1590; margin-top:0px; margin-bottom:0;">
                   <%= article.medium.name %></p>
@@ -97,15 +93,11 @@
                       <a href="#" style="text-decoration: none; color:#303030; font-weight:500;direction: rtl;"><%=article.title %></a>
                     </h4>
 
-                  <td style="width:auto; ">
                     <% article.tags.map(&:name).uniq.each do |tag| %>
-
-                      <div style=" border: 2px solid brown;padding: 10px;border-radius: 25px; direction: rtl;">
+                      <div style=" border: 1px solid brown;padding: 5px;border-radius: 25px;">
                         <%= tag %>
                       </div>
-
                     <%end%>
-                  </td>
 
 
                     <p href="#"
