@@ -2,6 +2,7 @@ Rails.application.routes.draw do
 
 
 
+
   # For details on the DSL available within this file, see https://guides.rubyonrails.org/routing.html
   devise_for :users
   namespace :api do
@@ -21,6 +22,7 @@ Rails.application.routes.draw do
       resources :media
       resources :articles
       resources :tags
+      resources :list_users
       post 'articles/change_status', to: 'articles#change_status'
       get 'articles_for_sorting', to: 'articles#articles_for_sorting'
       get 'get_articles/crawling', to: 'articles#crawling'
