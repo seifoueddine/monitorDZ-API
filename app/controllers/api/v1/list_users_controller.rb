@@ -11,7 +11,7 @@ class Api::V1::ListUsersController < ApplicationController
               .where(['lower(name) like ? ',
                       '%' + params[:search].downcase + '%'])
         end
-    set_pagination_headers :list_user
+    set_pagination_headers :list_users
     json_string = ListUserSerializer.new(@list_users).serializable_hash.to_json
     render json: json_string
 
@@ -25,6 +25,7 @@ class Api::V1::ListUsersController < ApplicationController
 
   # POST /list_users
   def create
+    params[:user_id] = current_user.id
     @list_user = ListUser.new(list_user_params)
 
     if @list_user.save
