@@ -25,7 +25,8 @@ class Api::V1::ListUsersController < ApplicationController
 
   # POST /list_users
   def create
-    params[:user_id] = current_user.id
+    @user = current_user
+    params[:user_id] = @user.id
     @list_user = ListUser.new(list_user_params)
 
     if @list_user.save
