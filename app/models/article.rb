@@ -6,6 +6,8 @@ class Article < ApplicationRecord
   has_many :tags, through: :article_tags
   belongs_to :author
   belongs_to :medium
+  has_many :list_articles
+  has_many :list_users, through: :list_articles
   mount_uploader :image, ImageUploader
 =begin
   def search_data

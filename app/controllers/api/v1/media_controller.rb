@@ -72,11 +72,12 @@ class Api::V1::MediaController < ApplicationController
 
 
     check_campaign = @medium.campaigns.count.positive?
-    if check_campaign === true
+    if check_campaign == true
       render json: {
-        code:  'E003',
+        code: 'E003',
         message: 'This media belongs to campaign'
-    },  status: 406
+                    } ,
+             status: 406
 
     else
       @medium.destroy
