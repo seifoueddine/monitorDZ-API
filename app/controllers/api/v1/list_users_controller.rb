@@ -40,12 +40,12 @@ class Api::V1::ListUsersController < ApplicationController
   # PATCH/PUT /list_users/1
   def update
     if @list_user.update(list_user_params)
-
+      oldIds = @list_user.articles.map(&:id)
       @list_user.articles.clear
 
       ids = params[:article_id].split(',')
       @article = if ids.length != 1
-                   Article.where(id: ids)
+                   Article.where(id: ids + oldIds)
                  else
                    Article.where(id: params[:article_id])
                 end
