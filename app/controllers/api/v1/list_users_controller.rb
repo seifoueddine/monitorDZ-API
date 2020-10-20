@@ -40,18 +40,24 @@ class Api::V1::ListUsersController < ApplicationController
   # PATCH/PUT /list_users/1
   def update
     if @list_user.update(list_user_params)
-      oldIds = @list_user.articles.map(&:id)
-      @list_user.articles.clear
 
-      ids = params[:article_id].split(',')
-      @article = if ids.length != 1
-                   Article.where(id: ids + oldIds)
-                 else
-                   Article.where(id: ids + oldIds)
-                end
+      if params[:delete_article].present?
 
+        oldIds = @list_user.articles.map(&:id)
+        newIds = oldIds.reject { |id| id == params[:delete_article_id] }
+        @list_user.articles.clear
+        @article = Article.where(id: newIds)
+      else
+        oldIds = @list_user.articles.map(&:id)
+        @list_user.articles.clear
+        ids = params[:article_id].split(',')
+        @article = if ids.length != 1
+                     Article.where(id: ids + oldIds)
+                   else
+                     Article.where(id: ids + oldIds)
+                   end
+      end
       @list_user.articles = @article
-
       render json: @list_user
     else
       render json: @list_user.errors, status: :unprocessable_entity
