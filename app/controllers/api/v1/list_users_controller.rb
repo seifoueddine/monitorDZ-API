@@ -47,7 +47,7 @@ class Api::V1::ListUsersController < ApplicationController
       @article = if ids.length != 1
                    Article.where(id: ids + oldIds)
                  else
-                   Article.where(id: params[:article_id])
+                   Article.where(id: ids + oldIds)
                 end
 
       @list_user.articles = @article
