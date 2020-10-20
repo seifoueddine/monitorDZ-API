@@ -41,7 +41,7 @@ class Api::V1::ListUsersController < ApplicationController
   def update
     if @list_user.update(list_user_params)
 
-      if params[:delete_article].present?
+      if params[:delete_article_id].present?
 
         oldIds = @list_user.articles.map(&:id)
         newIds = oldIds.reject { |id| id == params[:delete_article_id] }
