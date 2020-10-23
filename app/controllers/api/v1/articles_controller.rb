@@ -188,16 +188,12 @@ class Api::V1::ArticlesController < ApplicationController
     @html = get_html
     @pdf = WickedPdf.new.pdf_from_string('<!DOCTYPE html>
 <html>
-  <head>
-    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <style>
-      /* Email styles need to be inline */
-    </style>
-  </head>
+<body>
 
-  <body>
-   <h1> Fuck you bitch <h1>
-  </body>
+<h1>Hello World This is my title/h1>
+  <p> And this a some content.</p>
+
+</body>
 </html>
 ')
     send_data @pdf, filename: 'file.pdf'
