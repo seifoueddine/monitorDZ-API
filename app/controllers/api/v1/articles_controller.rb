@@ -186,59 +186,21 @@ class Api::V1::ArticlesController < ApplicationController
     id = params[:id]
     @article = Article.find(id)
     @html = get_html
-    @pdf = WickedPdf.new.pdf_from_string(
-        `<div leftmargin="0" marginwidth="0" topmargin="0" marginheight="0" offset="0"
-      style="height:auto !important;width:100% !important; margin-bottom: 40px;">
-      <div class="justify-content-center d-flex">
-        <table bgcolor="#ffffff" border="0" cellpadding="0" cellspacing="0"
-          style="max-width:600px; background-color:#ffffff;border:1px solid #e4e2e2;border-collapse:separate !important; border-radius:10px;border-spacing:0;color:#242128; margin:0;padding:40px;"
-          heigth="auto">
-          <tbody>
-            <tr>
-              <td align="right" valign="center"
-              style="padding-bottom:40px;border-top:0;height:100% !important;width:100% !important;">
-              <span style="color: #8f8f8f; font-weight: normal; line-height: 2; font-size: 14px;">
-                  Media : #{@article.medium.name}</span>
-              </td>
-              <td align="right" valign="center"
-                style="padding-bottom:40px;border-top:0;height:100% !important;width:100% !important;">
-                <span style="color: #8f8f8f; font-weight: normal; line-height: 2; font-size: 14px;">Date de publication : #{@article.date_published.strftime('%d - %m - %Y') }</span>
-              </td>
-            </tr>
-            <tr>
-              <td colSpan="2" style="padding-top:10px;border-top:1px solid #e4e2e2">
-                <h2 style="color:#303030; font-size:18px; line-height: 1.6; font-weight:500;">#{@article.title}</h2>
-                #{@article.body}
-              </td>
-            </tr>
-          </tbody>
-        </table>
-      </div>
-      <div class="justify-content-center d-flex">
-        <table style="margin-top:30px; padding-bottom:20px;; margin-bottom: 40px;">
-          <tbody>
-            <tr>
-              <td align="center" valign="center">
-                <p
-                  style="font-size: 12px;line-height: 1; color:#909090; margin-top:0px; margin-bottom:5px; ">
-                  PDF généré par MediaDZ app le  #{Date.today.strftime("%d - %m - %Y")}
-                </p>
-                <p style="font-size: 12px; line-height:1; color:#909090;  margin-top:5px; margin-bottom:5px;">
-                  <a href="#" style="color: #00365a;">Alger</a> , <a href="#"
-                    style="color: #00365a; ">Algerie</a>
-                </p>
-              </td>
-            </tr>
-          </tbody>
-        </table>
-      </div>
-    </div>`
-    )
+    @pdf = WickedPdf.new.pdf_from_string(@html)
     send_data @pdf, filename: 'file.pdf'
   end
 
   def get_html
-    `<div leftmargin="0" marginwidth="0" topmargin="0" marginheight="0" offset="0"
+    `<!DOCTYPE html>
+<html>
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <style>
+      /* Email styles need to be inline */
+    </style>
+  </head>
+  <body>
+<div leftmargin="0" marginwidth="0" topmargin="0" marginheight="0" offset="0"
       style="height:auto !important;width:100% !important; margin-bottom: 40px;">
       <div class="justify-content-center d-flex">
         <table bgcolor="#ffffff" border="0" cellpadding="0" cellspacing="0"
@@ -283,7 +245,9 @@ class Api::V1::ArticlesController < ApplicationController
           </tbody>
         </table>
       </div>
-    </div>`
+    </div>
+  </body>
+</html>`
   end
 
   # export PDF
