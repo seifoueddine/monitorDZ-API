@@ -187,7 +187,7 @@ class Api::V1::ArticlesController < ApplicationController
     @article = Article.find(id)
     @html = @article.body
     @pdf = WickedPdf.new.pdf_from_url('https://github.com/mileszs/wicked_pdf')
-    render pdf: @pdf
+    send_data @pdf, filename: 'file.pdf'
   end
 
   def get_html
