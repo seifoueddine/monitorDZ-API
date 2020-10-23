@@ -206,7 +206,7 @@ class Api::V1::ArticlesController < ApplicationController
               </td>
               <td align="right" valign="center"
                 style="padding-bottom:40px;border-top:0;height:100% !important;width:100% !important;">
-                <span style="color: #8f8f8f; font-weight: normal; line-height: 2; font-size: 14px;">Date de publication : #{@article.date_published.strftime('%d-%m-%Y') }</span>
+                <span style="color: #8f8f8f; font-weight: normal; line-height: 2; font-size: 14px;">Date de publication : #{@article.date_published.strftime('%d - %m - %Y') }</span>
               </td>
             </tr>
             <tr>
@@ -225,7 +225,7 @@ class Api::V1::ArticlesController < ApplicationController
               <td align="center" valign="center">
                 <p
                   style="font-size: 12px;line-height: 1; color:#909090; margin-top:0px; margin-bottom:5px; ">
-                  PDF généré par MediaDZ app le  #{Date.strptime(str, '%m/%d/%Y')}
+                  PDF généré par MediaDZ app le  #{Date.today.strftime("%d - %m - %Y")}
                 </p>
                 <p style="font-size: 12px; line-height:1; color:#909090;  margin-top:5px; margin-bottom:5px;">
                   <a href="#" style="color: #00365a;">Alger</a> , <a href="#"
