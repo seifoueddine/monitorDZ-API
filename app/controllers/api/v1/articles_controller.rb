@@ -51,12 +51,13 @@ class Api::V1::ArticlesController < ApplicationController
     # conditions[:tags] = params[:tag] unless params[:tag].blank?
 
     @articles_client = Article.search '*',
-                              suggest: true,
-                              page: params[:page],
-                              per_page: params[:per_page]
+                                      where: conditions,
+                                      suggest: true,
+                                      page: params[:page],
+                                      per_page: params[:per_page]
 
 
-    set_pagination_headers :articles
+    set_pagination_headers :articles_client
     json_string = ArticleSerializer.new(@articles_client)
     media_serializer = MediumSerializer.new(media)
 
