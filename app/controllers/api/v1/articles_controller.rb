@@ -50,8 +50,7 @@ class Api::V1::ArticlesController < ApplicationController
     end
     # conditions[:tags] = params[:tag] unless params[:tag].blank?
 
-    @articles = Article.search '*',
-                               #where: conditions,
+    @articles = Article.search '*', where: conditions,
                                     suggest: true,
                                     page: params[:page],
                                     per_page: params[:per_page]
