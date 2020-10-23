@@ -186,16 +186,7 @@ class Api::V1::ArticlesController < ApplicationController
     id = params[:id]
     @article = Article.find(id)
     @html = get_html
-    @pdf = WickedPdf.new.pdf_from_string('<!DOCTYPE html>
-<html>
-<body>
-
-<h1>Hello World This is my title/h1>
-  <p> And this a some content.</p>
-
-</body>
-</html>
-')
+    @pdf = WickedPdf.new.pdf_from_string('<h1>Hello There!</h1>')
     send_data @pdf, filename: 'file.pdf'
   end
 
