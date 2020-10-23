@@ -24,6 +24,7 @@ class Api::V1::ArticlesController < ApplicationController
                                params[:media_id].split(',')
     end
 
+=begin
     unless params[:medium_type].blank?
       conditions[:medium_type] = params[:medium_type].split(',')
     end
@@ -32,22 +33,27 @@ class Api::V1::ArticlesController < ApplicationController
       conditions[:media_area] = params[:media_area]
     end
 
-    unless params[:authors_ids].blank?
-      conditions[:author_id] = params[:authors_ids].split(',')
+
+
+
+    unless params[:tag_name].blank?
+      conditions[:tag_name] = params[:tag_name]
     end
+=end
+
 
     unless params[:language].blank?
       conditions[:language] = params[:language].split(',')
     end
 
+    unless params[:authors_ids].blank?
+      conditions[:author_id] = params[:authors_ids].split(',')
+    end
 
     unless params[:start_date].blank?
       conditions[:date_published] = { gte: params[:start_date].to_datetime.change({ hour: 0, min: 0, sec: 0 }), lte: params[:end_date].to_datetime.change({ hour: 0, min: 0, sec: 0 }) }
     end
 
-    unless params[:tag_name].blank?
-      conditions[:tag_name] = params[:tag_name]
-    end
     # conditions[:tags] = params[:tag] unless params[:tag].blank?
 
     @articles = Article.search '*', where: conditions,
