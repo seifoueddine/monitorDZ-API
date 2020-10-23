@@ -221,7 +221,7 @@ class Api::V1::ArticlesController < ApplicationController
             <tr>
               <td colSpan="2" style="padding-top:10px;border-top:1px solid #e4e2e2">
                 <h2 style="color:#303030; font-size:18px; line-height: 1.6; font-weight:500;">#{@article.title}</h2>
-                #{@article.body}
+                #{@article.body.html_safe}
               </td>
             </tr>
           </tbody>
