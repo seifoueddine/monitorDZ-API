@@ -52,7 +52,6 @@ class Api::V1::ArticlesController < ApplicationController
 
     @articles = Article.search '*', where: conditions,
                               suggest: true,
-                              fields: %i[title body tag_name],
                               page: params[:page],
                               per_page: params[:per_page]
 
