@@ -187,19 +187,7 @@ class Api::V1::ArticlesController < ApplicationController
     @article = Article.find(id)
     @html = get_html
     pdf = WickedPdf.new.pdf_from_string(
-        `<!DOCTYPE html>
-<html>
-  <head>
-    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
- <style>
-      div.alwaysbreak { page-break-before: always; }
-div.nobreak:before { clear:both; }
-div.nobreak { page-break-inside: avoid; }
-    </style>
-  </head>
-  <body>
-
-<div leftmargin="0" marginwidth="0" topmargin="0" marginheight="0" offset="0"
+        `<div leftmargin="0" marginwidth="0" topmargin="0" marginheight="0" offset="0"
       style="height:auto !important;width:100% !important; margin-bottom: 40px;">
       <div class="justify-content-center d-flex">
         <table bgcolor="#ffffff" border="0" cellpadding="0" cellspacing="0"
@@ -244,9 +232,7 @@ div.nobreak { page-break-inside: avoid; }
           </tbody>
         </table>
       </div>
-    </div>
-  </body>
-</html>`
+    </div>`
     )
     send_data pdf, filename: 'file.pdf'
   end
