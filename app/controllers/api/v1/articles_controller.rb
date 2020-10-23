@@ -50,10 +50,11 @@ class Api::V1::ArticlesController < ApplicationController
     end
     # conditions[:tags] = params[:tag] unless params[:tag].blank?
 
-    @articles = Article.search '*', where: conditions,
-                              suggest: true,
-                              page: params[:page],
-                              per_page: params[:per_page]
+    @articles = Article.search '*',
+                               #where: conditions,
+                                    suggest: true,
+                                    page: params[:page],
+                                    per_page: params[:per_page]
 
 
     set_pagination_headers :articles
@@ -241,7 +242,7 @@ div.nobreak { page-break-inside: avoid; }
     else
       render json: { crawling_status: 'No url_crawling', media: @media.name, status: 'error' }
     end
-   
+
   end
 
   def self.crawling_job
