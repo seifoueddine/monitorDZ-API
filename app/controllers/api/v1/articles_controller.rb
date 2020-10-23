@@ -50,10 +50,10 @@ class Api::V1::ArticlesController < ApplicationController
     end
     # conditions[:tags] = params[:tag] unless params[:tag].blank?
 
-    @articles = Article.search '*', where: conditions,
-                                    suggest: true,
-                                    page: params[:page],
-                                    per_page: params[:per_page]
+    @articles = Article.search '*',
+                              suggest: true,
+                              page: params[:page],
+                              per_page: params[:per_page]
 
 
     set_pagination_headers :articles
