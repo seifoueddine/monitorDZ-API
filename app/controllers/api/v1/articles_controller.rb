@@ -180,6 +180,25 @@ class Api::V1::ArticlesController < ApplicationController
   end
   # auto tags
 
+
+  # export PDF
+  def pdf_export
+    id = params[:id]
+    @article = Article.find(id)
+    @html = @article.body
+    @pdf = WickedPdf.new.pdf_from_string(@html)
+    render pdf: @pdf
+  end
+
+  def get_html
+    @article.body
+  end
+
+  # export PDF
+
+
+
+
   def crawling
     @all_tags = Tag.all
     @media = Medium.find(params[:media_id])

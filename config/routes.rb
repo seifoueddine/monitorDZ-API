@@ -30,6 +30,7 @@ Rails.application.routes.draw do
       get 'search_article', to: 'articles#search_article'
       get 'articles_client', to: 'articles#articles_client'
       get 'authors_client', to: 'authors#authors_client'
+      get 'pdf_export', to: 'articles#pdf_export'
     end
   end
 

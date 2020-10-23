@@ -1,6 +1,6 @@
 class ApplicationController < ActionController::API
   include DeviseTokenAuth::Concerns::SetUserByToken
-
+  include ActionController::MimeResponds
   def order_and_direction
     @order ||= (params[:order] + ' ' + params[:direction]) || 'created_at asc'
   end
