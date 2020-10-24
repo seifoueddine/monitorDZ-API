@@ -191,11 +191,11 @@ div.nobreak { page-break-inside: avoid; }
               </td>
               <td align="center" valign="center"
                 style="padding-bottom:40px;border-top:0;height:100% !important;width:auto !important;">
-                <span style="color: #8f8f8f; font-weight: normal; line-height: 2; font-size: 14px;"> ' + @article.date_published.strftime('%d - %m - %Y') +'</span>
+                <span style="color: #8f8f8f; font-weight: normal; line-height: 2; font-size: 14px;"> ' + @article.author.name  + ' | ' + @article.date_published.strftime('%d - %m - %Y') +'</span>
               </td>
  <td align="center" valign="center"
                 style="padding-bottom:40px;border-top:0;height:100% !important;width:auto !important;">
-                <span style="color: #8f8f8f; font-weight: normal; line-height: 2; font-size: 14px;">' + @article.author.name + '</span>
+
               </td>
             </tr>
             <tr>
@@ -257,11 +257,11 @@ div.nobreak { page-break-inside: avoid; }
               </td>
               <td align="center" valign="center"
                 style="padding-bottom:40px;border-top:0;height:100% !important;width:auto  !important;">
-                <span style="color: #8f8f8f; font-weight: normal; line-height: 2; font-size: 14px;">' + @article.date_published.strftime('%d - %m - %Y') +'</span>
+                <span style="color: #8f8f8f; font-weight: normal; line-height: 2; font-size: 14px;">'  + @article.author.name  + ' | ' + @article.date_published.strftime('%d - %m - %Y') +'</span>
               </td>
             <td align="center" valign="center"
                 style="padding-bottom:40px;border-top:0;height:100% !important;width:auto !important;">
-                <span style="color: #8f8f8f; font-weight: normal; line-height: 2; font-size: 14px;">' + @article.author.name + '</span>
+
               </td>
             </tr>
             <tr>
