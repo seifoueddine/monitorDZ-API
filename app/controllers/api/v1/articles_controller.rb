@@ -160,12 +160,12 @@ class Api::V1::ArticlesController < ApplicationController
     id = params[:id]
     @article = Article.find(id)
     @html = get_html
-    pdf = WickedPdf.new.pdf_from_string('<h1>' + @article.title + '</h1>')
+    pdf = WickedPdf.new.pdf_from_string(@html)
     send_data pdf, filename: 'file.pdf'
   end
 
   def get_html
-    `<!DOCTYPE html>
+    '<!DOCTYPE html>
 <html>
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
@@ -188,17 +188,17 @@ div.nobreak { page-break-inside: avoid; }
               <td align="right" valign="center"
               style="padding-bottom:40px;border-top:0;height:100% !important;width:100% !important;">
               <span style="color: #8f8f8f; font-weight: normal; line-height: 2; font-size: 14px;">
-                  Media : #{@article.medium.name}</span>
+                  Media :' + @article.medium.name + '</span>
               </td>
               <td align="right" valign="center"
                 style="padding-bottom:40px;border-top:0;height:100% !important;width:100% !important;">
-                <span style="color: #8f8f8f; font-weight: normal; line-height: 2; font-size: 14px;">Date de publication : #{@article.date_published.strftime('%d - %m - %Y') }</span>
+                <span style="color: #8f8f8f; font-weight: normal; line-height: 2; font-size: 14px;">Date de publication :' + @article.date_published.strftime('%d - %m - %Y') +'</span>
               </td>
             </tr>
             <tr>
               <td colSpan="2" style="padding-top:10px;border-top:1px solid #e4e2e2">
-                <h2 style="color:#303030; font-size:18px; line-height: 1.6; font-weight:500;">#{@article.title}</h2>
-                #{@article.body}
+                <h2 style="color:#303030; font-size:18px; line-height: 1.6; font-weight:500;">' + @article.title + ' </h2>
+                ' + @article.body + '
               </td>
             </tr>
           </tbody>
@@ -211,7 +211,7 @@ div.nobreak { page-break-inside: avoid; }
               <td align="center" valign="center">
                 <p
                   style="font-size: 12px;line-height: 1; color:#909090; margin-top:0px; margin-bottom:5px; ">
-                  PDF généré par MediaDZ app le  #{Date.today.strftime("%d - %m - %Y")}
+                  PDF généré par MediaDZ app le ' + Date.today.strftime("%d - %m - %Y") + '
                 </p>
                 <p style="font-size: 12px; line-height:1; color:#909090;  margin-top:5px; margin-bottom:5px;">
                   <a href="#" style="color: #00365a;">Alger</a> , <a href="#"
@@ -224,7 +224,7 @@ div.nobreak { page-break-inside: avoid; }
       </div>
     </div>
   </body>
-</html>`
+</html>'
   end
 
   # export PDF
