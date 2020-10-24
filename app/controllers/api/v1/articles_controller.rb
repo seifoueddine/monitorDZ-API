@@ -200,7 +200,7 @@ div.nobreak { page-break-inside: avoid; }
             </tr>
             <tr>
               <td colSpan="2" style="padding-top:10px;border-top:1px solid #e4e2e2">
-                <h2 style="color:#303030; font-size:18px; line-height: 1.6; font-weight:500;">' + @article.title + ' </h2>
+                <h2 style="color:#303030; font-size:20px; line-height: 1.6; font-weight:500;"><b>' + @article.title + '</b> </h2>
                 ' + @article.body + '
               </td>
             </tr>
@@ -256,17 +256,17 @@ div.nobreak { page-break-inside: avoid; }
                 <img style="height:100px" src="' + 'http://161.97.114.39:81' + @article.medium.avatar.url + ' " />
               </td>
               <td align="center" valign="center"
-                style="padding-bottom:40px;border-top:0;height:100% !important;width:35%  !important;">
+                style="padding-bottom:40px;border-top:0;height:100% !important;width:auto  !important;">
                 <span style="color: #8f8f8f; font-weight: normal; line-height: 2; font-size: 14px;">' + @article.date_published.strftime('%d - %m - %Y') +'</span>
               </td>
             <td align="center" valign="center"
-                style="padding-bottom:40px;border-top:0;height:100% !important;width:35%  !important;">
+                style="padding-bottom:40px;border-top:0;height:100% !important;width:auto !important;">
                 <span style="color: #8f8f8f; font-weight: normal; line-height: 2; font-size: 14px;">' + @article.author.name + '</span>
               </td>
             </tr>
             <tr>
               <td colSpan="2" style="padding-top:10px;border-top:1px solid #e4e2e2;direction: rtl;">
-                <h4 style="color:#303030; font-size:18px; line-height: 1.6; font-weight:500;direction: rtl;">' + @article.title + ' </h4>
+                <h2 style="color:#303030; font-size:20px; line-height: 1.6; font-weight:500;direction: rtl;"><b>' + @article.title + ' </b></h2>
                 ' + @article.body + '
               </td>
             </tr>
