@@ -159,7 +159,7 @@ class Api::V1::ArticlesController < ApplicationController
   def pdf_export
     id = params[:id]
     @article = Article.find(id)
-    @html = @article.language == 'ar' ?  get_html_ar : get_html_fr
+    @html = @article.language == 'ar' ? get_html_ar : get_html_fr
     pdf = WickedPdf.new.pdf_from_string(@html)
     send_data pdf, filename: 'file.pdf'
   end
@@ -187,11 +187,11 @@ div.nobreak { page-break-inside: avoid; }
             <tr>
               <td align="left" valign="center"
               style="padding-bottom:40px;border-top:0;height:100% !important;width:100% !important;">
-                <img src="' + 'http://161.97.114.39:81' +  @article.medium.avatar.url + ' " />
+                <img style="height:100px" src="' + 'http://161.97.114.39:81' + @article.medium.avatar.url + ' " />
               </td>
-              <td align="right" valign="center"
+              <td align="left" valign="center"
                 style="padding-bottom:40px;border-top:0;height:100% !important;width:100% !important;">
-                <span style="color: #8f8f8f; font-weight: normal; line-height: 2; font-size: 14px;">Date de publication :' + @article.date_published.strftime('%d - %m - %Y') +'</span>
+                <span style="color: #8f8f8f; font-weight: normal; line-height: 2; font-size: 14px;"> '+ @article.author.name + ' | ' + @article.date_published.strftime('%d - %m - %Y') +'</span>
               </td>
             </tr>
             <tr>
@@ -249,11 +249,11 @@ div.nobreak { page-break-inside: avoid; }
             <tr>
               <td align="left" valign="center"
               style="padding-bottom:40px;border-top:0;height:100% !important;width:100% !important;">
-                <img src="' + 'http://161.97.114.39:81' +  @article.medium.avatar.url + ' " />
+                <img style="height:100px" src="' + 'http://161.97.114.39:81' + @article.medium.avatar.url + ' " />
               </td>
-              <td align="right" valign="center"
+              <td align="left" valign="center"
                 style="padding-bottom:40px;border-top:0;height:100% !important;width:100% !important;">
-                <span style="color: #8f8f8f; font-weight: normal; line-height: 2; font-size: 14px;">Date de pub :' + @article.date_published.strftime('%d - %m - %Y') +'</span>
+                <span style="color: #8f8f8f; font-weight: normal; line-height: 2; font-size: 14px;">' + @article.author.name + ' | '  + @article.date_published.strftime('%d - %m - %Y') +'</span>
               </td>
             </tr>
             <tr>
