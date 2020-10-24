@@ -186,7 +186,7 @@ div.nobreak { page-break-inside: avoid; }
           <tbody>
             <tr>
               <td align="left" valign="center"
-              style="padding-bottom:40px;border-top:0;height:100% !important;width:auto !important;">
+              style="padding-bottom:40px;border-top:0;height:100% !important;width:150px !important;">
                 <img style="height:100px" src="' + 'http://161.97.114.39:81' + @article.medium.avatar.url + ' " />
               </td>
               <td align="center" valign="center"
@@ -252,15 +252,15 @@ div.nobreak { page-break-inside: avoid; }
           <tbody>
             <tr>
               <td align="left" valign="center"
-              style="padding-bottom:40px;border-top:0;height:100% !important;width:auto !important;">
+              style="padding-bottom:40px;border-top:0;height:100% !important;width:30% !important;">
                 <img style="height:100px" src="' + 'http://161.97.114.39:81' + @article.medium.avatar.url + ' " />
               </td>
               <td align="center" valign="center"
-                style="padding-bottom:40px;border-top:0;height:100% !important;width:auto  !important;">
+                style="padding-bottom:40px;border-top:0;height:100% !important;width:35%  !important;">
                 <span style="color: #8f8f8f; font-weight: normal; line-height: 2; font-size: 14px;">' + @article.date_published.strftime('%d - %m - %Y') +'</span>
               </td>
             <td align="center" valign="center"
-                style="padding-bottom:40px;border-top:0;height:100% !important;width:auto  !important;">
+                style="padding-bottom:40px;border-top:0;height:100% !important;width:35%  !important;">
                 <span style="color: #8f8f8f; font-weight: normal; line-height: 2; font-size: 14px;">' + @article.author.name + '</span>
               </td>
             </tr>
