@@ -1,5 +1,5 @@
 class Api::V1::ArticlesController < ApplicationController
-  before_action :authenticate_user!
+  before_action :authenticate_user! , except: :pdf_export
   before_action :set_article, only: %i[show update destroy]
   require 'nokogiri'
   require 'open-uri'
