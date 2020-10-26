@@ -26,6 +26,7 @@ class Article < ApplicationRecord
   has_many :list_users, through: :list_articles
   mount_uploader :image, ImageUploader
 
+=begin
   def search_data
     {
       title: title,
@@ -36,6 +37,7 @@ class Article < ApplicationRecord
       media_area: medium.zone
     }
   end
+=end
 
 
 
