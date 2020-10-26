@@ -342,7 +342,19 @@ div.nobreak { page-break-inside: avoid; }
   end
 
   def search_article
+    slug_id = get_slug_id
+
+    campaign = Campaign.where(slug_id: slug_id)
+    media = campaign[0].media
+    media_ids = []
+    media.map do |media|
+      media_ids << media['id']
+    end
+
+
+
     result_articles = Article.search params[:search],
+                                     where: { medium_id: media_ids },
                                      fields: %i[title body author_name],
                                      suggest: true,
                                      page: params[:page],
