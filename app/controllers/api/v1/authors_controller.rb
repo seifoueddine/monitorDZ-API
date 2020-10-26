@@ -19,7 +19,7 @@ class Api::V1::AuthorsController < ApplicationController
     media.map do |media|
       media_ids << media['id']
     end
-    @authors = Author.where(medium_id: media_ids)
+    @authors = Author.where(medium_id: media_ids).uniq
     json_string = AuthorSerializer.new(@authors).serializable_hash.to_json
     render json: json_string
     end
