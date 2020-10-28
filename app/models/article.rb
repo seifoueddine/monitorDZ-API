@@ -38,7 +38,8 @@ class Article < ApplicationRecord
       media_area: medium.zone,
       medium_id: medium_id,
       date_published: date_published,
-      is_tagged: is_tagged
+      is_tagged: is_tagged,
+      author_id: author_id
     }
   end
 
