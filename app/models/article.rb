@@ -35,7 +35,10 @@ class Article < ApplicationRecord
       author_name: author.name,
       tag_name: tags.map(&:name),
       medium_type: medium.media_type,
-      media_area: medium.zone
+      media_area: medium.zone,
+      medium_id: medium_id,
+      date_published: date_published,
+      is_tagged: is_tagged
     }
   end
 
