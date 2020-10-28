@@ -3,7 +3,7 @@ class Article < ApplicationRecord
             suggest: %i[title body media_area medium_type author_name tag_name]
 
 
-=begin
+
   after_commit :reindex_data
 
   def reindex_data
@@ -11,7 +11,7 @@ class Article < ApplicationRecord
     tags.reindex
     medium.reindex
   end
-=end
+
 
   #after_commit :indexing
 
@@ -26,7 +26,6 @@ class Article < ApplicationRecord
   has_many :list_users, through: :list_articles
   mount_uploader :image, ImageUploader
 
-=begin
   def search_data
     {
       title: title,
@@ -37,7 +36,6 @@ class Article < ApplicationRecord
       media_area: medium.zone
     }
   end
-=end
 
 
 
