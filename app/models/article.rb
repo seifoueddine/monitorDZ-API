@@ -3,6 +3,7 @@ class Article < ApplicationRecord
             suggest: %i[title body media_area medium_type author_name tag_name]
 
 
+=begin
 
   after_commit :reindex_data
 
@@ -11,6 +12,7 @@ class Article < ApplicationRecord
     tags.reindex
     medium.reindex
   end
+=end
 
 
   #after_commit :indexing
