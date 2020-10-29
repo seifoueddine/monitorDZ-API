@@ -39,7 +39,8 @@ class Article < ApplicationRecord
       medium_id: medium_id,
       date_published: date_published,
       is_tagged: is_tagged,
-      author_id: author_id
+      author_id: author_id,
+      language: language
     }
   end
 

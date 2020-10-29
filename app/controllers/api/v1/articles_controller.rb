@@ -29,7 +29,7 @@ class Api::V1::ArticlesController < ApplicationController
     end
 
     unless params[:media_area].blank?
-      conditions[:media_area] = params[:media_area]
+      conditions[:media_area] = params[:media_area].split(',')
     end
 
     unless params[:authors_ids].blank?
