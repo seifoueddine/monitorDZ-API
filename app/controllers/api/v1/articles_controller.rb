@@ -41,8 +41,15 @@ class Api::V1::ArticlesController < ApplicationController
     end
 
 
-    unless params[:start_date].blank?
-      conditions[:date_published] = { gte: params[:start_date].to_datetime.change({ hour: 0, min: 0, sec: 0 }), lte: params[:end_date].to_datetime.change({ hour: 0, min: 0, sec: 0 }) }
+    if params[:start_date].blank?
+      conditions[:date_published] = { gte: Date.today.to_datetime
+                                               .change({ hour: 0, min: 0, sec: 0 }), lte: Date.today.to_datetime
+                                               .change({ hour: 0, min: 0, sec: 0 }) }
+
+    else
+      conditions[:date_published] = { gte: params[:start_date].to_datetime
+                                                              .change({ hour: 0, min: 0, sec: 0 }), lte: params[:end_date].to_datetime
+                                                              .change({ hour: 0, min: 0, sec: 0 }) }
     end
 
     unless params[:tag_name].blank?
@@ -138,15 +145,19 @@ class Api::V1::ArticlesController < ApplicationController
       camp_tags = camp.tags
       camp_media = camp.media
       article_to_send = []
+      tag_to_send = []
       camp_tags_array = camp_tags.map(&:id)
       camp_media_array = camp_media.map(&:id)
       articles.map do |article|
         article_tags = article.tags.map(&:id)
+        tag_to_send << article_tags
         status_tag = camp_tags_array.any? { |i| article_tags.include? i }
         status_media = camp_media_array.any? { |i| [article.medium_id].include? i }
         article_to_send << article if status_tag == true && status_media == true
       end
-      users.map { |user| UserMailer.taggedarticles(article_to_send, user, camp_tags).deliver }
+      if article_to_send.length.positive?
+      users.map { |user| UserMailer.taggedarticles(article_to_send, user, tag_to_send.uniq).deliver }
+      end
     end
 
 
