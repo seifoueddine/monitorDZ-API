@@ -20,8 +20,9 @@ class Api::V1::ListUsersController < ApplicationController
 
   # GET /list_users/1
   def show
-    json_string = ListUserSerializer.new(@list_user).serializable_hash.to_json
-    render json: json_string
+    json_string = ListUserSerializer.new(@list_user)
+    json_string_article = ArticleSerializer.new(@list_user.articles)
+    render json: { lists: json_string, articles: json_string_article }
   end
 
   # POST /list_users
