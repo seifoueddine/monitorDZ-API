@@ -52,9 +52,7 @@ class Api::V1::ArticlesController < ApplicationController
                                                               .change({ hour: 0, min: 0, sec: 0 }) }
     end
 
-    unless params[:tag_name].blank?
-      conditions[:tag_name] = params[:tag_name]
-    end
+    conditions[:tag_name] = params[:tag_name] unless params[:tag_name].blank?
     # conditions[:tags] = params[:tag] unless params[:tag].blank?
 
     @articles_client = Article.search '*',
@@ -357,15 +355,50 @@ div.nobreak { page-break-inside: avoid; }
 
     campaign = Campaign.where(slug_id: slug_id)
     media = campaign[0].media
+    all_tags = campaign[0].tags
     media_ids = []
     media.map do |media|
       media_ids << media['id']
     end
 
+    conditions = {}
+    #conditions[:status] = 'confirmed'
+    conditions[:medium_id] = if params[:media_id].blank?
+                               media_ids
+                             else
+                               params[:media_id].split(',')
+                             end
+
+    unless params[:medium_type].blank?
+      conditions[:medium_type] = params[:medium_type].split(',')
+    end
+
+    unless params[:media_area].blank?
+      conditions[:media_area] = params[:media_area].split(',')
+    end
+
+    unless params[:authors_ids].blank?
+      conditions[:author_id] = params[:authors_ids].split(',')
+    end
+
+    unless params[:language].blank?
+      conditions[:language] = params[:language].split(',')
+    end
+
+
+    unless params[:start_date].blank?
+      conditions[:date_published] = { gte: params[:start_date].to_datetime
+                                                              .change({ hour: 0, min: 0, sec: 0 }),
+                                      lte: params[:end_date].to_datetime
+                                                            .change({ hour: 0, min: 0, sec: 0 }) }
+    end
+
+    conditions[:tag_name] = params[:tag_name] unless params[:tag_name].blank?
+
 
 
     result_articles = Article.search params[:search],
-                                     where: { medium_id: media_ids },
+                                     where: conditions,
                                      fields: %i[title body author_name],
                                      suggest: true,
                                      page: params[:page],
@@ -375,8 +408,14 @@ div.nobreak { page-break-inside: avoid; }
 
     set_pagination_headers :articles_res
     json_string = ArticleSerializer.new(@articles_res)
+    media_serializer = MediumSerializer.new(media)
 
-    render json: { result_articles: json_string, time: result_articles.took, suggestions: @articles_res.suggestions }
+    render json: { result_articles: json_string,
+                   media: media_serializer,
+                   time: result_articles.took,
+                   suggestions: @articles_res.suggestions,
+                   tags: all_tags
+                 }
 
   end
 
