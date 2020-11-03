@@ -170,7 +170,7 @@ class Api::V1::ArticlesController < ApplicationController
     @article = Article.find(id)
     @html = @article.language == 'ar' ? get_html_ar : get_html_fr
     pdf = WickedPdf.new.pdf_from_string(@html)
-    send_data pdf, filename: 'Article_'+ @article.id.to_s + '.pdf'
+    send_data pdf, filename: 'Article_'+ @article.id.to_s + '.pdf' , type: 'application/pdf'
   end
 
   def get_html_fr
