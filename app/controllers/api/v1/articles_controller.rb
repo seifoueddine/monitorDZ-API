@@ -1464,7 +1464,17 @@ div.nobreak { page-break-inside: avoid; }
       new_article.date_published = date.to_datetime.change({ hour: 0, min: 0, sec: 0 }) + (2.0 / 24)
       url_array = article.css('div.single-featured a').map { |link| link['href'] }
       url_image = url_array[0]
-      new_article.image = Down.download(url_array[0]) if url_array[0].present?
+      #  new_article.image = Down.download(url_array[0]) if url_array[0].present?
+
+      begin
+        new_article.image = Down.download(url_array[0]) if url_array[0].present?
+      rescue Down::ResponseError => e
+        puts "Can't download this image #{ url_array[0] }"
+        puts e.message
+        puts
+        new_article.image = nil
+      end
+
       tags_array = article.css('div.entry-terms a').map(&:text)
       # new_article.media_tags = tags_array.join(',')
       new_article.status = 'pending'
