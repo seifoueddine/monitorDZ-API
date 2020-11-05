@@ -2,26 +2,7 @@ class Article < ApplicationRecord
   searchkick match: :word_middle,
             suggest: %i[title body media_area medium_type author_name tag_name],
             "mappings": {
-                 "article": {
-                     "dynamic_templates": [
-                         {
-                             "string_template": {
-                                 "match": "*",
-                                 "match_mapping_type": "string",
-                                 "mappings": {
-                                     "fields": {
-                                         "word_middle": {
-                                             "analyzer": "searchkick_word_middle_index",
-                                             "index": true,
-                                             "type": "text"
-                                         }
-                                     },
-                                     "ignore_above": 30000,
-                                     "type": "keyword"
-                                 }
-                             }
-                         }
-                     ],
+
                      "properties": {
                          "author_id": {
                              "type": "long"
@@ -127,7 +108,7 @@ class Article < ApplicationRecord
                              "ignore_above": 30000
                          }
                      }
-                 }
+
              }
 
 
