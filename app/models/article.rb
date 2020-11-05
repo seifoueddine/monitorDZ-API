@@ -1,116 +1,12 @@
 class Article < ApplicationRecord
   searchkick match: :word_middle,
             suggest: %i[title body media_area medium_type author_name tag_name],
-            "mappings": {
-
-                     "properties": {
-                         "author_id": {
-                             "type": "long"
-                         },
-                         "author_name": {
-                             "type": "keyword",
-                             "fields": {
-                                 "suggest": {
-                                     "type": "text",
-                                     "analyzer": "searchkick_suggest_index"
-                                 },
-                                 "word_middle": {
-                                     "type": "text",
-                                     "analyzer": "searchkick_word_middle_index"
-                                 }
-                             },
-                             "ignore_above": 30000
-                         },
-                         "body": {
-                             "type": "text",
-                             "fields": {
-                                 "suggest": {
-                                     "type": "text",
-                                     "analyzer": "searchkick_suggest_index"
-                                 },
-                                 "word_middle": {
-                                     "type": "text",
-                                     "analyzer": "searchkick_word_middle_index"
-                                 }
-                             },
-                             "ignore_above": 30000
-                         },
-                         "date_published": {
-                             "type": "date"
-                         },
-                         "language": {
-                             "type": "keyword",
-                             "fields": {
-                                 "word_middle": {
-                                     "type": "text",
-                                     "analyzer": "searchkick_word_middle_index"
-                                 }
-                             },
-                             "ignore_above": 30000
-                         },
-                         "media_area": {
-                             "type": "keyword",
-                             "fields": {
-                                 "suggest": {
-                                     "type": "text",
-                                     "analyzer": "searchkick_suggest_index"
-                                 },
-                                 "word_middle": {
-                                     "type": "text",
-                                     "analyzer": "searchkick_word_middle_index"
-                                 }
-                             },
-                             "ignore_above": 30000
-                         },
-                         "medium_id": {
-                             "type": "long"
-                         },
-                         "medium_type": {
-                             "type": "keyword",
-                             "fields": {
-                                 "suggest": {
-                                     "type": "text",
-                                     "analyzer": "searchkick_suggest_index"
-                                 },
-                                 "word_middle": {
-                                     "type": "text",
-                                     "analyzer": "searchkick_word_middle_index"
-                                 }
-                             },
-                             "ignore_above": 30000
-                         },
-                         "tag_name": {
-                             "type": "keyword",
-                             "fields": {
-                                 "suggest": {
-                                     "type": "text",
-                                     "analyzer": "searchkick_suggest_index"
-                                 },
-                                 "word_middle": {
-                                     "type": "text",
-                                     "analyzer": "searchkick_word_middle_index"
-                                 }
-                             },
-                             "ignore_above": 30000
-                         },
-                         "title": {
-                             "type": "keyword",
-                             "fields": {
-                                 "suggest": {
-                                     "type": "text",
-                                     "analyzer": "searchkick_suggest_index"
-                                 },
-                                 "word_middle": {
-                                     "type": "text",
-                                     "analyzer": "searchkick_word_middle_index"
-                                 }
-                             },
-                             "ignore_above": 30000
-                         }
-                     }
-
-             }
-
+             merge_mappings: true,
+            mappings: {
+              properties: {
+                body: {type: "text"}
+                           }
+                      }
 
 =begin
 
