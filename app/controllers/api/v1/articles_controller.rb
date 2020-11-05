@@ -1564,14 +1564,15 @@ div.nobreak { page-break-inside: avoid; }
       url_array = article.css('div.entry-media img').map { |link| link['src'] }
 
       url_image = url_array[0]
-      new_article.image = Down.download(url_array[0]) if url_array[0].present?
+      #  new_article.image = Down.download(url_array[0]) if url_array[0].present?
 
 
 
       begin
         new_article.image = Down.download(url_array[0]) if url_array[0].present?
-      rescue Down::ResponseError
+      rescue Down::ResponseError => e
         puts "Can't download this image #{ url_array[0] }"
+        puts e.message
         puts
         next
       end
