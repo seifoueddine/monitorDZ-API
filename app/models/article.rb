@@ -8,7 +8,7 @@ class Article < ApplicationRecord
                              "string_template": {
                                  "match": "*",
                                  "match_mapping_type": "string",
-                                 "mapping": {
+                                 "mappings": {
                                      "fields": {
                                          "word_middle": {
                                              "analyzer": "searchkick_word_middle_index",
