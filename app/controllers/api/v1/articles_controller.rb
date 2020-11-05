@@ -1507,9 +1507,21 @@ div.nobreak { page-break-inside: avoid; }
     end
     articles_url_elhiwar_after_check = articles_url_elhiwar - list_articles_url
     articles_url_elhiwar_after_check.map do |link|
-      article = Nokogiri::HTML(URI.open(link))
-    rescue OpenURI::HTTPError => e
-      next if e.message == '404 Not Found'
+
+
+      begin
+        article = Nokogiri::HTML(URI.open(link))
+      rescue OpenURI::HTTPError => e
+        puts "Can't access #{ link }"
+        puts e.message
+        puts
+        next
+      end
+
+
+
+
+
 
       new_article = Article.new
       new_article.url_article = link
