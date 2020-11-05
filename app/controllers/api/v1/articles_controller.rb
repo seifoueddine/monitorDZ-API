@@ -170,7 +170,7 @@ class Api::V1::ArticlesController < ApplicationController
     @article = Article.find(id)
     @html = @article.language == 'ar' ? get_html_ar : get_html_fr
     pdf = WickedPdf.new.pdf_from_string(@html)
-    send_data pdf, filename: 'Article_'+ @article.id.to_s + '.pdf' , type: 'application/pdf'
+    send_data pdf, filename: 'Article_' + @article.id.to_s + '.pdf' , type: 'application/pdf'
   end
 
   def get_html_fr
@@ -200,7 +200,7 @@ div.nobreak { page-break-inside: avoid; }
               </td>
               <td align="center" valign="center"
                 style="padding-bottom:40px;border-top:0;height:100% !important;width:auto !important;">
-                <span style="color: #8f8f8f; font-weight: normal; line-height: 2; font-size: 14px;"> ' + @article.author.name  + ' | ' + @article.date_published.strftime('%d - %m - %Y') +'</span>
+                <span style="color: #8f8f8f; font-weight: normal; line-height: 2; font-size: 14px;"> ' + @article.author.name + ' | ' + @article.date_published.strftime('%d - %m - %Y') + '</span>
               </td>
  <td align="center" valign="center"
                 style="padding-bottom:40px;border-top:0;height:100% !important;width:auto !important;">
@@ -266,7 +266,7 @@ div.nobreak { page-break-inside: avoid; }
               </td>
               <td align="center" valign="center"
                 style="padding-bottom:40px;border-top:0;height:100% !important;width:auto  !important;">
-                <span style="color: #8f8f8f; font-weight: normal; line-height: 2; font-size: 14px;">'  + @article.author.name  + ' | ' + @article.date_published.strftime('%d - %m - %Y') +'</span>
+                <span style="color: #8f8f8f; font-weight: normal; line-height: 2; font-size: 14px;">' + @article.author.name + ' | ' + @article.date_published.strftime('%d - %m - %Y') + '</span>
               </td>
             <td align="center" valign="center"
                 style="padding-bottom:40px;border-top:0;height:100% !important;width:auto !important;">
@@ -640,7 +640,7 @@ div.nobreak { page-break-inside: avoid; }
         last_dates << date['datetime']
       end
     end
-    last_dates = last_dates.map { |d| d.to_datetime.change({ hour: 0, min: 0, sec: 0 }) + (1.0/24)}
+    last_dates = last_dates.map { |d| d.to_datetime.change({ hour: 0, min: 0, sec: 0 }) + (1.0 / 24)}
     articles_url_ennahar = articles_url_ennahar.reject(&:nil?)
     last_dates = last_dates.uniq
     last_articles = Article.where(medium_id: @media.id).where(date_published: last_dates)
@@ -676,7 +676,7 @@ div.nobreak { page-break-inside: avoid; }
       end
       new_article.author_id = new_author.id
       new_article.body = article.css('body > div.article-section > div > div.article-section__main.wrap__main > article > div.full-article__content').inner_html
-      new_article.date_published = article.at('time[datetime]')['datetime'].to_datetime.change({ hour: 0, min: 0, sec: 0 }) + (1.0/24)
+      new_article.date_published = article.at('time[datetime]')['datetime'].to_datetime.change({ hour: 0, min: 0, sec: 0 }) + (1.0 / 24)
       url_array = article.css('body > div.article-section > div > div.article-section__main.wrap__main > article > div.full-article__featured-image > img').map { |link| link['src'] }
       new_article.url_image = url_array[0]
       new_article.image = Down.download(url_array[0]) if url_array[0].present?
@@ -818,7 +818,7 @@ div.nobreak { page-break-inside: avoid; }
       d = change_date_autobip_aps(date)
       new_article.date_published = d.to_datetime.change({ hour: 0, min: 0, sec: 0 })
       # new_article.date_published =
-      url_array = article.css('div.itemImageBlock span.itemImage img').map { |link| 'http://www.aps.dz'+ link['src'] }
+      url_array = article.css('div.itemImageBlock span.itemImage img').map { |link| 'http://www.aps.dz' + link['src'] }
       new_article.url_image = url_array[0]
       new_article.image = Down.download(url_array[0]) if url_array[0].present?
       tags_array = article.css('ul.itemTags li').map(&:text)
@@ -1218,7 +1218,7 @@ div.nobreak { page-break-inside: avoid; }
       date = article.at('time[datetime]')['datetime']
       # d = change_date_maghrebemergen(date)
       new_article.date_published = date.to_datetime.change({ hour: 0, min: 0, sec: 0 })
-      url_array = article.css('div#article_img img').map { |link| 'https://www.elkhabar.com'+ link['src'] }
+      url_array = article.css('div#article_img img').map { |link| 'https://www.elkhabar.com' + link['src'] }
       url_image = url_array[0]
       new_article.image = Down.download(url_array[0]) if url_array[0].present?
       tags_array = article.css('div#article_tags_title').map(&:text)
@@ -1414,7 +1414,7 @@ div.nobreak { page-break-inside: avoid; }
       end
     end
     # last_dates = last_dates.map { |d| change_date_maghrebemergen(d) }
-    last_dates = last_dates.map { |d| d.to_datetime.change({ hour: 0, min: 0, sec: 0 }) + (2.0/24)}
+    last_dates = last_dates.map { |d| d.to_datetime.change({ hour: 0, min: 0, sec: 0 }) + (2.0 / 24)}
     articles_url_chiffreaffaire = articles_url_chiffreaffaire.reject(&:nil?)
     last_dates = last_dates.uniq
     last_articles = Article.where(medium_id: @media.id).where(date_published: last_dates)
@@ -1461,7 +1461,7 @@ div.nobreak { page-break-inside: avoid; }
       # date[','] = ''
       date = article.at('time[datetime]')['datetime']
       # d = change_date_maghrebemergen(date)
-      new_article.date_published = date.to_datetime.change({ hour: 0, min: 0, sec: 0 }) + (2.0/24)
+      new_article.date_published = date.to_datetime.change({ hour: 0, min: 0, sec: 0 }) + (2.0 / 24)
       url_array = article.css('div.single-featured a').map { |link| link['href'] }
       url_image = url_array[0]
       new_article.image = Down.download(url_array[0]) if url_array[0].present?
@@ -1497,7 +1497,7 @@ div.nobreak { page-break-inside: avoid; }
       end
     end
     # last_dates = last_dates.map { |d| change_date_maghrebemergen(d) }
-    last_dates = last_dates.map { |d| d.to_datetime.change({ hour: 0, min: 0, sec: 0 })+ (1.0/24)}
+    last_dates = last_dates.map { |d| d.to_datetime.change({ hour: 0, min: 0, sec: 0 }) + (1.0 / 24)}
     articles_url_elhiwar = articles_url_elhiwar.reject(&:nil?)
     last_dates = last_dates.uniq
     last_articles = Article.where(medium_id: @media.id).where(date_published: last_dates)
@@ -1508,6 +1508,9 @@ div.nobreak { page-break-inside: avoid; }
     articles_url_elhiwar_after_check = articles_url_elhiwar - list_articles_url
     articles_url_elhiwar_after_check.map do |link|
       article = Nokogiri::HTML(URI.open(link))
+    rescue OpenURI::HTTPError => e
+      next if e.message == '404 Not Found'
+
       new_article = Article.new
       new_article.url_article = link
       new_article.medium_id = @media.id
@@ -1542,7 +1545,7 @@ div.nobreak { page-break-inside: avoid; }
       # date[','] = ''
       date = article.at('time[datetime]')['datetime']
       # d = change_date_maghrebemergen(date)
-      new_article.date_published = date.to_datetime.change({ hour: 0, min: 0, sec: 0})+ (1.0/24)
+      new_article.date_published = date.to_datetime.change({ hour: 0, min: 0, sec: 0}) + (1.0 / 24)
       url_array = article.css('div.entry-media img').map { |link| link['src'] }
       url_image = url_array[0]
       new_article.image = Down.download(url_array[0]) if url_array[0].present?
@@ -1580,7 +1583,7 @@ div.nobreak { page-break-inside: avoid; }
       end
     end
     # last_dates = last_dates.map { |d| change_date_maghrebemergen(d) }
-    last_dates = last_dates.map { |d| d.to_datetime.change({ hour: 0, min: 0, sec: 0 }) + (1.0/24)}
+    last_dates = last_dates.map { |d| d.to_datetime.change({ hour: 0, min: 0, sec: 0 }) + (1.0 / 24)}
     articles_url_visadz = articles_url_visadz.reject(&:nil?)
     last_dates = last_dates.uniq
     last_articles = Article.where(medium_id: @media.id).where(date_published: last_dates)
@@ -1625,7 +1628,7 @@ div.nobreak { page-break-inside: avoid; }
       # date[','] = ''
       date = article.at('time[datetime]')['datetime']
       # d = change_date_maghrebemergen(date)
-      new_article.date_published = date.to_datetime.change({ hour: 0, min: 0, sec: 0}) + (1.0/24)
+      new_article.date_published = date.to_datetime.change({ hour: 0, min: 0, sec: 0}) + (1.0 / 24)
       #url_array = article.css('div.entry-media img').map {  |link| link['src'] }
       # url_image = url_array[0]
       # new_article.image = Down.download(url_array[0]) if url_array[0].present?
