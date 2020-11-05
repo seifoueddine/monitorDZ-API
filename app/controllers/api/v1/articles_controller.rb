@@ -1574,7 +1574,7 @@ div.nobreak { page-break-inside: avoid; }
         puts "Can't download this image #{ url_array[0] }"
         puts e.message
         puts
-        next
+        new_article.image = nil
       end
 
       # tags_array = article.css('div.entry-terms a').map(&:text)
