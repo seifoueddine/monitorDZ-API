@@ -1485,7 +1485,15 @@ div.nobreak { page-break-inside: avoid; }
     articles_url_elhiwar = []
     last_dates = []
     url_media_array.map do |url|
-      doc = Nokogiri::HTML(URI.open(url))
+      #doc = Nokogiri::HTML(URI.open(url))
+      begin
+        doc = Nokogiri::HTML(URI.open(url))
+      rescue OpenURI::HTTPError => e
+        puts "Can't access #{ url }"
+        puts e.message
+        puts
+        next
+      end
       doc.css('header.entry-header h2.entry-title a').map do |link|
 
 
@@ -1517,11 +1525,6 @@ div.nobreak { page-break-inside: avoid; }
         puts
         next
       end
-
-
-
-
-
 
       new_article = Article.new
       new_article.url_article = link
