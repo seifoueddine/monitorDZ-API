@@ -1570,9 +1570,8 @@ div.nobreak { page-break-inside: avoid; }
 
       begin
         new_article.image = Down.download(url_array[0]) if url_array[0].present?
-      rescue Down::ResponseError => e
+      rescue Down::ResponseError
         puts "Can't download this image #{ url_array[0] }"
-        puts e.message
         puts
         next
       end
