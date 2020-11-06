@@ -1341,7 +1341,15 @@ div.nobreak { page-break-inside: avoid; }
     end
     articles_url_algerieco_after_check = articles_url_algerieco - list_articles_url
     articles_url_algerieco_after_check.map do |link|
-      article = Nokogiri::HTML(URI.open(link))
+      #  article = Nokogiri::HTML(URI.open(link))
+      begin
+        article = Nokogiri::HTML(URI.open(link))
+      rescue OpenURI::HTTPError => e
+        puts "Can't access #{ link }"
+        puts e.message
+        puts
+        next
+      end
       new_article = Article.new
       new_article.url_article = link
       new_article.medium_id = @media.id
