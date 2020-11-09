@@ -492,7 +492,7 @@ div.nobreak { page-break-inside: avoid; }
     json_string = ArticleSerializer.new(@articles)
     media_serializer = MediumSerializer.new(media)
 
-    render json: { articles: json_string, media: media_serializer, tags: all_tags }
+    #  render json: { articles: json_string, media: media_serializer, tags: all_tags }
 
 
 
