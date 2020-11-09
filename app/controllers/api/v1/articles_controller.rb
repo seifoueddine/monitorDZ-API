@@ -484,7 +484,7 @@ div.nobreak { page-break-inside: avoid; }
 
     set_pagination_headers :articles
     json_string = ArticleSerializer.new(@articles)
-    media_serializer = MediumSerializer.new(media)
+    #  media_serializer = MediumSerializer.new(media)
 
     #  render json: { articles: json_string, media: media_serializer, tags: all_tags }
 
