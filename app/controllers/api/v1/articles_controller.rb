@@ -436,20 +436,18 @@ div.nobreak { page-break-inside: avoid; }
     slug_id = get_slug_id
 
     campaign = Campaign.where(slug_id: slug_id)
-    media = campaign[0].media
-    all_tags = campaign[0].tags
+    #  media = campaign[0].media
+    # all_tags = campaign[0].tags
     media_ids = []
-    media.map do |media|
-      media_ids << media['id']
-    end
+    # Medium.all.map do |media|
+    # media_ids << media['id']
+    # end
 
     conditions = {}
+    unless params[:media_id].blank?
+      conditions[:medium_id] = params[:media_id].split(',')
+    end
     #conditions[:status] = 'confirmed'
-    conditions[:medium_id] = if params[:media_id].blank?
-                               media_ids
-                             else
-                               params[:media_id].split(',')
-                             end
 
     unless params[:medium_type].blank?
       conditions[:medium_type] = params[:medium_type].split(',')
@@ -512,7 +510,7 @@ div.nobreak { page-break-inside: avoid; }
     #  json_string = ArticleSerializer.new(@articles)
     stats = { stats: { archived: archived,
                        pending: pending } }
-    render json: { articles: json_string, archived: archived, pending: pending, media: media_serializer, tags: all_tags  }
+    render json: { articles: json_string, archived: archived, pending: pending  }
   end
 
 
@@ -616,7 +614,14 @@ div.nobreak { page-break-inside: avoid; }
       new_article.date_published = d.to_datetime
       url_array = article.css('.fotorama.mnmd-gallery-slider.mnmd-post-media-wide img').map { |link| link['src'] }
       new_article.url_image = url_array[0]
-      new_article.image = Down.download(url_array[0]) if url_array[0].present?
+      begin
+        new_article.image = Down.download(url_array[0]) if url_array[0].present?
+      rescue Down::Error => e
+        puts "Can't download this image #{ url_array[0] }"
+        puts e.message
+        puts
+        new_article.image = nil
+      end
       tags_array = article.css('a.post-tag').map(&:text)
       # new_article.media_tags = tags_array.join(',')
       new_article.status = 'pending'
@@ -1807,7 +1812,14 @@ div.nobreak { page-break-inside: avoid; }
     end
     articles_url_santenews_after_check = articles_url_santenews - list_articles_url
     articles_url_santenews_after_check.map do |link|
-      article = Nokogiri::HTML(URI.open(link))
+      begin
+        article = Nokogiri::HTML(URI.open(link))
+      rescue OpenURI::HTTPError => e
+        puts "Can't access #{ link }"
+        puts e.message
+        puts
+        next
+      end
       new_article = Article.new
       new_article.url_article = link
       new_article.medium_id = @media.id
