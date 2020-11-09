@@ -1259,8 +1259,8 @@ div.nobreak { page-break-inside: avoid; }
       new_article.url_article = link
       new_article.medium_id = @media.id
       new_article.language = @media.language
-      new_article.category_article = article.css('div#article_info a').text
-      new_article.title = article.css('div.stuff_container h2').text
+      new_article.category_article = article.css('div#article_info a').text if article.css('div#article_info a').present?
+      new_article.title = article.css('div.stuff_container h2').text if article.css('div.stuff_container h2').present?
       # new_article.author = article.css('div.article-head__author div em a').text
 
       if article.at("div.subinfo b").text.nil?
@@ -1291,12 +1291,19 @@ div.nobreak { page-break-inside: avoid; }
       new_article.date_published = date.to_datetime.change({ hour: 0, min: 0, sec: 0 })
       url_array = article.css('div#article_img img').map { |link| 'https://www.elkhabar.com' + link['src'] }
       url_image = url_array[0]
-      new_article.image = Down.download(url_array[0]) if url_array[0].present?
+      begin
+        new_article.image = Down.download(url_array[0]) if url_array[0].present?
+      rescue Down::Error => e
+        puts "Can't download this image #{ url_array[0] }"
+        puts e.message
+        puts
+        new_article.image = nil
+      end
       tags_array = article.css('div#article_tags_title').map(&:text)
       # new_article.media_tags = tags_array.join(',')
       new_article.status = 'pending'
       new_article.save!
-      tag_check_and_save(tags_array)
+      tag_check_and_save(tags_array) if @media.tag_status == true
     end
     render json: { crawling_status_aps: 'ok' }
   end
@@ -1392,7 +1399,7 @@ div.nobreak { page-break-inside: avoid; }
       # new_article.media_tags = tags_array.join(',')
       new_article.status = 'pending'
       new_article.save!
-      tag_check_and_save(tags_array)
+      tag_check_and_save(tags_array) if @media.tag_status == true
     end
     render json: { crawling_status_aps: 'ok' }
   end
