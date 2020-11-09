@@ -432,21 +432,91 @@ div.nobreak { page-break-inside: avoid; }
 
   # GET /articles_for_sorting
   def articles_for_sorting
+
+    slug_id = get_slug_id
+
+    campaign = Campaign.where(slug_id: slug_id)
+    media = campaign[0].media
+    all_tags = campaign[0].tags
+    media_ids = []
+    media.map do |media|
+      media_ids << media['id']
+    end
+
+    conditions = {}
+    #conditions[:status] = 'confirmed'
+    conditions[:medium_id] = if params[:media_id].blank?
+                               media_ids
+                             else
+                               params[:media_id].split(',')
+                             end
+
+    unless params[:medium_type].blank?
+      conditions[:medium_type] = params[:medium_type].split(',')
+    end
+
+    unless params[:media_area].blank?
+      conditions[:media_area] = params[:media_area].split(',')
+    end
+
+    unless params[:authors_ids].blank?
+      conditions[:author_id] = params[:authors_ids].split(',')
+    end
+
+    unless params[:language].blank?
+      conditions[:language] = params[:language].split(',')
+    end
+
+
+    if params[:start_date].blank?
+      conditions[:date_published] = { gte: Date.today.to_datetime
+                                               .change({ hour: 0, min: 0, sec: 0 }), lte: Date.today.to_datetime
+                                                                                              .change({ hour: 0, min: 0, sec: 0 }) }
+
+    else
+      conditions[:date_published] = { gte: params[:start_date].to_datetime
+                                               .change({ hour: 0, min: 0, sec: 0 }), lte: params[:end_date].to_datetime
+                                                                                              .change({ hour: 0, min: 0, sec: 0 }) }
+    end
+
+    conditions[:tag_name] = params[:tag_name] unless params[:tag_name].blank?
+    # conditions[:tags] = params[:tag] unless params[:tag].blank?
+
+    @articles = Article.search '*',
+                                      where: conditions,
+                                      page: params[:page],
+                                      per_page: params[:per_page]
+
+
+    set_pagination_headers :articles
+    json_string = ArticleSerializer.new(@articles)
+    media_serializer = MediumSerializer.new(media)
+
+    render json: { articles: json_string, media: media_serializer, tags: all_tags }
+
+
+
+
+
+
+=begin
+
     if params[:media_id].blank?
-      #  @articles = Article.order(order_and_direction).where.not(status: 'checked').page(page).per(per_page)
+
       @articles = Article.order(order_and_direction).page(page).per(per_page)
     else
-      # @articles = Article.order(order_and_direction).where.not(status: 'checked').where(medium_id: params[:media_id].split(',') ).page(page).per(per_page)
+
       @articles = Article.order(order_and_direction).where(medium_id: params[:media_id].split(',')).page(page).per(per_page)
 
     end
+=end
     archived = Article.where(status: 'archived').count
     pending = Article.where(status: 'pending').count
-    set_pagination_headers :articles
-    json_string = ArticleSerializer.new(@articles)
+    # set_pagination_headers :articles
+    #  json_string = ArticleSerializer.new(@articles)
     stats = { stats: { archived: archived,
                        pending: pending } }
-    render json: { articles: json_string, archived: archived, pending: pending }
+    render json: { articles: json_string, archived: archived, pending: pending, media: media_serializer, tags: all_tags  }
   end
 
 
