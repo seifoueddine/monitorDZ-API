@@ -468,15 +468,11 @@ div.nobreak { page-break-inside: avoid; }
     end
 
 
-    if params[:start_date].blank?
-      conditions[:date_published] = { gte: Date.today.to_datetime
-                                               .change({ hour: 0, min: 0, sec: 0 }), lte: Date.today.to_datetime
-                                                                                              .change({ hour: 0, min: 0, sec: 0 }) }
+    unless params[:start_date].blank?
+      # conditions[:date_published] = { gte: Date.today.to_datetime.change({ hour: 0, min: 0, sec: 0 }), lte: Date.today.to_datetime.change({ hour: 0, min: 0, sec: 0 }) }
 
-    else
-      conditions[:date_published] = { gte: params[:start_date].to_datetime
-                                               .change({ hour: 0, min: 0, sec: 0 }), lte: params[:end_date].to_datetime
-                                                                                              .change({ hour: 0, min: 0, sec: 0 }) }
+      #  else
+      conditions[:date_published] = { gte: params[:start_date].to_datetime.change({ hour: 0, min: 0, sec: 0 }), lte: params[:end_date].to_datetime.change({ hour: 0, min: 0, sec: 0 }) }
     end
 
     conditions[:tag_name] = params[:tag_name] unless params[:tag_name].blank?
@@ -1332,7 +1328,15 @@ div.nobreak { page-break-inside: avoid; }
     end
     articles_url_elikhbaria_after_check = articles_url_elikhbaria - list_articles_url
     articles_url_elikhbaria_after_check.map do |link|
-      article = Nokogiri::HTML(URI.open(link))
+      #  article = Nokogiri::HTML(URI.open(link))
+      begin
+        article = Nokogiri::HTML(URI.open(link))
+      rescue OpenURI::HTTPError => e
+        puts "Can't access #{ link }"
+        puts e.message
+        puts
+        next
+      end
       new_article = Article.new
       new_article.url_article = link
       new_article.medium_id = @media.id
@@ -1371,7 +1375,14 @@ div.nobreak { page-break-inside: avoid; }
       new_article.date_published = date.to_datetime.change({ hour: 0, min: 0, sec: 0 })
       url_array = article.css('div.post-header div.single-featured > a').map  { |link| link['href'] }# and link['class'] == 'b-loaded'
       url_image = url_array[0]
-      new_article.image = Down.download(url_array[0]) if url_array[0].present?
+      begin
+        new_article.image = Down.download(url_array[0]) if url_array[0].present?
+      rescue Down::Error => e
+        puts "Can't download this image #{ url_array[0] }"
+        puts e.message
+        puts
+        new_article.image = nil
+      end
       tags_array = article.css('div.entry-terms a').map(&:text)
       # new_article.media_tags = tags_array.join(',')
       new_article.status = 'pending'
