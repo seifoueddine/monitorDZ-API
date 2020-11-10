@@ -1289,7 +1289,7 @@ div.nobreak { page-break-inside: avoid; }
       date = article.at('time[datetime]')['datetime']
       # d = change_date_maghrebemergen(date)
       new_article.date_published = date.to_datetime.change({ hour: 0, min: 0, sec: 0 })
-      url_array = article.css('div#article_img img').map { |link| 'https://www.elkhabar.com' + link['src'] }
+      url_array = article.css('div#article_img img').map { |link| 'https://www.elkhabar.com' + link['src'] } if article.css('div#article_img img').present?
       url_image = url_array[0]
       begin
         new_article.image = Down.download(url_array[0]) if url_array[0].present?
