@@ -1299,7 +1299,7 @@ div.nobreak { page-break-inside: avoid; }
         puts
         new_article.image = nil
       end
-      tags_array = article.css('div#article_tags_title').map(&:text)
+      tags_array = article.css('div#article_tags_title').map(&:text) if article.css('div#article_tags_title').present?
       # new_article.media_tags = tags_array.join(',')
       new_article.status = 'pending'
       new_article.save!
