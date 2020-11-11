@@ -1,4 +1,5 @@
 class Api::V1::CampaignsController < ApplicationController
+  before_action :authenticate_user!
   before_action :set_campaign, only: %i[show update destroy]
 
   # GET /campaigns

@@ -36,11 +36,11 @@ module PostgreSQLApi
 
     config.middleware.use Rack::Cors do
       allow do
-        origins '*' 
+        origins '*'
         resource '*',
         headers: :any,
-        expose: ['access-token', 'expiry', 'token-type', 'uid', 'client','X-Total-Count', 'Link'],
-        methods: [:get, :post, :options, :delete, :put, :patch, :head ]
+        expose: %w[access-token expiry token-type uid client X-Total-Count Link],
+        methods: %i[get post options delete put patch head]
       end
     end
 

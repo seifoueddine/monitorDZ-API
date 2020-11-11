@@ -1,4 +1,5 @@
 class Api::V1::SlugsController < ApplicationController
+  before_action :authenticate_user!
   before_action :set_slug, only: [:show, :update, :destroy]
 
   # GET /slugs
