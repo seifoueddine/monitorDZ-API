@@ -19,7 +19,7 @@ gem 'puma', '~> 4.1'
 gem 'devise_token_auth'
 # Use Active Storage variant
 # gem 'image_processing', '~> 1.2'
-gem 'carrierwave', '~> 2.0'
+gem 'carrierwave', '~> 2.1'
 #gem 'fast_jsonapi'
 gem 'jsonapi-serializer'
 gem 'kaminari'
