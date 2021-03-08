@@ -196,7 +196,7 @@ div.nobreak { page-break-inside: avoid; }
             <tr>
               <td align="left" valign="center"
               style="padding-bottom:40px;border-top:0;height:100% !important;width:150px !important;">
-                <img style="height:100px" src="' + 'http://161.97.114.39:81' + @article.medium.avatar.url + ' " />
+                <img style="height:100px" src="' + 'https://api.mediasmonitoring.com' + @article.medium.avatar.url + ' " />
               </td>
               <td align="center" valign="center"
                 style="padding-bottom:40px;border-top:0;height:100% !important;width:auto !important;">
@@ -262,7 +262,7 @@ div.nobreak { page-break-inside: avoid; }
             <tr>
               <td align="left" valign="center"
               style="padding-bottom:40px;border-top:0;height:100% !important;width:30% !important;">
-                <img style="height:100px" src="' + 'http://161.97.114.39:81' + @article.medium.avatar.url + ' " />
+                <img style="height:100px" src="' + 'https://api.mediasmonitoring.com' + @article.medium.avatar.url + ' " />
               </td>
               <td align="center" valign="center"
                 style="padding-bottom:40px;border-top:0;height:100% !important;width:auto  !important;">
