@@ -1,5 +1,5 @@
 class Api::V1::ArticlesController < ApplicationController
-  before_action :authenticate_user! , except: :pdf_export
+  # before_action :authenticate_user! , except: :pdf_export
   before_action :set_article, only: %i[show update destroy]
   require 'nokogiri'
   require 'open-uri'
@@ -651,10 +651,10 @@ div.nobreak { page-break-inside: avoid; }
       end
 
 
-      doc.css('article div div h2.title.title--small a').map do |link|
+      doc.css('section h3 a').map do |link|
         articles_url_cherouk << link['href']
       end
-      doc.css('ul.article-horiz__meta li time').map do |date|
+      doc.css('div.ech-card__mtil').map do |date|
         last_dates << DateTime.parse(date.text)
       end
     end
@@ -679,17 +679,17 @@ div.nobreak { page-break-inside: avoid; }
       new_article.url_article = link
       new_article.medium_id = @media.id
       new_article.language = @media.language
-      new_article.category_article = article.css('div.around.around--section ul li a span').text
-      new_article.title = article.css('h2.title.title--middle.unshrink em').text
+      new_article.category_article = article.css('article a.ech-bkbt._albk').text
+      new_article.title = article.css('article h1.ech-sgmn__title.ech-sgmn__sdpd').text
       # new_article.author = article.css('div.article-head__author div em a').text
 
       author_exist = Author.where(['lower(name) like ? ',
-                                   article.css('div.article-head__author div em a').text.downcase ])
+                                   article.css('article div.d-f.fxd-c.ai-fs a').text.downcase ])
 
       new_author = Author.new
       if author_exist.count.zero?
 
-        new_author.name = article.css('div.article-head__author div em a').text
+        new_author.name = article.css('article div.d-f.fxd-c.ai-fs a').text
         new_author.medium_id = @media.id
         new_author.save!
       else
@@ -699,13 +699,13 @@ div.nobreak { page-break-inside: avoid; }
 
       end
       new_article.author_id = new_author.id
-      new_article.body = article.css('div.the-content').inner_html
-      new_article.date_published = DateTime.parse article.css('ul.article-head__details time').text
-      url_array = article.css('div.article-head__media-content div a').map do
-      |link| link['href']
+      new_article.body = article.css('article div.ech-artx').inner_html
+      new_article.date_published = DateTime.parse article.css('article time').text
+      url_array = article.css('article figure.ech-sgmn__figure img').map do
+      |link| link['srcset']
       end
       new_article.url_image = url_array[0]
-
+      a = 1
 
       # new_article.image = Down.download(url_array[0]) if url_array[0].present?
 
@@ -720,7 +720,7 @@ div.nobreak { page-break-inside: avoid; }
 
 
 
-      tags_array = article.css('div.article-core__tags a').map(&:text)
+      tags_array = article.css('ul.ech-sgmn__tgls.d-f.fxw-w.jc-fe a').map(&:text)
       # new_article.media_tags = tags_array.join(',')
       new_article.status = 'pending'
       new_article.save!
