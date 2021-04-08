@@ -674,6 +674,11 @@ div.nobreak { page-break-inside: avoid; }
         puts e.message
         puts
         next
+      rescue OpenURI::RuntimeError => e
+        puts "Can't access #{ link }"
+        puts e.message
+        puts
+        next
       end
       new_article = Article.new
       new_article.url_article = link
