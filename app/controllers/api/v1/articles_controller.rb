@@ -702,7 +702,7 @@ div.nobreak { page-break-inside: avoid; }
       new_article.body = article.css('article div.ech-artx').inner_html
       new_article.date_published = DateTime.parse article.css('article.ech-sgmn__article time').text
 
-      url_array = article.at_css('article.ech-sgmn__article img').attr('data-src')
+      url_array = article.at_css('article.ech-sgmn__article figure img').attr('data-src')
       new_article.url_image = url_array
 
       # new_article.image = Down.download(url_array[0]) if url_array[0].present?
