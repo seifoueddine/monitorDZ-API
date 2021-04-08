@@ -637,8 +637,20 @@ div.nobreak { page-break-inside: avoid; }
   def get_articles_elcherouk(url_media_array)
     articles_url_cherouk = []
     last_dates = []
+    count = 0
     url_media_array.map do |url|
-      doc = Nokogiri::HTML(URI.open(url))
+      # doc = Nokogiri::HTML(URI.open(url))
+
+      begin
+        doc = Nokogiri::HTML(URI.open(url))
+      rescue OpenURI::HTTPError => e
+        puts "Can't access #{ url }"
+        puts e.message
+        puts
+        next
+      end
+
+
       doc.css('article div div h2.title.title--small a').map do |link|
         articles_url_cherouk << link['href']
       end
@@ -655,7 +667,14 @@ div.nobreak { page-break-inside: avoid; }
     end
     articles_url_cherouk_after_check = articles_url_cherouk - list_articles_url
     articles_url_cherouk_after_check.map do |link|
-      article = Nokogiri::HTML(URI.open(link))
+      begin
+        article = Nokogiri::HTML(URI.open(link))
+      rescue OpenURI::HTTPError => e
+        puts "Can't access #{ link }"
+        puts e.message
+        puts
+        next
+      end
       new_article = Article.new
       new_article.url_article = link
       new_article.medium_id = @media.id
@@ -686,14 +705,31 @@ div.nobreak { page-break-inside: avoid; }
       |link| link['href']
       end
       new_article.url_image = url_array[0]
-      new_article.image = Down.download(url_array[0]) if url_array[0].present?
+
+
+      # new_article.image = Down.download(url_array[0]) if url_array[0].present?
+
+      begin
+        new_article.image = Down.download(url_array[0]) if url_array[0].present?
+      rescue Down::ResponseError => e
+        puts "Can't download this image #{ url_array[0] }"
+        puts e.message
+        puts
+        new_article.image = nil
+      end
+
+
+
       tags_array = article.css('div.article-core__tags a').map(&:text)
       # new_article.media_tags = tags_array.join(',')
       new_article.status = 'pending'
       new_article.save!
+      if new_article.save
+        count += 1
+      end
       tag_check_and_save(tags_array)if @media.tag_status == true
     end
-    render json: { crawling_status_elcherouk: 'ok' }
+    render json: { crawling_count_elcherouk:  count  }
   end
   # end method to get elcherouk articles
 
