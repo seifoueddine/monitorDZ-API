@@ -701,18 +701,16 @@ div.nobreak { page-break-inside: avoid; }
       new_article.author_id = new_author.id
       new_article.body = article.css('article div.ech-artx').inner_html
       new_article.date_published = DateTime.parse article.css('article.ech-sgmn__article time').text
-      url_array = article.css('article.ech-sgmn figure.ech-sgmn__figure img').map do
-      |link| link['srcset']
-      end
-      new_article.url_image = url_array[0]
-      a = 1
+
+      url_array = article.at_css('article.ech-sgmn__article img').attr('data-src')
+      new_article.url_image = url_array
 
       # new_article.image = Down.download(url_array[0]) if url_array[0].present?
 
       begin
-        new_article.image = Down.download(url_array[0]) if url_array[0].present?
+        new_article.image = Down.download(url_array) if url_array.present?
       rescue Down::ResponseError => e
-        puts "Can't download this image #{ url_array[0] }"
+        puts "Can't download this image #{ url_array}"
         puts e.message
         puts
         new_article.image = nil
