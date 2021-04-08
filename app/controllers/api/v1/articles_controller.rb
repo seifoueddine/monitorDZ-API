@@ -700,8 +700,8 @@ div.nobreak { page-break-inside: avoid; }
       end
       new_article.author_id = new_author.id
       new_article.body = article.css('article div.ech-artx').inner_html
-      new_article.date_published = DateTime.parse article.css('article time').text
-      url_array = article.css('article figure.ech-sgmn__figure img').map do
+      new_article.date_published = DateTime.parse article.css('article.ech-sgmn__article time').text
+      url_array = article.css('article.ech-sgmn figure.ech-sgmn__figure img').map do
       |link| link['srcset']
       end
       new_article.url_image = url_array[0]
