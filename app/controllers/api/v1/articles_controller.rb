@@ -707,7 +707,7 @@ div.nobreak { page-break-inside: avoid; }
       new_article.body = article.css('article div.ech-artx').inner_html
       new_article.date_published = DateTime.parse article.css('article.ech-sgmn__article time').text
 
-      url_array = article.at_css('article.ech-sgmn__article figure img').attr('data-src')
+      url_array = article.at_css('article.ech-sgmn__article figure img').attr('data-src') unless article.at_css('article.ech-sgmn__article figure img').nil?
       new_article.url_image = url_array
 
       # new_article.image = Down.download(url_array[0]) if url_array[0].present?
@@ -715,7 +715,7 @@ div.nobreak { page-break-inside: avoid; }
       begin
         new_article.image = Down.download(url_array) if url_array.present?
       rescue Down::ResponseError => e
-        puts "Can't download this image #{ url_array}"
+        puts "Can't download this image #{url_array}"
         puts e.message
         puts
         new_article.image = nil
