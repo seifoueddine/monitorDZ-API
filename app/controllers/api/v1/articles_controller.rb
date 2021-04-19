@@ -1140,7 +1140,7 @@ div.nobreak { page-break-inside: avoid; }
       new_article.url_article = link
       new_article.medium_id = @media.id
       new_article.language = @media.language
-      category = article.css('aside ul li a').text
+      category = article.css('aside ul.list-details li a').text
       new_article.category_article = category
       new_article.title = article.css('header.heading-article h1').text
 
@@ -1171,7 +1171,7 @@ div.nobreak { page-break-inside: avoid; }
       end
 
       new_article.date_published = get_dates[0].to_datetime.change({ hour: 0, min: 0, sec: 0 })
-      url_array = article.css('article.module-article section figure img').map { |link| link['src'] }
+      url_array = article.css('article.module-article section figure img.blur.lazyloaded').map { |link| link['src'] }
       new_article.url_image = url_array[0]
       new_article.image = Down.download(url_array[0]) if url_array[0].present?
       new_article.status = 'pending'
