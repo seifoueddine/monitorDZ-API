@@ -1146,7 +1146,7 @@ div.nobreak { page-break-inside: avoid; }
 
 
       if article.at('p.text-muted').nil?
-        author_exist = Author.where(['lower(name) like ? ', ('Elmoudjahid auteur').downcase ])
+        author_exist = Author.where(['lower(name) like ? ', ('Elmoudjahid-fr auteur').downcase ])
       else
         author_exist = Author.where(['lower(name) like ? ',
                                      article.at('p.text-muted').text.downcase ])
@@ -1155,7 +1155,7 @@ div.nobreak { page-break-inside: avoid; }
       new_author = Author.new
       if author_exist.count.zero?
 
-        new_author.name = article.at('p.text-muted').nil? ? 'Elmoudjahid auteur' : article.at('p.text-muted').text
+        new_author.name = article.at('p.text-muted').nil? ? 'Elmoudjahid-fr auteur' : article.at('p.text-muted').text
         new_author.medium_id = @media.id
         new_author.save!
       else
@@ -1242,7 +1242,7 @@ div.nobreak { page-break-inside: avoid; }
 
 
       if article.at('p.text-muted').nil?
-        author_exist = Author.where(['lower(name) like ? ', ('Elmoudjahid-fr auteur').downcase ])
+        author_exist = Author.where(['lower(name) like ? ', ('Elmoudjahid auteur').downcase ])
       else
         author_exist = Author.where(['lower(name) like ? ',
                                      article.at('p.text-muted').text.downcase ])
@@ -1251,7 +1251,7 @@ div.nobreak { page-break-inside: avoid; }
       new_author = Author.new
       if author_exist.count.zero?
 
-        new_author.name = article.at('p.text-muted').nil? ? 'Elmoudjahid-fr auteur' : article.at('p.text-muted').text
+        new_author.name = article.at('p.text-muted').nil? ? 'Elmoudjahid auteur' : article.at('p.text-muted').text
         new_author.medium_id = @media.id
         new_author.save!
       else
