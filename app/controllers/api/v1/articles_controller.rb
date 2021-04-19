@@ -223,7 +223,7 @@ div.nobreak { page-break-inside: avoid; }
               <td align="center" valign="center">
                 <p
                   style="font-size: 12px;line-height: 1; color:#909090; margin-top:0px; margin-bottom:5px; ">
-                  PDF généré par MediaDZ app le ' + Date.today.strftime("%d - %m - %Y") + '
+                  PDF généré par MediaDZ app le ' + Date.today.strftime('%d - %m - %Y') + '
                 </p>
                 <p style="font-size: 12px; line-height:1; color:#909090;  margin-top:5px; margin-bottom:5px;">
                   <a href="#" style="color: #00365a;text-decoration:none;">Alger</a> , <a href="#"
@@ -289,7 +289,7 @@ div.nobreak { page-break-inside: avoid; }
               <td align="center" valign="center">
                 <p
                   style="font-size: 12px;line-height: 1; color:#909090; margin-top:0px; margin-bottom:5px; ">
-                  PDF généré par MediaDZ app le ' + Date.today.strftime("%d - %m - %Y") + '
+                  PDF généré par MediaDZ app le ' + Date.today.strftime('%d - %m - %Y') + '
                 </p>
                 <p style="font-size: 12px; line-height:1; color:#909090;  margin-top:5px; margin-bottom:5px;">
                   <a href="#" style="color: #00365a;text-decoration:none;">Alger</a> , <a href="#"
@@ -898,7 +898,7 @@ div.nobreak { page-break-inside: avoid; }
       new_article.url_article = link
       new_article.medium_id = @media.id
       new_article.language = @media.language
-      new_article.category_article = article.css('nav.wrap.t3-navhelper > div > ol > li a').text == "" ? article.css('body > div.t3-wrapper > nav.wrap.t3-navhelper > div > ol > li:nth-child(2) > span').text : article.css('nav.wrap.t3-navhelper > div > ol > li a').text
+      new_article.category_article = article.css('nav.wrap.t3-navhelper > div > ol > li a').text == '' ? article.css('body > div.t3-wrapper > nav.wrap.t3-navhelper > div > ol > li:nth-child(2) > span').text : article.css('nav.wrap.t3-navhelper > div > ol > li a').text
       new_article.title = article.css('div.itemHeader h2.itemTitle').text
       # new_article.author = article.css('div.article-head__author div em a').text
 
@@ -1090,7 +1090,6 @@ div.nobreak { page-break-inside: avoid; }
   # start method to get elmoudjahid articles
   def get_articles_elmoudjahid_fr(url_media_array)
     articles_url_elmoudjahid = []
-    articles_url_elmoudjahid6 = []
     last_dates = []
     new_last_dates = []
     count = 0
@@ -1110,7 +1109,7 @@ div.nobreak { page-break-inside: avoid; }
         # end
       # last_dates << first_date.split(':')[0].to_datetime
       doc.css('article ul li ul li').map do |date|
-        last_dates << date.text unless date.text.include? ":"
+        last_dates << date.text unless date.text.include? ':'
       end
       last_dates.first(12).map do |date|
         new_last_dates << date.to_datetime
@@ -1140,7 +1139,7 @@ div.nobreak { page-break-inside: avoid; }
       new_article.url_article = link
       new_article.medium_id = @media.id
       new_article.language = @media.language
-      category = article.css('aside ul.list-details li a').text
+      category = article.css('aside ul.list-details li.text-uppercase a').text
       new_article.category_article = category
       new_article.title = article.css('header.heading-article h1').text
 
@@ -1167,13 +1166,13 @@ div.nobreak { page-break-inside: avoid; }
       get_dates = []
 
       article.css('aside ul li.text-uppercase ul li').map do |date|
-        get_dates << date.text unless date.text.include? ":"
+        get_dates << date.text unless date.text.include? ':'
       end
 
       new_article.date_published = get_dates[0].to_datetime.change({ hour: 0, min: 0, sec: 0 })
-      url_array = article.css('article.module-article section figure img.blur.lazyloaded').map { |link| link['src'] }
-      new_article.url_image = url_array[0]
-      new_article.image = Down.download(url_array[0]) if url_array[0].present?
+      url_array = article.css('article section figure img').attr('data-src')
+      new_article.url_image = url_array
+      new_article.image = Down.download(url_array) if url_array.present?
       new_article.status = 'pending'
       new_article.save!
       count += 1 if new_article.save
@@ -1317,17 +1316,17 @@ div.nobreak { page-break-inside: avoid; }
       end
       # new_article.author = article.css('div.article-head__author div em a').text
 
-      if article.at("div.subinfo b").text.nil?
+      if article.at('div.subinfo b').text.nil?
         author_exist = Author.where(['lower(name) like ? ', ('Elkhabar auteur').downcase ])
       else
         author_exist = Author.where(['lower(name) like ? ',
-                                     article.at("div.subinfo b").text.downcase ])
+                                     article.at('div.subinfo b').text.downcase ])
       end
 
       new_author = Author.new
       if author_exist.count.zero?
 
-        new_author.name = article.at("div.subinfo b").text.nil? ? 'Elkhabar auteur' : article.at("div.subinfo b").text
+        new_author.name = article.at('div.subinfo b').text.nil? ? 'Elkhabar auteur' : article.at('div.subinfo b').text
         new_author.medium_id = @media.id
         new_author.save!
       else
