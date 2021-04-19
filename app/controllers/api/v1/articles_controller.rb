@@ -535,7 +535,7 @@ div.nobreak { page-break-inside: avoid; }
     when 'ELMOUDJAHID'
       get_articles_elmoudjahid(url_media_array)
     when 'ELMOUDJAHID-FR'
-      get_articles_elmoudjahid(url_media_array)
+      get_articles_elmoudjahid_fr(url_media_array)
     when 'ELKHABAR'
       get_articles_elkhabar(url_media_array)
     when 'ELIKHABARIA'
@@ -707,7 +707,9 @@ div.nobreak { page-break-inside: avoid; }
       new_article.body = article.css('article div.ech-artx').inner_html
       new_article.date_published = DateTime.parse article.css('article.ech-sgmn__article time').text
 
-      url_array = article.at_css('article.ech-sgmn__article figure img').attr('data-src') unless article.at_css('article.ech-sgmn__article figure img').nil?
+      unless article.at_css('article.ech-sgmn__article figure img').nil?
+        url_array = article.at_css('article.ech-sgmn__article figure img').attr('data-src')
+      end
       new_article.url_image = url_array
 
       # new_article.image = Down.download(url_array[0]) if url_array[0].present?
@@ -727,9 +729,7 @@ div.nobreak { page-break-inside: avoid; }
       # new_article.media_tags = tags_array.join(',')
       new_article.status = 'pending'
       new_article.save!
-      if new_article.save
-        count += 1
-      end
+      count += 1 if new_article.save
       tag_check_and_save(tags_array)if @media.tag_status == true
     end
     render json: { crawling_count_elcherouk:  count  }
@@ -1088,57 +1088,61 @@ div.nobreak { page-break-inside: avoid; }
 
 
   # start method to get elmoudjahid articles
-  def get_articles_elmoudjahid(url_media_array)
+  def get_articles_elmoudjahid_fr(url_media_array)
     articles_url_elmoudjahid = []
     articles_url_elmoudjahid6 = []
     last_dates = []
+    new_last_dates = []
+    count = 0
     url_media_array.map do |url|
       doc = Nokogiri::HTML(URI.open(url))
-      doc.css('#main > div.UnCat > ul > li:nth-child(1) > h1 > a').map do |link|
+      doc.css('article ul li h2 a').map do |link|
         articles_url_elmoudjahid << link['href'] # if link['class'] == 'main_article'
       end
-      doc.css('#main > div.UnCat > div > ul > li > a').map do |link|
-        articles_url_elmoudjahid6 << link['href'] # if link['class'] == 'main_article'
+      # doc.css('#main > div.UnCat > div > ul > li > a').map do |link|
+        # articles_url_elmoudjahid6 << link['href'] # if link['class'] == 'main_article'
+        # end
+      # doc.css('#main > div.CBox > div > h4 > a').map do |link|
+        # articles_url_elmoudjahid << link['href'] # if link['class'] == 'main_article'
+        #  end
+      # if doc.at('li p')['style'] == 'width: 520px;'
+        #  first_date = doc.at('li p span').text
+        # end
+      # last_dates << first_date.split(':')[0].to_datetime
+      doc.css('article ul li ul li').map do |date|
+        last_dates << date.text unless date.text.include? ":"
       end
-      doc.css('#main > div.CBox > div > h4 > a').map do |link|
-        articles_url_elmoudjahid << link['href'] # if link['class'] == 'main_article'
-      end
-      if doc.at('li p')['style'] == 'width: 520px;'
-        first_date = doc.at('li p span').text
-      end
-      last_dates << first_date.split(':')[0].to_datetime
-      doc.css('div.ModliArtilUne span').map do |date|
-        last_dates << date.text.split(':')[0].to_datetime
+      last_dates.first(12).map do |date|
+        new_last_dates << date.to_datetime
       end
     end
     # last_dates = last_dates.map { |d| change_date_maghrebemergen(d) }
     # last_dates = last_dates.map { |d| d.to_datetime.change({ hour: 0, min: 0, sec: 0 })}
     articles_url_elmoudjahid = articles_url_elmoudjahid.reject(&:nil?)
-    last_dates = last_dates.uniq
+    last_dates = new_last_dates.uniq
     last_articles = Article.where(medium_id: @media.id).where(date_published: last_dates)
 
     list_articles_url = []
     last_articles.map do |article|
       list_articles_url << article.url_article
     end
-    articles_url_elmoudjahid_after_check = articles_url_elmoudjahid - list_articles_url
+      articles_url_elmoudjahid_after_check = articles_url_elmoudjahid - list_articles_url
 
-    articles_url_elmoudjahid6.map do |article|
+    #  articles_url_elmoudjahid6.map do |article|
 
-      if Article.where(medium_id: @media.id).where(url_article: article)[0].nil?
-        articles_url_elmoudjahid_after_check << article
-      end
-    end
+      #   if Article.where(medium_id: @media.id).where(url_article: article)[0].nil?
+        #   articles_url_elmoudjahid_after_check << article
+        #  end
+      #  end
     articles_url_elmoudjahid_after_check.map do |link|
       article = Nokogiri::HTML(URI.open(link))
       new_article = Article.new
       new_article.url_article = link
       new_article.medium_id = @media.id
       new_article.language = @media.language
-      category = article.css('#contenu > div.path > ul > li:nth-child(3)').text
-      category['>'] = ''
+      category = article.css('aside ul li a').text
       new_article.category_article = category
-      new_article.title = article.css('div.At h1 a').text
+      new_article.title = article.css('header.heading-article h1').text
 
 
       if article.at('p.text-muted').nil?
@@ -1159,16 +1163,23 @@ div.nobreak { page-break-inside: avoid; }
         new_author.name = author_exist.first.name
       end
       new_article.author_id = new_author.id
-      new_article.body = article.css('#text_article').inner_html
-      new_article.date_published = article.css('#contenu > div.At > span').text.split(':')[1].to_datetime.change({ hour: 0, min: 0, sec: 0 })
-      url_array = article.css('#articlecontent > div.TxArtcile > div.ImgCapt > img').map { |link| link['src'] }
+      new_article.body = article.css('article.module-article section').inner_html
+      get_dates = []
+
+      article.css('aside ul li.text-uppercase ul li').map do |date|
+        get_dates << date.text unless date.text.include? ":"
+      end
+
+      new_article.date_published = get_dates[0].to_datetime.change({ hour: 0, min: 0, sec: 0 })
+      url_array = article.css('article.module-article section figure img').map { |link| link['src'] }
       new_article.url_image = url_array[0]
       new_article.image = Down.download(url_array[0]) if url_array[0].present?
       new_article.status = 'pending'
       new_article.save!
+      count += 1 if new_article.save
       # tag_check_and_save(tags_array)
     end
-    render json: { crawling_status_aps: 'ok' }
+    render json: { crawling_count_aps: count }
   end
   # end method to get elmoudjahid articles
   # start method to get elmoudjahid_fr articles
@@ -1177,7 +1188,7 @@ div.nobreak { page-break-inside: avoid; }
   #
 
 
-  def get_articles_elmoudjahid_fr(url_media_array)
+  def get_articles_elmoudjahid(url_media_array)
     articles_url_elmoudjahid = []
     articles_url_elmoudjahid6 = []
     last_dates = []
@@ -1298,8 +1309,12 @@ div.nobreak { page-break-inside: avoid; }
       new_article.url_article = link
       new_article.medium_id = @media.id
       new_article.language = @media.language
-      new_article.category_article = article.css('div#article_info a').text if article.css('div#article_info a').present?
-      new_article.title = article.css('div.stuff_container h2').text if article.css('div.stuff_container h2').present?
+      if article.css('div#article_info a').present?
+        new_article.category_article = article.css('div#article_info a').text
+      end
+      if article.css('div.stuff_container h2').present?
+        new_article.title = article.css('div.stuff_container h2').text
+      end
       # new_article.author = article.css('div.article-head__author div em a').text
 
       if article.at("div.subinfo b").text.nil?
@@ -1328,7 +1343,9 @@ div.nobreak { page-break-inside: avoid; }
       date = article.at('time[datetime]')['datetime']
       # d = change_date_maghrebemergen(date)
       new_article.date_published = date.to_datetime.change({ hour: 0, min: 0, sec: 0 })
-      url_array = article.css('div#article_img img').map { |link| 'https://www.elkhabar.com' + link['src'] } if article.css('div#article_img img').present?
+      if article.css('div#article_img img').present?
+        url_array = article.css('div#article_img img').map { |link| 'https://www.elkhabar.com' + link['src'] }
+      end
       url_image = url_array[0]
       begin
         new_article.image = Down.download(url_array[0]) if url_array[0].present?
@@ -1338,7 +1355,9 @@ div.nobreak { page-break-inside: avoid; }
         puts
         new_article.image = nil
       end
-      tags_array = article.css('div#article_tags_title').map(&:text) if article.css('div#article_tags_title').present?
+      if article.css('div#article_tags_title').present?
+        tags_array = article.css('div#article_tags_title').map(&:text)
+      end
       # new_article.media_tags = tags_array.join(',')
       new_article.status = 'pending'
       new_article.save!
