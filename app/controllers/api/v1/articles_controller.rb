@@ -1107,8 +1107,8 @@ div.nobreak { page-break-inside: avoid; }
     # date = article.at('p.text-capitalize span').text
     # date[','] = ''
     date = article.at('div.elementor-widget-container ul li a span.elementor-icon-list-text.elementor-post-info__item.elementor-post-info__item--type-date').text
-    # d = change_date_maghrebemergen(date)
-    new_article.date_published = date.to_datetime.change({ hour: 0, min: 0, sec: 0 })
+    d = change_date_maghrebemergen(date)
+    new_article.date_published = d.to_datetime.change({ hour: 0, min: 0, sec: 0 })
     url_array = article.css('div.elementor-element.elementor-element-c05ee34.elementor-widget.elementor-widget-theme-post-featured-image.elementor-widget-image div div img').map  { |link| link['src'] }
     new_article.url_image = url_array[0]
     begin
