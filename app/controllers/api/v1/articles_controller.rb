@@ -790,7 +790,14 @@ div.nobreak { page-break-inside: avoid; }
       new_article.date_published = article.at('time[datetime]')['datetime'].to_datetime.change({ hour: 0, min: 0, sec: 0 }) + (1.0 / 24)
       url_array = article.css('body > div.article-section > div > div.article-section__main.wrap__main > article > div.full-article__featured-image > img').map { |link| link['src'] }
       new_article.url_image = url_array[0]
-      new_article.image = Down.download(url_array[0]) if url_array[0].present?
+      begin
+        new_article.image = Down.download(url_array[0]) if url_array[0].present?
+      rescue Down::Error => e
+        puts "Can't download this image #{ url_array[0] }"
+        puts e.message
+        puts
+        new_article.image = nil
+      end
       # tags_array = article.css('div.article-core__tags a').map(&:text)
       # new_article.media_tags = tags_array.join(',')
       new_article.status = 'pending'
@@ -857,7 +864,14 @@ div.nobreak { page-break-inside: avoid; }
       new_article.date_published = article.at('time[datetime]')['datetime'].to_datetime
       url_array = article.css('body > div.article-section > div > div.article-section__main.wrap__main > article > div.full-article__featured-image > img').map { |link| link['src'] }
       new_article.url_image = url_array[0]
+ begin
       new_article.image = Down.download(url_array[0]) if url_array[0].present?
+    rescue Down::Error => e
+      puts "Can't download this image #{ url_array[0] }"
+      puts e.message
+      puts
+      new_article.image = nil
+    end
       # tags_array = article.css('div.article-core__tags a').map(&:text)
       # new_article.media_tags = tags_array.join(',')
       new_article.status = 'pending'
@@ -1014,7 +1028,14 @@ div.nobreak { page-break-inside: avoid; }
       new_article.date_published = auteur_date[0]
       url_array = article.css('#post_banner img').map { |link| link['src'] }
       new_article.url_image = url_array[0]
+ begin
       new_article.image = Down.download(url_array[0]) if url_array[0].present?
+    rescue Down::Error => e
+      puts "Can't download this image #{ url_array[0] }"
+      puts e.message
+      puts
+      new_article.image = nil
+    end
       tags_array = article.css('#tags a').map(&:text)
       # new_article.media_tags = tags_array.join(',')
       new_article.status = 'pending'
@@ -1090,7 +1111,14 @@ div.nobreak { page-break-inside: avoid; }
     new_article.date_published = date.to_datetime.change({ hour: 0, min: 0, sec: 0 })
     url_array = article.css('div.elementor-element.elementor-element-c05ee34.elementor-widget.elementor-widget-theme-post-featured-image.elementor-widget-image div div img').map  { |link| link['src'] }
     new_article.url_image = url_array[0]
-    new_article.image = Down.download(url_array[0]) if url_array[0].present?
+    begin
+      new_article.image = Down.download(url_array[0]) if url_array[0].present?
+    rescue Down::Error => e
+      puts "Can't download this image #{ url_array[0] }"
+      puts e.message
+      puts
+      new_article.image = nil
+    end
     # tags_array = article.css('ul.itemTags li').map(&:text)
     # new_article.media_tags = tags_array.join(',')
     new_article.status = 'pending'
@@ -1278,7 +1306,14 @@ div.nobreak { page-break-inside: avoid; }
       new_article.date_published = article.css('#contenu > div.At > span').text.split(':')[1].to_datetime.change({ hour: 0, min: 0, sec: 0 })
       url_array = article.css('#articlecontent > div.TxArtcile > div.ImgCapt > img').map { |link| link['src'] }
       new_article.url_image = url_array[0]
+ begin
       new_article.image = Down.download(url_array[0]) if url_array[0].present?
+    rescue Down::Error => e
+      puts "Can't download this image #{ url_array[0] }"
+      puts e.message
+      puts
+      new_article.image = nil
+    end
       new_article.status = 'pending'
       new_article.save!
       # tag_check_and_save(tags_array)
@@ -1940,7 +1975,14 @@ div.nobreak { page-break-inside: avoid; }
       new_article.date_published = date.to_datetime.change({ hour: 0, min: 0, sec: 0})
       url_array = article.css('div.single-post-thumb  img').map { |link| link['src'] }
       url_image = url_array[0]
+ begin
       new_article.image = Down.download(url_array[0]) if url_array[0].present?
+    rescue Down::Error => e
+      puts "Can't download this image #{ url_array[0] }"
+      puts e.message
+      puts
+      new_article.image = nil
+    end
       # tags_array = article.css('div.entry-terms a').map(&:text)
       # new_article.media_tags = tags_array.join(',')
       new_article.status = 'pending'
