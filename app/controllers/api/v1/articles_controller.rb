@@ -883,7 +883,7 @@ div.nobreak { page-break-inside: avoid; }
       end
     end
     last_dates = last_dates.map { |d| change_date_autobip_aps(d) }
-    last_dates = last_dates.map{ |d| d.to_datetime.change({ hour: 0, min: 0, sec: 0 })}
+    last_dates = last_dates.map{ |d| d.to_datetime.beginning_of_day}
     # last_dates = last_dates.map(&:to_datetime.change({ hour: 0, min: 0, sec: 0 }))
     articles_url_aps = articles_url_aps.reject(&:nil?)
     last_dates = last_dates.uniq
@@ -894,7 +894,14 @@ div.nobreak { page-break-inside: avoid; }
     end
     articles_url_aps_after_check = articles_url_aps - list_articles_url
     articles_url_aps_after_check.map do |link|
-      article = Nokogiri::HTML(URI.open(link))
+      begin
+        article = Nokogiri::HTML(URI.open(link))
+      rescue OpenURI::HTTPError => e
+        puts "Can't access #{ link }"
+        puts e.message
+        puts
+        next
+      end
       new_article = Article.new
       new_article.url_article = link
       new_article.medium_id = @media.id
@@ -927,11 +934,18 @@ div.nobreak { page-break-inside: avoid; }
       date = article.css('span.itemDateCreated').text
       date['Publié le : '] = ''
       d = change_date_autobip_aps(date)
-      new_article.date_published = d.to_datetime.change({ hour: 0, min: 0, sec: 0 })
+      new_article.date_published = d.to_datetime.beginning_of_day
       # new_article.date_published =
       url_array = article.css('div.itemImageBlock span.itemImage img').map { |link| 'http://www.aps.dz' + link['src'] }
       new_article.url_image = url_array[0]
-      new_article.image = Down.download(url_array[0]) if url_array[0].present?
+      begin
+        new_article.image = Down.download(url_array[0]) if url_array[0].present?
+      rescue Down::Error => e
+        puts "Can't download this image #{ url_array[0] }"
+        puts e.message
+        puts
+        new_article.image = nil
+      end
       tags_array = article.css('ul.itemTags li').map(&:text)
       # new_article.media_tags = tags_array.join(',')
       new_article.status = 'pending'
@@ -1304,7 +1318,14 @@ div.nobreak { page-break-inside: avoid; }
     end
     articles_url_elkhabar_after_check = articles_url_elkhabar - list_articles_url
     articles_url_elkhabar_after_check.map do |link|
-      article = Nokogiri::HTML(URI.open(link))
+      begin
+        article = Nokogiri::HTML(URI.open(link))
+      rescue OpenURI::HTTPError => e
+        puts "Can't access #{ link }"
+        puts e.message
+        puts
+        next
+      end
       new_article = Article.new
       new_article.url_article = link
       new_article.medium_id = @media.id
