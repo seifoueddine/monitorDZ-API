@@ -883,7 +883,7 @@ div.nobreak { page-break-inside: avoid; }
       end
     end
     last_dates = last_dates.map { |d| change_date_autobip_aps(d) }
-    last_dates = last_dates.map{ |d| d.to_datetime.beginning_of_day}
+    last_dates = last_dates.map{ |d| d.to_datetime.change({ hour: 0, min: 0, sec: 0 })}
     # last_dates = last_dates.map(&:to_datetime.change({ hour: 0, min: 0, sec: 0 }))
     articles_url_aps = articles_url_aps.reject(&:nil?)
     last_dates = last_dates.uniq
@@ -934,7 +934,7 @@ div.nobreak { page-break-inside: avoid; }
       date = article.css('span.itemDateCreated').text
       date['Publié le : '] = ''
       d = change_date_autobip_aps(date)
-      new_article.date_published = d.to_datetime.beginning_of_day
+      new_article.date_published = d.to_datetime.change({ hour: 0, min: 0, sec: 0 })
       # new_article.date_published =
       url_array = article.css('div.itemImageBlock span.itemImage img').map { |link| 'http://www.aps.dz' + link['src'] }
       new_article.url_image = url_array[0]
@@ -1024,8 +1024,8 @@ div.nobreak { page-break-inside: avoid; }
     render json: { crawling_status_aps: 'ok' }
   end
   # end method to get bilad articles
-
-
+  #
+  #
 
   # start method to get maghrebemergent articles
   def get_articles_maghrebemergent(url_media_array)
@@ -1033,11 +1033,11 @@ div.nobreak { page-break-inside: avoid; }
     last_dates = []
     url_media_array.map do |url|
       doc = Nokogiri::HTML(URI.open(url))
-      doc.css('h4.entry-title a').map do |link|
+      doc.css('article a.elementor-post__thumbnail__link').map do |link|
 
-        articles_url_maghrebemergent <<  link['href']
+        articles_url_maghrebemergent << link['href']
       end
-      doc.css('span.date').map do |date|
+      doc.css('article div div span.elementor-post-date').map do |date|
         last_dates << date.text
       end
     end
@@ -1057,21 +1057,21 @@ div.nobreak { page-break-inside: avoid; }
     new_article.url_article = link
     new_article.medium_id = @media.id
     new_article.language = @media.language
-    new_article.category_article = article.css('span.post-category').text
-    new_article.title = article.css('h1.page-title').text
+    new_article.category_article = article.at('div.elementor-widget-container ul li span span.elementor-post-info__terms-list a').text
+    new_article.title = article.css('h1.elementor-heading-title.elementor-size-small').text
     # new_article.author = article.css('div.article-head__author div em a').text
 
-    if article.at('p.text-muted').nil?
+    if article.at('div.elementor-widget-container ul li a span.elementor-icon-list-text elementor-post-info__item elementor-post-info__item--type-author').nil?
       author_exist = Author.where(['lower(name) like ? ', ('Maghrebemergent auteur').downcase ])
     else
       author_exist = Author.where(['lower(name) like ? ',
-                                   article.at('p.text-muted').text.downcase ])
+                                   article.at('div.elementor-widget-container ul li a span.elementor-icon-list-text elementor-post-info__item elementor-post-info__item--type-author').text.downcase ])
     end
 
     new_author = Author.new
     if author_exist.count.zero?
 
-      new_author.name = article.at('p.text-muted').nil? ? 'Maghrebemergent auteur' : article.at('p.text-muted').text
+      new_author.name = article.at('div.elementor-widget-container ul li a span.elementor-icon-list-text elementor-post-info__item elementor-post-info__item--type-author').nil? ? 'Maghrebemergent auteur' : article.at('div.elementor-widget-container ul li a span.elementor-icon-list-text elementor-post-info__item elementor-post-info__item--type-author').text
       new_author.medium_id = @media.id
       new_author.save!
     else
@@ -1081,13 +1081,14 @@ div.nobreak { page-break-inside: avoid; }
 
     end
     new_article.author_id = new_author.id
-    new_article.body = article.css('section.entry.pad-2').inner_html
+    new_article.body = article.css('div.elementor-element.elementor-element-c93088c.elementor-widget.elementor-widget-theme-post-content').inner_html
+
     # date = article.at('p.text-capitalize span').text
     # date[','] = ''
-    date = article.at('p.text-capitalize span').text
-    d = change_date_maghrebemergen(date)
-    new_article.date_published = d.to_datetime.change({ hour: 0, min: 0, sec: 0 })
-    url_array = article.css('div.entry-img img').map  { |link| link['data-lazy-src'] }
+    date = article.at('div.elementor-widget-container ul li a span.elementor-icon-list-text.elementor-post-info__item.elementor-post-info__item--type-date').text
+    # d = change_date_maghrebemergen(date)
+    new_article.date_published = date.to_datetime.change({ hour: 0, min: 0, sec: 0 })
+    url_array = article.css('div.elementor-element.elementor-element-c05ee34.elementor-widget.elementor-widget-theme-post-featured-image.elementor-widget-image div div img').map  { |link| link['src'] }
     new_article.url_image = url_array[0]
     new_article.image = Down.download(url_array[0]) if url_array[0].present?
     # tags_array = article.css('ul.itemTags li').map(&:text)
