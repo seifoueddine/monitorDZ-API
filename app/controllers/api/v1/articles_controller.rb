@@ -547,6 +547,10 @@ div.nobreak { page-break-inside: avoid; }
       get_articles_chiffreaffaire(url_media_array)
     when 'ELHIWAR'
       get_articles_elhiwar(url_media_array)
+    when 'LE SOIR'
+      get_articles_le_soir(url_media_array)
+    when 'LIBERTE'
+      get_articles_liberte(url_media_array)
     when 'VISAALGERIE'
       get_articles_visadz(url_media_array)
     when 'SANTENEWS'
@@ -969,6 +973,193 @@ div.nobreak { page-break-inside: avoid; }
     render json: { crawling_status_aps: 'ok' }
   end
   # end method to get APS articles
+
+
+
+  # start method to get le soir articles
+  def get_articles_le_soir(url_media_array)
+    articles_url_le_soir = []
+    last_dates = []
+    url_media_array.map do |url|
+      doc = Nokogiri::HTML(URI.open(url))
+      doc.css('div.description a').map do |link|
+        articles_url_le_soir << 'https://www.lesoirdalgerie.com' + link['href']# if link['class'] == 'main_article'
+      end
+      doc.css('div.description div.type-date').map do |date|
+        last_dates << date.text
+      end
+    end
+    last_dates = last_dates.map { |d| change_date_autobip_aps(d) }
+    last_dates = last_dates.map{ |d| d.to_datetime.change({ hour: 0, min: 0, sec: 0 })}
+    # last_dates = last_dates.map(&:to_datetime.change({ hour: 0, min: 0, sec: 0 }))
+    articles_url_le_soir = articles_url_le_soir.reject(&:nil?)
+    last_dates = last_dates.uniq
+    last_articles = Article.where(medium_id: @media.id).where(date_published: last_dates)
+    list_articles_url = []
+    last_articles.map do |article|
+      list_articles_url << article.url_article
+    end
+    articles_url_le_soir_after_check = articles_url_le_soir - list_articles_url
+    articles_url_le_soir_after_check.map do |link|
+      begin
+        article = Nokogiri::HTML(URI.open(link))
+      rescue OpenURI::HTTPError => e
+        puts "Can't access #{ link }"
+        puts e.message
+        puts
+        next
+      end
+      new_article = Article.new
+      new_article.url_article = link
+      new_article.medium_id = @media.id
+      new_article.language = @media.language
+      new_article.category_article = article.css('div.content div div.title-category').text
+      new_article.title = article.css('div.article-content div div h1 span.grey-text').text + ' : ' + article.css('div.article-content div div h1 span.black-text').text
+      # new_article.author = article.css('div.article-head__author div em a').text
+       anchor = []
+      article.css('div.published').each do |header|
+        anchor << header.text
+
+      end
+      if article.at('div.category-content div div.published a').nil?
+        author_exist = Author.where(['lower(name) like ? ', ('Le soir auteur').downcase ])
+      else
+        author_exist = Author.where(['lower(name) like ? ',
+                                     article.at('div.category-content div div a').text.downcase ])
+      end
+
+      new_author = Author.new
+      if author_exist.count.zero?
+
+        new_author.name = article.at('div.category-content div div a').nil? ? 'Le soir auteur' : article.at('div.category-content div div a').text
+        new_author.medium_id = @media.id
+        new_author.save!
+      else
+
+        new_author.id = author_exist.first.id
+        new_author.name = author_exist.first.name
+
+      end
+      new_article.author_id = new_author.id
+      new_article.body = article.css('div.article-content div.text').inner_html
+      date = article.css('div.category-content div div.published').text
+      date['le '] = ''
+      # d = change_date_autobip_aps(date)
+      new_article.date_published = date.to_datetime.change({ hour: 0, min: 0, sec: 0 })
+      # new_article.date_published =
+      url_array = article.css('div.article-details div.picture img').map { |link| 'https://www.lesoirdalgerie.com' + link['src'] }
+      new_article.url_image = url_array[0]
+      begin
+        new_article.image = Down.download(url_array[0]) if url_array[0].present?
+      rescue Down::Error => e
+        puts "Can't download this image #{ url_array[0] }"
+        puts e.message
+        puts
+        new_article.image = nil
+      end
+      #tags_array = article.css('ul.itemTags li').map(&:text)
+      # new_article.media_tags = tags_array.join(',')
+      new_article.status = 'pending'
+      new_article.save!
+        #tag_check_and_save(tags_array)if @media.tag_status == true
+    end
+    render json: { crawling_status_le_soir: 'ok' }
+  end
+  # end method to get le soir articles
+
+
+
+
+  # start method to get _liberte articles
+  def get_articles_liberte(url_media_array)
+    articles_url_liberte = []
+    last_dates = []
+    url_media_array.map do |url|
+      doc = Nokogiri::HTML(URI.open(url))
+      doc.css('div.right-side a.title').map do |link|
+        articles_url_liberte << 'https://www.liberte-algerie.com' + link['href']# if link['class'] == 'main_article'
+      end
+      doc.css('div.right-side div.date-heure span.date').map do |date|
+        last_dates << date.text
+      end
+    end
+    last_dates = last_dates.map { |d| change_date_autobip_aps(d) }
+    last_dates = last_dates.map{ |d| d.to_datetime.change({ hour: 0, min: 0, sec: 0 })}
+    # last_dates = last_dates.map(&:to_datetime.change({ hour: 0, min: 0, sec: 0 }))
+    articles_url_liberte = articles_url_liberte.reject(&:nil?)
+    last_dates = last_dates.uniq
+    last_articles = Article.where(medium_id: @media.id).where(date_published: last_dates)
+    list_articles_url = []
+    last_articles.map do |article|
+      list_articles_url << article.url_article
+    end
+    articles_url_liberte_after_check = articles_url_liberte - list_articles_url
+    articles_url_liberte_after_check.map do |link|
+      begin
+        article = Nokogiri::HTML(URI.open(link))
+      rescue OpenURI::HTTPError => e
+        puts "Can't access #{ link }"
+        puts e.message
+        puts
+        next
+      end
+      new_article = Article.new
+      new_article.url_article = link
+      new_article.medium_id = @media.id
+      new_article.language = @media.language
+      new_article.category_article = article.css('div#global div h3 strong').text
+      new_article.title = article.css('div#main-post span h4').text + ' : ' + article.css('div#main-post span h4').text
+      #  new_article.author = article.css('div.article-head__author div em a').text
+      if article.at('div#side-post div div p a').nil?
+        author_exist = Author.where(['lower(name) like ? ', ('Liberté auteur').downcase ])
+      else
+        author_exist = Author.where(['lower(name) like ? ',
+                                     article.at('div#side-post div div p a').text.downcase ])
+      end
+
+      new_author = Author.new
+      if author_exist.count.zero?
+
+        new_author.name = article.at('div#side-post div div p a').nil? ? 'Liberté auteur' : article.at('div#side-post div div p a').text.delete(' ')
+        new_author.medium_id = @media.id
+        new_author.save!
+      else
+
+        new_author.id = author_exist.first.id
+        new_author.name = author_exist.first.name
+
+      end
+      new_article.author_id = new_author.id
+      new_article.body = article.css('div#text_core').inner_html
+      date = article.css('div#side-post div div.date-heure span')[0].text.delete(' ')
+
+      # d = change_date_autobip_aps(date)
+      new_article.date_published = date.to_datetime.change({ hour: 0, min: 0, sec: 0 })
+      # new_article.date_published =
+      url_array = article.css('div.media img.post-image').map { |link|  link['src'] }
+      new_article.url_image = url_array[0]
+      begin
+        new_article.image = Down.download(url_array[0]) if url_array[0].present?
+      rescue Down::Error => e
+        puts "Can't download this image #{ url_array[0] }"
+        puts e.message
+        puts
+        new_article.image = nil
+      end
+      #tags_array = article.css('ul.itemTags li').map(&:text)
+      # new_article.media_tags = tags_array.join(',')
+      new_article.status = 'pending'
+      new_article.save!
+      #tag_check_and_save(tags_array)if @media.tag_status == true
+    end
+    render json: { crawling_status_liberte: 'ok' }
+  end
+  # end method to get _liberte articles
+
+
+
+
+
 
 
 
@@ -1830,7 +2021,14 @@ div.nobreak { page-break-inside: avoid; }
     articles_url_visadz = []
     last_dates = []
     url_media_array.map do |url|
-      doc = Nokogiri::HTML(URI.open(url))
+      begin
+        doc = Nokogiri::HTML(URI.open(url))
+      rescue OpenURI::HTTPError => e
+        puts "Can't access #{ url }"
+        puts e.message
+        puts
+        next
+      end
       doc.css('div.mnar__list > ul.d-f.fxw-w li article.arcd > a').map do |link|
 
 
@@ -1855,7 +2053,15 @@ div.nobreak { page-break-inside: avoid; }
     end
     articles_url_visadz_after_check = articles_url_visadz - list_articles_url
     articles_url_visadz_after_check.map do |link|
-      article = Nokogiri::HTML(URI.open(link))
+
+      begin
+        article = Nokogiri::HTML(URI.open(link))
+      rescue OpenURI::HTTPError => e
+        puts "Can't access #{ link }"
+        puts e.message
+        puts
+        next
+      end
       new_article = Article.new
       new_article.url_article = link
       new_article.medium_id = @media.id
