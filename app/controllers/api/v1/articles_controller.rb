@@ -1173,7 +1173,7 @@ div.nobreak { page-break-inside: avoid; }
         articles_url_bilad << 'http://www.elbilad.net' + link['href']
       end
       doc.css('span.date').map do |date|
-        last_dates << date.text
+        last_dates << date.text.to_datetime.change({ hour: 0, min: 0, sec: 0 })
       end
     end
     articles_url_bilad = articles_url_bilad.reject(&:nil?)
@@ -1216,7 +1216,7 @@ div.nobreak { page-break-inside: avoid; }
       new_article.author_id = new_author.id
       new_article.body = article.css('#flash_post_head p').inner_html + article.css('#text_space p').inner_html
 
-      new_article.date_published = auteur_date[0]
+      new_article.date_published = auteur_date[0].to_datetime.change({ hour: 0, min: 0, sec: 0 })
       url_array = article.css('#post_banner img').map { |link| link['src'] }
       new_article.url_image = url_array[0]
  begin
