@@ -352,7 +352,7 @@ DEPENDENCIES
   jsonapi-serializer
   kaminari
   lograge
-  nokogiri (>= 1.11.0)
+  nokogiri
   pg (>= 0.18, < 2.0)
   pry-rails
   puma (~> 4.1)
