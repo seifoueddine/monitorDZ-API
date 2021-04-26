@@ -8,7 +8,7 @@ gem 'rails', '~> 6.0.2', '>= 6.0.2.1'
 # Use postgresql as the database for Active Record
 gem 'pg', '>= 0.18', '< 2.0'
 # Use Puma as the app server
-gem 'nokogiri'
+gem "nokogiri", ">= 1.11.0"
 gem 'puma', '~> 4.1'
 # Build JSON APIs with ease. Read more: https://github.com/rails/jbuilder
 # gem 'jbuilder', '~> 2.7'
@@ -19,7 +19,7 @@ gem 'puma', '~> 4.1'
 gem 'devise_token_auth'
 # Use Active Storage variant
 # gem 'image_processing', '~> 1.2'
-gem 'carrierwave', '~> 2.0'
+gem "carrierwave", ">= 2.1.1"
 #gem 'fast_jsonapi'
 gem 'jsonapi-serializer'
 gem 'kaminari'
@@ -37,7 +37,8 @@ gem 'capistrano-passenger'
 gem 'capistrano-rbenv'
 gem 'wicked_pdf'
 gem 'wkhtmltopdf-binary'
-
+gem "activerecord", ">= 6.0.3.5"
+gem "actionpack", ">= 6.0.3.5"
 group :development, :test do
   # Call 'byebug' anywhere in the code to stop execution and get a debugger console
   # gem 'byebug', platforms: [:mri, :mingw, :x64_mingw]
