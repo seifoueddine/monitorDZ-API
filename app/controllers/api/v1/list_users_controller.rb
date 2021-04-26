@@ -48,7 +48,7 @@ class Api::V1::ListUsersController < ApplicationController
         newIds = oldIds.reject { |id| id == params[:delete_article_id] }
         @list_user.articles.clear
         @article = Article.where(id: newIds)
-        @list_user.articles = @article
+        @list_user.articles << @article
       elsif params[:article_id].present?
         oldIds = @list_user.articles.map(&:id)
         @list_user.articles.clear
