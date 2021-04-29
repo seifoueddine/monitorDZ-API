@@ -32,6 +32,9 @@ Rails.application.routes.draw do
       get 'authors_client', to: 'authors#authors_client'
       get 'pdf_export', to: 'articles#pdf_export'
       post 'send_email', to: 'articles#send_email'
+      get 'articles_by_medium', to: 'articles#articles_by_medium'
+      get 'articles_by_author', to: 'articles#articles_by_author'
+      get 'articles_by_tag', to: 'articles#articles_by_tag'
     end
   end
 

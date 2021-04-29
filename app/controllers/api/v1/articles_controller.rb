@@ -69,6 +69,25 @@ class Api::V1::ArticlesController < ApplicationController
     render json: { articles: json_string, media: media_serializer, tags: all_tags }
   end
 
+
+  def articles_by_medium
+    @article_for_dash = Article.joins(:medium).where(date_published: Date.today.change({ hour: 0, min: 0, sec: 0 })).group('media.name').count
+    render json: @article_for_dash
+  end
+
+
+  def articles_by_author
+    @article_auth_for_dash = Article.joins(:author).group('authors.name').count
+
+    render json: @article_auth_for_dash
+  end
+
+  def articles_by_tag
+    @article_tag_for_dash = Article.joins(:tags).group('tags.name').count
+
+    render json: @article_tag_for_dash
+  end
+
   # GET /articlesclass
   def index
     if params[:media_id].blank?
@@ -868,14 +887,14 @@ div.nobreak { page-break-inside: avoid; }
       new_article.date_published = article.at('time[datetime]')['datetime'].to_datetime
       url_array = article.css('body > div.article-section > div > div.article-section__main.wrap__main > article > div.full-article__featured-image > img').map { |link| link['src'] }
       new_article.url_image = url_array[0]
- begin
-      new_article.image = Down.download(url_array[0]) if url_array[0].present?
-    rescue Down::Error => e
-      puts "Can't download this image #{ url_array[0] }"
-      puts e.message
-      puts
-      new_article.image = nil
-    end
+      begin
+           new_article.image = Down.download(url_array[0]) if url_array[0].present?
+         rescue Down::Error => e
+           puts "Can't download this image #{ url_array[0] }"
+           puts e.message
+           puts
+           new_article.image = nil
+         end
       # tags_array = article.css('div.article-core__tags a').map(&:text)
       # new_article.media_tags = tags_array.join(',')
       new_article.status = 'pending'
@@ -1016,7 +1035,7 @@ div.nobreak { page-break-inside: avoid; }
       new_article.category_article = article.css('div.content div div.title-category').text
       new_article.title = article.css('div.article-content div div h1 span.grey-text').text + ' : ' + article.css('div.article-content div div h1 span.black-text').text
       # new_article.author = article.css('div.article-head__author div em a').text
-       anchor = []
+      anchor = []
       article.css('div.published').each do |header|
         anchor << header.text
 
@@ -1219,14 +1238,14 @@ div.nobreak { page-break-inside: avoid; }
       new_article.date_published =  auteur_date[0].to_datetime.change({ hour: 0, min: 0, sec: 0 })
       url_array = article.css('#post_banner img').map { |link| link['src'] }
       new_article.url_image = url_array[0]
- begin
-      new_article.image = Down.download(url_array[0]) if url_array[0].present?
-    rescue Down::Error => e
-      puts "Can't download this image #{ url_array[0] }"
-      puts e.message
-      puts
-      new_article.image = nil
-    end
+      begin
+           new_article.image = Down.download(url_array[0]) if url_array[0].present?
+         rescue Down::Error => e
+           puts "Can't download this image #{ url_array[0] }"
+           puts e.message
+           puts
+           new_article.image = nil
+         end
       tags_array = article.css('#tags a').map(&:text)
       # new_article.media_tags = tags_array.join(',')
       new_article.status = 'pending'
@@ -1360,7 +1379,7 @@ div.nobreak { page-break-inside: avoid; }
     last_articles.map do |article|
       list_articles_url << article.url_article
     end
-      articles_url_elmoudjahid_after_check = articles_url_elmoudjahid - list_articles_url
+    articles_url_elmoudjahid_after_check = articles_url_elmoudjahid - list_articles_url
 
     #  articles_url_elmoudjahid6.map do |article|
 
@@ -1497,14 +1516,14 @@ div.nobreak { page-break-inside: avoid; }
       new_article.date_published = article.css('#contenu > div.At > span').text.split(':')[1].to_datetime.change({ hour: 0, min: 0, sec: 0 })
       url_array = article.css('#articlecontent > div.TxArtcile > div.ImgCapt > img').map { |link| link['src'] }
       new_article.url_image = url_array[0]
- begin
-      new_article.image = Down.download(url_array[0]) if url_array[0].present?
-    rescue Down::Error => e
-      puts "Can't download this image #{ url_array[0] }"
-      puts e.message
-      puts
-      new_article.image = nil
-    end
+      begin
+           new_article.image = Down.download(url_array[0]) if url_array[0].present?
+         rescue Down::Error => e
+           puts "Can't download this image #{ url_array[0] }"
+           puts e.message
+           puts
+           new_article.image = nil
+         end
       new_article.status = 'pending'
       new_article.save!
       # tag_check_and_save(tags_array)
@@ -1664,7 +1683,7 @@ div.nobreak { page-break-inside: avoid; }
       # new_article.author = article.css('div.article-head__author div em a').text
 
       # if article.at("div.subinfo b").text.nil?
-        author_exist = Author.where(['lower(name) like ? ', ('Elikhbaria auteur').downcase ])
+      author_exist = Author.where(['lower(name) like ? ', ('Elikhbaria auteur').downcase ])
       # else
       #  author_exist = Author.where(['lower(name) like ? ',
       #                              article.at("div.subinfo b").text.downcase ])
@@ -2157,7 +2176,7 @@ div.nobreak { page-break-inside: avoid; }
       # new_article.author = article.css('div.article-head__author div em a').text
 
 
-        author_exist = Author.where(['lower(name) like ? ', ('Santenews auteur').downcase ])
+      author_exist = Author.where(['lower(name) like ? ', ('Santenews auteur').downcase ])
 
 
       new_author = Author.new
@@ -2181,14 +2200,14 @@ div.nobreak { page-break-inside: avoid; }
       new_article.date_published = date.to_datetime.change({ hour: 0, min: 0, sec: 0})
       url_array = article.css('div.single-post-thumb  img').map { |link| link['src'] }
       url_image = url_array[0]
- begin
-      new_article.image = Down.download(url_array[0]) if url_array[0].present?
-    rescue Down::Error => e
-      puts "Can't download this image #{ url_array[0] }"
-      puts e.message
-      puts
-      new_article.image = nil
-    end
+      begin
+           new_article.image = Down.download(url_array[0]) if url_array[0].present?
+         rescue Down::Error => e
+           puts "Can't download this image #{ url_array[0] }"
+           puts e.message
+           puts
+           new_article.image = nil
+         end
       # tags_array = article.css('div.entry-terms a').map(&:text)
       # new_article.media_tags = tags_array.join(',')
       new_article.status = 'pending'
