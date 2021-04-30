@@ -69,23 +69,28 @@ class Api::V1::ArticlesController < ApplicationController
     render json: { articles: json_string, media: media_serializer, tags: all_tags }
   end
 
-
   def articles_by_medium
-    @article_for_dash = Article.joins(:medium).where(date_published: Date.today.change({ hour: 0, min: 0, sec: 0 })).group('media.name').count
-    render json: @article_for_dash
+    @articles_for_dash = Article.joins(:medium).where(date_published: Date.today.change({ hour: 0, min: 0, sec: 0 }))
+                                .group('media.name').count
+    render json: @articles_for_dash
   end
 
-
   def articles_by_author
-    @article_auth_for_dash = Article.joins(:author).group('authors.name').count
-
+    @article_auth_for_dash = Article.joins(:author).where(date_published: Date.today.change({ hour: 0, min: 0, sec: 0 }))
+                                    .group('authors.name').order('count(authors.id) desc').limit(5).count
     render json: @article_auth_for_dash
   end
 
   def articles_by_tag
-    @article_tag_for_dash = Article.joins(:tags).group('tags.name').count
-
+    @article_tag_for_dash = Article.where(date_published: Date.today.change({ hour: 0, min: 0, sec: 0 })).joins(:tags)
+                                   .group('tags.name').count
     render json: @article_tag_for_dash
+  end
+
+  def articles_by_date
+    days = params[:number_days] || 7
+    @article_date_for_dash = Article.group('date_published').order('date_published desc').limit(days).count
+    render json: @article_date_for_dash
   end
 
   # GET /articlesclass
@@ -334,7 +339,6 @@ div.nobreak { page-break-inside: avoid; }
     email = params[:email]
     UserMailer.articleMail(@article_for_email, email, @current_user).deliver!
   end
-
 
   def crawling
     @all_tags = Tag.all

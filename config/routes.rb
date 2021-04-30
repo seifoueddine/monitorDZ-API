@@ -35,6 +35,7 @@ Rails.application.routes.draw do
       get 'articles_by_medium', to: 'articles#articles_by_medium'
       get 'articles_by_author', to: 'articles#articles_by_author'
       get 'articles_by_tag', to: 'articles#articles_by_tag'
+      get 'articles_by_date', to: 'articles#articles_by_date'
     end
   end
 
