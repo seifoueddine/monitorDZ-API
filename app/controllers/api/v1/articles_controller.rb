@@ -733,7 +733,8 @@ div.nobreak { page-break-inside: avoid; }
       end
       new_article.author_id = new_author.id
       new_article.body = article.css('article div.ech-artx').inner_html
-      new_article.date_published = DateTime.parse article.css('article.ech-sgmn__article time').text
+      date = DateTime.parse article.css('article.ech-sgmn__article time').text
+      new_article.date_published = date.to_datetime.change({ hour: 0, min: 0, sec: 0 })
 
       unless article.at_css('article.ech-sgmn__article figure img').nil?
         url_array = article.at_css('article.ech-sgmn__article figure img').attr('data-src')
@@ -888,7 +889,7 @@ div.nobreak { page-break-inside: avoid; }
       end
       new_article.author_id = new_author.id
       new_article.body = article.css('div.article__content').inner_html
-      new_article.date_published = article.at('time[datetime]')['datetime'].to_datetime
+      new_article.date_published = article.at('time[datetime]')['datetime'].to_datetime.change({ hour: 0, min: 0, sec: 0 })
       url_array = article.css('body > div.article-section > div > div.article-section__main.wrap__main > article > div.full-article__featured-image > img').map { |link| link['src'] }
       new_article.url_image = url_array[0]
       begin
