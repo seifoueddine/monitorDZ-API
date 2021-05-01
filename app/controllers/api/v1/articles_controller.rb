@@ -593,7 +593,14 @@ div.nobreak { page-break-inside: avoid; }
     articles_url_autobip = []
     last_dates = []
     url_media_array.map do |url|
-      doc = Nokogiri::HTML(URI.open(url))
+      begin
+        doc = Nokogiri::HTML(URI.open(url))
+      rescue OpenURI::HTTPError => e
+        puts "Can't access #{ url }"
+        puts e.message
+        puts
+        next
+      end
       doc.css('div.post__text a').map do |link|
         articles_url_autobip << link['href'] if link['itemprop'] == 'url'
       end
@@ -613,7 +620,16 @@ div.nobreak { page-break-inside: avoid; }
     end
     articles_url_autobip_after_check = articles_url_autobip - list_articles_url
     articles_url_autobip_after_check.map do |link|
-      article = Nokogiri::HTML(URI.open(URI.escape(link)))
+     
+
+      begin
+        article = Nokogiri::HTML(URI.open(URI.escape(link)))
+      rescue OpenURI::HTTPError => e
+        puts "Can't access #{ link }"
+        puts e.message
+        puts
+        next
+      end
 
       new_article = Article.new
       new_article.url_article = link
@@ -771,7 +787,18 @@ div.nobreak { page-break-inside: avoid; }
     articles_url_ennahar = []
     last_dates = []
     url_media_array.map do |url|
-      doc = Nokogiri::HTML(URI.open(url, 'User-Agent' => 'ruby/2.6.5'))
+     # doc = Nokogiri::HTML(URI.open(url, 'User-Agent' => 'ruby/2.6.5'))
+
+
+      begin
+        doc = Nokogiri::HTML(URI.open(url, 'User-Agent' => 'ruby/2.6.5'))
+      rescue OpenURI::HTTPError => e
+        puts "Can't access #{ url }"
+        puts e.message
+        puts
+        next
+      end
+      
       doc.css('div.article__image.article__image--medium a').map do |link|
         articles_url_ennahar << link['href']
       end
@@ -789,7 +816,19 @@ div.nobreak { page-break-inside: avoid; }
     end
     articles_url_ennahar_after_check = articles_url_ennahar - list_articles_url
     articles_url_ennahar_after_check.map do |link|
-      article = Nokogiri::HTML(URI.open(link, 'User-Agent' => 'ruby/2.6.5'))
+     
+
+      
+      begin
+        article = Nokogiri::HTML(URI.open(link, 'User-Agent' => 'ruby/2.6.5'))
+      rescue OpenURI::HTTPError => e
+        puts "Can't access #{ link }"
+        puts e.message
+        puts
+        next
+      end
+
+
       new_article = Article.new
       new_article.url_article = link
       new_article.medium_id = @media.id
@@ -842,7 +881,14 @@ div.nobreak { page-break-inside: avoid; }
     articles_url_tsafr = []
     last_dates = []
     url_media_array.map do |url|
-      doc = Nokogiri::HTML(URI.open(url))
+      begin
+        doc = Nokogiri::HTML(URI.open(url))
+      rescue OpenURI::HTTPError => e
+        puts "Can't access #{ url }"
+        puts e.message
+        puts
+        next
+      end
       doc.css('h1.article-preview__title.title-middle.transition a').map do |link|
         articles_url_tsafr << link['href']# if link['class'] == 'main_article'
       end
@@ -859,7 +905,14 @@ div.nobreak { page-break-inside: avoid; }
     end
     articles_url_tsa_after_check = articles_url_tsafr - list_articles_url
     articles_url_tsa_after_check.map do |link|
-      article = Nokogiri::HTML(URI.open(link))
+      begin
+        article = Nokogiri::HTML(URI.open(link))
+      rescue OpenURI::HTTPError => e
+        puts "Can't access #{ link }"
+        puts e.message
+        puts
+        next
+      end
       new_article = Article.new
       new_article.url_article = link
       new_article.medium_id = @media.id
@@ -916,7 +969,14 @@ div.nobreak { page-break-inside: avoid; }
     articles_url_aps = []
     last_dates = []
     url_media_array.map do |url|
-      doc = Nokogiri::HTML(URI.open(url))
+      begin
+        doc = Nokogiri::HTML(URI.open(url))
+      rescue OpenURI::HTTPError => e
+        puts "Can't access #{ url }"
+        puts e.message
+        puts
+        next
+      end
       doc.css('#itemListLeading h3 a').map do |link|
         articles_url_aps << 'http://www.aps.dz' + link['href']# if link['class'] == 'main_article'
       end
@@ -1005,7 +1065,14 @@ div.nobreak { page-break-inside: avoid; }
     articles_url_le_soir = []
     last_dates = []
     url_media_array.map do |url|
-      doc = Nokogiri::HTML(URI.open(url))
+      begin
+        doc = Nokogiri::HTML(URI.open(url))
+      rescue OpenURI::HTTPError => e
+        puts "Can't access #{ url }"
+        puts e.message
+        puts
+        next
+      end
       doc.css('div.description a').map do |link|
         articles_url_le_soir << 'https://www.lesoirdalgerie.com' + link['href']# if link['class'] == 'main_article'
       end
@@ -1099,7 +1166,14 @@ div.nobreak { page-break-inside: avoid; }
     articles_url_liberte = []
     last_dates = []
     url_media_array.map do |url|
-      doc = Nokogiri::HTML(URI.open(url))
+      begin
+        doc = Nokogiri::HTML(URI.open(url))
+      rescue OpenURI::HTTPError => e
+        puts "Can't access #{ url }"
+        puts e.message
+        puts
+        next
+      end
       doc.css('div.right-side a.title').map do |link|
         articles_url_liberte << 'https://www.liberte-algerie.com' + link['href']# if link['class'] == 'main_article'
       end
@@ -1192,7 +1266,14 @@ div.nobreak { page-break-inside: avoid; }
     articles_url_bilad = []
     last_dates = []
     url_media_array.map do |url|
-      doc = Nokogiri::HTML(open(url, 'User-Agent' => 'ruby'))
+      begin
+        doc = Nokogiri::HTML(open(url, 'User-Agent' => 'ruby'))
+      rescue OpenURI::HTTPError => e
+        puts "Can't access #{ url }"
+        puts e.message
+        puts
+        next
+      end
       doc.css('div.typo a.post_title').map do |link|
         articles_url_bilad << 'http://www.elbilad.net' + link['href']
       end
@@ -1209,7 +1290,16 @@ div.nobreak { page-break-inside: avoid; }
     end
     articles_url_bilad_after_check = articles_url_bilad - list_articles_url
     articles_url_bilad_after_check.map do |link|
-      article = Nokogiri::HTML(open(link, 'User-Agent' => 'ruby'))
+
+
+      begin
+        article = Nokogiri::HTML(open(link, 'User-Agent' => 'ruby'))
+      rescue OpenURI::HTTPError => e
+        puts "Can't access #{ link }"
+        puts e.message
+        puts
+        next
+      end
       new_article = Article.new
       new_article.url_article = link
       new_article.medium_id = @media.id
@@ -1268,7 +1358,14 @@ div.nobreak { page-break-inside: avoid; }
     articles_url_maghrebemergent = []
     last_dates = []
     url_media_array.map do |url|
-      doc = Nokogiri::HTML(URI.open(url))
+      begin
+        doc = Nokogiri::HTML(URI.open(url))
+      rescue OpenURI::HTTPError => e
+        puts "Can't access #{ url }"
+        puts e.message
+        puts
+        next
+      end
       doc.css('article a.elementor-post__thumbnail__link').map do |link|
 
         articles_url_maghrebemergent << link['href']
@@ -1288,7 +1385,14 @@ div.nobreak { page-break-inside: avoid; }
     end
     articles_url_maghrebemergent_after_check = articles_url_maghrebemergent - list_articles_url
     articles_url_maghrebemergent_after_check.map do |link|
-    article = Nokogiri::HTML(URI.open(link))
+      begin
+        article = Nokogiri::HTML(URI.open(link))
+      rescue OpenURI::HTTPError => e
+        puts "Can't access #{ link }"
+        puts e.message
+        puts
+        next
+      end
     new_article = Article.new
     new_article.url_article = link
     new_article.medium_id = @media.id
@@ -1353,7 +1457,14 @@ div.nobreak { page-break-inside: avoid; }
     new_last_dates = []
     count = 0
     url_media_array.map do |url|
-      doc = Nokogiri::HTML(URI.open(url))
+      begin
+        doc = Nokogiri::HTML(URI.open(url))
+      rescue OpenURI::HTTPError => e
+        puts "Can't access #{ url }"
+        puts e.message
+        puts
+        next
+      end
       doc.css('article ul li h2 a').map do |link|
         articles_url_elmoudjahid << link['href'] # if link['class'] == 'main_article'
       end
@@ -1393,7 +1504,14 @@ div.nobreak { page-break-inside: avoid; }
         #  end
       #  end
     articles_url_elmoudjahid_after_check.map do |link|
-      article = Nokogiri::HTML(URI.open(link))
+      begin
+        article = Nokogiri::HTML(URI.open(link))
+      rescue OpenURI::HTTPError => e
+        puts "Can't access #{ link }"
+        puts e.message
+        puts
+        next
+      end
       new_article = Article.new
       new_article.url_article = link
       new_article.medium_id = @media.id
@@ -1451,7 +1569,14 @@ div.nobreak { page-break-inside: avoid; }
     articles_url_elmoudjahid6 = []
     last_dates = []
     url_media_array.map do |url|
-      doc = Nokogiri::HTML(URI.open(url))
+      begin
+        doc = Nokogiri::HTML(URI.open(url))
+      rescue OpenURI::HTTPError => e
+        puts "Can't access #{ url }"
+        puts e.message
+        puts
+        next
+      end
       doc.css('#main > div.UnCat > ul > li:nth-child(1) > h1 > a').map do |link|
         articles_url_elmoudjahid << link['href'] # if link['class'] == 'main_article'
       end
@@ -1488,7 +1613,14 @@ div.nobreak { page-break-inside: avoid; }
       end
     end
     articles_url_elmoudjahid_after_check.map do |link|
-      article = Nokogiri::HTML(URI.open(link))
+      begin
+        article = Nokogiri::HTML(URI.open(link))
+      rescue OpenURI::HTTPError => e
+        puts "Can't access #{ link }"
+        puts e.message
+        puts
+        next
+      end
       new_article = Article.new
       new_article.url_article = link
       new_article.medium_id = @media.id
@@ -1546,7 +1678,14 @@ div.nobreak { page-break-inside: avoid; }
     articles_url_elkhabar = []
     last_dates = []
     url_media_array.map do |url|
-      doc = Nokogiri::HTML(URI.open(url))
+      begin
+        doc = Nokogiri::HTML(URI.open(url))
+      rescue OpenURI::HTTPError => e
+        puts "Can't access #{ url }"
+        puts e.message
+        puts
+        next
+      end
       doc.css('a').map do |link|
 
         if link['class'] == 'main_article'
@@ -1648,7 +1787,14 @@ div.nobreak { page-break-inside: avoid; }
     articles_url_elikhbaria = []
     last_dates = []
     url_media_array.map do |url|
-      doc = Nokogiri::HTML(URI.open(url))
+      begin
+        doc = Nokogiri::HTML(URI.open(url))
+      rescue OpenURI::HTTPError => e
+        puts "Can't access #{ url }"
+        puts e.message
+        puts
+        next
+      end
       doc.css('div.col-sm-8 div.listing > article > div > h2 > a').map do |link|
 
 
@@ -1742,7 +1888,14 @@ div.nobreak { page-break-inside: avoid; }
     articles_url_algerieco = []
     last_dates = []
     url_media_array.map do |url|
-      doc = Nokogiri::HTML(URI.open(url))
+      begin
+        doc = Nokogiri::HTML(URI.open(url))
+      rescue OpenURI::HTTPError => e
+        puts "Can't access #{ url }"
+        puts e.message
+        puts
+        next
+      end
       doc.css('div.td-pb-span8 h3.entry-title a.td-eco-title').map do |link|
 
 
@@ -1841,7 +1994,14 @@ div.nobreak { page-break-inside: avoid; }
     articles_url_chiffreaffaire = []
     last_dates = []
     url_media_array.map do |url|
-      doc = Nokogiri::HTML(URI.open(url))
+      begin
+        doc = Nokogiri::HTML(URI.open(url))
+      rescue OpenURI::HTTPError => e
+        puts "Can't access #{ url }"
+        puts e.message
+        puts
+        next
+      end
       doc.css('div.listing h2 a').map do |link|
 
 
@@ -1863,7 +2023,14 @@ div.nobreak { page-break-inside: avoid; }
     end
     articles_url_chiffreaffaire_after_check = articles_url_chiffreaffaire - list_articles_url
     articles_url_chiffreaffaire_after_check.map do |link|
-      article = Nokogiri::HTML(URI.open(link))
+      begin
+        article = Nokogiri::HTML(URI.open(link))
+      rescue OpenURI::HTTPError => e
+        puts "Can't access #{ link }"
+        puts e.message
+        puts
+        next
+      end
       new_article = Article.new
       new_article.url_article = link
       new_article.medium_id = @media.id
@@ -2141,7 +2308,14 @@ div.nobreak { page-break-inside: avoid; }
     articles_url_santenews = []
     last_dates = []
     url_media_array.map do |url|
-      doc = Nokogiri::HTML(URI.open(url))
+      begin
+        doc = Nokogiri::HTML(URI.open(url))
+      rescue OpenURI::HTTPError => e
+        puts "Can't access #{ url }"
+        puts e.message
+        puts
+        next
+      end
       doc.css('article.item-list h2.post-box-title a').map do |link|
 
 
