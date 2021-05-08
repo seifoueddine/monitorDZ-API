@@ -73,7 +73,8 @@ class Api::V1::ArticlesController < ApplicationController
     start_date = params[:start_date]
     end_date = params[:end_date]
 
-    @articles_for_dash = Article.joins(:medium).where('date_published >=': start_date.to_datetime.change({ hour: 0, min: 0, sec: 0 }) , 'date_published <=': end_date.to_datetime.change({ hour: 0, min: 0, sec: 0 }))
+    @articles_for_dash = Article.where('date_published >=': start_date.to_datetime.change({ hour: 0, min: 0, sec: 0 }) , 'date_published <=': end_date.to_datetime.change({ hour: 0, min: 0, sec: 0 }))
+                                .joins(:medium)
                                 .group('media.name').count
     render json: @articles_for_dash
   end
@@ -108,7 +109,8 @@ class Api::V1::ArticlesController < ApplicationController
     start_date = params[:start_date]
     end_date = params[:end_date]
 
-    @articles_for_client_dash = Article.joins(:medium).where(medium_id: media_ids, 'date_published >=': start_date.to_datetime.change({ hour: 0, min: 0, sec: 0 }) , 'date_published <=': end_date.to_datetime.change({ hour: 0, min: 0, sec: 0 }))
+    @articles_for_client_dash = Article.where(medium_id: media_ids, 'date_published >=': start_date.to_datetime.change({ hour: 0, min: 0, sec: 0 }) , 'date_published <=': end_date.to_datetime.change({ hour: 0, min: 0, sec: 0 }))
+                                       .joins(:medium)
                                        .group('media.name').count
     render json: @articles_for_client_dash
   end
