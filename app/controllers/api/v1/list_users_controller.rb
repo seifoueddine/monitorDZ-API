@@ -1,6 +1,6 @@
 class Api::V1::ListUsersController < ApplicationController
   before_action :set_list_user, only: %i[show update destroy]
-  #before_action :authenticate_user!
+  before_action :authenticate_user!
   # GET /list_users
   def index
     @user = current_user
