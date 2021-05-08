@@ -70,7 +70,10 @@ class Api::V1::ArticlesController < ApplicationController
   end
 
   def articles_by_medium
-    @articles_for_dash = Article.joins(:medium).where(date_published: Date.today.change({ hour: 0, min: 0, sec: 0 }))
+    start_date = params[:start_date]
+    end_date = params[:end_date]
+
+    @articles_for_dash = Article.joins(:medium).where('date_published >=': start_date.to_datetime.change({ hour: 0, min: 0, sec: 0 }) , 'date_published <=': end_date.to_datetime.change({ hour: 0, min: 0, sec: 0 }))
                                 .group('media.name').count
     render json: @articles_for_dash
   end
@@ -92,6 +95,71 @@ class Api::V1::ArticlesController < ApplicationController
     @article_date_for_dash = Article.group('date_published').order('date_published desc').limit(days).count
     render json: @article_date_for_dash
   end
+
+  def articles_client_by_medium
+    slug_id = get_slug_id
+
+    campaign = Campaign.where(slug_id: slug_id)
+    media = campaign[0].media
+    media_ids = []
+    media.map do |media|
+      media_ids << media['id']
+    end
+    start_date = params[:start_date]
+    end_date = params[:end_date]
+
+    @articles_for_client_dash = Article.joins(:medium).where(medium_id: media_ids, 'date_published >=': start_date.to_datetime.change({ hour: 0, min: 0, sec: 0 }) , 'date_published <=': end_date.to_datetime.change({ hour: 0, min: 0, sec: 0 }))
+                                       .group('media.name').count
+    render json: @articles_for_client_dash
+  end
+
+
+  def articles_client_by_author
+    slug_id = get_slug_id
+
+    campaign = Campaign.where(slug_id: slug_id)
+    media = campaign[0].media
+    media_ids = []
+    media.map do |media|
+      media_ids << media['id']
+    end
+    @article_auth_for_client_dash = Article.joins(:author).where(medium_id: media_ids, date_published: Date.today.change({ hour: 0, min: 0, sec: 0 }) )
+                                 .group('authors.name').order('count(authors.id) desc').limit(5).count
+    render json: @article_auth_for_client_dash
+  end
+
+  def articles_client_by_tag
+    slug_id = get_slug_id
+
+    campaign = Campaign.where(slug_id: slug_id)
+    media = campaign[0].media
+    media_ids = []
+    media.map do |media|
+      media_ids << media['id']
+    end
+    @article_tag_for_client_dash = Article.where(medium_id: media_ids, date_published: Date.today.change({ hour: 0, min: 0, sec: 0 })).joins(:tags)
+                                .group('tags.name').count
+    render json: @article_tag_for_client_dash
+  end
+
+  def articles_client_by_date
+    slug_id = get_slug_id
+
+    campaign = Campaign.where(slug_id: slug_id)
+    media = campaign[0].media
+    media_ids = []
+    media.map do |media|
+      media_ids << media['id']
+    end
+    days = params[:number_days] || 7
+    @article_date_for_client_dash = Article.where(medium_id: media_ids).group('date_published').order('date_published desc').limit(days).count
+    render json: @article_date_for_client_dash
+  end
+
+
+
+
+
 
   # GET /articlesclass
   def index
@@ -596,7 +664,7 @@ div.nobreak { page-break-inside: avoid; }
       begin
         doc = Nokogiri::HTML(URI.open(url))
       rescue OpenURI::HTTPError => e
-        puts "Can't access #{ url }"
+        puts "Can't access #{url}"
         puts e.message
         puts
         next
@@ -625,7 +693,7 @@ div.nobreak { page-break-inside: avoid; }
       begin
         article = Nokogiri::HTML(URI.open(URI.escape(link)))
       rescue OpenURI::HTTPError => e
-        puts "Can't access #{ link }"
+        puts "Can't access #{link}"
         puts e.message
         puts
         next
@@ -661,7 +729,7 @@ div.nobreak { page-break-inside: avoid; }
       begin
         new_article.image = Down.download(url_array[0]) if url_array[0].present?
       rescue Down::Error => e
-        puts "Can't download this image #{ url_array[0] }"
+        puts "Can't download this image #{url_array[0]}"
         puts e.message
         puts
         new_article.image = nil
@@ -688,7 +756,7 @@ div.nobreak { page-break-inside: avoid; }
       begin
         doc = Nokogiri::HTML(URI.open(url))
       rescue OpenURI::HTTPError => e
-        puts "Can't access #{ url }"
+        puts "Can't access #{url}"
         puts e.message
         puts
         next
@@ -714,12 +782,12 @@ div.nobreak { page-break-inside: avoid; }
       begin
         article = Nokogiri::HTML(URI.open(link))
       rescue OpenURI::HTTPError => e
-        puts "Can't access #{ link }"
+        puts "Can't access #{link}"
         puts e.message
         puts
         next
       rescue RuntimeError => e
-        puts "Can't access #{ link }"
+        puts "Can't access #{link}"
         puts e.message
         puts
         next
@@ -793,7 +861,7 @@ div.nobreak { page-break-inside: avoid; }
       begin
         doc = Nokogiri::HTML(URI.open(url, 'User-Agent' => 'ruby/2.6.5'))
       rescue OpenURI::HTTPError => e
-        puts "Can't access #{ url }"
+        puts "Can't access #{url}"
         puts e.message
         puts
         next
@@ -822,7 +890,7 @@ div.nobreak { page-break-inside: avoid; }
       begin
         article = Nokogiri::HTML(URI.open(link, 'User-Agent' => 'ruby/2.6.5'))
       rescue OpenURI::HTTPError => e
-        puts "Can't access #{ link }"
+        puts "Can't access #{link}"
         puts e.message
         puts
         next
@@ -860,7 +928,7 @@ div.nobreak { page-break-inside: avoid; }
       begin
         new_article.image = Down.download(url_array[0]) if url_array[0].present?
       rescue Down::Error => e
-        puts "Can't download this image #{ url_array[0] }"
+        puts "Can't download this image #{url_array[0]}"
         puts e.message
         puts
         new_article.image = nil
@@ -884,7 +952,7 @@ div.nobreak { page-break-inside: avoid; }
       begin
         doc = Nokogiri::HTML(URI.open(url))
       rescue OpenURI::HTTPError => e
-        puts "Can't access #{ url }"
+        puts "Can't access #{url}"
         puts e.message
         puts
         next
@@ -908,7 +976,7 @@ div.nobreak { page-break-inside: avoid; }
       begin
         article = Nokogiri::HTML(URI.open(link))
       rescue OpenURI::HTTPError => e
-        puts "Can't access #{ link }"
+        puts "Can't access #{link}"
         puts e.message
         puts
         next
@@ -942,13 +1010,14 @@ div.nobreak { page-break-inside: avoid; }
       end
       new_article.author_id = new_author.id
       new_article.body = article.css('div.article__content').inner_html
+      date = article.at('time[datetime]')['datetime']
       new_article.date_published = article.at('time[datetime]')['datetime'].to_datetime.change({ hour: 0, min: 0, sec: 0 })
       url_array = article.css('body > div.article-section > div > div.article-section__main.wrap__main > article > div.full-article__featured-image > img').map { |link| link['src'] }
       new_article.url_image = url_array[0]
       begin
            new_article.image = Down.download(url_array[0]) if url_array[0].present?
          rescue Down::Error => e
-           puts "Can't download this image #{ url_array[0] }"
+           puts "Can't download this image #{url_array[0]}"
            puts e.message
            puts
            new_article.image = nil
@@ -972,7 +1041,7 @@ div.nobreak { page-break-inside: avoid; }
       begin
         doc = Nokogiri::HTML(URI.open(url))
       rescue OpenURI::HTTPError => e
-        puts "Can't access #{ url }"
+        puts "Can't access #{url}"
         puts e.message
         puts
         next
@@ -999,7 +1068,7 @@ div.nobreak { page-break-inside: avoid; }
       begin
         article = Nokogiri::HTML(URI.open(link))
       rescue OpenURI::HTTPError => e
-        puts "Can't access #{ link }"
+        puts "Can't access #{link}"
         puts e.message
         puts
         next
@@ -1043,7 +1112,7 @@ div.nobreak { page-break-inside: avoid; }
       begin
         new_article.image = Down.download(url_array[0]) if url_array[0].present?
       rescue Down::Error => e
-        puts "Can't download this image #{ url_array[0] }"
+        puts "Can't download this image #{url_array[0]}"
         puts e.message
         puts
         new_article.image = nil
@@ -1068,7 +1137,7 @@ div.nobreak { page-break-inside: avoid; }
       begin
         doc = Nokogiri::HTML(URI.open(url))
       rescue OpenURI::HTTPError => e
-        puts "Can't access #{ url }"
+        puts "Can't access #{url}"
         puts e.message
         puts
         next
@@ -1095,7 +1164,7 @@ div.nobreak { page-break-inside: avoid; }
       begin
         article = Nokogiri::HTML(URI.open(link))
       rescue OpenURI::HTTPError => e
-        puts "Can't access #{ link }"
+        puts "Can't access #{link}"
         puts e.message
         puts
         next
@@ -1143,7 +1212,7 @@ div.nobreak { page-break-inside: avoid; }
       begin
         new_article.image = Down.download(url_array[0]) if url_array[0].present?
       rescue Down::Error => e
-        puts "Can't download this image #{ url_array[0] }"
+        puts "Can't download this image #{url_array[0]}"
         puts e.message
         puts
         new_article.image = nil
@@ -1169,7 +1238,7 @@ div.nobreak { page-break-inside: avoid; }
       begin
         doc = Nokogiri::HTML(URI.open(url))
       rescue OpenURI::HTTPError => e
-        puts "Can't access #{ url }"
+        puts "Can't access #{url}"
         puts e.message
         puts
         next
@@ -1196,7 +1265,7 @@ div.nobreak { page-break-inside: avoid; }
       begin
         article = Nokogiri::HTML(URI.open(link))
       rescue OpenURI::HTTPError => e
-        puts "Can't access #{ link }"
+        puts "Can't access #{link}"
         puts e.message
         puts
         next
@@ -1239,7 +1308,7 @@ div.nobreak { page-break-inside: avoid; }
       begin
         new_article.image = Down.download(url_array[0]) if url_array[0].present?
       rescue Down::Error => e
-        puts "Can't download this image #{ url_array[0] }"
+        puts "Can't download this image #{url_array[0]}"
         puts e.message
         puts
         new_article.image = nil
@@ -1269,7 +1338,7 @@ div.nobreak { page-break-inside: avoid; }
       begin
         doc = Nokogiri::HTML(open(url, 'User-Agent' => 'ruby'))
       rescue OpenURI::HTTPError => e
-        puts "Can't access #{ url }"
+        puts "Can't access #{url}"
         puts e.message
         puts
         next
@@ -1295,7 +1364,7 @@ div.nobreak { page-break-inside: avoid; }
       begin
         article = Nokogiri::HTML(open(link, 'User-Agent' => 'ruby'))
       rescue OpenURI::HTTPError => e
-        puts "Can't access #{ link }"
+        puts "Can't access #{link}"
         puts e.message
         puts
         next
@@ -1336,7 +1405,7 @@ div.nobreak { page-break-inside: avoid; }
       begin
            new_article.image = Down.download(url_array[0]) if url_array[0].present?
          rescue Down::Error => e
-           puts "Can't download this image #{ url_array[0] }"
+           puts "Can't download this image #{url_array[0]}"
            puts e.message
            puts
            new_article.image = nil
@@ -1361,7 +1430,7 @@ div.nobreak { page-break-inside: avoid; }
       begin
         doc = Nokogiri::HTML(URI.open(url))
       rescue OpenURI::HTTPError => e
-        puts "Can't access #{ url }"
+        puts "Can't access #{url}"
         puts e.message
         puts
         next
@@ -1388,7 +1457,7 @@ div.nobreak { page-break-inside: avoid; }
       begin
         article = Nokogiri::HTML(URI.open(link))
       rescue OpenURI::HTTPError => e
-        puts "Can't access #{ link }"
+        puts "Can't access #{link}"
         puts e.message
         puts
         next
@@ -1433,7 +1502,7 @@ div.nobreak { page-break-inside: avoid; }
     begin
       new_article.image = Down.download(url_array[0]) if url_array[0].present?
     rescue Down::Error => e
-      puts "Can't download this image #{ url_array[0] }"
+      puts "Can't download this image #{url_array[0]}"
       puts e.message
       puts
       new_article.image = nil
@@ -1460,7 +1529,7 @@ div.nobreak { page-break-inside: avoid; }
       begin
         doc = Nokogiri::HTML(URI.open(url))
       rescue OpenURI::HTTPError => e
-        puts "Can't access #{ url }"
+        puts "Can't access #{url}"
         puts e.message
         puts
         next
@@ -1507,7 +1576,7 @@ div.nobreak { page-break-inside: avoid; }
       begin
         article = Nokogiri::HTML(URI.open(link))
       rescue OpenURI::HTTPError => e
-        puts "Can't access #{ link }"
+        puts "Can't access #{link}"
         puts e.message
         puts
         next
@@ -1572,7 +1641,7 @@ div.nobreak { page-break-inside: avoid; }
       begin
         doc = Nokogiri::HTML(URI.open(url))
       rescue OpenURI::HTTPError => e
-        puts "Can't access #{ url }"
+        puts "Can't access #{url}"
         puts e.message
         puts
         next
@@ -1616,7 +1685,7 @@ div.nobreak { page-break-inside: avoid; }
       begin
         article = Nokogiri::HTML(URI.open(link))
       rescue OpenURI::HTTPError => e
-        puts "Can't access #{ link }"
+        puts "Can't access #{link}"
         puts e.message
         puts
         next
@@ -1656,7 +1725,7 @@ div.nobreak { page-break-inside: avoid; }
       begin
            new_article.image = Down.download(url_array[0]) if url_array[0].present?
          rescue Down::Error => e
-           puts "Can't download this image #{ url_array[0] }"
+           puts "Can't download this image #{url_array[0]}"
            puts e.message
            puts
            new_article.image = nil
@@ -1681,7 +1750,7 @@ div.nobreak { page-break-inside: avoid; }
       begin
         doc = Nokogiri::HTML(URI.open(url))
       rescue OpenURI::HTTPError => e
-        puts "Can't access #{ url }"
+        puts "Can't access #{url}"
         puts e.message
         puts
         next
@@ -1711,7 +1780,7 @@ div.nobreak { page-break-inside: avoid; }
       begin
         article = Nokogiri::HTML(URI.open(link))
       rescue OpenURI::HTTPError => e
-        puts "Can't access #{ link }"
+        puts "Can't access #{link}"
         puts e.message
         puts
         next
@@ -1761,7 +1830,7 @@ div.nobreak { page-break-inside: avoid; }
       begin
         new_article.image = Down.download(url_array[0]) if url_array[0].present?
       rescue Down::Error => e
-        puts "Can't download this image #{ url_array[0] }"
+        puts "Can't download this image #{url_array[0]}"
         puts e.message
         puts
         new_article.image = nil
@@ -1790,7 +1859,7 @@ div.nobreak { page-break-inside: avoid; }
       begin
         doc = Nokogiri::HTML(URI.open(url))
       rescue OpenURI::HTTPError => e
-        puts "Can't access #{ url }"
+        puts "Can't access #{url}"
         puts e.message
         puts
         next
@@ -1820,7 +1889,7 @@ div.nobreak { page-break-inside: avoid; }
       begin
         article = Nokogiri::HTML(URI.open(link))
       rescue OpenURI::HTTPError => e
-        puts "Can't access #{ link }"
+        puts "Can't access #{link}"
         puts e.message
         puts
         next
@@ -1866,7 +1935,7 @@ div.nobreak { page-break-inside: avoid; }
       begin
         new_article.image = Down.download(url_array[0]) if url_array[0].present?
       rescue Down::Error => e
-        puts "Can't download this image #{ url_array[0] }"
+        puts "Can't download this image #{url_array[0]}"
         puts e.message
         puts
         new_article.image = nil
@@ -1891,7 +1960,7 @@ div.nobreak { page-break-inside: avoid; }
       begin
         doc = Nokogiri::HTML(URI.open(url))
       rescue OpenURI::HTTPError => e
-        puts "Can't access #{ url }"
+        puts "Can't access #{url}"
         puts e.message
         puts
         next
@@ -1921,7 +1990,7 @@ div.nobreak { page-break-inside: avoid; }
       begin
         article = Nokogiri::HTML(URI.open(link))
       rescue OpenURI::HTTPError => e
-        puts "Can't access #{ link }"
+        puts "Can't access #{link}"
         puts e.message
         puts
         next
@@ -1970,7 +2039,7 @@ div.nobreak { page-break-inside: avoid; }
       begin
         new_article.image = Down.download(url_array[0]) if url_array[0].present?
       rescue Down::Error => e
-        puts "Can't download this image #{ url_array[0] }"
+        puts "Can't download this image #{url_array[0]}"
         puts e.message
         puts
         new_article.image = nil
@@ -1997,7 +2066,7 @@ div.nobreak { page-break-inside: avoid; }
       begin
         doc = Nokogiri::HTML(URI.open(url))
       rescue OpenURI::HTTPError => e
-        puts "Can't access #{ url }"
+        puts "Can't access #{url}"
         puts e.message
         puts
         next
@@ -2026,7 +2095,7 @@ div.nobreak { page-break-inside: avoid; }
       begin
         article = Nokogiri::HTML(URI.open(link))
       rescue OpenURI::HTTPError => e
-        puts "Can't access #{ link }"
+        puts "Can't access #{link}"
         puts e.message
         puts
         next
@@ -2075,7 +2144,7 @@ div.nobreak { page-break-inside: avoid; }
       begin
         new_article.image = Down.download(url_array[0]) if url_array[0].present?
       rescue Down::Error => e
-        puts "Can't download this image #{ url_array[0] }"
+        puts "Can't download this image #{url_array[0]}"
         puts e.message
         puts
         new_article.image = nil
@@ -2105,7 +2174,7 @@ div.nobreak { page-break-inside: avoid; }
       begin
         doc = Nokogiri::HTML(URI.open(url))
       rescue OpenURI::HTTPError => e
-        puts "Can't access #{ url }"
+        puts "Can't access #{url}"
         puts e.message
         puts
         next
@@ -2136,7 +2205,7 @@ div.nobreak { page-break-inside: avoid; }
       begin
         article = Nokogiri::HTML(URI.open(link))
       rescue OpenURI::HTTPError => e
-        puts "Can't access #{ link }"
+        puts "Can't access #{link}"
         puts e.message
         puts
         next
@@ -2187,7 +2256,7 @@ div.nobreak { page-break-inside: avoid; }
       begin
         new_article.image = Down.download(url_array[0]) if url_array[0].present?
       rescue Down::ResponseError => e
-        puts "Can't download this image #{ url_array[0] }"
+        puts "Can't download this image #{url_array[0]}"
         puts e.message
         puts
         new_article.image = nil
@@ -2215,7 +2284,7 @@ div.nobreak { page-break-inside: avoid; }
       begin
         doc = Nokogiri::HTML(URI.open(url))
       rescue OpenURI::HTTPError => e
-        puts "Can't access #{ url }"
+        puts "Can't access #{url}"
         puts e.message
         puts
         next
@@ -2248,7 +2317,7 @@ div.nobreak { page-break-inside: avoid; }
       begin
         article = Nokogiri::HTML(URI.open(link))
       rescue OpenURI::HTTPError => e
-        puts "Can't access #{ link }"
+        puts "Can't access #{link}"
         puts e.message
         puts
         next
@@ -2311,7 +2380,7 @@ div.nobreak { page-break-inside: avoid; }
       begin
         doc = Nokogiri::HTML(URI.open(url))
       rescue OpenURI::HTTPError => e
-        puts "Can't access #{ url }"
+        puts "Can't access #{url}"
         puts e.message
         puts
         next
@@ -2341,7 +2410,7 @@ div.nobreak { page-break-inside: avoid; }
       begin
         article = Nokogiri::HTML(URI.open(link))
       rescue OpenURI::HTTPError => e
-        puts "Can't access #{ link }"
+        puts "Can't access #{link}"
         puts e.message
         puts
         next
@@ -2382,7 +2451,7 @@ div.nobreak { page-break-inside: avoid; }
       begin
            new_article.image = Down.download(url_array[0]) if url_array[0].present?
          rescue Down::Error => e
-           puts "Can't download this image #{ url_array[0] }"
+           puts "Can't download this image #{url_array[0]}"
            puts e.message
            puts
            new_article.image = nil
