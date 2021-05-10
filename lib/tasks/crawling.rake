@@ -3,16 +3,9 @@ require 'open-uri'
 require 'openssl'
 OpenSSL::SSL::VERIFY_PEER = OpenSSL::SSL::VERIFY_NONE
 namespace :crawling do
-=begin
-  desc "Send token emails for users"
-  task token_mail: :environment do
-    User.all.where(:token_mail => true).each {|s|
-      UserMailer.send_token(s).deliver
-    }
-  end
-=end
 
-  desc "Send today abstract email for users"
+
+  desc "carwling all media"
   task scraping: :environment do
     
     Medium.all.each {|m|
@@ -20,6 +13,7 @@ namespace :crawling do
 
       if m.url_crawling?
         url_media_array = m.url_crawling.split(',')
+        puts url_media_array
         get_articles(url_media_array,m.name)
         Article.where(medium_id: m.id,created_at: Time.zone.now.beginning_of_day..Time.zone.now.end_of_day).where.not(id: Article.group(:url_article).select("min(id)")).destroy_all
       else
@@ -33,6 +27,7 @@ namespace :crawling do
 
 
   def get_articles(url_media_array, name)
+    puts  'get article of ' + name
     case name
     when 'AUTOBIP'
       get_articles_autobip(url_media_array)
