@@ -416,7 +416,7 @@ div.nobreak { page-break-inside: avoid; }
     if @media.url_crawling?
       url_media_array = @media.url_crawling.split(',')
       get_articles(url_media_array)
-      Article.where(medium_id: params[:media_id],create_at: Time.zone.now.beginning_of_day..Time.zone.now.end_of_day).where.not(id: Article.group(:url_article).select("min(id)"))
+      Article.where(medium_id: params[:media_id],created_at: Time.zone.now.beginning_of_day..Time.zone.now.end_of_day).where.not(id: Article.group(:url_article).select("min(id)")).destroy_all
     else
       render json: { crawling_status: 'No url_crawling', media: @media.name, status: 'error' }
     end
