@@ -182,7 +182,7 @@ class Api::V1::ArticlesController < ApplicationController
     similar_json_string = ArticleSerializer.new(similar)
     json_string = ArticleSerializer.new(@article, include: %i[medium tags author])
 
-    render json: {article:json_string, similar: similar_json_string }
+    render json: { article:json_string, similar: similar_json_string }
   end
 
   # POST /articles
@@ -416,6 +416,7 @@ div.nobreak { page-break-inside: avoid; }
     if @media.url_crawling?
       url_media_array = @media.url_crawling.split(',')
       get_articles(url_media_array)
+      Article.where(medium_id: params[:media_id],create_at: Time.zone.now.beginning_of_day..Time.zone.now.end_of_day).where.not(id: Article.group(:url_article).select("min(id)"))
     else
       render json: { crawling_status: 'No url_crawling', media: @media.name, status: 'error' }
     end
@@ -496,7 +497,8 @@ div.nobreak { page-break-inside: avoid; }
                                      fields: %i[title body author_name],
                                      suggest: true,
                                      page: params[:page],
-                                     per_page: params[:per_page]
+                                     per_page: params[:per_page],
+                                     order: { date_published: :desc }
 
     @articles_res = result_articles
 
@@ -724,6 +726,8 @@ div.nobreak { page-break-inside: avoid; }
 
       new_article.author_id = new_author.id
       new_article.body = article.css('div.pt-4.bp-2.entry-content.typography-copy').inner_html
+      new_article.body = new_article.body.gsub(/<img[^>]*>/, '')
+
       d = change_date_autobip_aps(article.at("//span[@itemprop = 'datePublished']").text)
       new_article.date_published = d.to_datetime
       url_array = article.css('.fotorama.mnmd-gallery-slider.mnmd-post-media-wide img').map { |link| link['src'] }
@@ -819,6 +823,8 @@ div.nobreak { page-break-inside: avoid; }
       end
       new_article.author_id = new_author.id
       new_article.body = article.css('article div.ech-artx').inner_html
+      new_article.body = new_article.body.gsub(/<img[^>]*>/, '')
+
       date = DateTime.parse article.css('article.ech-sgmn__article time').text
       new_article.date_published = date.to_datetime.change({ hour: 0, min: 0, sec: 0 })
 
@@ -924,6 +930,7 @@ div.nobreak { page-break-inside: avoid; }
       end
       new_article.author_id = new_author.id
       new_article.body = article.css('body > div.article-section > div > div.article-section__main.wrap__main > article > div.full-article__content').inner_html
+      new_article.body = new_article.body.gsub(/<img[^>]*>/, '')
       new_article.date_published = article.at('time[datetime]')['datetime'].to_datetime.change({ hour: 0, min: 0, sec: 0 }) + (1.0 / 24)
       url_array = article.css('body > div.article-section > div > div.article-section__main.wrap__main > article > div.full-article__featured-image > img').map { |link| link['src'] }
       new_article.url_image = url_array[0]
@@ -1012,12 +1019,15 @@ div.nobreak { page-break-inside: avoid; }
       end
       new_article.author_id = new_author.id
       new_article.body = article.css('div.article__content').inner_html
+      new_article.body = new_article.body.gsub(/<img[^>]*>/, '')
       date = article.at('time[datetime]')['datetime']
-      new_article.date_published = article.at('time[datetime]')['datetime'].to_datetime.change({ hour: 0, min: 0, sec: 0 })
+      new_article.date_published = date.to_datetime.change({ hour: 0, min: 0, sec: 0 })
       url_array = article.css('body > div.article-section > div > div.article-section__main.wrap__main > article > div.full-article__featured-image > img').map { |link| link['src'] }
       new_article.url_image = url_array[0]
       begin
-           new_article.image = Down.download(url_array[0]) if url_array[0].present?
+           if url_array[0].present?
+             new_article.image = Down.download(url_array[0])
+           end
          rescue Down::Error => e
            puts "Can't download this image #{url_array[0]}"
            puts e.message
@@ -1104,6 +1114,7 @@ div.nobreak { page-break-inside: avoid; }
       end
       new_article.author_id = new_author.id
       new_article.body = article.css('div.itemIntroText strong').inner_html + article.css('div.itemFullText').inner_html
+      new_article.body = new_article.body.gsub(/<img[^>]*>/, '')
       date = article.css('span.itemDateCreated').text
       date['Publié le : '] = ''
       d = change_date_autobip_aps(date)
@@ -1204,6 +1215,7 @@ div.nobreak { page-break-inside: avoid; }
       end
       new_article.author_id = new_author.id
       new_article.body = article.css('div.article-content div.text').inner_html
+      new_article.body = new_article.body.gsub(/<img[^>]*>/, '')
       date = article.css('div.category-content div div.published').text
       date['le '] = ''
       # d = change_date_autobip_aps(date)
@@ -1300,6 +1312,7 @@ div.nobreak { page-break-inside: avoid; }
       end
       new_article.author_id = new_author.id
       new_article.body = article.css('div#text_core').inner_html
+      new_article.body = new_article.body.gsub(/<img[^>]*>/, '')
       date = article.css('div#side-post div div.date-heure span')[0].text.delete(' ')
 
       # d = change_date_autobip_aps(date)
@@ -1400,12 +1413,14 @@ div.nobreak { page-break-inside: avoid; }
       end
       new_article.author_id = new_author.id
       new_article.body = article.css('#flash_post_head p').inner_html + article.css('#text_space p').inner_html
-
+      new_article.body = new_article.body.gsub(/<img[^>]*>/, '')
       new_article.date_published =  auteur_date[0].to_datetime.change({ hour: 0, min: 0, sec: 0 })
       url_array = article.css('#post_banner img').map { |link| link['src'] }
       new_article.url_image = url_array[0]
       begin
-           new_article.image = Down.download(url_array[0]) if url_array[0].present?
+           if url_array[0].present?
+             new_article.image = Down.download(url_array[0])
+           end
          rescue Down::Error => e
            puts "Can't download this image #{url_array[0]}"
            puts e.message
@@ -1493,7 +1508,7 @@ div.nobreak { page-break-inside: avoid; }
     end
     new_article.author_id = new_author.id
     new_article.body = article.css('div.elementor-element.elementor-element-c93088c.elementor-widget.elementor-widget-theme-post-content').inner_html
-
+      new_article.body = new_article.body.gsub(/<img[^>]*>/, '')
     # date = article.at('p.text-capitalize span').text
     # date[','] = ''
     date = article.at('div.elementor-widget-container ul li a span.elementor-icon-list-text.elementor-post-info__item.elementor-post-info__item--type-date').text
@@ -1611,6 +1626,7 @@ div.nobreak { page-break-inside: avoid; }
       end
       new_article.author_id = new_author.id
       new_article.body = article.css('article.module-article section').inner_html
+      new_article.body = new_article.body.gsub(/<img[^>]*>/, '')
       get_dates = []
 
       article.css('aside ul li.text-uppercase ul li').map do |date|
@@ -1721,11 +1737,14 @@ div.nobreak { page-break-inside: avoid; }
       end
       new_article.author_id = new_author.id
       new_article.body = article.css('#text_article').inner_html
+      new_article.body = new_article.body.gsub(/<img[^>]*>/, '')
       new_article.date_published = article.css('#contenu > div.At > span').text.split(':')[1].to_datetime.change({ hour: 0, min: 0, sec: 0 })
       url_array = article.css('#articlecontent > div.TxArtcile > div.ImgCapt > img').map { |link| link['src'] }
       new_article.url_image = url_array[0]
       begin
-           new_article.image = Down.download(url_array[0]) if url_array[0].present?
+           if url_array[0].present?
+             new_article.image = Down.download(url_array[0])
+           end
          rescue Down::Error => e
            puts "Can't download this image #{url_array[0]}"
            puts e.message
@@ -1820,6 +1839,7 @@ div.nobreak { page-break-inside: avoid; }
       end
       new_article.author_id = new_author.id
       new_article.body = article.css('div#article_body_content').inner_html
+      new_article.body = new_article.body.gsub(/<img[^>]*>/, '')
       # date = article.at('p.text-capitalize span').text
       # date[','] = ''
       date = article.at('time[datetime]')['datetime']
@@ -1927,6 +1947,7 @@ div.nobreak { page-break-inside: avoid; }
 
       new_article.author_id = new_author.id
       new_article.body = article.css('div.entry-content.clearfix.single-post-content').inner_html
+      new_article.body = new_article.body.gsub(/<img[^>]*>/, '')
       # date = article.at('p.text-capitalize span').text
       # date[','] = ''
       date = article.at('time[datetime]')['datetime']
@@ -2031,6 +2052,8 @@ div.nobreak { page-break-inside: avoid; }
       end
       new_article.author_id = new_author.id
       new_article.body = article.css('div.td-post-content').inner_html
+      new_article.body = new_article.body.gsub(/<img[^>]*>/, '')
+      new_article.body = new_article.body.gsub(%r{<div class="td-post-featured-image">(.*?)<\/a><\/div>}, '')
       # date = article.at('p.text-capitalize span').text
       # date[','] = ''
       date = article.at('time[datetime]')['datetime']
@@ -2134,6 +2157,7 @@ div.nobreak { page-break-inside: avoid; }
       end
       new_article.author_id = new_author.id
       new_article.body = article.css('div.entry-content').inner_html
+      new_article.body = new_article.body.gsub(/<img[^>]*>/, '')
       # date = article.at('p.text-capitalize span').text
       # date[','] = ''
       date = article.at('time[datetime]')['datetime']
@@ -2243,11 +2267,12 @@ div.nobreak { page-break-inside: avoid; }
       end
       new_article.author_id = new_author.id
       new_article.body = article.css('div.penci-entry-content').inner_html
+      new_article.body = new_article.body.gsub(/<img[^>]*>/, '')
       # date = article.at('p.text-capitalize span').text
       # date[','] = ''
       date = article.at('time[datetime]')['datetime']
       # d = change_date_maghrebemergen(date)
-      new_article.date_published = date.to_datetime.change({ hour: 0, min: 0, sec: 0}) + (1.0 / 24)
+      new_article.date_published = date.to_datetime.change({ hour: 0, min: 0, sec: 0 }) + (1.0 / 24)
       url_array = article.css('div.entry-media img').map { |link| link['src'] }
 
       url_image = url_array[0]
@@ -2354,11 +2379,12 @@ div.nobreak { page-break-inside: avoid; }
       end
       new_article.author_id = new_author.id
       new_article.body = article.css('p.article__desc').inner_html + article.css('div.article__cntn').inner_html
+      new_article.body = new_article.body.gsub(/<img[^>]*>/, '')
       # date = article.at('p.text-capitalize span').text
       # date[','] = ''
       date = article.at('time[datetime]')['datetime']
       # d = change_date_maghrebemergen(date)
-      new_article.date_published = date.to_datetime.change({ hour: 0, min: 0, sec: 0}) + (1.0 / 24)
+      new_article.date_published = date.to_datetime.change({ hour: 0, min: 0, sec: 0 }) + (1.0 / 24)
       #url_array = article.css('div.entry-media img').map {  |link| link['src'] }
       # url_image = url_array[0]
       # new_article.image = Down.download(url_array[0]) if url_array[0].present?
@@ -2443,15 +2469,18 @@ div.nobreak { page-break-inside: avoid; }
       end
       new_article.author_id = new_author.id
       new_article.body = article.css('#the-post > div.post-inner > div.entry').inner_html
+      new_article.body = new_article.body.gsub(/<img[^>]*>/, '')
       # date = article.at('p.text-capitalize span').text
       # date[','] = ''
       date = article.at('span.tie-date').text
       date = change_date_autobip_aps(date)
-      new_article.date_published = date.to_datetime.change({ hour: 0, min: 0, sec: 0})
+      new_article.date_published = date.to_datetime.change({ hour: 0, min: 0, sec: 0 })
       url_array = article.css('div.single-post-thumb  img').map { |link| link['src'] }
       url_image = url_array[0]
       begin
-           new_article.image = Down.download(url_array[0]) if url_array[0].present?
+           if url_array[0].present?
+             new_article.image = Down.download(url_array[0])
+           end
          rescue Down::Error => e
            puts "Can't download this image #{url_array[0]}"
            puts e.message
