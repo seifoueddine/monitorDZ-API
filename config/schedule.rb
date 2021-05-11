@@ -18,12 +18,12 @@
 # end
 
 every :day, at: '8:00am,11:00am,1:00pm,4:00pm,7:00pm,10:00pm', roles: [:app, :web, :db] do
-   rake 'crawling:scraping' 
+   rake 'crawling:scraping --trace' 
  end
 
  set :output, "/var/log/cron_log.log"
 every 10.minutes,  roles: [:app, :web, :db] do
-   rake 'crawling:scraping' 
+   rake 'crawling:scraping --trace' 
  end
 
 # Learn more: http://github.com/javan/whenever

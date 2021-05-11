@@ -1,5 +1,5 @@
 class Article < ApplicationRecord
-  searchkick match: :word_middle,
+  searchkick match: :word,
             suggest: %i[title body media_area medium_type author_name tag_name]
 
 
