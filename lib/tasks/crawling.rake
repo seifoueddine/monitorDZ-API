@@ -11,8 +11,7 @@ namespace :crawling do
     
     Medium.all.each {|m|
 
-      
-      begin
+  
         if( m.url_crawling? && m.name != 'APS')
           url_media_array = m.url_crawling.split(',')
           puts url_media_array
@@ -21,18 +20,7 @@ namespace :crawling do
         else
           render json: { crawling_status: 'No url_crawling', media: m.name, status: 'error' }
         end
-      rescue Net::OpenTimeoutError  => e
-        puts "Can't access #{m.name}"
-        puts e.message
-        puts
-        next
-      end
-
-
-
-  
-
-
+   
     }
 
   end
