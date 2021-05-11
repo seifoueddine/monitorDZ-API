@@ -10,12 +10,12 @@ namespace :crawling do
   task scraping: :environment do
     
     Medium.all.each {|m|
-
+      @media = m
   
         if( m.url_crawling? && m.name != 'APS')
           url_media_array = m.url_crawling.split(',')
           puts url_media_array
-          get_articles(url_media_array,m.name)
+          get_articles(url_media_array,m)
           Article.where(medium_id: m.id,created_at: Time.zone.now.beginning_of_day..Time.zone.now.end_of_day).where.not(id: Article.group(:url_article).select("min(id)")).destroy_all
         else
           puts "crawling_status: 'No url_crawling', media: m.name, status: 'error'"
@@ -26,9 +26,9 @@ namespace :crawling do
   end
 
 
-  def get_articles(url_media_array, name)
-    puts  'get article of ' + name
-    case name
+  def get_articles(url_media_array, media)
+    puts  'get article of ' + media.name
+    case media.name
     when 'AUTOBIP'
       get_articles_autobip(url_media_array)
     when 'ELCHEROUK'
