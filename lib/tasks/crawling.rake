@@ -9,16 +9,27 @@ namespace :crawling do
   task scraping: :environment do
     
     Medium.all.each {|m|
-     
 
-      if m.url_crawling?
-        url_media_array = m.url_crawling.split(',')
-        puts url_media_array
-        get_articles(url_media_array,m.name)
-        Article.where(medium_id: m.id,created_at: Time.zone.now.beginning_of_day..Time.zone.now.end_of_day).where.not(id: Article.group(:url_article).select("min(id)")).destroy_all
-      else
-        render json: { crawling_status: 'No url_crawling', media: m.name, status: 'error' }
+      
+      begin
+        if m.url_crawling?
+          url_media_array = m.url_crawling.split(',')
+          puts url_media_array
+          get_articles(url_media_array,m.name)
+          Article.where(medium_id: m.id,created_at: Time.zone.now.beginning_of_day..Time.zone.now.end_of_day).where.not(id: Article.group(:url_article).select("min(id)")).destroy_all
+        else
+          render json: { crawling_status: 'No url_crawling', media: m.name, status: 'error' }
+        end
+      rescue Net::OpenTimeout => e
+        puts "Can't access #{m.name}"
+        puts e.message
+        puts
+        next
       end
+
+
+
+  
 
 
     }
