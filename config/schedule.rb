@@ -18,8 +18,10 @@ every 10.minutes do
 end
 
 every :day, at: '8:00am,11:00am,1:00pm,4:00pm,7:00pm,10:00pm', roles: [:app, :web, :db] do
-   rake 'crawling:scraping' # will only be added to crontabs of :app servers
+   rake 'crawling:scraping' 
  end
-
+ every 10.minutes,  roles: [:app, :web, :db] do
+   rake 'crawling:scraping' 
+ end
 
 # Learn more: http://github.com/javan/whenever
