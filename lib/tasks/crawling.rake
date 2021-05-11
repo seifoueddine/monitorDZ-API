@@ -1,7 +1,7 @@
 require 'nokogiri'
 require 'open-uri'
 require 'openssl'
-require 'resolv-replace'
+#require 'resolv-replace'
 OpenSSL::SSL::VERIFY_PEER = OpenSSL::SSL::VERIFY_NONE
 namespace :crawling do
 
