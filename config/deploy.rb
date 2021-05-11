@@ -8,7 +8,7 @@ set :stage, :production
 # Deploy to the user's home directory
 set :deploy_to, "/var/www/html/#{fetch :application}"
 set :whenever_environment, ->{ fetch(:stage) }
-set :whenever_identifier, ->{ "/var/www/html/#{fetch(:application)}_#{fetch(:stage)}" }
+#set :whenever_identifier, ->{ "/var/www/html/#{fetch(:application)}_#{fetch(:stage)}" }
 append :linked_dirs, 'log', 'tmp/pids', 'tmp/cache', 'tmp/sockets', 'vendor/bundle', '.bundle', 'public/system', 'public/uploads'
 
 # Only keep the last 5 releases to save disk space
@@ -19,19 +19,19 @@ set :keep_releases, 5
 # append :linked_files, 'config/database.yml', 'config/secrets.yml'
 
 
-append :linked_files, "config/master.key"
+# append :linked_files, "config/master.key"
 
-namespace :deploy do
-  namespace :check do
-    before :linked_files, :set_master_key do
-      on roles(:app), in: :sequence, wait: 10 do
-        unless test("[ -f /var/www/html/#{fetch :application}/config/master.key ]")
-          upload! 'config/master.key', "/var/www/html/#{fetch :application}/config/master.key"
-        end
-      end
-    end
-  end
-end
+# namespace :deploy do
+#   namespace :check do
+#     before :linked_files, :set_master_key do
+#       on roles(:app), in: :sequence, wait: 10 do
+#         unless test("[ -f /var/www/html/#{fetch :application}/config/master.key ]")
+#           upload! 'config/master.key', "/var/www/html/#{fetch :application}/config/master.key"
+#         end
+#       end
+#     end
+#   end
+# end
 
 
 
