@@ -13,7 +13,7 @@ namespace :crawling do
 
       
       begin
-        if m.url_crawling?
+        if( m.url_crawling? && m.name != 'APS')
           url_media_array = m.url_crawling.split(',')
           puts url_media_array
           get_articles(url_media_array,m.name)
