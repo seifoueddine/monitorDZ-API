@@ -21,7 +21,7 @@ namespace :crawling do
         else
           render json: { crawling_status: 'No url_crawling', media: m.name, status: 'error' }
         end
-      rescue Net::OpenTimeout => e
+      rescue Net::OpenTimeoutError  => e
         puts "Can't access #{m.name}"
         puts e.message
         puts
