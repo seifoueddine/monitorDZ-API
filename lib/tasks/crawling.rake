@@ -18,7 +18,7 @@ namespace :crawling do
           get_articles(url_media_array,m.name)
           Article.where(medium_id: m.id,created_at: Time.zone.now.beginning_of_day..Time.zone.now.end_of_day).where.not(id: Article.group(:url_article).select("min(id)")).destroy_all
         else
-          render json: { crawling_status: 'No url_crawling', media: m.name, status: 'error' }
+          puts "crawling_status: 'No url_crawling', media: m.name, status: 'error'"
         end
    
     }
@@ -66,7 +66,7 @@ namespace :crawling do
     when 'SANTENEWS'
       get_articles_santenews(url_media_array)
     else
-      render json: { crawling_status: 'No media name found!! ', status: 'error' }
+      puts  "crawling_status: 'No media name found!! ', status: 'error' "
     end
   end
 
@@ -158,7 +158,7 @@ namespace :crawling do
         tag_check_and_save(tags_array) if @media.tag_status == true
         end
   
-      render json: { crawling_status_autobip: 'ok' }
+      puts "json: { crawling_status_autobip: 'ok' }"
     end
     # end method to get autobip articles
   
@@ -264,7 +264,7 @@ namespace :crawling do
         count += 1 if new_article.save
         tag_check_and_save(tags_array)if @media.tag_status == true
       end
-      render json: { crawling_count_elcherouk:  count  }
+      puts "json: { crawling_count_elcherouk:  count  }"
     end
     # end method to get elcherouk articles
   
@@ -359,7 +359,7 @@ namespace :crawling do
         new_article.save!
         # tag_check_and_save(tags_array)
       end
-      render json: { crawling_status_elcherouk: 'ok' }
+      puts "json: { crawling_status_elcherouk: 'ok' }"
     end
     # end method to get ennahar articles
   
@@ -451,7 +451,7 @@ namespace :crawling do
         new_article.save!
         # tag_check_and_save(tags_array)
       end
-      render json: { crawling_status_tsa: 'ok' }
+      puts "json: { crawling_status_tsa: 'ok' }"
     end
     # end method to get TSA articles
   
@@ -547,7 +547,7 @@ namespace :crawling do
         new_article.save!
         tag_check_and_save(tags_array)if @media.tag_status == true
       end
-      render json: { crawling_status_aps: 'ok' }
+      puts "json: { crawling_status_aps: 'ok' }"
     end
     # end method to get APS articles
   
@@ -648,7 +648,7 @@ namespace :crawling do
         new_article.save!
           #tag_check_and_save(tags_array)if @media.tag_status == true
       end
-      render json: { crawling_status_le_soir: 'ok' }
+      puts "json: { crawling_status_le_soir: 'ok' }"
     end
     # end method to get le soir articles
   
@@ -745,7 +745,7 @@ namespace :crawling do
         new_article.save!
         #tag_check_and_save(tags_array)if @media.tag_status == true
       end
-      render json: { crawling_status_liberte: 'ok' }
+      puts "json: { crawling_status_liberte: 'ok' }"
     end
     # end method to get _liberte articles
   
@@ -844,7 +844,7 @@ namespace :crawling do
         new_article.save!
         tag_check_and_save(tags_array)if @media.tag_status == true
       end
-      render json: { crawling_status_aps: 'ok' }
+      puts "json: { crawling_status_aps: 'ok' }"
     end
     # end method to get bilad articles
     #
@@ -941,7 +941,7 @@ namespace :crawling do
       new_article.save!
       # tag_check_and_save(tags_array)
     end
-      render json: { crawling_status_aps: 'ok' }
+      puts "json: { crawling_status_aps: 'ok' }"
     end
     # end method to get maghrebemergent articles
     #
@@ -1053,7 +1053,7 @@ namespace :crawling do
         count += 1 if new_article.save
         # tag_check_and_save(tags_array)
       end
-      render json: { crawling_count_aps: count }
+      puts "json: { crawling_count_aps: count }"
     end
     # end method to get elmoudjahid articles
     # start method to get elmoudjahid_fr articles
@@ -1164,7 +1164,7 @@ namespace :crawling do
         new_article.save!
         # tag_check_and_save(tags_array)
       end
-      render json: { crawling_status_aps: 'ok' }
+      puts "json: { crawling_status_aps: 'ok' }"
     end
     # end method to get elmoudjahid_fr articles
   
@@ -1272,7 +1272,7 @@ namespace :crawling do
         new_article.save!
         tag_check_and_save(tags_array) if @media.tag_status == true
       end
-      render json: { crawling_status_aps: 'ok' }
+      puts "json: { crawling_status_aps: 'ok' }"
     end
     # end method to get elkhabar articles
     #
@@ -1375,7 +1375,7 @@ namespace :crawling do
         new_article.save!
         tag_check_and_save(tags_array) if @media.tag_status == true
       end
-      render json: { crawling_status_aps: 'ok' }
+      puts "json: { crawling_status_aps: 'ok' }"
     end
     # end method to get elikhbaria articles
   
@@ -1482,7 +1482,7 @@ namespace :crawling do
         new_article.save!
           #tag_check_and_save(tags_array)
       end
-      render json: { crawling_status_aps: 'ok' }
+      puts "json: { crawling_status_aps: 'ok' }"
     end
     # end method to get algerieco articles
   
@@ -1587,7 +1587,7 @@ namespace :crawling do
         new_article.save!
         tag_check_and_save(tags_array)
       end
-      render json: { crawling_status_aps: 'ok' }
+      puts "json: { crawling_status_aps: 'ok' }"
     end
     # end method to get chiffreaffaire articles
   
@@ -1696,7 +1696,7 @@ namespace :crawling do
         new_article.save!
           # tag_check_and_save(tags_array)
       end
-      render json: { crawling_status_aps: 'ok' }
+      puts "json: { crawling_status_aps: 'ok' }"
     end
     # end method to get elhiwar articles
   
@@ -1792,7 +1792,7 @@ namespace :crawling do
         new_article.save!
         # tag_check_and_save(tags_array)
       end
-      render json: { crawling_status_aps: 'ok' }
+      puts "json: { crawling_status_aps: 'ok' }"
     end
     # end method to get elhiwar articles
   
@@ -1891,7 +1891,7 @@ namespace :crawling do
         new_article.save!
         # tag_check_and_save(tags_array)
       end
-      render json: { crawling_status_aps: 'ok' }
+      puts "json: { crawling_status_aps: 'ok' }"
     end
     # end method to get elhiwar articles
   
