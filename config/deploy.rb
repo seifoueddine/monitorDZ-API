@@ -9,7 +9,6 @@ set :stage, :production
 set :deploy_to, "/var/www/html/#{fetch :application}"
 set :whenever_environment, ->{ fetch(:stage) }
 set :linked_files, %w[config/master.key]
-set :linked_files, %w[config/production.key]
 #set :whenever_identifier, ->{ "/var/www/html/#{fetch(:application)}_#{fetch(:stage)}" }
 append :linked_dirs, 'log', 'tmp/pids', 'tmp/cache', 'tmp/sockets', 'vendor/bundle', '.bundle', 'public/system', 'public/uploads'
 
