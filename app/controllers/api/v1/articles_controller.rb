@@ -211,14 +211,18 @@ class Api::V1::ArticlesController < ApplicationController
   # auto tags@article_for_indexing
   def auto_tag
     slug_id = params[:slug_id]
+    start_date = params[:start_date]
+    end_date = params[:start_date]
     campaign = Campaign.where(slug_id: slug_id)
     all_tags = campaign[0].tags.where(status: true)
+    camp_media = campaign[0].media
+    camp_media_array = camp_media.map(&:id)
     puts "******************************"
     puts "Nombre de tag :" + all_tags.count.to_s
     puts "******************************"
     articles = []
     # all_tags = Tag.where(status: true)
-    articles_with_date = Article.where(created_at: (Date.today-1).beginning_of_day..(Date.today-1).end_of_day)
+    articles_with_date = Article.where(medium_id: camp_media_array, created_at: (Date.today - 1).beginning_of_day..(Date.today - 1).end_of_day)
     articles_with_date.map do |article|
       @tags = []
       @tags_objects = []
@@ -237,6 +241,7 @@ class Api::V1::ArticlesController < ApplicationController
       #  article.media_tags = old_tags.join(',')
       @tags_objects.map do |tag_object|
         article.tags << tag_object
+        article.save!
         article_tag_last = ArticleTag.order(created_at: :desc).first
         article_tag_last.campaign_id = campaign[0].id
         article_tag_last.slug_id = slug_id
@@ -244,7 +249,7 @@ class Api::V1::ArticlesController < ApplicationController
 
 
       # article.is_tagged = true if @tags_objects.length.positive?
-      article.save!
+
       articles << article if @tags_objects.length.positive?
       puts "******************************"
       puts "Nombre d'articles :" + articles.count.to_s
@@ -1415,7 +1420,7 @@ div.nobreak { page-break-inside: avoid; }
       new_article.author_id = new_author.id
       new_article.body = article.css('#flash_post_head p').inner_html + article.css('#text_space p').inner_html
       new_article.body = new_article.body.gsub(/<img[^>]*>/, '')
-      new_article.date_published =  auteur_date[0].to_datetime.change({ hour: 0, min: 0, sec: 0 })
+      new_article.date_published = auteur_date[0].to_datetime.change({ hour: 0, min: 0, sec: 0 })
       url_array = article.css('#post_banner img').map { |link| link['src'] }
       new_article.url_image = url_array[0]
       begin
