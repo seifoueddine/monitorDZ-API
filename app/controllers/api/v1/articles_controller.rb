@@ -210,9 +210,12 @@ class Api::V1::ArticlesController < ApplicationController
 
   # auto tags@article_for_indexing
   def auto_tag
-    slug_id = get_slug_id
+    slug_id = params[:slug_id]
     campaign = Campaign.where(slug_id: slug_id)
     all_tags = campaign[0].tags
+    puts "******************************"
+    puts "Nombre de tag :" + all_tags.count.to_s
+    puts "******************************"
     articles = []
     # all_tags = Tag.where(status: true)
     articles_with_date = Article.where(created_at: today.beginning_of_day..today.end_of_day)
@@ -235,7 +238,6 @@ class Api::V1::ArticlesController < ApplicationController
       @tags_objects.map do |tag_object|
         article.tags << tag_object
         article_tag_last = ArticleTag.order(created_at: :desc).first
-
         article_tag_last.campaign_id = campaign[0].id
         article_tag_last.slug_id = slug_id
       end
@@ -244,6 +246,9 @@ class Api::V1::ArticlesController < ApplicationController
       # article.is_tagged = true if @tags_objects.length.positive?
       article.save!
       articles << article if @tags_objects.length.positive?
+      puts "******************************"
+      puts "Nombre d'articles :" + articles.count.to_s
+      puts "******************************"
     end
     campaigns = Campaign.all
     campaign[0].map do |camp|
