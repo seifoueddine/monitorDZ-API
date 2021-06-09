@@ -212,13 +212,13 @@ class Api::V1::ArticlesController < ApplicationController
   def auto_tag
     slug_id = params[:slug_id]
     campaign = Campaign.where(slug_id: slug_id)
-    all_tags = campaign[0].tags
+    all_tags = campaign[0].tags.where(status: true)
     puts "******************************"
     puts "Nombre de tag :" + all_tags.count.to_s
     puts "******************************"
     articles = []
     # all_tags = Tag.where(status: true)
-    articles_with_date = Article.where(created_at: today.beginning_of_day..today.end_of_day)
+    articles_with_date = Article.where(created_at: (Date.today-1).beginning_of_day..(Date.today-1).end_of_day)
     articles_with_date.map do |article|
       @tags = []
       @tags_objects = []
