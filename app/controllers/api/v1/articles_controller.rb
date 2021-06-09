@@ -210,10 +210,13 @@ class Api::V1::ArticlesController < ApplicationController
 
   # auto tags@article_for_indexing
   def auto_tag
+    slug_id = get_slug_id
+    campaign = Campaign.where(slug_id: slug_id)
+    all_tags = campaign[0].tags
     articles = []
-    all_tags = Tag.where(status: true)
-    articles_not_tagged = Article.all.where(is_tagged: nil)
-    articles_not_tagged.map do |article|
+    # all_tags = Tag.where(status: true)
+    articles_with_date = Article.where(created_at: today.beginning_of_day..today.end_of_day)
+    articles_with_date.map do |article|
       @tags = []
       @tags_objects = []
       all_tags.map do |tag|
@@ -229,13 +232,21 @@ class Api::V1::ArticlesController < ApplicationController
       old_tags = article.media_tags.nil? ? [] : article.media_tags.split(',')
       old_tags << @tags
       #  article.media_tags = old_tags.join(',')
-      article.tags = @tags_objects
-      article.is_tagged = true if @tags_objects.length.positive?
+      @tags_objects.map do |tag_object|
+        article.tags << tag_object
+        article_tag_last = ArticleTag.order(created_at: :desc).first
+
+        article_tag_last.campaign_id = campaign[0].id
+        article_tag_last.slug_id = slug_id
+      end
+
+
+      # article.is_tagged = true if @tags_objects.length.positive?
       article.save!
       articles << article if @tags_objects.length.positive?
     end
     campaigns = Campaign.all
-    campaigns.map do |camp|
+    campaign[0].map do |camp|
       users = User.where(slug_id: camp.slug_id)
       camp_tags = camp.tags
       camp_media = camp.media
@@ -677,7 +688,7 @@ div.nobreak { page-break-inside: avoid; }
     end
     articles_url_autobip_after_check = articles_url_autobip - list_articles_url
     articles_url_autobip_after_check.map do |link|
-     
+
 
       begin
         article = Nokogiri::HTML(URI.open(URI.escape(link)))
@@ -729,7 +740,7 @@ div.nobreak { page-break-inside: avoid; }
       # new_article.media_tags = tags_array.join(',')
       new_article.status = 'pending'
       new_article.save!
-      tag_check_and_save(tags_array) if @media.tag_status == true
+        #  tag_check_and_save(tags_array) if @media.tag_status == true
       end
 
     render json: { crawling_status_autobip: 'ok' }
@@ -836,7 +847,7 @@ div.nobreak { page-break-inside: avoid; }
       new_article.status = 'pending'
       new_article.save!
       count += 1 if new_article.save
-      tag_check_and_save(tags_array)if @media.tag_status == true
+        # tag_check_and_save(tags_array)if @media.tag_status == true
     end
     render json: { crawling_count_elcherouk:  count  }
   end
@@ -859,7 +870,7 @@ div.nobreak { page-break-inside: avoid; }
         puts
         next
       end
-      
+
       doc.css('div.article__image.article__image--medium a').map do |link|
         articles_url_ennahar << link['href']
       end
@@ -877,9 +888,9 @@ div.nobreak { page-break-inside: avoid; }
     end
     articles_url_ennahar_after_check = articles_url_ennahar - list_articles_url
     articles_url_ennahar_after_check.map do |link|
-     
 
-      
+
+
       begin
         article = Nokogiri::HTML(URI.open(link, 'User-Agent' => 'ruby/2.6.5'))
       rescue OpenURI::HTTPError => e
@@ -1119,7 +1130,7 @@ div.nobreak { page-break-inside: avoid; }
       # new_article.media_tags = tags_array.join(',')
       new_article.status = 'pending'
       new_article.save!
-      tag_check_and_save(tags_array)if @media.tag_status == true
+        # tag_check_and_save(tags_array)if @media.tag_status == true
     end
     render json: { crawling_status_aps: 'ok' }
   end
@@ -1416,7 +1427,7 @@ div.nobreak { page-break-inside: avoid; }
       # new_article.media_tags = tags_array.join(',')
       new_article.status = 'pending'
       new_article.save!
-      tag_check_and_save(tags_array)if @media.tag_status == true
+        #  tag_check_and_save(tags_array)if @media.tag_status == true
     end
     render json: { crawling_status_aps: 'ok' }
   end
@@ -1954,7 +1965,7 @@ div.nobreak { page-break-inside: avoid; }
       # new_article.media_tags = tags_array.join(',')
       new_article.status = 'pending'
       new_article.save!
-      tag_check_and_save(tags_array) if @media.tag_status == true
+        # tag_check_and_save(tags_array) if @media.tag_status == true
     end
     render json: { crawling_status_aps: 'ok' }
   end
@@ -2167,7 +2178,7 @@ div.nobreak { page-break-inside: avoid; }
       # new_article.media_tags = tags_array.join(',')
       new_article.status = 'pending'
       new_article.save!
-      tag_check_and_save(tags_array)
+        #  tag_check_and_save(tags_array)
     end
     render json: { crawling_status_aps: 'ok' }
   end
