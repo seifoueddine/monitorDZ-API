@@ -418,7 +418,7 @@ div.nobreak { page-break-inside: avoid; }
     if @media.url_crawling?
       url_media_array = @media.url_crawling.split(',')
       get_articles(url_media_array)
-      Article.where(medium_id: params[:media_id],created_at: Time.zone.now.beginning_of_day..Time.zone.now.end_of_day).where.not(id: Article.group(:url_article).select("min(id)")).destroy_all
+      Article.where(medium_id: params[:media_id],created_at: Time.zone.now.beginning_of_day..Time.zone.now.end_of_day).where.not(id: Article.group(:url_article).select('min(id)')).destroy_all
     else
       render json: { crawling_status: 'No url_crawling', media: @media.name, status: 'error' }
     end
@@ -1763,10 +1763,9 @@ div.nobreak { page-break-inside: avoid; }
         next
       end
       doc.css('h3.panel-title a').map do |link|
-
-
+        unless link.css('i').present?
           articles_url_elkhabar << 'https://www.elkhabar.com' + link['href']
-
+        end
       end
       doc.css('time').map do |date|
         last_dates << date['datetime']
