@@ -1,5 +1,4 @@
 class Article < ApplicationRecord
-  slug_id = request.headers['slug-id']
   searchkick match: :word,
             suggest: %i[title body media_area medium_type author_name tag_name]
 
