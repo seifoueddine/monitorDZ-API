@@ -20,7 +20,7 @@ class Article < ApplicationRecord
 
   # acts_as_authorable
   scope :search_import, -> { includes(:author, :medium, :tags) }
-  has_many :article_tags, -> { where(slug_id: slug_id) }
+  has_many :article_tags
   has_many :tags, through: :article_tags
   belongs_to :author
   belongs_to :medium
