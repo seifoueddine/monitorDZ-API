@@ -260,20 +260,21 @@ class Api::V1::ArticlesController < ApplicationController
       puts "******************************"
     end
     campaigns = Campaign.all
-    campaign[0].map do |camp|
-      users = User.where(slug_id: camp.slug_id)
-      camp_tags = camp.tags
-      camp_media = camp.media
+    if campaign[0].present?
+      users = User.where(slug_id: campaign[0].slug_id)
+      # camp_tags = campaign[0].tags
+      #   camp_media = campaign[0].media
       article_to_send = []
       tag_to_send = []
-      camp_tags_array = camp_tags.map(&:id)
-      camp_media_array = camp_media.map(&:id)
+      # camp_tags_array = camp_tags.map(&:id)
+      #camp_media_array = camp_media.map(&:id)
       articles.map do |article|
         article_tags = article.tags.map(&:id)
         tag_to_send << article_tags
-        status_tag = camp_tags_array.any? { |i| article_tags.include? i }
-        status_media = camp_media_array.any? { |i| [article.medium_id].include? i }
-        article_to_send << article if status_tag == true && status_media == true
+        #status_tag = camp_tags_array.any? { |i| article_tags.include? i }
+        #status_media = camp_media_array.any? { |i| [article.medium_id].include? i }
+        article_to_send << article
+          #  article_to_send << article if status_tag == true && status_media == true
       end
       if article_to_send.length.positive?
       users.map { |user| UserMailer.taggedarticles(article_to_send, user, tag_to_send.uniq).deliver }
