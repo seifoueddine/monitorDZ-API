@@ -240,11 +240,12 @@ class Api::V1::ArticlesController < ApplicationController
       old_tags << @tags
       #  article.media_tags = old_tags.join(',')
       @tags_objects.map do |tag_object|
-        article.tags << tag_object
-        article.save!
-        article_tag_last = ArticleTag.order(created_at: :desc).first
-        article_tag_last.campaign_id = campaign[0].id
-        article_tag_last.slug_id = slug_id
+        @article_tag = ArticleTag.new article_id: article.id, tag_id: tag_object.id, slug_id: slug_id, campaign_id: campaign[0].id
+        if @article_tag.save
+          puts 'Article_tag well added '
+        else
+          puts 'Article_tag error'
+        end
       end
 
 
