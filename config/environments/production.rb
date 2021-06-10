@@ -102,14 +102,16 @@ Rails.application.configure do
   # config.active_record.database_resolver = ActiveRecord::Middleware::DatabaseSelector::Resolver
   # config.active_record.database_resolver_context = ActiveRecord::Middleware::DatabaseSelector::Resolver::Session
 
+  #vhsalgerie@gmail.com
+  #Gaastrapoison@AHD79
 
   config.action_mailer.delivery_method = :smtp
   config.action_mailer.smtp_settings = {
       address: 'smtp.gmail.com',
       domain: 'gmail.com',
       port: 587,
-      user_name: 'vhsalgerie@gmail.com',
-      password: 'Gaastrapoison@AHD79',
+      user_name: 'nouaraseifeddine@gmail.com',
+      password: 'Seaf123*',
       authentication: 'plain',
       enable_starttls_auto: true
   }
