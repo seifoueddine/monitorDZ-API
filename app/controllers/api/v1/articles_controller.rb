@@ -221,11 +221,20 @@ class Api::V1::ArticlesController < ApplicationController
     camp_media = campaign[0].media
     camp_media_array = camp_media.map(&:id)
     puts "******************************"
-    puts "Nombre de tag :" + all_tags.count.to_s
+    puts "start date :" + all_tags.count.to_s
+    puts "******************************"
+    puts "******************************"
+    puts start_date.to_datetime.beginning_of_day
+    puts "******************************"
+    puts "******************************"
+    puts end_date.to_datetime.end_of_day
     puts "******************************"
     articles = []
     # all_tags = Tag.where(status: true)
-    articles_with_date = Article.where(medium_id: camp_media_array, created_at: start_date.to_datetime.beginning_of_day..end_date.to_datetime.end_of_day)
+    articles_with_date = Article.where(medium_id: camp_media_array, date_published: start_date.to_datetime.beginning_of_day..end_date.to_datetime.end_of_day)
+    puts "******************************"
+    puts "articles_with_date :" + articles_with_date.count.to_s
+    puts "******************************"
     @tags = []
     articles_with_date.map do |article|
 
