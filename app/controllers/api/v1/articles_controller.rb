@@ -225,9 +225,10 @@ class Api::V1::ArticlesController < ApplicationController
     puts "******************************"
     articles = []
     # all_tags = Tag.where(status: true)
-    articles_with_date = Article.where(medium_id: camp_media_array, created_at: (Date.today - 1).beginning_of_day..(Date.today - 1).end_of_day)
+    articles_with_date = Article.where(medium_id: camp_media_array, created_at: start_date.to_datetime.beginning_of_day..end_date.to_datetime.end_of_day)
+    @tags = []
     articles_with_date.map do |article|
-      @tags = []
+
       @tags_objects = []
       all_tags.map do |tag|
         if article.body.downcase.include? tag.name.downcase
@@ -243,9 +244,6 @@ class Api::V1::ArticlesController < ApplicationController
       old_tags << @tags
       #  article.media_tags = old_tags.join(',')
       @tags_objects.map do |tag_object|
-        puts " tag******************************tag"
-        puts @tags
-        puts "tag******************************tag"
         next if ArticleTag.where(article_id: article.id, tag_id: tag_object.id, slug_id: slug_id, campaign_id: campaign[0].id).present?
         @article_tag = ArticleTag.new article_id: article.id, tag_id: tag_object.id, slug_id: slug_id, campaign_id: campaign[0].id
         if @article_tag.save
@@ -260,10 +258,14 @@ class Api::V1::ArticlesController < ApplicationController
       # article.is_tagged = true if @tags_objects.length.positive?
 
       articles << article if @tags_objects.length.positive?
-      puts "******************************"
-      puts "Nombre d'articles :" + articles.count.to_s
-      puts "******************************"
+
     end
+    puts "******************************"
+    puts "Nombre d'articles :" + articles.count.to_s
+    puts "******************************"
+    puts "tag******************************tag"
+    puts @tags
+    puts "tag******************************tag"
     campaigns = Campaign.all
     if campaign[0].present?
       users = User.where(slug_id: campaign[0].slug_id)
@@ -2660,4 +2662,11 @@ div.nobreak { page-break-inside: avoid; }
     }.join(' ')
   end
   # change_date_maghrebemergents
+  #                 <p style="font-size: 12px; line-height: 1; color:brown; margin-top:5px;">
+  #                  TAGS :  <%= article.tags.map(&:name).uniq.join(' - ')  %>
+  #
+  #                 </p>
+  #        <p style="font-size: 12px; line-height: 1; color:brown; margin-top:5px;direction: rtl;">
+  #                       الكلمات الدالة :  <%= article.tags.map(&:name).uniq.join(' - ')  %>
+  #                     </p>
 end

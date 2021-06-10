@@ -52,10 +52,7 @@
                 <h4 style="font-size: 16px; line-height: 1; margin-bottom:20px;">
                  <a href="#" style="text-decoration: none; color:#303030; font-weight:500;"><%=article.title %></a>
                 </h4>
-                <p style="font-size: 12px; line-height: 1; color:brown; margin-top:5px;">
-                 TAGS :  <%= article.tags.map(&:name).uniq.join(' - ')  %>
 
-                </p>
                 <p href="#"
                    style="font-size: 12px; text-decoration: none; line-height: 1; color:#0d1590; margin-top:0px; margin-bottom:0;">
                   <%= article.medium.name %></p>
@@ -64,7 +61,7 @@
               <td style="padding-top:0px; padding-bottom:20px; text-align: right;">
                 <p
                   style="font-size: 13px; line-height: 1; color:#00365a;  margin-top:5px; vertical-align:top; white-space:nowrap;">
-                  <%= link_to "Lire l'article", 'http://161.97.114.39/app/articles/details?id=' + article.id.to_s %>
+                  <%= link_to "Lire l'article", 'https://www.mediasmonitoring.com//app/articles/details?id=' + article.id.to_s %>
 
                 </p>
               </td>
@@ -83,7 +80,7 @@
                   <td style="padding-top:0px; padding-bottom:20px; text-align: left;">
                     <p
                       style="font-size: 13px; line-height: 1; color:#00365a;  margin-top:5px; vertical-align:top; white-space:nowrap;">
-                      <%= link_to "اقرأ المقال", 'http://161.97.114.39/app/articles/details?id=' + article.id.to_s %>
+                      <%= link_to "اقرأ المقال", 'https://www.mediasmonitoring.com//app/articles/details?id=' + article.id.to_s %>
 
                     </p>
                   </td>
@@ -93,9 +90,7 @@
                     </h4>
 
 
-                    <p style="font-size: 12px; line-height: 1; color:brown; margin-top:5px;direction: rtl;">
-                      الكلمات الدالة :  <%= article.tags.map(&:name).uniq.join(' - ')  %>
-                    </p>
+
 
                     <p href="#"
                        style="font-size: 12px; text-decoration: none; line-height: 1; color:#0d1590; margin-top:0px; margin-bottom:0;direction: rtl;">
