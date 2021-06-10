@@ -243,12 +243,15 @@ class Api::V1::ArticlesController < ApplicationController
       old_tags << @tags
       #  article.media_tags = old_tags.join(',')
       @tags_objects.map do |tag_object|
-        @article_tag = ArticleTag.new article_id: article.id, tag_id: tag_object.id, slug_id: slug_id, campaign_id: campaign[0].id
-        if @article_tag.save
-          puts 'Article_tag well added '
-        else
-          puts 'Article_tag error'
+        unless ArticleTag.where(article_id: article.id, tag_id: tag_object.id, slug_id: slug_id, campaign_id: campaign[0].id).present?
+          @article_tag = ArticleTag.new article_id: article.id, tag_id: tag_object.id, slug_id: slug_id, campaign_id: campaign[0].id
+          if @article_tag.save
+            puts 'Article_tag well added '
+          else
+            puts 'Article_tag error'
+          end
         end
+
       end
 
 
@@ -270,7 +273,7 @@ class Api::V1::ArticlesController < ApplicationController
       #camp_media_array = camp_media.map(&:id)
       articles.map do |article|
         article_tags = article.tags.map(&:id)
-        tag_to_send << article_tags
+        tag_to_send << @tags_objects
         #status_tag = camp_tags_array.any? { |i| article_tags.include? i }
         #status_media = camp_media_array.any? { |i| [article.medium_id].include? i }
         article_to_send << article
