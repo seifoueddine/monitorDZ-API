@@ -36,7 +36,7 @@
                   style="color:#8f8f8f; font-size: 14px; padding-bottom: 20px; line-height: 1.4; margin-bottom:0;">
                   Voici ce qui se dit sur tout les media par rapport a vos tags :
                   <%# @tags.each do |tag| %>
-                   <%= @tags.map(&:name).join(' - ') %>
+                   <%= @tags.join(' - ') %>
                   <%# end %>
                 </p>
               </td>

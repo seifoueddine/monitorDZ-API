@@ -246,13 +246,12 @@ class Api::V1::ArticlesController < ApplicationController
         puts " tag******************************tag"
         puts tag_object
         puts "tag******************************tag"
-        unless ArticleTag.where(article_id: article.id, tag_id: tag_object.id, slug_id: slug_id, campaign_id: campaign[0].id).present?
-          @article_tag = ArticleTag.new article_id: article.id, tag_id: tag_object.id, slug_id: slug_id, campaign_id: campaign[0].id
-          if @article_tag.save
-            puts 'Article_tag well added '
-          else
-            puts 'Article_tag error'
-          end
+        next if ArticleTag.where(article_id: article.id, tag_id: tag_object.id, slug_id: slug_id, campaign_id: campaign[0].id).present?
+        @article_tag = ArticleTag.new article_id: article.id, tag_id: tag_object.id, slug_id: slug_id, campaign_id: campaign[0].id
+        if @article_tag.save
+          puts 'Article_tag well added '
+        else
+          puts 'Article_tag error'
         end
 
       end
@@ -276,7 +275,7 @@ class Api::V1::ArticlesController < ApplicationController
       #camp_media_array = camp_media.map(&:id)
       articles.map do |article|
         article_tags = article.tags.map(&:id)
-        tag_to_send << @tags_objects
+        tag_to_send << @tags
         #status_tag = camp_tags_array.any? { |i| article_tags.include? i }
         #status_media = camp_media_array.any? { |i| [article.medium_id].include? i }
         article_to_send << article
