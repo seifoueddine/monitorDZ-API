@@ -243,6 +243,9 @@ class Api::V1::ArticlesController < ApplicationController
       old_tags << @tags
       #  article.media_tags = old_tags.join(',')
       @tags_objects.map do |tag_object|
+        puts " tag******************************tag"
+        puts tag_object
+        puts "tag******************************tag"
         unless ArticleTag.where(article_id: article.id, tag_id: tag_object.id, slug_id: slug_id, campaign_id: campaign[0].id).present?
           @article_tag = ArticleTag.new article_id: article.id, tag_id: tag_object.id, slug_id: slug_id, campaign_id: campaign[0].id
           if @article_tag.save
