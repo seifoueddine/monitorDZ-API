@@ -179,12 +179,15 @@ class Api::V1::ArticlesController < ApplicationController
 
   # GET /articles/1
   def show
-
+    slug_id = get_slug_id
     similar = @article.similar(fields: [:title])
     similar_json_string = ArticleSerializer.new(similar)
-    json_string = ArticleSerializer.new(@article, include: %i[medium tags author])
-
-    render json: { article:json_string, similar: similar_json_string }
+    json_string = ArticleSerializer.new(@article, include: %i[medium author])
+    article_tag = @article.article_tags
+    article_tag_filterd = article_tag.where(slug_id: slug_id)
+    tag_ids = article_tag_filterd.map(&:tag_id)
+    tags = Tag.where(id: tag_ids)
+    render json: { article:json_string, similar: similar_json_string, tags: tags }
   end
 
   # POST /articles
