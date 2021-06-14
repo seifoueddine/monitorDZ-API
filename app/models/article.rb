@@ -16,7 +16,6 @@ class Article < ApplicationRecord
 
 
   #after_commit :indexing
-
   # acts_as_authorable
   scope :search_import, -> { includes(:author, :medium, :tags) }
   has_many :article_tags
