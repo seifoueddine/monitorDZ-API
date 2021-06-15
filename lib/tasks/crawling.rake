@@ -1167,11 +1167,13 @@ namespace :crawling do
     puts "json: { crawling_status_aps: 'ok' }"
   end
     # end method to get elmoudjahid_fr articles
-  
 
-  
+
+
+
     # start method to get elkhabar articles
   def get_articles_elkhabar(url_media_array)
+    count = 0
     articles_url_elkhabar = []
     last_dates = []
     url_media_array.map do |url|
@@ -1183,9 +1185,8 @@ namespace :crawling do
         puts
         next
       end
-      doc.css('a').map do |link|
-
-        if link['class'] == 'main_article'
+      doc.css('h3.panel-title a').map do |link|
+        unless link.css('i').present?
           articles_url_elkhabar << 'https://www.elkhabar.com' + link['href']
         end
       end
@@ -1193,7 +1194,8 @@ namespace :crawling do
         last_dates << date['datetime']
       end
     end
-    # last_dates = last_dates.map { |d| change_date_maghrebemergen(d) }
+
+    last_dates = last_dates.map { |d| change_date_maghrebemergen(d) }
     last_dates = last_dates.map { |d| d.to_datetime.change({ hour: 0, min: 0, sec: 0 })}
     articles_url_elkhabar = articles_url_elkhabar.reject(&:nil?)
     articles_url_elkhabar = articles_url_elkhabar.uniq
@@ -1217,25 +1219,25 @@ namespace :crawling do
       new_article.url_article = link
       new_article.medium_id = @media.id
       new_article.language = @media.language
-      if article.css('div#article_info a').present?
-        new_article.category_article = article.css('div#article_info a').text
+      if article.css('span.category-blog').present?
+        new_article.category_article = article.css('span.category-blog').text
       end
-      if article.css('div.stuff_container h2').present?
-        new_article.title = article.css('div.stuff_container h2').text
+      if article.css('h2.title').present?
+        new_article.title = article.css('h2.title').text
       end
       # new_article.author = article.css('div.article-head__author div em a').text
 
-      if article.at('div.subinfo b').text.nil?
+      if article.at('span.time-blog b').text.nil?
         author_exist = Author.where(['lower(name) like ? ', ('Elkhabar auteur').downcase ])
       else
         author_exist = Author.where(['lower(name) like ? ',
-                                     article.at('div.subinfo b').text.downcase ])
+                                     article.at('span.time-blog b').text.downcase ])
       end
 
       new_author = Author.new
       if author_exist.count.zero?
 
-        new_author.name = article.at('div.subinfo b').text.nil? ? 'Elkhabar auteur' : article.at('div.subinfo b').text
+        new_author.name = article.at('span.time-blog b').text.nil? ? 'Elkhabar auteur' : article.at('span.time-blog b').text
         new_author.medium_id = @media.id
         new_author.save!
       else
@@ -1270,12 +1272,14 @@ namespace :crawling do
       # new_article.media_tags = tags_array.join(',')
       new_article.status = 'pending'
       new_article.save!
-      tag_check_and_save(tags_array) if @media.tag_status == true
+      count += 1 if new_article.save
+      # tag_check_and_save(tags_array) if @media.tag_status == true
     end
-    puts "json: { crawling_status_aps: 'ok' }"
+    render json: { crawling_status_elkhabar: count }
   end
     # end method to get elkhabar articles
     #
+
   
 
   

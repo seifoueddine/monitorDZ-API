@@ -78,6 +78,7 @@ class Api::V1::ArticlesController < ApplicationController
     @articles_for_dash = Article.where('date_published >= :start AND date_published <= :end', start: start_date.to_datetime.change({ hour: 0, min: 0, sec: 0 }) , end: end_date.to_datetime.change({ hour: 0, min: 0, sec: 0 }))
                                 .joins(:medium)
                                 .group('media.name').count
+
     render json: @articles_for_dash
   end
 
@@ -455,7 +456,7 @@ div.nobreak { page-break-inside: avoid; }
   end
 
   def crawling
-    @all_tags = Tag.all
+    # @all_tags = Tag.all
     @media = Medium.find(params[:media_id])
     if @media.url_crawling?
       url_media_array = @media.url_crawling.split(',')
