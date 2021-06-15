@@ -268,7 +268,7 @@ class Api::V1::ArticlesController < ApplicationController
       # article.is_tagged = true if @tags_objects.length.positive?
 
       articles << article if @tags_objects.length.positive?
-
+      article.reindex
     end
     puts "******************************"
     puts "Nombre d'articles :" + articles.count.to_s
