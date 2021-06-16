@@ -49,7 +49,7 @@ class Api::V1::ListUsersController < ApplicationController
         puts "oldoldoldoldoldold"
         puts oldIds
         puts "oldoldoldoldoldold"
-        old_id_mod = oldIds.delete_if { |v| v == params[:delete_article_id] }
+        old_id_mod = oldIds.delete_if { |v| v == params[:delete_article_id].to_i }
         puts "newnewnewnewnewnewnew"
         puts old_id_mod
         puts "newnewnewnewnewnewnew"
