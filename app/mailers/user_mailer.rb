@@ -3,7 +3,7 @@ class UserMailer < ApplicationMailer
     @articles = articles
     @user = user
     @tags = camp_tags
-    mail to: user.email, subject: 'test email after auto tag'
+    mail to: user.email, subject: 'Alerte TAG'
   end
 
   def articleMail(article, receiver, current_user)

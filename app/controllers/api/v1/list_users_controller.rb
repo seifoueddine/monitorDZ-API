@@ -46,7 +46,13 @@ class Api::V1::ListUsersController < ApplicationController
 
         oldIds = @list_user.articles.map(&:id)
         newIds = []
+        puts "oldoldoldoldoldold"
+        puts oldIds
+        puts "oldoldoldoldoldold"
         old_id_mod = oldIds.delete_if { |v| v == params[:delete_article_id] }
+        puts "newnewnewnewnewnewnew"
+        puts old_id_mod
+        puts "newnewnewnewnewnewnew"
         @list_user.articles.clear
         @article = Article.where(id: old_id_mod)
         @list_user.articles << @article
