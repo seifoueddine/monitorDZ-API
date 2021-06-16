@@ -466,7 +466,9 @@ div.nobreak { page-break-inside: avoid; }
     else
       render json: { crawling_status: 'No url_crawling', media: @media.name, status: 'error' }
     end
+    unless @media.name == 'LIBERTE'
     Author.all.where.not(id: Author.group(:name).select('min(id)')).destroy_all
+    end
 
   end
 
