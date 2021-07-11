@@ -2660,6 +2660,8 @@ div.nobreak { page-break-inside: avoid; }
         'June'
       when 'جويلية'.downcase
         'July'
+      when 'جولية'.downcase
+        'July'
       when 'أكتوبر'.downcase
         'October'
       when 'نوفمبر'.downcase
