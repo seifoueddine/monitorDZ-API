@@ -4,6 +4,7 @@ class Api::V1::ArticlesController < ApplicationController
   require 'nokogiri'
   require 'open-uri'
   require 'openssl'
+  require 'net/http'
   #require 'resolv-replace'
 
   OpenSSL::SSL::VERIFY_PEER = OpenSSL::SSL::VERIFY_NONE
