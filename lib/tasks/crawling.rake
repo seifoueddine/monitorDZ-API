@@ -155,7 +155,7 @@ namespace :crawling do
       # new_article.media_tags = tags_array.join(',')
       new_article.status = 'pending'
       new_article.save!
-      tag_check_and_save(tags_array) if @media.tag_status == true
+      #tag_check_and_save(tags_array) if @media.tag_status == true
       end
 
     puts "json: { crawling_status_autobip: 'ok' }"
@@ -262,7 +262,7 @@ namespace :crawling do
       new_article.status = 'pending'
       new_article.save!
       count += 1 if new_article.save
-      tag_check_and_save(tags_array)if @media.tag_status == true
+      #tag_check_and_save(tags_array)if @media.tag_status == true
     end
     puts "json: { crawling_count_elcherouk:  count  }"
   end
@@ -357,7 +357,7 @@ namespace :crawling do
       # new_article.media_tags = tags_array.join(',')
       new_article.status = 'pending'
       new_article.save!
-      # tag_check_and_save(tags_array)
+      # #tag_check_and_save(tags_array)
     end
     puts "json: { crawling_status_elcherouk: 'ok' }"
   end
@@ -449,7 +449,7 @@ namespace :crawling do
       # new_article.media_tags = tags_array.join(',')
       new_article.status = 'pending'
       new_article.save!
-      # tag_check_and_save(tags_array)
+      # #tag_check_and_save(tags_array)
     end
     puts "json: { crawling_status_tsa: 'ok' }"
   end
@@ -545,7 +545,7 @@ namespace :crawling do
       # new_article.media_tags = tags_array.join(',')
       new_article.status = 'pending'
       new_article.save!
-      tag_check_and_save(tags_array)if @media.tag_status == true
+      #tag_check_and_save(tags_array)if @media.tag_status == true
     end
     puts "json: { crawling_status_aps: 'ok' }"
   end
@@ -646,7 +646,7 @@ namespace :crawling do
       # new_article.media_tags = tags_array.join(',')
       new_article.status = 'pending'
       new_article.save!
-        #tag_check_and_save(tags_array)if @media.tag_status == true
+        ##tag_check_and_save(tags_array)if @media.tag_status == true
     end
     puts "json: { crawling_status_le_soir: 'ok' }"
   end
@@ -743,7 +743,7 @@ namespace :crawling do
       # new_article.media_tags = tags_array.join(',')
       new_article.status = 'pending'
       new_article.save!
-      #tag_check_and_save(tags_array)if @media.tag_status == true
+      ##tag_check_and_save(tags_array)if @media.tag_status == true
     end
     puts "json: { crawling_status_liberte: 'ok' }"
   end
@@ -842,7 +842,7 @@ namespace :crawling do
       # new_article.media_tags = tags_array.join(',')
       new_article.status = 'pending'
       new_article.save!
-      tag_check_and_save(tags_array)if @media.tag_status == true
+      #tag_check_and_save(tags_array)if @media.tag_status == true
     end
     puts "json: { crawling_status_aps: 'ok' }"
   end
@@ -939,7 +939,7 @@ namespace :crawling do
     # new_article.media_tags = tags_array.join(',')
       new_article.status = 'pending'
       new_article.save!
-    # tag_check_and_save(tags_array)
+    # #tag_check_and_save(tags_array)
   end
     puts "json: { crawling_status_aps: 'ok' }"
   end
@@ -1051,7 +1051,7 @@ namespace :crawling do
       new_article.status = 'pending'
       new_article.save!
       count += 1 if new_article.save
-      # tag_check_and_save(tags_array)
+      # #tag_check_and_save(tags_array)
     end
     puts "json: { crawling_count_aps: count }"
   end
@@ -1162,7 +1162,7 @@ namespace :crawling do
          end
       new_article.status = 'pending'
       new_article.save!
-      # tag_check_and_save(tags_array)
+      # #tag_check_and_save(tags_array)
     end
     puts "json: { crawling_status_aps: 'ok' }"
   end
@@ -1273,7 +1273,7 @@ namespace :crawling do
       new_article.status = 'pending'
       new_article.save!
       count += 1 if new_article.save
-      # tag_check_and_save(tags_array) if @media.tag_status == true
+      # #tag_check_and_save(tags_array) if @media.tag_status == true
     end
     render json: { crawling_status_elkhabar: count }
   end
@@ -1377,7 +1377,7 @@ namespace :crawling do
       # new_article.media_tags = tags_array.join(',')
       new_article.status = 'pending'
       new_article.save!
-      tag_check_and_save(tags_array) if @media.tag_status == true
+      #tag_check_and_save(tags_array) if @media.tag_status == true
     end
     puts "json: { crawling_status_aps: 'ok' }"
   end
@@ -1484,7 +1484,7 @@ namespace :crawling do
       # new_article.media_tags = tags_array.join(',')
       new_article.status = 'pending'
       new_article.save!
-        #tag_check_and_save(tags_array)
+        ##tag_check_and_save(tags_array)
     end
     puts "json: { crawling_status_aps: 'ok' }"
   end
@@ -1589,7 +1589,7 @@ namespace :crawling do
       # new_article.media_tags = tags_array.join(',')
       new_article.status = 'pending'
       new_article.save!
-      tag_check_and_save(tags_array)
+      #tag_check_and_save(tags_array)
     end
     puts "json: { crawling_status_aps: 'ok' }"
   end
@@ -1698,7 +1698,7 @@ namespace :crawling do
       # new_article.media_tags = tags_array.join(',')
       new_article.status = 'pending'
       new_article.save!
-        # tag_check_and_save(tags_array)
+        # #tag_check_and_save(tags_array)
     end
     puts "json: { crawling_status_aps: 'ok' }"
   end
@@ -1794,7 +1794,7 @@ namespace :crawling do
       # new_article.media_tags = tags_array.join(',')
       new_article.status = 'pending'
       new_article.save!
-      # tag_check_and_save(tags_array)
+      # #tag_check_and_save(tags_array)
     end
     puts "json: { crawling_status_aps: 'ok' }"
   end
@@ -1893,7 +1893,7 @@ namespace :crawling do
       # new_article.media_tags = tags_array.join(',')
       new_article.status = 'pending'
       new_article.save!
-      # tag_check_and_save(tags_array)
+      # #tag_check_and_save(tags_array)
     end
     puts "json: { crawling_status_aps: 'ok' }"
   end
