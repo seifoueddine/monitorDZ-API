@@ -11,12 +11,13 @@ namespace :crawling do
     
     Medium.all.each {|m|
       @media = m
-  
+      @articles_for_auto_tag = []
       if m.url_crawling? && m.name != 'APS'
         url_media_array = m.url_crawling.split(',')
         puts url_media_array
         get_articles(url_media_array,m)
         Article.where(medium_id: m.id,created_at: Time.zone.now.beginning_of_day..Time.zone.now.end_of_day).where.not(id: Article.group(:url_article).select("min(id)")).destroy_all
+        auto_tag(@articles_for_auto_tag)
       else
         puts "crawling_status: 'No url_crawling', media: m.name, status: 'error'"
       end
@@ -256,12 +257,15 @@ namespace :crawling do
       end
 
 
-
       tags_array = article.css('ul.ech-sgmn__tgls.d-f.fxw-w.jc-fe a').map(&:text)
       # new_article.media_tags = tags_array.join(',')
       new_article.status = 'pending'
       new_article.save!
-      count += 1 if new_article.save
+      
+      if new_article.save
+         count += 1 
+         @articles_for_auto_tag.push(new_article)
+      end
       #tag_check_and_save(tags_array)if @media.tag_status == true
     end
     puts "json: { crawling_count_elcherouk:  count  }"
@@ -357,6 +361,9 @@ namespace :crawling do
       # new_article.media_tags = tags_array.join(',')
       new_article.status = 'pending'
       new_article.save!
+      if new_article.save
+        @articles_for_auto_tag.push(new_article)
+      end
       # #tag_check_and_save(tags_array)
     end
     puts "json: { crawling_status_elcherouk: 'ok' }"
@@ -449,6 +456,9 @@ namespace :crawling do
       # new_article.media_tags = tags_array.join(',')
       new_article.status = 'pending'
       new_article.save!
+      if new_article.save
+        @articles_for_auto_tag.push(new_article)
+      end
       # #tag_check_and_save(tags_array)
     end
     puts "json: { crawling_status_tsa: 'ok' }"
@@ -545,6 +555,9 @@ namespace :crawling do
       # new_article.media_tags = tags_array.join(',')
       new_article.status = 'pending'
       new_article.save!
+      if new_article.save
+        @articles_for_auto_tag.push(new_article)
+      end
       #tag_check_and_save(tags_array)if @media.tag_status == true
     end
     puts "json: { crawling_status_aps: 'ok' }"
@@ -646,6 +659,9 @@ namespace :crawling do
       # new_article.media_tags = tags_array.join(',')
       new_article.status = 'pending'
       new_article.save!
+      if new_article.save
+        @articles_for_auto_tag.push(new_article)
+      end
         ##tag_check_and_save(tags_array)if @media.tag_status == true
     end
     puts "json: { crawling_status_le_soir: 'ok' }"
@@ -743,6 +759,9 @@ namespace :crawling do
       # new_article.media_tags = tags_array.join(',')
       new_article.status = 'pending'
       new_article.save!
+      if new_article.save
+        @articles_for_auto_tag.push(new_article)
+      end
       ##tag_check_and_save(tags_array)if @media.tag_status == true
     end
     puts "json: { crawling_status_liberte: 'ok' }"
@@ -842,6 +861,9 @@ namespace :crawling do
       # new_article.media_tags = tags_array.join(',')
       new_article.status = 'pending'
       new_article.save!
+      if new_article.save
+        @articles_for_auto_tag.push(new_article)
+      end
       #tag_check_and_save(tags_array)if @media.tag_status == true
     end
     puts "json: { crawling_status_aps: 'ok' }"
@@ -939,6 +961,9 @@ namespace :crawling do
     # new_article.media_tags = tags_array.join(',')
       new_article.status = 'pending'
       new_article.save!
+      if new_article.save
+        @articles_for_auto_tag.push(new_article)
+      end
     # #tag_check_and_save(tags_array)
   end
     puts "json: { crawling_status_aps: 'ok' }"
@@ -1050,7 +1075,11 @@ namespace :crawling do
       new_article.image = Down.download(url_array) if url_array.present?
       new_article.status = 'pending'
       new_article.save!
-      count += 1 if new_article.save
+      
+      if new_article.save
+        count += 1 
+        @articles_for_auto_tag.push(new_article)
+      end
       # #tag_check_and_save(tags_array)
     end
     puts "json: { crawling_count_aps: count }"
@@ -1162,6 +1191,9 @@ namespace :crawling do
          end
       new_article.status = 'pending'
       new_article.save!
+      if new_article.save
+        @articles_for_auto_tag.push(new_article)
+      end
       # #tag_check_and_save(tags_array)
     end
     puts "json: { crawling_status_aps: 'ok' }"
@@ -1272,7 +1304,11 @@ namespace :crawling do
       # new_article.media_tags = tags_array.join(',')
       new_article.status = 'pending'
       new_article.save!
-      count += 1 if new_article.save
+      
+      if new_article.save
+        count += 1 
+        @articles_for_auto_tag.push(new_article)
+      end
       # #tag_check_and_save(tags_array) if @media.tag_status == true
     end
     render json: { crawling_status_elkhabar: count }
@@ -1377,6 +1413,9 @@ namespace :crawling do
       # new_article.media_tags = tags_array.join(',')
       new_article.status = 'pending'
       new_article.save!
+      if new_article.save
+        @articles_for_auto_tag.push(new_article)
+      end
       #tag_check_and_save(tags_array) if @media.tag_status == true
     end
     puts "json: { crawling_status_aps: 'ok' }"
@@ -1484,6 +1523,9 @@ namespace :crawling do
       # new_article.media_tags = tags_array.join(',')
       new_article.status = 'pending'
       new_article.save!
+      if new_article.save
+        @articles_for_auto_tag.push(new_article)
+      end
         ##tag_check_and_save(tags_array)
     end
     puts "json: { crawling_status_aps: 'ok' }"
@@ -1589,6 +1631,9 @@ namespace :crawling do
       # new_article.media_tags = tags_array.join(',')
       new_article.status = 'pending'
       new_article.save!
+      if new_article.save
+        @articles_for_auto_tag.push(new_article)
+      end
       #tag_check_and_save(tags_array)
     end
     puts "json: { crawling_status_aps: 'ok' }"
@@ -1698,6 +1743,9 @@ namespace :crawling do
       # new_article.media_tags = tags_array.join(',')
       new_article.status = 'pending'
       new_article.save!
+      if new_article.save
+        @articles_for_auto_tag.push(new_article)
+      end
         # #tag_check_and_save(tags_array)
     end
     puts "json: { crawling_status_aps: 'ok' }"
@@ -1794,6 +1842,9 @@ namespace :crawling do
       # new_article.media_tags = tags_array.join(',')
       new_article.status = 'pending'
       new_article.save!
+      if new_article.save
+        @articles_for_auto_tag.push(new_article)
+      end
       # #tag_check_and_save(tags_array)
     end
     puts "json: { crawling_status_aps: 'ok' }"
@@ -1893,6 +1944,9 @@ namespace :crawling do
       # new_article.media_tags = tags_array.join(',')
       new_article.status = 'pending'
       new_article.save!
+      if new_article.save
+        @articles_for_auto_tag.push(new_article)
+      end
       # #tag_check_and_save(tags_array)
     end
     puts "json: { crawling_status_aps: 'ok' }"
@@ -2011,5 +2065,104 @@ namespace :crawling do
     }.join(' ')
   end
   # change_date_maghrebemergents
+
+
+
+
+
+
+
+
+
+  #auto_tag
+
+
+  def auto_tag(articles_for_autoTag)
+    # slug_id = params[:slug_id]
+    # start_date = params[:start_date]
+    # end_date = params[:start_date]
+
+
+
+    campaigns = Campaign.all
+
+    campaigns.map do |campaign|
+      all_tags = campaign.tags.where(status: true)
+      camp_media = campaign.media
+      camp_media_array = camp_media.map(&:id)
+articles = []
+    # all_tags = Tag.where(status: true)
+    filtered_articles = articles_for_autoTag.where(medium_id: camp_media_array)
+
+    @tags = []
+    filtered_articles.map do |article|
+
+      @tags_objects = []
+      all_tags.map do |tag|
+        if article.body.downcase.include? tag.name.downcase
+          @tags << tag.name unless @tags.include? tag.name
+          @tags_objects << tag unless @tags_objects.include? tag.name
+        end
+        if article.title.downcase.include? tag.name.downcase
+          @tags << tag.name unless @tags.include? tag.name
+          @tags_objects << tag unless @tags_objects.include? tag.name
+        end
+      end
+      old_tags = article.media_tags.nil? ? [] : article.media_tags.split(',')
+      old_tags << @tags
+      #  article.media_tags = old_tags.join(',')
+      @tags_objects.map do |tag_object|
+        next if ArticleTag.where(article_id: article.id, tag_id: tag_object.id, slug_id: slug_id, campaign_id: campaign[0].id).present?
+        @article_tag = ArticleTag.new article_id: article.id, tag_id: tag_object.id, slug_id: slug_id, campaign_id: campaign[0].id
+        if @article_tag.save
+          puts 'Article_tag well added '
+        else
+          puts 'Article_tag error'
+        end
+
+      end
+
+
+      # article.is_tagged = true if @tags_objects.length.positive?
+
+      articles << article if @tags_objects.length.positive?
+      article.reindex
+    end
+    puts "******************************"
+    puts "Nombre d'articles :" + articles.count.to_s
+    puts "******************************"
+    puts "tag******************************tag"
+    puts @tags
+    puts "tag******************************tag"
+    campaigns = Campaign.all
+    if campaign[0].present?
+      users = User.where(slug_id: campaign[0].slug_id)
+      # camp_tags = campaign[0].tags
+      #   camp_media = campaign[0].media
+      article_to_send = []
+      tag_to_send = []
+      # camp_tags_array = camp_tags.map(&:id)
+      #camp_media_array = camp_media.map(&:id)
+      articles.map do |article|
+        article_tags = article.tags.map(&:id)
+        tag_to_send << @tags
+        #status_tag = camp_tags_array.any? { |i| article_tags.include? i }
+        #status_media = camp_media_array.any? { |i| [article.medium_id].include? i }
+        article_to_send << article
+          #  article_to_send << article if status_tag == true && status_media == true
+      end
+      if article_to_send.length.positive?
+      users.map { |user| UserMailer.taggedarticles(article_to_send, user, tag_to_send.uniq).deliver }
+      end
+    end
+
+    end
+  
+    render json: { tags: 'ok' }
+  end
+
+
+
+  #auto_tag
 
 end
