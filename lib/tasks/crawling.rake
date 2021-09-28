@@ -1261,17 +1261,18 @@ namespace :crawling do
       end
       # new_article.author = article.css('div.article-head__author div em a').text
 
-      if article.at('span.time-blog b').text.nil?
-        author_exist = Author.where(['lower(name) like ? ', ('Elkhabar auteur').downcase ])
-      else
+      if article.at('span.time-blog b').present?
         author_exist = Author.where(['lower(name) like ? ',
-                                     article.at('span.time-blog b').text.downcase ])
+        article.at('span.time-blog b').text.downcase ])
+     
+      else
+        author_exist = Author.where(['lower(name) like ? ', ('Elkhabar auteur').downcase ])
       end
 
       new_author = Author.new
       if author_exist.count.zero?
 
-        new_author.name = article.at('span.time-blog b').text.nil? ? 'Elkhabar auteur' : article.at('span.time-blog b').text
+        new_author.name = article.at('span.time-blog b').present? ? article.at('span.time-blog b').text :  'Elkhabar auteur'
         new_author.medium_id = @media.id
         new_author.save!
       else
