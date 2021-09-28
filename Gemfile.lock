@@ -338,7 +338,7 @@ PLATFORMS
 
 DEPENDENCIES
   actionpack (>= 6.0.3.5)
-  activerecord (= 6.1.4.1)
+  activerecord (>= 6.0.3.5)
   bootsnap (>= 1.4.2)
   capistrano
   capistrano-passenger
@@ -373,7 +373,7 @@ DEPENDENCIES
   wkhtmltopdf-binary
 
 RUBY VERSION
-   ruby 2.6.5p114
+   ruby 2.7.0p0
 
 BUNDLED WITH
-   2.1.4
+   2.2.27
