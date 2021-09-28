@@ -1,8 +1,12 @@
 source 'https://rubygems.org'
 git_source(:github) { |repo| "https://github.com/#{repo}.git" }
 
-ruby '2.7.0'
 
+if ENV["RAILS_ENV"] == "development"
+  ruby '2.7.0'
+elsif ENV["RAILS_ENV"] == "production"
+  ruby '2.6.5'
+end
 # Bundle edge Rails instead: gem 'rails', github: 'rails/rails'
 gem 'rails', '~> 6.1.4'
 # Use postgresql as the database for Active Record
