@@ -17,13 +17,13 @@ namespace :crawling do
         puts url_media_array
         get_articles(url_media_array,m)
         Article.where(medium_id: m.id,created_at: Time.zone.now.beginning_of_day..Time.zone.now.end_of_day).where.not(id: Article.group(:url_article).select("min(id)")).destroy_all
-        auto_tag(@articles_for_auto_tag)
+        
       else
         puts "crawling_status: 'No url_crawling', media: m.name, status: 'error'"
       end
    
     }
-
+    auto_tag(@articles_for_auto_tag)
   end
 
 
@@ -2090,8 +2090,9 @@ namespace :crawling do
       all_tags = campaign.tags.where(status: true)
       camp_media = campaign.media
       camp_media_array = camp_media.map(&:id)
-articles = []
+    articles = []
     # all_tags = Tag.where(status: true)
+unless articles_for_autoTag.empty?
     filtered_articles = articles_for_autoTag.where(medium_id: camp_media_array)
 
     @tags = []
@@ -2112,8 +2113,8 @@ articles = []
       old_tags << @tags
       #  article.media_tags = old_tags.join(',')
       @tags_objects.map do |tag_object|
-        next if ArticleTag.where(article_id: article.id, tag_id: tag_object.id, slug_id: slug_id, campaign_id: campaign[0].id).present?
-        @article_tag = ArticleTag.new article_id: article.id, tag_id: tag_object.id, slug_id: slug_id, campaign_id: campaign[0].id
+        next if ArticleTag.where(article_id: article.id, tag_id: tag_object.id, slug_id: slug_id, campaign_id: campaign.id).present?
+        @article_tag = ArticleTag.new article_id: article.id, tag_id: tag_object.id, slug_id: slug_id, campaign_id: campaign.id
         if @article_tag.save
           puts 'Article_tag well added '
         else
@@ -2134,11 +2135,11 @@ articles = []
     puts "tag******************************tag"
     puts @tags
     puts "tag******************************tag"
-    campaigns = Campaign.all
-    if campaign[0].present?
-      users = User.where(slug_id: campaign[0].slug_id)
-      # camp_tags = campaign[0].tags
-      #   camp_media = campaign[0].media
+   # campaigns = Campaign.all
+    if campaign.present?
+      users = User.where(slug_id: campaign.slug_id)
+      # camp_tags = campaign.tags
+      #   camp_media = campaign.media
       article_to_send = []
       tag_to_send = []
       # camp_tags_array = camp_tags.map(&:id)
@@ -2155,6 +2156,11 @@ articles = []
       users.map { |user| UserMailer.taggedarticles(article_to_send, user, tag_to_send.uniq).deliver }
       end
     end
+
+end
+    
+
+    
 
     end
   
