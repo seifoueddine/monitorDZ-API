@@ -12,7 +12,7 @@ namespace :crawling do
     Medium.all.each {|m|
       @media = m
       @articles_for_auto_tag = []
-      if m.url_crawling? && m.name != 'APS'
+      if m.url_crawling? && m.name != 'APS' && m.name != 'APS'
         url_media_array = m.url_crawling.split(',')
         puts url_media_array
         get_articles(url_media_array,m)
@@ -97,7 +97,9 @@ namespace :crawling do
     last_dates = last_dates.map(&:to_datetime)
     articles_url_autobip = articles_url_autobip.reject(&:nil?)
     last_dates = last_dates.uniq
-    last_articles = Article.where(medium_id: @media.id).where(date_published: last_dates)
+    medium_articles = nil
+    medium_articles = Article.where(medium_id: @media.id)
+    last_articles = medium_articles.nil ? [] : medium_articles.where(date_published: last_dates)
     list_articles_url = []
     last_articles.map do |article|
       list_articles_url << article.url_article
@@ -190,7 +192,9 @@ namespace :crawling do
     end
     articles_url_cherouk = articles_url_cherouk.reject(&:nil?)
     last_dates = last_dates.uniq
-    last_articles = Article.where(medium_id: @media.id).where(date_published: last_dates)
+    medium_articles = nil
+    medium_articles = Article.where(medium_id: @media.id)
+    last_articles = medium_articles.nil ? [] : medium_articles.where(date_published: last_dates)
     list_articles_url = []
     last_articles.map do |article|
       list_articles_url << article.url_article
@@ -300,7 +304,9 @@ namespace :crawling do
     last_dates = last_dates.map { |d| d.to_datetime.change({ hour: 0, min: 0, sec: 0 }) + (1.0 / 24)}
     articles_url_ennahar = articles_url_ennahar.reject(&:nil?)
     last_dates = last_dates.uniq
-    last_articles = Article.where(medium_id: @media.id).where(date_published: last_dates)
+    medium_articles = nil
+    medium_articles = Article.where(medium_id: @media.id)
+    last_articles = medium_articles.nil ? [] : medium_articles.where(date_published: last_dates)
     list_articles_url = []
     last_articles.map do |article|
       list_articles_url << article.url_article
@@ -491,7 +497,9 @@ namespace :crawling do
     # last_dates = last_dates.map(&:to_datetime.change({ hour: 0, min: 0, sec: 0 }))
     articles_url_aps = articles_url_aps.reject(&:nil?)
     last_dates = last_dates.uniq
-    last_articles = Article.where(medium_id: @media.id).where(date_published: last_dates)
+    medium_articles = nil
+    medium_articles = Article.where(medium_id: @media.id)
+    last_articles = medium_articles.nil ? [] : medium_articles.where(date_published: last_dates)
     list_articles_url = []
     last_articles.map do |article|
       list_articles_url << article.url_article
@@ -591,7 +599,9 @@ namespace :crawling do
     # last_dates = last_dates.map(&:to_datetime.change({ hour: 0, min: 0, sec: 0 }))
     articles_url_le_soir = articles_url_le_soir.reject(&:nil?)
     last_dates = last_dates.uniq
-    last_articles = Article.where(medium_id: @media.id).where(date_published: last_dates)
+    medium_articles = nil
+    medium_articles = Article.where(medium_id: @media.id)
+    last_articles = medium_articles.nil ? [] : medium_articles.where(date_published: last_dates)
     list_articles_url = []
     last_articles.map do |article|
       list_articles_url << article.url_article
@@ -696,7 +706,9 @@ namespace :crawling do
     # last_dates = last_dates.map(&:to_datetime.change({ hour: 0, min: 0, sec: 0 }))
     articles_url_liberte = articles_url_liberte.reject(&:nil?)
     last_dates = last_dates.uniq
-    last_articles = Article.where(medium_id: @media.id).where(date_published: last_dates)
+    medium_articles = nil
+    medium_articles = Article.where(medium_id: @media.id)
+    last_articles = medium_articles.nil ? [] : medium_articles.where(date_published: last_dates)
     list_articles_url = []
     last_articles.map do |article|
       list_articles_url << article.url_article
@@ -797,7 +809,9 @@ namespace :crawling do
     end
     articles_url_bilad = articles_url_bilad.reject(&:nil?)
     last_dates = last_dates.uniq
-    last_articles = Article.where(medium_id: @media.id).where(date_published: last_dates)
+    medium_articles = nil
+    medium_articles = Article.where(medium_id: @media.id)
+    last_articles = medium_articles.nil ? [] : medium_articles.where(date_published: last_dates)
     list_articles_url = []
     last_articles.map do |article|
       list_articles_url << article.url_article
@@ -897,7 +911,9 @@ namespace :crawling do
     last_dates = last_dates.map { |d| d.to_datetime.change({ hour: 0, min: 0, sec: 0 })}
     articles_url_maghrebemergent = articles_url_maghrebemergent.reject(&:nil?)
     last_dates = last_dates.uniq
-    last_articles = Article.where(medium_id: @media.id).where(date_published: last_dates)
+    medium_articles = nil
+    medium_articles = Article.where(medium_id: @media.id)
+    last_articles = medium_articles.nil ? [] : medium_articles.where(date_published: last_dates)
     list_articles_url = []
     last_articles.map do |article|
       list_articles_url << article.url_article
@@ -1011,7 +1027,9 @@ namespace :crawling do
     # last_dates = last_dates.map { |d| d.to_datetime.change({ hour: 0, min: 0, sec: 0 })}
     articles_url_elmoudjahid = articles_url_elmoudjahid.reject(&:nil?)
     last_dates = new_last_dates.uniq
-    last_articles = Article.where(medium_id: @media.id).where(date_published: last_dates)
+    medium_articles = nil
+    medium_articles = Article.where(medium_id: @media.id)
+    last_articles = medium_articles.nil ? [] : medium_articles.where(date_published: last_dates)
 
     list_articles_url = []
     last_articles.map do |article|
@@ -1123,7 +1141,9 @@ namespace :crawling do
     # last_dates = last_dates.map { |d| d.to_datetime.change({ hour: 0, min: 0, sec: 0 })}
     articles_url_elmoudjahid = articles_url_elmoudjahid.reject(&:nil?)
     last_dates = last_dates.uniq
-    last_articles = Article.where(medium_id: @media.id).where(date_published: last_dates)
+    medium_articles = nil
+    medium_articles = Article.where(medium_id: @media.id)
+    last_articles = medium_articles.nil ? [] : medium_articles.where(date_published: last_dates)
 
     list_articles_url = []
     last_articles.map do |article|
@@ -1232,7 +1252,9 @@ namespace :crawling do
     articles_url_elkhabar = articles_url_elkhabar.reject(&:nil?)
     articles_url_elkhabar = articles_url_elkhabar.uniq
     last_dates = last_dates.uniq
-    last_articles = Article.where(medium_id: @media.id).where(date_published: last_dates)
+    medium_articles = nil
+    medium_articles = Article.where(medium_id: @media.id)
+    last_articles = medium_articles.nil ? [] : medium_articles.where(date_published: last_dates)
     list_articles_url = []
     last_articles.map do |article|
       list_articles_url << article.url_article
@@ -1346,7 +1368,9 @@ namespace :crawling do
     last_dates = last_dates.map { |d| d.to_datetime.change({ hour: 0, min: 0, sec: 0 })}
     articles_url_elikhbaria = articles_url_elikhbaria.reject(&:nil?)
     last_dates = last_dates.uniq
-    last_articles = Article.where(medium_id: @media.id).where(date_published: last_dates)
+    medium_articles = nil
+    medium_articles = Article.where(medium_id: @media.id)
+    last_articles = medium_articles.nil ? [] : medium_articles.where(date_published: last_dates)
     list_articles_url = []
     last_articles.map do |article|
       list_articles_url << article.url_article
@@ -1451,7 +1475,9 @@ namespace :crawling do
     last_dates = last_dates.map { |d| d.to_datetime.change({ hour: 0, min: 0, sec: 0 })}
     articles_url_algerieco = articles_url_algerieco.reject(&:nil?)
     last_dates = last_dates.uniq
-    last_articles = Article.where(medium_id: @media.id).where(date_published: last_dates)
+    medium_articles = nil
+    medium_articles = Article.where(medium_id: @media.id)
+    last_articles = medium_articles.nil ? [] : medium_articles.where(date_published: last_dates)
     list_articles_url = []
     last_articles.map do |article|
       list_articles_url << article.url_article
@@ -1561,7 +1587,9 @@ namespace :crawling do
     last_dates = last_dates.map { |d| d.to_datetime.change({ hour: 0, min: 0, sec: 0 }) + (2.0 / 24)}
     articles_url_chiffreaffaire = articles_url_chiffreaffaire.reject(&:nil?)
     last_dates = last_dates.uniq
-    last_articles = Article.where(medium_id: @media.id).where(date_published: last_dates)
+    medium_articles = nil
+    medium_articles = Article.where(medium_id: @media.id)
+    last_articles = medium_articles.nil ? [] : medium_articles.where(date_published: last_dates)
     list_articles_url = []
     last_articles.map do |article|
       list_articles_url << article.url_article
@@ -1669,7 +1697,9 @@ namespace :crawling do
     last_dates = last_dates.map { |d| d.to_datetime.change({ hour: 0, min: 0, sec: 0 }) + (1.0 / 24)}
     articles_url_elhiwar = articles_url_elhiwar.reject(&:nil?)
     last_dates = last_dates.uniq
-    last_articles = Article.where(medium_id: @media.id).where(date_published: last_dates)
+    medium_articles = nil
+    medium_articles = Article.where(medium_id: @media.id)
+    last_articles = medium_articles.nil ? [] : medium_articles.where(date_published: last_dates)
     list_articles_url = []
     last_articles.map do |article|
       list_articles_url << article.url_article
@@ -1783,7 +1813,9 @@ namespace :crawling do
     last_dates = last_dates.map { |d| d.to_datetime.change({ hour: 0, min: 0, sec: 0 }) + (1.0 / 24)}
     articles_url_visadz = articles_url_visadz.reject(&:nil?)
     last_dates = last_dates.uniq
-    last_articles = Article.where(medium_id: @media.id).where(date_published: last_dates)
+    medium_articles = nil
+    medium_articles = Article.where(medium_id: @media.id)
+    last_articles = medium_articles.nil ? [] : medium_articles.where(date_published: last_dates)
     list_articles_url = []
     last_articles.map do |article|
       list_articles_url << article.url_article
@@ -1881,7 +1913,9 @@ namespace :crawling do
     last_dates = last_dates.map { |d| d.to_datetime.change({ hour: 0, min: 0, sec: 0 })}
     articles_url_santenews = articles_url_santenews.reject(&:nil?)
     last_dates = last_dates.uniq
-    last_articles = Article.where(medium_id: @media.id).where(date_published: last_dates)
+    medium_articles = nil
+    medium_articles = Article.where(medium_id: @media.id)
+    last_articles = medium_articles.nil ? [] : medium_articles.where(date_published: last_dates)
     list_articles_url = []
     last_articles.map do |article|
       list_articles_url << article.url_article
