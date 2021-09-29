@@ -2167,8 +2167,8 @@ end
     
 
     end
-  
-    render json: { tags: 'ok' }
+    puts "json: { tags: 'ok' }"
+    #render json: { tags: 'ok' }
   end
 
 
