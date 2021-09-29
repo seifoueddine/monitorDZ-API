@@ -2455,8 +2455,8 @@ div.nobreak { page-break-inside: avoid; }
         articles_url_algerie360 << link
       end
       doc.css('li.entry__meta-date').map do |date|
-        date_with_time = date.text.slice(0..(date.index('à')))
-        last_dates << date_with_time.chomp('à')
+        date_with_time = date.text.split('à')[0]
+        last_dates << date_with_time
       end
     end
     last_dates = last_dates.map { |d| change_date_autobip_aps(d) }
@@ -2509,8 +2509,8 @@ div.nobreak { page-break-inside: avoid; }
       new_article.body = article.css('div.entry__article').inner_html
       new_article.body = new_article.body.gsub(/<img[^>]*>/, '')
       date_with_time = article.css('li.entry__meta-date pt-xl-1 d-block d-md-inline').text
-      date_with_a = date_with_time.text.slice(0..(str.index('à')))
-      date = date_with_a.chomp('à')
+      date_with_a = date_with_time.text.split('à')[0]
+      date = date_with_a
       d = change_date_maghrebemergen(date)
       new_article.date_published = d.to_datetime.change({ hour: 0, min: 0, sec: 0 })
       # new_article.date_published =
