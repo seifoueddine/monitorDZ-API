@@ -1314,7 +1314,8 @@ namespace :crawling do
       end
       # #tag_check_and_save(tags_array) if @media.tag_status == true
     end
-    render json: { crawling_status_elkhabar: count }
+   # render json: { crawling_status_elkhabar: count }
+       puts "json: { crawling_status_elkhabar: 'ok' }"
   end
     # end method to get elkhabar articles
     #
