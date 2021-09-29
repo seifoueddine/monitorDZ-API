@@ -108,56 +108,56 @@ namespace :crawling do
     articles_url_autobip_after_check.map do |link|
 
 
-      begin
-        article = Nokogiri::HTML(URI.open(URI.escape(link)))
-      rescue OpenURI::HTTPError => e
-        puts "Can't access #{link}"
-        puts e.message
-        puts
-        next
-      end
+        begin
+          article = Nokogiri::HTML(URI.open(URI.escape(link)))
+        rescue OpenURI::HTTPError => e
+          puts "Can't access #{link}"
+          puts e.message
+          puts
+          next
+        end
 
-      new_article = Article.new
-      new_article.url_article = link
-      new_article.medium_id = @media.id
-      new_article.language = @media.language
-      new_article.category_article = article.css('header.single-header a.cat-theme-bg').text
-      new_article.title = article.css('h1.entry-title').text
+        new_article = Article.new
+        new_article.url_article = link
+        new_article.medium_id = @media.id
+        new_article.language = @media.language
+        new_article.category_article = article.css('header.single-header a.cat-theme-bg').text
+        new_article.title = article.css('h1.entry-title').text
 
-      author_exist = Author.where(['lower(name) like ? ',
-                                   article.at("//a[@itemprop = 'author']").text.downcase ])
-      new_author = Author.new
-      if author_exist.count.zero?
+        author_exist = Author.where(['lower(name) like ? ',
+                                     article.at("//a[@itemprop = 'author']").text.downcase ])
+        new_author = Author.new
+        if author_exist.count.zero?
 
-        new_author.name = article.at("//a[@itemprop = 'author']").text
-        new_author.medium_id = @media.id
-        new_author.save!
-      else
+          new_author.name = article.at("//a[@itemprop = 'author']").text
+          new_author.medium_id = @media.id
+          new_author.save!
+        else
 
-        new_author.id = author_exist.first.id
-        new_author.name = author_exist.first.name
-      end
+          new_author.id = author_exist.first.id
+          new_author.name = author_exist.first.name
+        end
 
-      new_article.author_id = new_author.id
-      new_article.body = article.css('div.pt-4.bp-2.entry-content.typography-copy').inner_html
-      new_article.body = new_article.body.gsub(/<img[^>]*>/, '')
+        new_article.author_id = new_author.id
+        new_article.body = article.css('div.pt-4.bp-2.entry-content.typography-copy').inner_html
+        new_article.body = new_article.body.gsub(/<img[^>]*>/, '')
 
-      d = change_date_autobip_aps(article.at("//span[@itemprop = 'datePublished']").text)
-      new_article.date_published = d.to_datetime
-      url_array = article.css('.fotorama.mnmd-gallery-slider.mnmd-post-media-wide img').map { |link| link['src'] }
-      new_article.url_image = url_array[0]
-      begin
-        new_article.image = Down.download(url_array[0]) if url_array[0].present?
-      rescue Down::Error => e
-        puts "Can't download this image #{url_array[0]}"
-        puts e.message
-        puts
-        new_article.image = nil
-      end
-      tags_array = article.css('a.post-tag').map(&:text)
+        d = change_date_autobip_aps(article.at("//span[@itemprop = 'datePublished']").text)
+        new_article.date_published = d.to_datetime
+        url_array = article.css('.fotorama.mnmd-gallery-slider.mnmd-post-media-wide img').map { |link| link['src'] }
+        new_article.url_image = url_array[0]
+        begin
+          new_article.image = Down.download(url_array[0]) if url_array[0].present?
+        rescue Down::Error => e
+          puts "Can't download this image #{url_array[0]}"
+          puts e.message
+          puts
+          new_article.image = nil
+        end
+        tags_array = article.css('a.post-tag').map(&:text)
       # new_article.media_tags = tags_array.join(',')
-      new_article.status = 'pending'
-      new_article.save!
+        new_article.status = 'pending'
+        new_article.save!
       #tag_check_and_save(tags_array) if @media.tag_status == true
       end
 
@@ -265,8 +265,8 @@ namespace :crawling do
       new_article.save!
 
       if new_article.save
-         count += 1
-         @articles_for_auto_tag.push(new_article)
+        count += 1
+        @articles_for_auto_tag.push(new_article)
       end
       #tag_check_and_save(tags_array)if @media.tag_status == true
     end
@@ -828,7 +828,7 @@ namespace :crawling do
                        Author.where(['lower(name) like ? ', ('Bilad auteur').downcase ])
                      else
                        Author.where(['lower(name) like ? ',
-                                                    auteur_date[1].downcase ])
+                                     auteur_date[1].downcase ])
                      end
 
       new_author = Author.new
@@ -906,66 +906,66 @@ namespace :crawling do
     end
     articles_url_maghrebemergent_after_check = articles_url_maghrebemergent - list_articles_url
     articles_url_maghrebemergent_after_check.map do |link|
-      begin
-        article = Nokogiri::HTML(URI.open(link))
-      rescue OpenURI::HTTPError => e
-        puts "Can't access #{link}"
-        puts e.message
-        puts
-        next
-      end
-      new_article = Article.new
-      new_article.url_article = link
-      new_article.medium_id = @media.id
-      new_article.language = @media.language
-      new_article.category_article = article.at('div.elementor-widget-container ul li span span.elementor-post-info__terms-list a').text
-      new_article.title = article.css('h1.elementor-heading-title.elementor-size-small').text
+    begin
+      article = Nokogiri::HTML(URI.open(link))
+    rescue OpenURI::HTTPError => e
+      puts "Can't access #{link}"
+      puts e.message
+      puts
+      next
+    end
+    new_article = Article.new
+    new_article.url_article = link
+    new_article.medium_id = @media.id
+    new_article.language = @media.language
+    new_article.category_article = article.at('div.elementor-widget-container ul li span span.elementor-post-info__terms-list a').text
+    new_article.title = article.css('h1.elementor-heading-title.elementor-size-small').text
     # new_article.author = article.css('div.article-head__author div em a').text
 
-      if article.at('div.elementor-widget-container ul li a span.elementor-icon-list-text elementor-post-info__item elementor-post-info__item--type-author').nil?
-        author_exist = Author.where(['lower(name) like ? ', ('Maghrebemergent auteur').downcase ])
-      else
-        author_exist = Author.where(['lower(name) like ? ',
-                                     article.at('div.elementor-widget-container ul li a span.elementor-icon-list-text elementor-post-info__item elementor-post-info__item--type-author').text.downcase ])
-      end
+    if article.at('div.elementor-widget-container ul li a span.elementor-icon-list-text elementor-post-info__item elementor-post-info__item--type-author').nil?
+      author_exist = Author.where(['lower(name) like ? ', ('Maghrebemergent auteur').downcase ])
+    else
+      author_exist = Author.where(['lower(name) like ? ',
+                                   article.at('div.elementor-widget-container ul li a span.elementor-icon-list-text elementor-post-info__item elementor-post-info__item--type-author').text.downcase ])
+    end
 
-      new_author = Author.new
-      if author_exist.count.zero?
+    new_author = Author.new
+    if author_exist.count.zero?
 
-        new_author.name = article.at('div.elementor-widget-container ul li a span.elementor-icon-list-text elementor-post-info__item elementor-post-info__item--type-author').nil? ? 'Maghrebemergent auteur' : article.at('div.elementor-widget-container ul li a span.elementor-icon-list-text elementor-post-info__item elementor-post-info__item--type-author').text
-        new_author.medium_id = @media.id
-        new_author.save!
-      else
+      new_author.name = article.at('div.elementor-widget-container ul li a span.elementor-icon-list-text elementor-post-info__item elementor-post-info__item--type-author').nil? ? 'Maghrebemergent auteur' : article.at('div.elementor-widget-container ul li a span.elementor-icon-list-text elementor-post-info__item elementor-post-info__item--type-author').text
+      new_author.medium_id = @media.id
+      new_author.save!
+    else
 
-        new_author.id = author_exist.first.id
-        new_author.name = author_exist.first.name
+      new_author.id = author_exist.first.id
+      new_author.name = author_exist.first.name
 
-      end
-      new_article.author_id = new_author.id
-      new_article.body = article.css('div.elementor-element.elementor-element-c93088c.elementor-widget.elementor-widget-theme-post-content').inner_html
-      new_article.body = new_article.body.gsub(/<img[^>]*>/, '')
+    end
+    new_article.author_id = new_author.id
+    new_article.body = article.css('div.elementor-element.elementor-element-c93088c.elementor-widget.elementor-widget-theme-post-content').inner_html
+    new_article.body = new_article.body.gsub(/<img[^>]*>/, '')
     # date = article.at('p.text-capitalize span').text
     # date[','] = ''
-      date = article.at('div.elementor-widget-container ul li a span.elementor-icon-list-text.elementor-post-info__item.elementor-post-info__item--type-date').text
-      d = change_date_maghrebemergen(date)
-      new_article.date_published = d.to_datetime.change({ hour: 0, min: 0, sec: 0 })
-      url_array = article.css('div.elementor-element.elementor-element-c05ee34.elementor-widget.elementor-widget-theme-post-featured-image.elementor-widget-image div div img').map  { |link| link['src'] }
-      new_article.url_image = url_array[0]
-      begin
-        new_article.image = Down.download(url_array[0]) if url_array[0].present?
-      rescue Down::Error => e
-        puts "Can't download this image #{url_array[0]}"
-        puts e.message
-        puts
-        new_article.image = nil
-      end
+    date = article.at('div.elementor-widget-container ul li a span.elementor-icon-list-text.elementor-post-info__item.elementor-post-info__item--type-date').text
+    d = change_date_maghrebemergen(date)
+    new_article.date_published = d.to_datetime.change({ hour: 0, min: 0, sec: 0 })
+    url_array = article.css('div.elementor-element.elementor-element-c05ee34.elementor-widget.elementor-widget-theme-post-featured-image.elementor-widget-image div div img').map  { |link| link['src'] }
+    new_article.url_image = url_array[0]
+    begin
+      new_article.image = Down.download(url_array[0]) if url_array[0].present?
+    rescue Down::Error => e
+      puts "Can't download this image #{url_array[0]}"
+      puts e.message
+      puts
+      new_article.image = nil
+    end
     # tags_array = article.css('ul.itemTags li').map(&:text)
     # new_article.media_tags = tags_array.join(',')
-      new_article.status = 'pending'
-      new_article.save!
-      if new_article.save
-        @articles_for_auto_tag.push(new_article)
-      end
+    new_article.status = 'pending'
+    new_article.save!
+    if new_article.save
+      @articles_for_auto_tag.push(new_article)
+    end
     # #tag_check_and_save(tags_array)
   end
     puts "json: { crawling_status_aps: 'ok' }"
@@ -1263,7 +1263,7 @@ namespace :crawling do
 
       if article.at('span.time-blog b').present?
         author_exist = Author.where(['lower(name) like ? ',
-        article.at('span.time-blog b').text.downcase ])
+                                     article.at('span.time-blog b').text.downcase ])
 
       else
         author_exist = Author.where(['lower(name) like ? ', ('Elkhabar auteur').downcase ])
@@ -1315,7 +1315,7 @@ namespace :crawling do
       # #tag_check_and_save(tags_array) if @media.tag_status == true
     end
    # render json: { crawling_status_elkhabar: count }
-       puts "json: { crawling_status_elkhabar: 'ok' }"
+    puts "json: { crawling_status_elkhabar: 'ok' }"
   end
     # end method to get elkhabar articles
     #
@@ -1339,7 +1339,7 @@ namespace :crawling do
       doc.css('div.col-sm-8 div.listing > article > div > h2 > a').map do |link|
 
 
-          articles_url_elikhbaria << link['href']# if link['class'] == 'main_article'
+        articles_url_elikhbaria << link['href']# if link['class'] == 'main_article'
 
       end
       doc.css('time').map do |date|
@@ -1444,7 +1444,7 @@ namespace :crawling do
       doc.css('div.td-pb-span8 h3.entry-title a.td-eco-title').map do |link|
 
 
-      articles_url_algerieco << link['href']
+        articles_url_algerieco << link['href']
 
       end
       doc.css('time').map do |date|
@@ -1961,13 +1961,12 @@ namespace :crawling do
       # tag_check_and_savetag_check_and_save
   def tag_check_and_save(tags_array)
     tags_array.map do |t|
-      # tag_exist = Tag.where(['lower(name) like ? ',
-      #                       t.downcase.lstrip.chop ]).count
-      # if tag_exist.zero?
+      tag_exist = Tag.where(['lower(name) like ? ', t.downcase.strip ]).count
+      next unless tag_exist.zero?
+
       tag = Tag.new
       tag.name = t.strip
       tag.save!
-      # end
     end
   end
 
@@ -2096,51 +2095,54 @@ namespace :crawling do
       camp_media_array = camp_media.map(&:id)
       articles = []
     # all_tags = Tag.where(status: true)
-unless articles_for_autoTag.empty?
-    filtered_articles = articles_for_autoTag.where(medium_id: camp_media_array)
+      next if articles_for_autoTag.empty?
 
-    @tags = []
-    filtered_articles.map do |article|
+      filtered_articles = articles_for_autoTag.where(medium_id: camp_media_array)
 
-      @tags_objects = []
-      all_tags.map do |tag|
-        if article.body.downcase.include? tag.name.downcase
-          @tags << tag.name unless @tags.include? tag.name
-          @tags_objects << tag unless @tags_objects.include? tag.name
+      @tags = []
+      filtered_articles.map do |article|
+
+        @tags_objects = []
+        all_tags.map do |tag|
+          if article.body.downcase.include? tag.name.downcase
+            @tags << tag.name unless @tags.include? tag.name
+            @tags_objects << tag unless @tags_objects.include? tag.name
+          end
+          if article.title.downcase.include? tag.name.downcase
+            @tags << tag.name unless @tags.include? tag.name
+            @tags_objects << tag unless @tags_objects.include? tag.name
+          end
         end
-        if article.title.downcase.include? tag.name.downcase
-          @tags << tag.name unless @tags.include? tag.name
-          @tags_objects << tag unless @tags_objects.include? tag.name
+        old_tags = article.media_tags.nil? ? [] : article.media_tags.split(',')
+        old_tags << @tags
+        #  article.media_tags = old_tags.join(',')
+        @tags_objects.map do |tag_object|
+          next if ArticleTag.where(article_id: article.id, tag_id: tag_object.id, slug_id: slug_id, campaign_id: campaign.id).present?
+
+          @article_tag = ArticleTag.new article_id: article.id, tag_id: tag_object.id, slug_id: slug_id, campaign_id: campaign.id
+          if @article_tag.save
+            puts 'Article_tag well added '
+          else
+            puts 'Article_tag error'
+          end
+
         end
+
+
+        # article.is_tagged = true if @tags_objects.length.positive?
+
+        articles << article if @tags_objects.length.positive?
+        article.reindex
       end
-      old_tags = article.media_tags.nil? ? [] : article.media_tags.split(',')
-      old_tags << @tags
-      #  article.media_tags = old_tags.join(',')
-      @tags_objects.map do |tag_object|
-        next if ArticleTag.where(article_id: article.id, tag_id: tag_object.id, slug_id: slug_id, campaign_id: campaign.id).present?
-        @article_tag = ArticleTag.new article_id: article.id, tag_id: tag_object.id, slug_id: slug_id, campaign_id: campaign.id
-        if @article_tag.save
-          puts 'Article_tag well added '
-        else
-          puts 'Article_tag error'
-        end
+      puts '******************************'
+      puts "Nombre d'articles :" + articles.count.to_s
+      puts '******************************'
+      puts 'tag******************************tag'
+      puts @tags
+      puts 'tag******************************tag'
+       # campaigns = Campaign.all
+      next unless campaign.present?
 
-      end
-
-
-      # article.is_tagged = true if @tags_objects.length.positive?
-
-      articles << article if @tags_objects.length.positive?
-      article.reindex
-    end
-    puts '******************************'
-    puts "Nombre d'articles :" + articles.count.to_s
-    puts '******************************'
-    puts 'tag******************************tag'
-    puts @tags
-    puts 'tag******************************tag'
-   # campaigns = Campaign.all
-    if campaign.present?
       users = User.where(slug_id: campaign.slug_id)
       # camp_tags = campaign.tags
       #   camp_media = campaign.media
@@ -2157,11 +2159,9 @@ unless articles_for_autoTag.empty?
           #  article_to_send << article if status_tag == true && status_media == true
       end
       if article_to_send.length.positive?
-      users.map { |user| UserMailer.taggedarticles(article_to_send, user, tag_to_send.uniq).deliver }
+        users.map { |user| UserMailer.taggedarticles(article_to_send, user, tag_to_send.uniq).deliver }
       end
-    end
 
-end
 
 
 
