@@ -6,26 +6,26 @@ OpenSSL::SSL::VERIFY_PEER = OpenSSL::SSL::VERIFY_NONE
 namespace :crawling do
 
 
-  desc "carwling all media"
+  desc 'carwling all media'
   task scraping: :environment do
-    
-    Medium.all.each {|m|
+
+    Medium.all.each { |m|
       @media = m
       @articles_for_auto_tag = []
-      if m.url_crawling? && m.name != 'APS' 
+      if m.url_crawling? && m.name != 'APS'
         url_media_array = m.url_crawling.split(',')
         puts url_media_array
         get_articles(url_media_array,m)
-        Article.where(medium_id: m.id,created_at: Time.zone.now.beginning_of_day..Time.zone.now.end_of_day).where.not(id: Article.group(:url_article).select("min(id)")).destroy_all
-        
+        Article.where(medium_id: m.id,created_at: Time.zone.now.beginning_of_day..Time.zone.now.end_of_day).where.not(id: Article.group(:url_article).select('min(id)')).destroy_all
+
       else
         puts "crawling_status: 'No url_crawling', media: m.name, status: 'error'"
       end
-   
+
     }
-    puts "call auto tag"
+    puts 'call auto tag'
     auto_tag(@articles_for_auto_tag)
-    puts "end auto tag"
+    puts 'end auto tag'
   end
 
 
@@ -106,7 +106,7 @@ namespace :crawling do
     end
     articles_url_autobip_after_check = articles_url_autobip - list_articles_url
     articles_url_autobip_after_check.map do |link|
-     
+
 
       begin
         article = Nokogiri::HTML(URI.open(URI.escape(link)))
@@ -164,7 +164,7 @@ namespace :crawling do
     puts "json: { crawling_status_autobip: 'ok' }"
   end
     # end method to get autobip articles
-  
+
     # start method to get elcherouk articles
   def get_articles_elcherouk(url_media_array)
     articles_url_cherouk = []
@@ -263,18 +263,18 @@ namespace :crawling do
       # new_article.media_tags = tags_array.join(',')
       new_article.status = 'pending'
       new_article.save!
-      
+
       if new_article.save
-         count += 1 
+         count += 1
          @articles_for_auto_tag.push(new_article)
       end
       #tag_check_and_save(tags_array)if @media.tag_status == true
     end
-    puts "json: { crawling_count_elcherouk:  count  }"
+    puts 'json: { crawling_count_elcherouk:  count  }'
   end
     # end method to get elcherouk articles
-  
-  
+
+
     # start method to get ennahar articles
   def get_articles_ennahar(url_media_array)
     articles_url_ennahar = []
@@ -291,7 +291,7 @@ namespace :crawling do
         puts
         next
       end
-      
+
       doc.css('div.article__image.article__image--medium a').map do |link|
         articles_url_ennahar << link['href']
       end
@@ -299,7 +299,7 @@ namespace :crawling do
         last_dates << date['datetime']
       end
     end
-    last_dates = last_dates.map { |d| d.to_datetime.change({ hour: 0, min: 0, sec: 0 }) + (1.0 / 24)}
+    last_dates = last_dates.map { |d| d.to_datetime.change({ hour: 0, min: 0, sec: 0 }) + (1.0 / 24) }
     articles_url_ennahar = articles_url_ennahar.reject(&:nil?)
     last_dates = last_dates.uniq
     last_articles = Article.where(medium_id: @media.id).where(date_published: last_dates)
@@ -309,9 +309,9 @@ namespace :crawling do
     end
     articles_url_ennahar_after_check = articles_url_ennahar - list_articles_url
     articles_url_ennahar_after_check.map do |link|
-     
 
-      
+
+
       begin
         article = Nokogiri::HTML(URI.open(link, 'User-Agent' => 'ruby/2.6.5'))
       rescue OpenURI::HTTPError => e
@@ -371,8 +371,8 @@ namespace :crawling do
     puts "json: { crawling_status_elcherouk: 'ok' }"
   end
     # end method to get ennahar articles
-  
-  
+
+
     # start method to get TSA articles
   def get_articles_tsa(url_media_array)
     articles_url_tsafr = []
@@ -466,8 +466,8 @@ namespace :crawling do
     puts "json: { crawling_status_tsa: 'ok' }"
   end
     # end method to get TSA articles
-  
-  
+
+
     # start method to get APS articles
   def get_articles_aps(url_media_array)
     articles_url_aps = []
@@ -489,7 +489,7 @@ namespace :crawling do
       end
     end
     last_dates = last_dates.map { |d| change_date_autobip_aps(d) }
-    last_dates = last_dates.map{ |d| d.to_datetime.change({ hour: 0, min: 0, sec: 0 })}
+    last_dates = last_dates.map{ |d| d.to_datetime.change({ hour: 0, min: 0, sec: 0 }) }
     # last_dates = last_dates.map(&:to_datetime.change({ hour: 0, min: 0, sec: 0 }))
     articles_url_aps = articles_url_aps.reject(&:nil?)
     last_dates = last_dates.uniq
@@ -565,9 +565,9 @@ namespace :crawling do
     puts "json: { crawling_status_aps: 'ok' }"
   end
     # end method to get APS articles
-  
-  
-  
+
+
+
     # start method to get le soir articles
   def get_articles_le_soir(url_media_array)
     articles_url_le_soir = []
@@ -589,7 +589,7 @@ namespace :crawling do
       end
     end
     last_dates = last_dates.map { |d| change_date_autobip_aps(d) }
-    last_dates = last_dates.map{ |d| d.to_datetime.change({ hour: 0, min: 0, sec: 0 })}
+    last_dates = last_dates.map{ |d| d.to_datetime.change({ hour: 0, min: 0, sec: 0 }) }
     # last_dates = last_dates.map(&:to_datetime.change({ hour: 0, min: 0, sec: 0 }))
     articles_url_le_soir = articles_url_le_soir.reject(&:nil?)
     last_dates = last_dates.uniq
@@ -669,10 +669,10 @@ namespace :crawling do
     puts "json: { crawling_status_le_soir: 'ok' }"
   end
     # end method to get le soir articles
-  
-  
-  
-  
+
+
+
+
     # start method to get _liberte articles
   def get_articles_liberte(url_media_array)
     articles_url_liberte = []
@@ -694,7 +694,7 @@ namespace :crawling do
       end
     end
     last_dates = last_dates.map { |d| change_date_autobip_aps(d) }
-    last_dates = last_dates.map{ |d| d.to_datetime.change({ hour: 0, min: 0, sec: 0 })}
+    last_dates = last_dates.map{ |d| d.to_datetime.change({ hour: 0, min: 0, sec: 0 }) }
     # last_dates = last_dates.map(&:to_datetime.change({ hour: 0, min: 0, sec: 0 }))
     articles_url_liberte = articles_url_liberte.reject(&:nil?)
     last_dates = last_dates.uniq
@@ -769,14 +769,14 @@ namespace :crawling do
     puts "json: { crawling_status_liberte: 'ok' }"
   end
     # end method to get _liberte articles
-  
-  
-  
-  
-  
-  
-  
-  
+
+
+
+
+
+
+
+
     # start method to get bilad articles
   def get_articles_bilad(url_media_array)
     articles_url_bilad = []
@@ -873,7 +873,7 @@ namespace :crawling do
     # end method to get bilad articles
     #
     #
-  
+
     # start method to get maghrebemergent articles
   def get_articles_maghrebemergent(url_media_array)
     articles_url_maghrebemergent = []
@@ -896,7 +896,7 @@ namespace :crawling do
       end
     end
     last_dates = last_dates.map { |d| change_date_maghrebemergen(d) }
-    last_dates = last_dates.map { |d| d.to_datetime.change({ hour: 0, min: 0, sec: 0 })}
+    last_dates = last_dates.map { |d| d.to_datetime.change({ hour: 0, min: 0, sec: 0 }) }
     articles_url_maghrebemergent = articles_url_maghrebemergent.reject(&:nil?)
     last_dates = last_dates.uniq
     last_articles = Article.where(medium_id: @media.id).where(date_published: last_dates)
@@ -972,8 +972,8 @@ namespace :crawling do
   end
     # end method to get maghrebemergent articles
     #
-  
-  
+
+
     # start method to get elmoudjahid articles
   def get_articles_elmoudjahid_fr(url_media_array)
     articles_url_elmoudjahid = []
@@ -1077,20 +1077,20 @@ namespace :crawling do
       new_article.image = Down.download(url_array) if url_array.present?
       new_article.status = 'pending'
       new_article.save!
-      
+
       if new_article.save
-        count += 1 
+        count += 1
         @articles_for_auto_tag.push(new_article)
       end
       # #tag_check_and_save(tags_array)
     end
-    puts "json: { crawling_count_aps: count }"
+    puts 'json: { crawling_count_aps: count }'
   end
     # end method to get elmoudjahid articles
     # start method to get elmoudjahid_fr articles
     #
-  
-  
+
+
   def get_articles_elmoudjahid(url_media_array)
     articles_url_elmoudjahid = []
     articles_url_elmoudjahid6 = []
@@ -1230,7 +1230,7 @@ namespace :crawling do
     end
 
     last_dates = last_dates.map { |d| change_date_maghrebemergen(d) }
-    last_dates = last_dates.map { |d| d.to_datetime.change({ hour: 0, min: 0, sec: 0 })}
+    last_dates = last_dates.map { |d| d.to_datetime.change({ hour: 0, min: 0, sec: 0 }) }
     articles_url_elkhabar = articles_url_elkhabar.reject(&:nil?)
     articles_url_elkhabar = articles_url_elkhabar.uniq
     last_dates = last_dates.uniq
@@ -1264,7 +1264,7 @@ namespace :crawling do
       if article.at('span.time-blog b').present?
         author_exist = Author.where(['lower(name) like ? ',
         article.at('span.time-blog b').text.downcase ])
-     
+
       else
         author_exist = Author.where(['lower(name) like ? ', ('Elkhabar auteur').downcase ])
       end
@@ -1307,9 +1307,9 @@ namespace :crawling do
       # new_article.media_tags = tags_array.join(',')
       new_article.status = 'pending'
       new_article.save!
-      
+
       if new_article.save
-        count += 1 
+        count += 1
         @articles_for_auto_tag.push(new_article)
       end
       # #tag_check_and_save(tags_array) if @media.tag_status == true
@@ -1320,9 +1320,9 @@ namespace :crawling do
     # end method to get elkhabar articles
     #
 
-  
 
-  
+
+
     # start method to get elikhbaria articles
   def get_articles_elikhbaria(url_media_array)
     articles_url_elikhbaria = []
@@ -1347,7 +1347,7 @@ namespace :crawling do
       end
     end
     # last_dates = last_dates.map { |d| change_date_maghrebemergen(d) }
-    last_dates = last_dates.map { |d| d.to_datetime.change({ hour: 0, min: 0, sec: 0 })}
+    last_dates = last_dates.map { |d| d.to_datetime.change({ hour: 0, min: 0, sec: 0 }) }
     articles_url_elikhbaria = articles_url_elikhbaria.reject(&:nil?)
     last_dates = last_dates.uniq
     last_articles = Article.where(medium_id: @media.id).where(date_published: last_dates)
@@ -1402,7 +1402,7 @@ namespace :crawling do
       # date[','] = ''
       date = article.at('time[datetime]')['datetime']
       # d = change_date_maghrebemergen(date)
-      new_article.date_published = date.to_datetime.change({ hour: 0, min: 0, sec: 0 })
+      new_article.date_published = date.to_datetime.change({ hour: 0, min: 0, sec: 0 }) + (1.0 / 24)
       url_array = article.css('div.post-header div.single-featured > a').map  { |link| link['href'] }# and link['class'] == 'b-loaded'
       url_image = url_array[0]
       begin
@@ -1425,9 +1425,9 @@ namespace :crawling do
     puts "json: { crawling_status_aps: 'ok' }"
   end
     # end method to get elikhbaria articles
-  
-  
-  
+
+
+
     # start method to get algerieco articles
   def get_articles_algerieco(url_media_array)
     articles_url_algerieco = []
@@ -1452,7 +1452,7 @@ namespace :crawling do
       end
     end
     # last_dates = last_dates.map { |d| change_date_maghrebemergen(d) }
-    last_dates = last_dates.map { |d| d.to_datetime.change({ hour: 0, min: 0, sec: 0 })}
+    last_dates = last_dates.map { |d| d.to_datetime.change({ hour: 0, min: 0, sec: 0 }) }
     articles_url_algerieco = articles_url_algerieco.reject(&:nil?)
     last_dates = last_dates.uniq
     last_articles = Article.where(medium_id: @media.id).where(date_published: last_dates)
@@ -1535,9 +1535,9 @@ namespace :crawling do
     puts "json: { crawling_status_aps: 'ok' }"
   end
     # end method to get algerieco articles
-  
 
-  
+
+
     # start method to get chiffreaffaire articles
   def get_articles_chiffreaffaire(url_media_array)
     articles_url_chiffreaffaire = []
@@ -1562,7 +1562,7 @@ namespace :crawling do
       end
     end
     # last_dates = last_dates.map { |d| change_date_maghrebemergen(d) }
-    last_dates = last_dates.map { |d| d.to_datetime.change({ hour: 0, min: 0, sec: 0 }) + (2.0 / 24)}
+    last_dates = last_dates.map { |d| d.to_datetime.change({ hour: 0, min: 0, sec: 0 }) + (2.0 / 24) }
     articles_url_chiffreaffaire = articles_url_chiffreaffaire.reject(&:nil?)
     last_dates = last_dates.uniq
     last_articles = Article.where(medium_id: @media.id).where(date_published: last_dates)
@@ -1643,8 +1643,8 @@ namespace :crawling do
     puts "json: { crawling_status_aps: 'ok' }"
   end
     # end method to get chiffreaffaire articles
-  
-  
+
+
     # start method to get elhiwar articles
   def get_articles_elhiwar(url_media_array)
     articles_url_elhiwar = []
@@ -1670,7 +1670,7 @@ namespace :crawling do
       end
     end
     # last_dates = last_dates.map { |d| change_date_maghrebemergen(d) }
-    last_dates = last_dates.map { |d| d.to_datetime.change({ hour: 0, min: 0, sec: 0 }) + (1.0 / 24)}
+    last_dates = last_dates.map { |d| d.to_datetime.change({ hour: 0, min: 0, sec: 0 }) + (1.0 / 24) }
     articles_url_elhiwar = articles_url_elhiwar.reject(&:nil?)
     last_dates = last_dates.uniq
     last_articles = Article.where(medium_id: @media.id).where(date_published: last_dates)
@@ -1755,8 +1755,8 @@ namespace :crawling do
     puts "json: { crawling_status_aps: 'ok' }"
   end
     # end method to get elhiwar articles
-  
-  
+
+
     # start method to get visadz articles
   def get_articles_visadz(url_media_array)
     articles_url_visadz = []
@@ -1784,7 +1784,7 @@ namespace :crawling do
       end
     end
     # last_dates = last_dates.map { |d| change_date_maghrebemergen(d) }
-    last_dates = last_dates.map { |d| d.to_datetime.change({ hour: 0, min: 0, sec: 0 }) + (1.0 / 24)}
+    last_dates = last_dates.map { |d| d.to_datetime.change({ hour: 0, min: 0, sec: 0 }) + (1.0 / 24) }
     articles_url_visadz = articles_url_visadz.reject(&:nil?)
     last_dates = last_dates.uniq
     last_articles = Article.where(medium_id: @media.id).where(date_published: last_dates)
@@ -1854,9 +1854,9 @@ namespace :crawling do
     puts "json: { crawling_status_aps: 'ok' }"
   end
     # end method to get elhiwar articles
-  
-  
-  
+
+
+
     # start method to get santenews articles
   def get_articles_santenews(url_media_array)
     articles_url_santenews = []
@@ -1882,7 +1882,7 @@ namespace :crawling do
       end
     end
     last_dates = last_dates.map { |d| change_date_autobip_aps(d) }
-    last_dates = last_dates.map { |d| d.to_datetime.change({ hour: 0, min: 0, sec: 0 })}
+    last_dates = last_dates.map { |d| d.to_datetime.change({ hour: 0, min: 0, sec: 0 }) }
     articles_url_santenews = articles_url_santenews.reject(&:nil?)
     last_dates = last_dates.uniq
     last_articles = Article.where(medium_id: @media.id).where(date_published: last_dates)
@@ -1956,8 +1956,8 @@ namespace :crawling do
     puts "json: { crawling_status_aps: 'ok' }"
   end
     # end method to get elhiwar articles
-  
-  
+
+
       # tag_check_and_savetag_check_and_save
   def tag_check_and_save(tags_array)
     tags_array.map do |t|
@@ -1965,7 +1965,7 @@ namespace :crawling do
       #                       t.downcase.lstrip.chop ]).count
       # if tag_exist.zero?
       tag = Tag.new
-      tag.name = t.lstrip.chop
+      tag.name = t.strip
       tag.save!
       # end
     end
@@ -2133,12 +2133,12 @@ unless articles_for_autoTag.empty?
       articles << article if @tags_objects.length.positive?
       article.reindex
     end
-    puts "******************************"
+    puts '******************************'
     puts "Nombre d'articles :" + articles.count.to_s
-    puts "******************************"
-    puts "tag******************************tag"
+    puts '******************************'
+    puts 'tag******************************tag'
     puts @tags
-    puts "tag******************************tag"
+    puts 'tag******************************tag'
    # campaigns = Campaign.all
     if campaign.present?
       users = User.where(slug_id: campaign.slug_id)
@@ -2162,9 +2162,9 @@ unless articles_for_autoTag.empty?
     end
 
 end
-    
 
-    
+
+
 
     end
     puts "json: { tags: 'ok' }"
