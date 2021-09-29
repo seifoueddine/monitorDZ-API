@@ -56,8 +56,8 @@ namespace :crawling do
       get_articles_elikhbaria(url_media_array)
     when 'ALGERIECO'
       get_articles_algerieco(url_media_array)
-    when 'CHIFFREAFFAIRE'
-      get_articles_chiffreaffaire(url_media_array)
+    # when 'CHIFFREAFFAIRE'
+    #   get_articles_chiffreaffaire(url_media_array)
     when 'ELHIWAR'
       get_articles_elhiwar(url_media_array)
     when 'LE SOIR'
