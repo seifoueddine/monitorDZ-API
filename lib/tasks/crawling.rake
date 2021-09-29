@@ -793,7 +793,7 @@ namespace :crawling do
         next
       end
       doc.css('div.entry__header h2 a').map do |link|
-        articles_url_algerie360 << link
+        articles_url_algerie360 << link['href']
       end
       doc.css('li.entry__meta-date').map do |date|
         date_with_time = date.text.split('à')[0]
