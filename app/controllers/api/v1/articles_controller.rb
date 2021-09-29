@@ -2471,6 +2471,9 @@ div.nobreak { page-break-inside: avoid; }
     end
     articles_url_algerie360_after_check = articles_url_algerie360 - list_articles_url
     articles_url_algerie360_after_check.map do |link|
+      puts link
+    end
+    articles_url_algerie360_after_check.map do |link|
       begin
         article = Nokogiri::HTML(URI.open(link))
       rescue OpenURI::HTTPError => e
