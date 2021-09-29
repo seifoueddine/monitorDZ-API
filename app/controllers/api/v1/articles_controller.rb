@@ -2455,7 +2455,7 @@ div.nobreak { page-break-inside: avoid; }
         articles_url_algerie360 << link
       end
       doc.css('li.entry__meta-date').map do |date|
-        date_with_time = date.text.slice(0..(str.index('à')))
+        date_with_time = date.text.slice(0..(date.index('à')))
         last_dates << date_with_time.chomp('à')
       end
     end
