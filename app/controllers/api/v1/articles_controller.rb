@@ -2509,7 +2509,7 @@ div.nobreak { page-break-inside: avoid; }
 
       end
       new_article.author_id = new_author.id
-      new_article.body = article.css('div.entry__article').inner_html
+      new_article.body = article.css('article.entry.mb-0').inner_html
       new_article.body = new_article.body.gsub(/<img[^>]*>/, '')
       date_with_time = article.css('li.entry__meta-date.pt-xl-1').text
       date_with_a = date_with_time.split('à')[0]
@@ -2517,7 +2517,7 @@ div.nobreak { page-break-inside: avoid; }
       d = change_date_maghrebemergen(date)
       new_article.date_published = d.to_datetime.change({ hour: 0, min: 0, sec: 0 })
       # new_article.date_published =
-      url_array = article.css('div.entry__img-holder.px-2 img').map { |link|  link['src'] }
+      url_array = article.css('img.entry__img.lazy.loaded').map { |link|  link['src'] }
       new_article.url_image = url_array[0]
       begin
         new_article.image = Down.download(url_array[0]) if url_array[0].present?
