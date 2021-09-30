@@ -2444,7 +2444,7 @@ div.nobreak { page-break-inside: avoid; }
     last_dates = []
     url_media_array.map do |url|
       begin
-        doc = Nokogiri::HTML(URI.open(url),Encoding::UTF_8.to_s)
+        doc = Nokogiri::HTML(URI.open(url),nil,Encoding::UTF_8.to_s)
       rescue OpenURI::HTTPError => e
         puts "Can't access #{url}"
         puts e.message
@@ -2475,7 +2475,7 @@ div.nobreak { page-break-inside: avoid; }
     end
     articles_url_algerie360_after_check.map do |link|
       begin
-        article = Nokogiri::HTML(URI.open(link),Encoding::UTF_8.to_s)
+        article = Nokogiri::HTML(URI.open(link),nil,Encoding::UTF_8.to_s)
       rescue OpenURI::HTTPError => e
         puts "Can't access #{link}"
         puts e.message

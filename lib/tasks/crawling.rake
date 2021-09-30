@@ -785,7 +785,7 @@ namespace :crawling do
     last_dates = []
     url_media_array.map do |url|
       begin
-        doc = Nokogiri::HTML(URI.open(url),Encoding::UTF_8.to_s)
+        doc = Nokogiri::HTML(URI.open(url),nil,Encoding::UTF_8.to_s)
       rescue OpenURI::HTTPError => e
         puts "Can't access #{url}"
         puts e.message
@@ -813,7 +813,7 @@ namespace :crawling do
     articles_url_algerie360_after_check = articles_url_algerie360 - list_articles_url
     articles_url_algerie360_after_check.map do |link|
       begin
-        article = Nokogiri::HTML(URI.open(link),Encoding::UTF_8.to_s)
+        article = Nokogiri::HTML(URI.open(link),nil,Encoding::UTF_8.to_s)
       rescue OpenURI::HTTPError => e
         puts "Can't access #{link}"
         puts e.message
