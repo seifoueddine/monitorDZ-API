@@ -295,7 +295,7 @@ class Api::V1::ArticlesController < ApplicationController
           #  article_to_send << article if status_tag == true && status_media == true
       end
       if article_to_send.length.positive?
-      users.map { |user| UserMailer.taggedarticles(article_to_send, user, tag_to_send.uniq).deliver }
+        users.map { |user| UserMailer.taggedarticles(article_to_send, user, tag_to_send.uniq).deliver }
       end
     end
 
@@ -467,9 +467,9 @@ div.nobreak { page-break-inside: avoid; }
     else
       render json: { crawling_status: 'No url_crawling', media: @media.name, status: 'error' }
     end
-    unless @media.name == 'LIBERTE'
-    Author.all.where.not(id: Author.group(:name).select('min(id)')).destroy_all
-    end
+    # unless @media.name == 'LIBERTE'
+      # Author.all.where.not(id: Author.group(:name).select('min(id)')).destroy_all
+      # end
 
   end
 
@@ -729,14 +729,14 @@ div.nobreak { page-break-inside: avoid; }
     articles_url_autobip_after_check.map do |link|
 
 
-      begin
-        article = Nokogiri::HTML(URI.open(URI.escape(link)))
-      rescue OpenURI::HTTPError => e
-        puts "Can't access #{link}"
-        puts e.message
-        puts
-        next
-      end
+        begin
+          article = Nokogiri::HTML(URI.open(URI.escape(link)))
+        rescue OpenURI::HTTPError => e
+          puts "Can't access #{link}"
+          puts e.message
+          puts
+          next
+        end
 
       new_article = Article.new
       new_article.url_article = link
@@ -1506,14 +1506,14 @@ div.nobreak { page-break-inside: avoid; }
     end
     articles_url_maghrebemergent_after_check = articles_url_maghrebemergent - list_articles_url
     articles_url_maghrebemergent_after_check.map do |link|
-      begin
-        article = Nokogiri::HTML(URI.open(link))
-      rescue OpenURI::HTTPError => e
-        puts "Can't access #{link}"
-        puts e.message
-        puts
-        next
-      end
+    begin
+      article = Nokogiri::HTML(URI.open(link))
+    rescue OpenURI::HTTPError => e
+      puts "Can't access #{link}"
+      puts e.message
+      puts
+      next
+    end
     new_article = Article.new
     new_article.url_article = link
     new_article.medium_id = @media.id
@@ -1926,7 +1926,7 @@ div.nobreak { page-break-inside: avoid; }
       doc.css('div.col-sm-8 div.listing > article > div > h2 > a').map do |link|
 
 
-          articles_url_elikhbaria << link['href']# if link['class'] == 'main_article'
+        articles_url_elikhbaria << link['href']# if link['class'] == 'main_article'
 
       end
       doc.css('time').map do |date|
@@ -2028,7 +2028,7 @@ div.nobreak { page-break-inside: avoid; }
       doc.css('div.td-pb-span8 h3.entry-title a.td-eco-title').map do |link|
 
 
-      articles_url_algerieco << link['href']
+        articles_url_algerieco << link['href']
 
       end
       doc.css('time').map do |date|
