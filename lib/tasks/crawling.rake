@@ -849,7 +849,7 @@ namespace :crawling do
       new_article.author_id = new_author.id
       new_article.body = article.css('div.entry__article').inner_html
       new_article.body = new_article.body.gsub(/<img[^>]*>/, '')
-      date_with_time = article.css('li.entry__meta-date pt-xl-1 d-block d-md-inline').text
+      date_with_time = article.css('li.entry__meta-date').text
       date_with_a = date_with_time.text.split('à')[0]
       date = date_with_a
       d = change_date_maghrebemergen(date)
