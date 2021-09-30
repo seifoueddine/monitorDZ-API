@@ -2487,7 +2487,7 @@ div.nobreak { page-break-inside: avoid; }
       new_article.medium_id = @media.id
       new_article.language = @media.language
       new_article.category_article = 'algerie360.com'
-      new_article.title = article.css('h1.single-post__entry-title mt-0').text
+      new_article.title = article.css('h1.single-post__entry-title.mt-0').text
       #  new_article.author = article.css('div.article-head__author div em a').text
       if article.at('li.entry__meta-author a').nil?
         author_exist = Author.where(['lower(name) like ? ', ('Liberté auteur').downcase ])
@@ -2517,7 +2517,7 @@ div.nobreak { page-break-inside: avoid; }
       d = change_date_maghrebemergen(date)
       new_article.date_published = d.to_datetime.change({ hour: 0, min: 0, sec: 0 })
       # new_article.date_published =
-      url_array = article.css('div.entry__img-holder px-2 px-md-0 img').map { |link|  link['src'] }
+      url_array = article.css('div.entry__img-holder.px-2 img').map { |link|  link['src'] }
       new_article.url_image = url_array[0]
       begin
         new_article.image = Down.download(url_array[0]) if url_array[0].present?
@@ -2531,9 +2531,6 @@ div.nobreak { page-break-inside: avoid; }
       # new_article.media_tags = tags_array.join(',')
       new_article.status = 'pending'
       new_article.save!
-      if new_article.save
-        @articles_for_auto_tag.push(new_article)
-      end
       ##tag_check_and_save(tags_array)if @media.tag_status == true
     end
     puts "json: { crawling_status_algerie360: 'ok' }"
