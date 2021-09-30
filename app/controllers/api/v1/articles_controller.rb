@@ -2517,15 +2517,15 @@ div.nobreak { page-break-inside: avoid; }
       d = change_date_maghrebemergen(date)
       new_article.date_published = d.to_datetime.change({ hour: 0, min: 0, sec: 0 })
       # new_article.date_published =
-      url_array = article.css('entry__img-holder.px-2.px-md-0 img')['src']
+      url_array = article.css('entry__img-holder.px-2.px-md-0 img').map { |link|  link['src'] }
       puts "this is url  image"
       puts  url_array
       puts "this is url  image "
-      new_article.url_image = url_array
+      new_article.url_image = url_array[0]
       begin
-        new_article.image = Down.download(url_array) if url_array.present?
+        new_article.image = Down.download(url_array[0]) if url_array[0].present?
       rescue Down::Error => e
-        puts "Can't download this image #{url_array}"
+        puts "Can't download this image #{url_array[0]}"
         puts e.message
         puts
         new_article.image = nil
