@@ -226,9 +226,11 @@ class Api::V1::ArticlesController < ApplicationController
     puts "start date :" + all_tags.count.to_s
     puts "******************************"
     puts "******************************"
+    puts start_date
     puts start_date.to_datetime.beginning_of_day
     puts "******************************"
     puts "******************************"
+    puts end_date
     puts end_date.to_datetime.end_of_day
     puts "******************************"
     articles = []
