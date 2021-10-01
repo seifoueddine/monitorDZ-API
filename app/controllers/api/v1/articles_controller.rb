@@ -217,7 +217,7 @@ class Api::V1::ArticlesController < ApplicationController
   def auto_tag
     slug_id = params[:slug_id]
     start_date = params[:start_date]
-    end_date = params[:start_date]
+    end_date = params[:end_date]
     campaign = Campaign.where(slug_id: slug_id)
     all_tags = campaign[0].tags.where(status: true)
     camp_media = campaign[0].media
@@ -1056,7 +1056,7 @@ div.nobreak { page-break-inside: avoid; }
       new_article.body = article.css('div.article__content').inner_html
       new_article.body = new_article.body.gsub(/<img[^>]*>/, '')
       date = article.at('time[datetime]')['datetime']
-      new_article.date_published = date.to_datetime.change({ hour: 0, min: 0, sec: 0 })+ (1.0 / 24)
+      new_article.date_published = date.to_datetime.change({ hour: 0, min: 0, sec: 0 }) + (1.0 / 24)
       url_array = article.css('body > div.article-section > div > div.article-section__main.wrap__main > article > div.full-article__featured-image > img').map { |link| link['src'] }
       new_article.url_image = url_array[0]
       begin
@@ -2490,7 +2490,7 @@ div.nobreak { page-break-inside: avoid; }
       new_article.title = article.css('h1.single-post__entry-title.mt-0').text
       #  new_article.author = article.css('div.article-head__author div em a').text
       if article.at('li.entry__meta-author a').nil?
-        author_exist = Author.where(['lower(name) like ? ', ('Liberté auteur').downcase])
+        author_exist = Author.where(['lower(name) like ? ', ('Algérie360 auteur').downcase])
       else
         author_exist = Author.where(['lower(name) like ? ',
                                      article.at('li.entry__meta-author a').text.downcase])
@@ -2499,7 +2499,7 @@ div.nobreak { page-break-inside: avoid; }
       new_author = Author.new
       if author_exist.count.zero?
 
-        new_author.name = article.at('li.entry__meta-author a').nil? ? 'Liberté auteur' : article.at('li.entry__meta-author a').text.delete(' ')
+        new_author.name = article.at('li.entry__meta-author a').nil? ? 'Algérie360 auteur' : article.at('li.entry__meta-author a').text.delete(' ')
         new_author.medium_id = @media.id
         new_author.save!
       else
@@ -2511,6 +2511,7 @@ div.nobreak { page-break-inside: avoid; }
       new_article.author_id = new_author.id
       new_article.body = article.css('article.entry.mb-0').inner_html
       new_article.body = new_article.body.gsub(/<img[^>]*>/, '')
+      new_article.body = new_article.body.gsub('(adsbygoogle=window.adsbygoogle||[]).push({});', '')
       date_with_time = article.css('li.entry__meta-date.pt-xl-1').text
       date_with_a = date_with_time.split('à')[0]
       date = date_with_a
