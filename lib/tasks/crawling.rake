@@ -443,7 +443,7 @@ namespace :crawling do
       new_article.body = article.css('div.article__content').inner_html
       new_article.body = new_article.body.gsub(/<img[^>]*>/, '')
       date = article.at('time[datetime]')['datetime']
-      new_article.date_published = date.to_datetime.change({ hour: 0, min: 0, sec: 0 })
+      new_article.date_published = date.to_datetime.change({ hour: 0, min: 0, sec: 0 }) + (1.0 / 24)
       url_array = article.css('body > div.article-section > div > div.article-section__main.wrap__main > article > div.full-article__featured-image > img').map { |link| link['src'] }
       new_article.url_image = url_array[0]
       begin
