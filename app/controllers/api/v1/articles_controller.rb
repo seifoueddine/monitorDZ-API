@@ -76,8 +76,7 @@ class Api::V1::ArticlesController < ApplicationController
     start_date = params[:start_date]
     end_date = params[:end_date]
 
-    @articles_for_dash = Article.where('date_published >= :start AND date_published <= :end', 
-                                       start: start_date.to_datetime.change({ hour: 0, min: 0, sec: 0 }) , end: end_date.to_datetime.change({ hour: 0, min: 0, sec: 0 }))
+    @articles_for_dash = Article.where('date_published >= :start AND date_published <= :end', start: start_date.to_datetime.change({ hour: 0, min: 0, sec: 0 }) , end: end_date.to_datetime.change({ hour: 0, min: 0, sec: 0 }))
                                 .joins(:medium)
                                 .group('media.name').count
 
@@ -85,8 +84,7 @@ class Api::V1::ArticlesController < ApplicationController
   end
 
   def articles_by_author
-    @article_auth_for_dash = Article.joins(:author).where(date_published: Date.today.change({ hour: 0, min: 0, 
-sec: 0 }))
+    @article_auth_for_dash = Article.joins(:author).where(date_published: Date.today.change({ hour: 0, min: 0, sec: 0 }))
                                     .group('authors.name').order('count(authors.id) desc').limit(5).count
     render json: @article_auth_for_dash
   end
@@ -115,9 +113,7 @@ sec: 0 }))
     start_date = params[:start_date]
     end_date = params[:end_date]
 
-    @articles_for_client_dash = Article.where(medium_id: media_ids).where(
-'date_published >= :start AND date_published <= :end', start: start_date.to_datetime.change({ hour: 0, min: 0, 
-sec: 0 }) , end: end_date.to_datetime.change({ hour: 0, min: 0, sec: 0 }))
+    @articles_for_client_dash = Article.where(medium_id: media_ids).where('date_published >= :start AND date_published <= :end', start: start_date.to_datetime.change({ hour: 0, min: 0, sec: 0 }) , end: end_date.to_datetime.change({ hour: 0, min: 0, sec: 0 }))
                                        .joins(:medium)
                                        .group('media.name').count
     render json: @articles_for_client_dash
@@ -133,8 +129,7 @@ sec: 0 }) , end: end_date.to_datetime.change({ hour: 0, min: 0, sec: 0 }))
     media.map do |media|
       media_ids << media['id']
     end
-    @article_auth_for_client_dash = Article.joins(:author).where(medium_id: media_ids, 
-                                                                 date_published: Date.today.change({ hour: 0, min: 0, sec: 0 }) )
+    @article_auth_for_client_dash = Article.joins(:author).where(medium_id: media_ids, date_published: Date.today.change({ hour: 0, min: 0, sec: 0 }) )
                                  .group('authors.name').order('count(authors.id) desc').limit(5).count
     render json: @article_auth_for_client_dash
   end
@@ -148,8 +143,7 @@ sec: 0 }) , end: end_date.to_datetime.change({ hour: 0, min: 0, sec: 0 }))
     media.map do |media|
       media_ids << media['id']
     end
-    @article_tag_for_client_dash = Article.where(medium_id: media_ids, 
-                                                 date_published: Date.today.change({ hour: 0, min: 0, sec: 0 })).joins(:tags)
+    @article_tag_for_client_dash = Article.where(medium_id: media_ids, date_published: Date.today.change({ hour: 0, min: 0, sec: 0 })).joins(:tags)
                                 .group('tags.name').count
     render json: @article_tag_for_client_dash
   end
@@ -241,8 +235,7 @@ sec: 0 }) , end: end_date.to_datetime.change({ hour: 0, min: 0, sec: 0 }))
     puts "******************************"
     articles = []
     # all_tags = Tag.where(status: true)
-    articles_with_date = Article.where(medium_id: camp_media_array, 
-                                       date_published: start_date.to_datetime.beginning_of_day..end_date.to_datetime.end_of_day)
+    articles_with_date = Article.where(medium_id: camp_media_array, date_published: start_date.to_datetime.beginning_of_day..end_date.to_datetime.end_of_day)
     puts "******************************"
     puts "articles_with_date :" + articles_with_date.count.to_s
     puts "******************************"
@@ -264,10 +257,8 @@ sec: 0 }) , end: end_date.to_datetime.change({ hour: 0, min: 0, sec: 0 }))
       old_tags << @tags
       #  article.media_tags = old_tags.join(',')
       @tags_objects.map do |tag_object|
-        next if ArticleTag.where(article_id: article.id, tag_id: tag_object.id, slug_id: slug_id, 
-                                 campaign_id: campaign[0].id).present?
-        @article_tag = ArticleTag.new article_id: article.id, tag_id: tag_object.id, slug_id: slug_id, 
-                                      campaign_id: campaign[0].id
+        next if ArticleTag.where(article_id: article.id, tag_id: tag_object.id, slug_id: slug_id, campaign_id: campaign[0].id).present?
+        @article_tag = ArticleTag.new article_id: article.id, tag_id: tag_object.id, slug_id: slug_id, campaign_id: campaign[0].id
         if @article_tag.save
           puts 'Article_tag well added '
         else
@@ -473,8 +464,7 @@ div.nobreak { page-break-inside: avoid; }
     if @media.url_crawling?
       url_media_array = @media.url_crawling.split(',')
       get_articles(url_media_array)
-      Article.where(medium_id: params[:media_id], 
-                    created_at: Time.zone.now.beginning_of_day..Time.zone.now.end_of_day).where.not(id: Article.group(:url_article).select('min(id)')).destroy_all
+      Article.where(medium_id: params[:media_id], created_at: Time.zone.now.beginning_of_day..Time.zone.now.end_of_day).where.not(id: Article.group(:url_article).select('min(id)')).destroy_all
 
     else
       render json: { crawling_status: 'No url_crawling', media: @media.name, status: 'error' }
@@ -611,19 +601,17 @@ div.nobreak { page-break-inside: avoid; }
       # conditions[:date_published] = { gte: Date.today.to_datetime.change({ hour: 0, min: 0, sec: 0 }), lte: Date.today.to_datetime.change({ hour: 0, min: 0, sec: 0 }) }
 
       #  else
-      conditions[:date_published] = 
-{ gte: params[:start_date].to_datetime.change({ hour: 0, min: 0, sec: 0 }), 
-lte: params[:end_date].to_datetime.change({ hour: 0, min: 0, sec: 0 }) }
+      conditions[:date_published] = { gte: params[:start_date].to_datetime.change({ hour: 0, min: 0, sec: 0 }), lte: params[:end_date].to_datetime.change({ hour: 0, min: 0, sec: 0 }) }
     end
 
     conditions[:tag_name] = params[:tag_name] unless params[:tag_name].blank?
     # conditions[:tags] = params[:tag] unless params[:tag].blank?
 
     @articles = Article.search '*',
-                               where: conditions,
-                               page: params[:page],
-                               per_page: params[:per_page],
-                               order: { date_published: :desc }
+                                      where: conditions,
+                                      page: params[:page],
+                                      per_page: params[:per_page],
+                                      order: { date_published: :desc }
 
 
     set_pagination_headers :articles
@@ -981,10 +969,8 @@ lte: params[:end_date].to_datetime.change({ hour: 0, min: 0, sec: 0 }) }
       new_article.author_id = new_author.id
       new_article.body = article.css('body > div.article-section > div > div.article-section__main.wrap__main > article > div.full-article__content').inner_html
       new_article.body = new_article.body.gsub(/<img[^>]*>/, '')
-      new_article.date_published = article.at('time[datetime]')['datetime'].to_datetime.change({ hour: 0, min: 0, 
-sec: 0 }) + (1.0 / 24)
-      url_array = article.css('body > div.article-section > div > div.article-section__main.wrap__main > article > div.full-article__featured-image > img').map { |link|
- link['src'] }
+      new_article.date_published = article.at('time[datetime]')['datetime'].to_datetime.change({ hour: 0, min: 0, sec: 0 }) + (1.0 / 24)
+      url_array = article.css('body > div.article-section > div > div.article-section__main.wrap__main > article > div.full-article__featured-image > img').map { |link| link['src'] }
       new_article.url_image = url_array[0]
       begin
         new_article.image = Down.download(url_array[0]) if url_array[0].present?
@@ -1074,8 +1060,7 @@ sec: 0 }) + (1.0 / 24)
       new_article.body = new_article.body.gsub(/<img[^>]*>/, '')
       date = article.at('time[datetime]')['datetime']
       new_article.date_published = date.to_datetime.change({ hour: 0, min: 0, sec: 0 }) + (1.0 / 24)
-      url_array = article.css('body > div.article-section > div > div.article-section__main.wrap__main > article > div.full-article__featured-image > img').map { |link|
- link['src'] }
+      url_array = article.css('body > div.article-section > div > div.article-section__main.wrap__main > article > div.full-article__featured-image > img').map { |link| link['src'] }
       new_article.url_image = url_array[0]
       begin
            if url_array[0].present?
@@ -1104,13 +1089,9 @@ sec: 0 }) + (1.0 / 24)
     last_dates = []
     url_media_array.map do |url|
       begin
-        #doc = Nokogiri::HTML(URI.open(url))
-
-
-        user_agent = 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_7_0) AppleWebKit/535.2 (KHTML, like Gecko) Chrome/15.0.854.0 Safari/535.2'
-        doc = Nokogiri::HTML(URI.open(url, proxy: 'https://119.28.68.69:808', 'User-Agent' => user_agent), nil,
-                             'UTF-8')
-
+        page = `curl --user-agent "Mozilla/4.0 (compatible; MSIE 5.01; Windows NT 5.0)" #{url}`
+        doc = Nokogiri::HTML(page)
+        # doc = Nokogiri::HTML(URI.open(url))
       rescue OpenURI::HTTPError => e
         puts "Can't access #{url}"
         puts e.message
@@ -1280,8 +1261,7 @@ sec: 0 }) + (1.0 / 24)
       # d = change_date_autobip_aps(date)
       new_article.date_published = date.to_datetime.change({ hour: 0, min: 0, sec: 0 })
       # new_article.date_published =
-      url_array = article.css('div.article-details div.picture img').map { |link|
- 'https://www.lesoirdalgerie.com' + link['src'] }
+      url_array = article.css('div.article-details div.picture img').map { |link| 'https://www.lesoirdalgerie.com' + link['src'] }
       new_article.url_image = url_array[0]
       begin
         new_article.image = Down.download(url_array[0]) if url_array[0].present?
@@ -1574,8 +1554,7 @@ sec: 0 }) + (1.0 / 24)
     date = article.at('div.elementor-widget-container ul li a span.elementor-icon-list-text.elementor-post-info__item.elementor-post-info__item--type-date').text
     d = change_date_maghrebemergen(date)
     new_article.date_published = d.to_datetime.change({ hour: 0, min: 0, sec: 0 })
-    url_array = article.css('div.elementor-element.elementor-element-c05ee34.elementor-widget.elementor-widget-theme-post-featured-image.elementor-widget-image div div img').map  { |link|
- link['src'] }
+    url_array = article.css('div.elementor-element.elementor-element-c05ee34.elementor-widget.elementor-widget-theme-post-featured-image.elementor-widget-image div div img').map  { |link| link['src'] }
     new_article.url_image = url_array[0]
     begin
       new_article.image = Down.download(url_array[0]) if url_array[0].present?
@@ -1799,8 +1778,7 @@ sec: 0 }) + (1.0 / 24)
       new_article.author_id = new_author.id
       new_article.body = article.css('#text_article').inner_html
       new_article.body = new_article.body.gsub(/<img[^>]*>/, '')
-      new_article.date_published = article.css('#contenu > div.At > span').text.split(':')[1].to_datetime.change({ 
-hour: 0, min: 0, sec: 0 })
+      new_article.date_published = article.css('#contenu > div.At > span').text.split(':')[1].to_datetime.change({ hour: 0, min: 0, sec: 0 })
       url_array = article.css('#articlecontent > div.TxArtcile > div.ImgCapt > img').map { |link| link['src'] }
       new_article.url_image = url_array[0]
       begin
@@ -2017,8 +1995,7 @@ hour: 0, min: 0, sec: 0 })
       date = article.at('time[datetime]')['datetime']
       # d = change_date_maghrebemergen(date)
       new_article.date_published = date.to_datetime.change({ hour: 0, min: 0, sec: 0 })
-      url_array = article.css('div.post-header div.single-featured > a').map  { |link|
- link['href'] }# and link['class'] == 'b-loaded'
+      url_array = article.css('div.post-header div.single-featured > a').map  { |link| link['href'] }# and link['class'] == 'b-loaded'
       url_image = url_array[0]
       begin
         new_article.image = Down.download(url_array[0]) if url_array[0].present?
