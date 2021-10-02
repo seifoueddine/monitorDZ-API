@@ -5,7 +5,7 @@ class Api::V1::ArticlesController < ApplicationController
   require 'open-uri'
   require 'openssl'
   require 'net/http'
-  #require 'resolv-replace'
+  require 'resolv-replace'
 
   OpenSSL::SSL::VERIFY_PEER = OpenSSL::SSL::VERIFY_NONE
   # GET / client articles
