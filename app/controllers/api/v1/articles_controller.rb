@@ -1106,7 +1106,7 @@ sec: 0 }) + (1.0 / 24)
       begin
         #doc = Nokogiri::HTML(URI.open(url))
 
-        doc = Nokogiri::HTML(URI.open(url, proxy: 'https://104.42.16.232:3128'), nil,
+        doc = Nokogiri::HTML(URI.open(url, proxy: 'https://119.28.68.69:808'), nil,
                              'UTF-8')
 
       rescue OpenURI::HTTPError => e
