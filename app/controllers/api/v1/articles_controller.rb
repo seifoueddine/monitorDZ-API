@@ -1106,7 +1106,9 @@ sec: 0 }) + (1.0 / 24)
       begin
         #doc = Nokogiri::HTML(URI.open(url))
 
-        doc = Nokogiri::HTML(URI.open(url, proxy: 'https://119.28.68.69:808'), nil,
+
+        user_agent = 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_7_0) AppleWebKit/535.2 (KHTML, like Gecko) Chrome/15.0.854.0 Safari/535.2'
+        doc = Nokogiri::HTML(URI.open(url, 'proxy' => 'https://119.28.68.69:808', 'User-Agent' => user_agent), nil,
                              'UTF-8')
 
       rescue OpenURI::HTTPError => e
