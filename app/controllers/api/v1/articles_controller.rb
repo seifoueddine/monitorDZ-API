@@ -610,7 +610,8 @@ div.nobreak { page-break-inside: avoid; }
     @articles = Article.search '*',
                                       where: conditions,
                                       page: params[:page],
-                                      per_page: params[:per_page]
+                                      per_page: params[:per_page],
+                                      order: { date_published: :desc }
 
 
     set_pagination_headers :articles
