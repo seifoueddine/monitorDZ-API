@@ -2182,6 +2182,33 @@ namespace :crawling do
         'September'
       when 'août'.downcase
         'August'
+      when 'جانفي'.downcase
+        'January'
+      when 'فيفري'.downcase
+        'February'
+      when 'مارس'.downcase
+        'March'
+      when 'افريل'.downcase
+        'April'
+      when 'ماي'.downcase
+        'May'
+      when 'جوان'.downcase
+        'June'
+      when 'جويلية'.downcase
+        'July'
+      when 'جولية'.downcase
+        'July'
+      when 'أكتوبر'.downcase
+        'October'
+      when 'نوفمبر'.downcase
+        'November'
+      when 'ديسمبر'.downcase
+        'December'
+      when 'سبتمبر'.downcase
+        'September'
+      when 'اوت'.downcase
+        'August'
+
       else
         m
       end
