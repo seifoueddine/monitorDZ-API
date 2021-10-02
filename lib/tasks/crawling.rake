@@ -30,7 +30,7 @@ namespace :crawling do
 
 
   def get_articles(url_media_array, media)
-    puts  'get article of ' + media.name
+    puts 'get article of ' + media.name
     case media.name
     when 'AUTOBIP'
       get_articles_autobip(url_media_array)
@@ -71,7 +71,7 @@ namespace :crawling do
     when 'ALGERIE360'
       get_articles_algerie360(url_media_array)
     else
-      puts  "crawling_status: 'No media name found!! ', status: 'error' "
+      puts "crawling_status: 'No media name found!! ', status: 'error' "
     end
   end
 
@@ -749,7 +749,7 @@ namespace :crawling do
       # d = change_date_autobip_aps(date)
       new_article.date_published = date.to_datetime.change({ hour: 0, min: 0, sec: 0 })
       # new_article.date_published =
-      url_array = article.css('div.media img.post-image').map { |link|  link['src'] }
+      url_array = article.css('div.media img.post-image').map { |link| link['src'] }
       new_article.url_image = url_array[0]
       begin
         new_article.image = Down.download(url_array[0]) if url_array[0].present?
@@ -858,7 +858,7 @@ namespace :crawling do
       # new_article.date_published =
       url_array = article.css('entry__img-holder.px-2.px-md-0 img').map { |link|  link['src'] }
       puts "this is url  image"
-      puts  url_array
+      puts url_array
       puts "this is url  image "
       new_article.url_image = url_array[0]
       begin
@@ -966,7 +966,7 @@ namespace :crawling do
       new_article.author_id = new_author.id
       new_article.body = article.css('#flash_post_head p').inner_html + article.css('#text_space p').inner_html
       new_article.body = new_article.body.gsub(/<img[^>]*>/, '')
-      new_article.date_published =  auteur_date[0].to_datetime.change({ hour: 0, min: 0, sec: 0 })
+      new_article.date_published = auteur_date[0].to_datetime.change({ hour: 0, min: 0, sec: 0 })
       url_array = article.css('#post_banner img').map { |link| link['src'] }
       new_article.url_image = url_array[0]
       begin
@@ -1069,7 +1069,7 @@ namespace :crawling do
     date = article.at('div.elementor-widget-container ul li a span.elementor-icon-list-text.elementor-post-info__item.elementor-post-info__item--type-date').text
     d = change_date_maghrebemergen(date)
     new_article.date_published = d.to_datetime.change({ hour: 0, min: 0, sec: 0 })
-    url_array = article.css('div.elementor-element.elementor-element-c05ee34.elementor-widget.elementor-widget-theme-post-featured-image.elementor-widget-image div div img').map  { |link| link['src'] }
+    url_array = article.css('div.elementor-element.elementor-element-c05ee34.elementor-widget.elementor-widget-theme-post-featured-image.elementor-widget-image div div img').map { |link| link['src'] }
     new_article.url_image = url_array[0]
     begin
       new_article.image = Down.download(url_array[0]) if url_array[0].present?
@@ -1392,7 +1392,7 @@ namespace :crawling do
       new_author = Author.new
       if author_exist.count.zero?
 
-        new_author.name = article.at('span.time-blog b').present? ? article.at('span.time-blog b').text :  'Elkhabar auteur'
+        new_author.name = article.at('span.time-blog b').present? ? article.at('span.time-blog b').text : 'Elkhabar auteur'
         new_author.medium_id = @media.id
         new_author.save!
       else
@@ -2209,8 +2209,9 @@ namespace :crawling do
 
     campaigns = Campaign.all
     puts "campaigns count#{campaigns.count}"
+    puts "articles count#{articles_for_autoTag.count}"
     campaigns.map do |campaign|
-      all_tags = campaign.tags.empty? ? [] :  campaign.tags.where(status: true)
+      all_tags = campaign.tags.empty? ? [] : campaign.tags.where(status: true)
       camp_media = campaign.media
       camp_media_array = camp_media.map(&:id)
       articles = []

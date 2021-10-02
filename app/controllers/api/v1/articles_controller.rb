@@ -189,7 +189,7 @@ class Api::V1::ArticlesController < ApplicationController
     article_tag_filterd = article_tag.where(slug_id: slug_id)
     tag_ids = article_tag_filterd.map(&:tag_id)
     tags = Tag.where(id: tag_ids)
-    render json: { article:json_string, similar: similar_json_string, tags: tags }
+    render json: { article: json_string, similar: similar_json_string, tags: tags }
   end
 
   # POST /articles
@@ -1089,7 +1089,7 @@ div.nobreak { page-break-inside: avoid; }
     last_dates = []
     url_media_array.map do |url|
       begin
-        doc = Nokogiri::HTML(URI.open(url,read_timeout:150))
+        doc = Nokogiri::HTML(URI.open(url,read_timeout: 150))
       rescue OpenURI::HTTPError => e
         puts "Can't access #{url}"
         puts e.message
@@ -1116,7 +1116,7 @@ div.nobreak { page-break-inside: avoid; }
     articles_url_aps_after_check = articles_url_aps - list_articles_url
     articles_url_aps_after_check.map do |link|
       begin
-        article = Nokogiri::HTML(URI.open(link,read_timeout:150))
+        article = Nokogiri::HTML(URI.open(link,read_timeout: 150))
       rescue OpenURI::HTTPError => e
         puts "Can't access #{link}"
         puts e.message
