@@ -1089,9 +1089,7 @@ div.nobreak { page-break-inside: avoid; }
     last_dates = []
     url_media_array.map do |url|
       begin
-        page = `curl --user-agent "Mozilla/4.0 (compatible; MSIE 5.01; Windows NT 5.0)" #{url}`
-        doc = Nokogiri::HTML(page)
-        # doc = Nokogiri::HTML(URI.open(url))
+        doc = Nokogiri::HTML(URI.open(url,read_timeout:150))
       rescue OpenURI::HTTPError => e
         puts "Can't access #{url}"
         puts e.message
@@ -1118,7 +1116,7 @@ div.nobreak { page-break-inside: avoid; }
     articles_url_aps_after_check = articles_url_aps - list_articles_url
     articles_url_aps_after_check.map do |link|
       begin
-        article = Nokogiri::HTML(URI.open(link))
+        article = Nokogiri::HTML(URI.open(link,read_timeout:150))
       rescue OpenURI::HTTPError => e
         puts "Can't access #{link}"
         puts e.message
