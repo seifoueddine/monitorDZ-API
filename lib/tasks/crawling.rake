@@ -161,7 +161,12 @@ namespace :crawling do
         tags_array = article.css('a.post-tag').map(&:text)
       # new_article.media_tags = tags_array.join(',')
         new_article.status = 'pending'
-        articlesTagsUrl = link unless Article.where(url_article: link)
+        if Article.where(url_article: link)
+          puts 'article present'
+        else
+          articlesTagsUrl = link
+        end
+
         puts "URLURLURLURLURLURLURLURLURLURLURLURLURLURLURL: #{articlesTagsUrl}"
 
         new_article.save!
@@ -273,7 +278,11 @@ namespace :crawling do
       tags_array = article.css('ul.ech-sgmn__tgls.d-f.fxw-w.jc-fe a').map(&:text)
       # new_article.media_tags = tags_array.join(',')
       new_article.status = 'pending'
-      articlesTagsUrl = link unless Article.where(url_article: link)
+      if Article.where(url_article: link)
+        puts 'article present'
+      else
+        articlesTagsUrl = link
+      end
       puts "URLURLURLURLURLURLURLURLURLURLURLURLURLURLURL: #{articlesTagsUrl}"
 
       new_article.save!
@@ -382,7 +391,11 @@ namespace :crawling do
       # tags_array = article.css('div.article-core__tags a').map(&:text)
       # new_article.media_tags = tags_array.join(',')
       new_article.status = 'pending'
-      articlesTagsUrl = link unless Article.where(url_article: link)
+      if Article.where(url_article: link)
+        puts 'article present'
+      else
+        articlesTagsUrl = link
+      end
       puts "URLURLURLURLURLURLURLURLURLURLURLURLURLURLURL: #{articlesTagsUrl}"
 
       new_article.save!
@@ -484,7 +497,11 @@ namespace :crawling do
       # new_article.media_tags = tags_array.join(',')
       new_article.status = 'pending'
 
-      articlesTagsUrl = link unless Article.where(url_article: link)
+      if Article.where(url_article: link)
+        puts 'article present'
+      else
+        articlesTagsUrl = link
+      end
       puts "URLURLURLURLURLURLURLURLURLURLURLURLURLURLURL: #{articlesTagsUrl}"
 
       new_article.save!
@@ -591,7 +608,11 @@ namespace :crawling do
       # new_article.media_tags = tags_array.join(',')
       new_article.status = 'pending'
 
-      articlesTagsUrl = link unless Article.where(url_article: link)
+      if Article.where(url_article: link)
+        puts 'article present'
+      else
+        articlesTagsUrl = link
+      end
       puts "URLURLURLURLURLURLURLURLURLURLURLURLURLURLURL: #{articlesTagsUrl}"
 
       new_article.save!
@@ -704,7 +725,11 @@ namespace :crawling do
       # new_article.media_tags = tags_array.join(',')
       new_article.status = 'pending'
 
-      articlesTagsUrl = link unless Article.where(url_article: link)
+      if Article.where(url_article: link)
+        puts 'article present'
+      else
+        articlesTagsUrl = link
+      end
       puts "URLURLURLURLURLURLURLURLURLURLURLURLURLURLURL: #{articlesTagsUrl}"
 
       new_article.save!
@@ -809,7 +834,11 @@ namespace :crawling do
       #tags_array = article.css('ul.itemTags li').map(&:text)
       # new_article.media_tags = tags_array.join(',')
       new_article.status = 'pending'
-      articlesTagsUrl = link unless Article.where(url_article: link)
+      if Article.where(url_article: link)
+        puts 'article present'
+      else
+        articlesTagsUrl = link
+      end
       puts "URLURLURLURLURLURLURLURLURLURLURLURLURLURLURL: #{articlesTagsUrl}"
 
       new_article.save!
@@ -924,7 +953,11 @@ namespace :crawling do
       #tags_array = article.css('ul.itemTags li').map(&:text)
       # new_article.media_tags = tags_array.join(',')
       new_article.status = 'pending'
-      articlesTagsUrl = link unless Article.where(url_article: link)
+      if Article.where(url_article: link)
+        puts 'article present'
+      else
+        articlesTagsUrl = link
+      end
       puts "URLURLURLURLURLURLURLURLURLURLURLURLURLURLURL: #{articlesTagsUrl}"
 
       new_article.save!
@@ -1025,7 +1058,11 @@ namespace :crawling do
       # new_article.media_tags = tags_array.join(',')
       new_article.status = 'pending'
 
-      articlesTagsUrl = link unless Article.where(url_article: link)
+      if Article.where(url_article: link)
+        puts 'article present'
+      else
+        articlesTagsUrl = link
+      end
       puts "URLURLURLURLURLURLURLURLURLURLURLURLURLURLURL: #{articlesTagsUrl}"
 
       new_article.save!
@@ -1132,7 +1169,11 @@ namespace :crawling do
     # new_article.media_tags = tags_array.join(',')
     new_article.status = 'pending'
 
-    articlesTagsUrl = link unless Article.where(url_article: link)
+    if Article.where(url_article: link)
+      puts 'article present'
+    else
+      articlesTagsUrl = link
+    end
     puts "URLURLURLURLURLURLURLURLURLURLURLURLURLURLURL: #{articlesTagsUrl}"
 
     new_article.save!
@@ -1252,7 +1293,11 @@ namespace :crawling do
       new_article.image = Down.download(url_array) if url_array.present?
       new_article.status = 'pending'
 
-      articlesTagsUrl = link unless Article.where(url_article: link)
+      if Article.where(url_article: link)
+        puts 'article present'
+      else
+        articlesTagsUrl = link
+      end
       puts "URLURLURLURLURLURLURLURLURLURLURLURLURLURLURL: #{articlesTagsUrl}"
 
       new_article.save!
@@ -1374,7 +1419,11 @@ hour: 0, min: 0, sec: 0 })
          end
       new_article.status = 'pending'
 
-      articlesTagsUrl = link unless Article.where(url_article: link)
+      if Article.where(url_article: link)
+        puts 'article present'
+      else
+        articlesTagsUrl = link
+      end
       puts "URLURLURLURLURLURLURLURLURLURLURLURLURLURLURL: #{articlesTagsUrl}"
 
       new_article.save!
@@ -1488,7 +1537,11 @@ hour: 0, min: 0, sec: 0 })
       # new_article.media_tags = tags_array.join(',')
       new_article.status = 'pending'
 
-      articlesTagsUrl = link unless Article.where(url_article: link)
+      if Article.where(url_article: link)
+        puts 'article present'
+      else
+        articlesTagsUrl = link
+      end
       puts "URLURLURLURLURLURLURLURLURLURLURLURLURLURLURL: #{articlesTagsUrl}"
 
       new_article.save!
@@ -1608,7 +1661,11 @@ article.css('div.post-header div.single-featured > a').map  do |link|
       # new_article.media_tags = tags_array.join(',')
       new_article.status = 'pending'
 
-      articlesTagsUrl = link unless Article.where(url_article: link)
+      if Article.where(url_article: link)
+        puts 'article present'
+      else
+        articlesTagsUrl = link
+      end
       puts "URLURLURLURLURLURLURLURLURLURLURLURLURLURLURL: #{articlesTagsUrl}"
 
       new_article.save!
@@ -1725,7 +1782,11 @@ article.css('div.post-header div.single-featured > a').map  do |link|
       # new_article.media_tags = tags_array.join(',')
       new_article.status = 'pending'
 
-      articlesTagsUrl = link unless Article.where(url_article: link)
+      if Article.where(url_article: link)
+        puts 'article present'
+      else
+        articlesTagsUrl = link
+      end
       puts "URLURLURLURLURLURLURLURLURLURLURLURLURLURLURL: #{articlesTagsUrl}"
 
       new_article.save!
@@ -1839,7 +1900,11 @@ article.css('div.post-header div.single-featured > a').map  do |link|
       # new_article.media_tags = tags_array.join(',')
       new_article.status = 'pending'
 
-      articlesTagsUrl = link unless Article.where(url_article: link)
+      if Article.where(url_article: link)
+        puts 'article present'
+      else
+        articlesTagsUrl = link
+      end
       puts "URLURLURLURLURLURLURLURLURLURLURLURLURLURLURL: #{articlesTagsUrl}"
 
       new_article.save!
@@ -1958,7 +2023,11 @@ article.css('div.post-header div.single-featured > a').map  do |link|
       # new_article.media_tags = tags_array.join(',')
       new_article.status = 'pending'
 
-      articlesTagsUrl = link unless Article.where(url_article: link)
+      if Article.where(url_article: link)
+        puts 'article present'
+      else
+        articlesTagsUrl = link
+      end
       puts "URLURLURLURLURLURLURLURLURLURLURLURLURLURLURL: #{articlesTagsUrl}"
 
       new_article.save!
@@ -2064,7 +2133,11 @@ article.css('div.post-header div.single-featured > a').map  do |link|
       # new_article.media_tags = tags_array.join(',')
       new_article.status = 'pending'
 
-      articlesTagsUrl = link unless Article.where(url_article: link)
+      if Article.where(url_article: link)
+        puts 'article present'
+      else
+        articlesTagsUrl = link
+      end
       puts "URLURLURLURLURLURLURLURLURLURLURLURLURLURLURL: #{articlesTagsUrl}"
 
       new_article.save!
@@ -2170,7 +2243,11 @@ article.css('div.post-header div.single-featured > a').map  do |link|
       # new_article.media_tags = tags_array.join(',')
       new_article.status = 'pending'
 
-      articlesTagsUrl = link unless Article.where(url_article: link)
+      if Article.where(url_article: link)
+        puts 'article present'
+      else
+        articlesTagsUrl = link
+      end
       puts "URLURLURLURLURLURLURLURLURLURLURLURLURLURLURL: #{articlesTagsUrl}"
 
       new_article.save!
