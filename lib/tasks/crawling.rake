@@ -161,6 +161,7 @@ namespace :crawling do
         tags_array = article.css('a.post-tag').map(&:text)
       # new_article.media_tags = tags_array.join(',')
         new_article.status = 'pending'
+        @articles_for_auto_tag << new_article unless Article.where(url_article: new_article.url_article)
         new_article.save!
       #tag_check_and_save(tags_array) if @media.tag_status == true
       end
@@ -266,11 +267,12 @@ namespace :crawling do
       tags_array = article.css('ul.ech-sgmn__tgls.d-f.fxw-w.jc-fe a').map(&:text)
       # new_article.media_tags = tags_array.join(',')
       new_article.status = 'pending'
+      @articles_for_auto_tag << new_article unless Article.where(url_article: new_article.url_article)
       new_article.save!
 
       if new_article.save
         count += 1
-        @articles_for_auto_tag.push(new_article)
+        # @articles_for_auto_tag.push(new_article)
       end
       #tag_check_and_save(tags_array)if @media.tag_status == true
     end
@@ -368,10 +370,9 @@ sec: 0 }) + (1.0 / 24)
       # tags_array = article.css('div.article-core__tags a').map(&:text)
       # new_article.media_tags = tags_array.join(',')
       new_article.status = 'pending'
+      @articles_for_auto_tag << new_article unless Article.where(url_article: new_article.url_article)
       new_article.save!
-      if new_article.save
-        @articles_for_auto_tag.push(new_article)
-      end
+      #@articles_for_auto_tag.push(new_article) if new_article.save
       # #tag_check_and_save(tags_array)
     end
     puts "json: { crawling_status_elcherouk: 'ok' }"
@@ -452,9 +453,7 @@ sec: 0 }) + (1.0 / 24)
  link['src'] }
       new_article.url_image = url_array[0]
       begin
-           if url_array[0].present?
-             new_article.image = Down.download(url_array[0])
-           end
+           new_article.image = Down.download(url_array[0]) if url_array[0].present?
          rescue Down::Error => e
            puts "Can't download this image #{url_array[0]}"
            puts e.message
@@ -464,10 +463,9 @@ sec: 0 }) + (1.0 / 24)
       # tags_array = article.css('div.article-core__tags a').map(&:text)
       # new_article.media_tags = tags_array.join(',')
       new_article.status = 'pending'
+      @articles_for_auto_tag << new_article unless Article.where(url_article: new_article.url_article)
       new_article.save!
-      if new_article.save
-        @articles_for_auto_tag.push(new_article)
-      end
+     
       # #tag_check_and_save(tags_array)
     end
     puts "json: { crawling_status_tsa: 'ok' }"
@@ -563,10 +561,9 @@ sec: 0 }) + (1.0 / 24)
       tags_array = article.css('ul.itemTags li').map(&:text)
       # new_article.media_tags = tags_array.join(',')
       new_article.status = 'pending'
+      @articles_for_auto_tag << new_article unless Article.where(url_article: new_article.url_article)
       new_article.save!
-      if new_article.save
-        @articles_for_auto_tag.push(new_article)
-      end
+
       #tag_check_and_save(tags_array)if @media.tag_status == true
     end
     puts "json: { crawling_status_aps: 'ok' }"
@@ -668,10 +665,8 @@ sec: 0 }) + (1.0 / 24)
       #tags_array = article.css('ul.itemTags li').map(&:text)
       # new_article.media_tags = tags_array.join(',')
       new_article.status = 'pending'
+      @articles_for_auto_tag << new_article unless Article.where(url_article: new_article.url_article)
       new_article.save!
-      if new_article.save
-        @articles_for_auto_tag.push(new_article)
-      end
         ##tag_check_and_save(tags_array)if @media.tag_status == true
     end
     puts "json: { crawling_status_le_soir: 'ok' }"
@@ -768,10 +763,8 @@ sec: 0 }) + (1.0 / 24)
       #tags_array = article.css('ul.itemTags li').map(&:text)
       # new_article.media_tags = tags_array.join(',')
       new_article.status = 'pending'
+      @articles_for_auto_tag << new_article unless Article.where(url_article: new_article.url_article)
       new_article.save!
-      if new_article.save
-        @articles_for_auto_tag.push(new_article)
-      end
       ##tag_check_and_save(tags_array)if @media.tag_status == true
     end
     puts "json: { crawling_status_liberte: 'ok' }"
@@ -878,10 +871,8 @@ sec: 0 }) + (1.0 / 24)
       #tags_array = article.css('ul.itemTags li').map(&:text)
       # new_article.media_tags = tags_array.join(',')
       new_article.status = 'pending'
+      @articles_for_auto_tag << new_article unless Article.where(url_article: new_article.url_article)
       new_article.save!
-      if new_article.save
-        @articles_for_auto_tag.push(new_article)
-      end
       ##tag_check_and_save(tags_array)if @media.tag_status == true
     end
     puts "json: { crawling_status_algerie360: 'ok' }"
@@ -976,9 +967,7 @@ sec: 0 }) + (1.0 / 24)
       url_array = article.css('#post_banner img').map { |link| link['src'] }
       new_article.url_image = url_array[0]
       begin
-           if url_array[0].present?
-             new_article.image = Down.download(url_array[0])
-           end
+           new_article.image = Down.download(url_array[0]) if url_array[0].present?
          rescue Down::Error => e
            puts "Can't download this image #{url_array[0]}"
            puts e.message
@@ -988,10 +977,8 @@ sec: 0 }) + (1.0 / 24)
       tags_array = article.css('#tags a').map(&:text)
       # new_article.media_tags = tags_array.join(',')
       new_article.status = 'pending'
+      @articles_for_auto_tag << new_article unless Article.where(url_article: new_article.url_article)
       new_article.save!
-      if new_article.save
-        @articles_for_auto_tag.push(new_article)
-      end
       #tag_check_and_save(tags_array)if @media.tag_status == true
     end
     puts "json: { crawling_status_aps: 'ok' }"
@@ -1089,10 +1076,8 @@ sec: 0 }) + (1.0 / 24)
     # tags_array = article.css('ul.itemTags li').map(&:text)
     # new_article.media_tags = tags_array.join(',')
     new_article.status = 'pending'
+    @articles_for_auto_tag << new_article unless Article.where(url_article: new_article.url_article)
     new_article.save!
-    if new_article.save
-      @articles_for_auto_tag.push(new_article)
-    end
     # #tag_check_and_save(tags_array)
   end
     puts "json: { crawling_status_aps: 'ok' }"
@@ -1203,11 +1188,12 @@ sec: 0 }) + (1.0 / 24)
       new_article.url_image = url_array
       new_article.image = Down.download(url_array) if url_array.present?
       new_article.status = 'pending'
+      @articles_for_auto_tag << new_article unless Article.where(url_article: new_article.url_article)
       new_article.save!
 
       if new_article.save
         count += 1
-        @articles_for_auto_tag.push(new_article)
+
       end
       # #tag_check_and_save(tags_array)
     end
@@ -1240,9 +1226,7 @@ sec: 0 }) + (1.0 / 24)
       doc.css('#main > div.CBox > div > h4 > a').map do |link|
         articles_url_elmoudjahid << link['href'] # if link['class'] == 'main_article'
       end
-      if doc.at('li p')['style'] == 'width: 520px;'
-        first_date = doc.at('li p span').text
-      end
+      first_date = doc.at('li p span').text if doc.at('li p')['style'] == 'width: 520px;'
       last_dates << first_date.split(':')[0].to_datetime
       doc.css('div.ModliArtilUne span').map do |date|
         last_dates << date.text.split(':')[0].to_datetime
@@ -1310,9 +1294,7 @@ hour: 0, min: 0, sec: 0 })
       url_array = article.css('#articlecontent > div.TxArtcile > div.ImgCapt > img').map { |link| link['src'] }
       new_article.url_image = url_array[0]
       begin
-           if url_array[0].present?
-             new_article.image = Down.download(url_array[0])
-           end
+           new_article.image = Down.download(url_array[0]) if url_array[0].present?
          rescue Down::Error => e
            puts "Can't download this image #{url_array[0]}"
            puts e.message
@@ -1320,10 +1302,8 @@ hour: 0, min: 0, sec: 0 })
            new_article.image = nil
          end
       new_article.status = 'pending'
+      @articles_for_auto_tag << new_article unless Article.where(url_article: new_article.url_article)
       new_article.save!
-      if new_article.save
-        @articles_for_auto_tag.push(new_article)
-      end
       # #tag_check_and_save(tags_array)
     end
     puts "json: { crawling_status_aps: 'ok' }"
@@ -1348,9 +1328,7 @@ hour: 0, min: 0, sec: 0 })
         next
       end
       doc.css('h3.panel-title a').map do |link|
-        unless link.css('i').present?
-          articles_url_elkhabar << 'https://www.elkhabar.com' + link['href']
-        end
+        articles_url_elkhabar << 'https://www.elkhabar.com' + link['href'] unless link.css('i').present?
       end
       doc.css('time').map do |date|
         last_dates << date['datetime']
@@ -1384,9 +1362,7 @@ hour: 0, min: 0, sec: 0 })
       if article.css('span.category-blog').present?
         new_article.category_article = article.css('span.category-blog').text
       end
-      if article.css('h2.title').present?
-        new_article.title = article.css('h2.title').text
-      end
+      new_article.title = article.css('h2.title').text if article.css('h2.title').present?
       # new_article.author = article.css('div.article-head__author div em a').text
 
       if article.at('span.time-blog b').present?
@@ -1429,16 +1405,14 @@ hour: 0, min: 0, sec: 0 })
         puts
         new_article.image = nil
       end
-      if article.css('div#article_tags_title').present?
-        tags_array = article.css('div#article_tags_title').map(&:text)
-      end
+      tags_array = article.css('div#article_tags_title').map(&:text) if article.css('div#article_tags_title').present?
       # new_article.media_tags = tags_array.join(',')
       new_article.status = 'pending'
+      @articles_for_auto_tag << new_article unless Article.where(url_article: new_article.url_article)
       new_article.save!
 
       if new_article.save
         count += 1
-        @articles_for_auto_tag.push(new_article)
       end
       # #tag_check_and_save(tags_array) if @media.tag_status == true
     end
@@ -1545,10 +1519,8 @@ hour: 0, min: 0, sec: 0 })
       tags_array = article.css('div.entry-terms a').map(&:text)
       # new_article.media_tags = tags_array.join(',')
       new_article.status = 'pending'
+      @articles_for_auto_tag << new_article unless Article.where(url_article: new_article.url_article)
       new_article.save!
-      if new_article.save
-        @articles_for_auto_tag.push(new_article)
-      end
       #tag_check_and_save(tags_array) if @media.tag_status == true
     end
     puts "json: { crawling_status_aps: 'ok' }"
@@ -1655,10 +1627,8 @@ hour: 0, min: 0, sec: 0 })
       #tags_array = article.css('div#article_tags_title').map(&:text)
       # new_article.media_tags = tags_array.join(',')
       new_article.status = 'pending'
+      @articles_for_auto_tag << new_article unless Article.where(url_article: new_article.url_article)
       new_article.save!
-      if new_article.save
-        @articles_for_auto_tag.push(new_article)
-      end
         ##tag_check_and_save(tags_array)
     end
     puts "json: { crawling_status_aps: 'ok' }"
@@ -1763,10 +1733,8 @@ hour: 0, min: 0, sec: 0 })
       tags_array = article.css('div.entry-terms a').map(&:text)
       # new_article.media_tags = tags_array.join(',')
       new_article.status = 'pending'
+      @articles_for_auto_tag << new_article unless Article.where(url_article: new_article.url_article)
       new_article.save!
-      if new_article.save
-        @articles_for_auto_tag.push(new_article)
-      end
       #tag_check_and_save(tags_array)
     end
     puts "json: { crawling_status_aps: 'ok' }"
@@ -1875,10 +1843,8 @@ hour: 0, min: 0, sec: 0 })
       # tags_array = article.css('div.entry-terms a').map(&:text)
       # new_article.media_tags = tags_array.join(',')
       new_article.status = 'pending'
+      @articles_for_auto_tag << new_article unless Article.where(url_article: new_article.url_article)
       new_article.save!
-      if new_article.save
-        @articles_for_auto_tag.push(new_article)
-      end
         # #tag_check_and_save(tags_array)
     end
     puts "json: { crawling_status_aps: 'ok' }"
@@ -1974,11 +1940,9 @@ hour: 0, min: 0, sec: 0 })
       # tags_array = article.css('div.entry-terms a').map(&:text)
       # new_article.media_tags = tags_array.join(',')
       new_article.status = 'pending'
+      @articles_for_auto_tag << new_article unless Article.where(url_article: new_article.url_article)
       new_article.save!
-      if new_article.save
-        @articles_for_auto_tag.push(new_article)
-      end
-      # #tag_check_and_save(tags_array)
+            # #tag_check_and_save(tags_array)
     end
     puts "json: { crawling_status_aps: 'ok' }"
   end
@@ -2064,9 +2028,7 @@ hour: 0, min: 0, sec: 0 })
       url_array = article.css('div.single-post-thumb  img').map { |link| link['src'] }
       url_image = url_array[0]
       begin
-           if url_array[0].present?
-             new_article.image = Down.download(url_array[0])
-           end
+           new_article.image = Down.download(url_array[0]) if url_array[0].present?
          rescue Down::Error => e
            puts "Can't download this image #{url_array[0]}"
            puts e.message
@@ -2076,10 +2038,8 @@ hour: 0, min: 0, sec: 0 })
       # tags_array = article.css('div.entry-terms a').map(&:text)
       # new_article.media_tags = tags_array.join(',')
       new_article.status = 'pending'
+      @articles_for_auto_tag << new_article unless Article.where(url_article: new_article.url_article)
       new_article.save!
-      if new_article.save
-        @articles_for_auto_tag.push(new_article)
-      end
       # #tag_check_and_save(tags_array)
     end
     puts "json: { crawling_status_aps: 'ok' }"
@@ -2241,8 +2201,8 @@ hour: 0, min: 0, sec: 0 })
     # start_date = params[:start_date]
     # end_date = params[:start_date]
     reject = []
-    articles_for_autoTag.delete_if { |v| reject << v if Article.where(url_article: v.url_article) }
-  
+    # articles_for_autoTag.delete_if { |v| reject << v if Article.where(url_article: v.url_article) }
+    
 
 
 
