@@ -1089,7 +1089,7 @@ div.nobreak { page-break-inside: avoid; }
     last_dates = []
     url_media_array.map do |url|
       begin
-        doc = Nokogiri::HTML(URI.open(url,read_timeout: 150))
+        doc = Nokogiri::HTML(URI.open(url, 'User-Agent' => 'ruby'))
       rescue OpenURI::HTTPError => e
         puts "Can't access #{url}"
         puts e.message
