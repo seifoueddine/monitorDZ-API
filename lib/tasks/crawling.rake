@@ -9,20 +9,23 @@ namespace :crawling do
   desc 'carwling all media'
   task scraping: :environment do
 
-    Medium.all.each { |m|
+    Medium.all.each do |m|
       @media = m
       @articles_for_auto_tag = []
       if m.url_crawling? && m.name != 'APS'
         url_media_array = m.url_crawling.split(',')
         puts url_media_array
-        get_articles(url_media_array,m)
-        Article.where(medium_id: m.id,created_at: Time.zone.now.beginning_of_day..Time.zone.now.end_of_day).where.not(id: Article.group(:url_article).select('min(id)')).destroy_all
+        get_articles(url_media_array, m)
+        Article.where(medium_id: m.id, 
+                      created_at: Time.zone.now.beginning_of_day..Time.zone.now.end_of_day).where.not(id: Article.group(:url_article).select('min(id)')).destroy_all
 
       else
         puts "crawling_status: 'No url_crawling', media: m.name, status: 'error'"
       end
-
-    }
+      puts '*************@articles_for_auto_tag count******************'
+      puts @articles_for_auto_tag.count
+      puts '*************@articles_for_auto_tag count******************'
+    end
     puts 'call auto tag'
     auto_tag(@articles_for_auto_tag)
     puts 'end auto tag'
@@ -350,8 +353,10 @@ namespace :crawling do
       new_article.author_id = new_author.id
       new_article.body = article.css('body > div.article-section > div > div.article-section__main.wrap__main > article > div.full-article__content').inner_html
       new_article.body = new_article.body.gsub(/<img[^>]*>/, '')
-      new_article.date_published = article.at('time[datetime]')['datetime'].to_datetime.change({ hour: 0, min: 0, sec: 0 }) + (1.0 / 24)
-      url_array = article.css('body > div.article-section > div > div.article-section__main.wrap__main > article > div.full-article__featured-image > img').map { |link| link['src'] }
+      new_article.date_published = article.at('time[datetime]')['datetime'].to_datetime.change({ hour: 0, min: 0, 
+sec: 0 }) + (1.0 / 24)
+      url_array = article.css('body > div.article-section > div > div.article-section__main.wrap__main > article > div.full-article__featured-image > img').map { |link|
+ link['src'] }
       new_article.url_image = url_array[0]
       begin
         new_article.image = Down.download(url_array[0]) if url_array[0].present?
@@ -444,7 +449,8 @@ namespace :crawling do
       new_article.body = new_article.body.gsub(/<img[^>]*>/, '')
       date = article.at('time[datetime]')['datetime']
       new_article.date_published = date.to_datetime.change({ hour: 0, min: 0, sec: 0 }) + (1.0 / 24)
-      url_array = article.css('body > div.article-section > div > div.article-section__main.wrap__main > article > div.full-article__featured-image > img').map { |link| link['src'] }
+      url_array = article.css('body > div.article-section > div > div.article-section__main.wrap__main > article > div.full-article__featured-image > img').map { |link|
+ link['src'] }
       new_article.url_image = url_array[0]
       begin
            if url_array[0].present?
@@ -649,7 +655,8 @@ namespace :crawling do
       # d = change_date_autobip_aps(date)
       new_article.date_published = date.to_datetime.change({ hour: 0, min: 0, sec: 0 })
       # new_article.date_published =
-      url_array = article.css('div.article-details div.picture img').map { |link| 'https://www.lesoirdalgerie.com' + link['src'] }
+      url_array = article.css('div.article-details div.picture img').map { |link|
+ 'https://www.lesoirdalgerie.com' + link['src'] }
       new_article.url_image = url_array[0]
       begin
         new_article.image = Down.download(url_array[0]) if url_array[0].present?
@@ -785,7 +792,7 @@ namespace :crawling do
     last_dates = []
     url_media_array.map do |url|
       begin
-        doc = Nokogiri::HTML(URI.open(url),nil,Encoding::UTF_8.to_s)
+        doc = Nokogiri::HTML(URI.open(url), nil, Encoding::UTF_8.to_s)
       rescue OpenURI::HTTPError => e
         puts "Can't access #{url}"
         puts e.message
@@ -813,7 +820,7 @@ namespace :crawling do
     articles_url_algerie360_after_check = articles_url_algerie360 - list_articles_url
     articles_url_algerie360_after_check.map do |link|
       begin
-        article = Nokogiri::HTML(URI.open(link),nil,Encoding::UTF_8.to_s)
+        article = Nokogiri::HTML(URI.open(link), nil, Encoding::UTF_8.to_s)
       rescue OpenURI::HTTPError => e
         puts "Can't access #{link}"
         puts e.message
@@ -1069,7 +1076,8 @@ namespace :crawling do
     date = article.at('div.elementor-widget-container ul li a span.elementor-icon-list-text.elementor-post-info__item.elementor-post-info__item--type-date').text
     d = change_date_maghrebemergen(date)
     new_article.date_published = d.to_datetime.change({ hour: 0, min: 0, sec: 0 })
-    url_array = article.css('div.elementor-element.elementor-element-c05ee34.elementor-widget.elementor-widget-theme-post-featured-image.elementor-widget-image div div img').map { |link| link['src'] }
+    url_array = article.css('div.elementor-element.elementor-element-c05ee34.elementor-widget.elementor-widget-theme-post-featured-image.elementor-widget-image div div img').map { |link|
+ link['src'] }
     new_article.url_image = url_array[0]
     begin
       new_article.image = Down.download(url_array[0]) if url_array[0].present?
@@ -1298,7 +1306,8 @@ namespace :crawling do
       new_article.author_id = new_author.id
       new_article.body = article.css('#text_article').inner_html
       new_article.body = new_article.body.gsub(/<img[^>]*>/, '')
-      new_article.date_published = article.css('#contenu > div.At > span').text.split(':')[1].to_datetime.change({ hour: 0, min: 0, sec: 0 })
+      new_article.date_published = article.css('#contenu > div.At > span').text.split(':')[1].to_datetime.change({ 
+hour: 0, min: 0, sec: 0 })
       url_array = article.css('#articlecontent > div.TxArtcile > div.ImgCapt > img').map { |link| link['src'] }
       new_article.url_image = url_array[0]
       begin
@@ -1523,7 +1532,8 @@ namespace :crawling do
       date = article.at('time[datetime]')['datetime']
       # d = change_date_maghrebemergen(date)
       new_article.date_published = date.to_datetime.change({ hour: 0, min: 0, sec: 0 }) + (1.0 / 24)
-      url_array = article.css('div.post-header div.single-featured > a').map  { |link| link['href'] }# and link['class'] == 'b-loaded'
+      url_array = article.css('div.post-header div.single-featured > a').map  { |link|
+ link['href'] }# and link['class'] == 'b-loaded'
       url_image = url_array[0]
       begin
         new_article.image = Down.download(url_array[0]) if url_array[0].present?
@@ -2093,7 +2103,7 @@ namespace :crawling do
   # change_date_autobip_aps
   def change_date_autobip_aps(d)
 
-    d.split.map { |m|
+    d.split.map do |m|
       case m.downcase
       when 'Janvier'.downcase
         'January'
@@ -2124,7 +2134,7 @@ namespace :crawling do
       else
         m
       end
-    }.join(' ')
+    end.join(' ')
   end
   # change_date_autobip_aps
   #
@@ -2132,7 +2142,7 @@ namespace :crawling do
   # change_date_maghrebemergent
   def change_date_maghrebemergen(d)
 
-    d.split.map { |m|
+    d.split.map do |m|
       case m.downcase
       when 'Janvier,'.downcase
         'January'
@@ -2212,7 +2222,7 @@ namespace :crawling do
       else
         m
       end
-    }.join(' ')
+    end.join(' ')
   end
   # change_date_maghrebemergents
 
@@ -2273,9 +2283,11 @@ namespace :crawling do
         old_tags << @tags
         #  article.media_tags = old_tags.join(',')
         @tags_objects.map do |tag_object|
-          next if ArticleTag.where(article_id: article.id, tag_id: tag_object.id, slug_id: slug_id, campaign_id: campaign.id).present?
+          next if ArticleTag.where(article_id: article.id, tag_id: tag_object.id, slug_id: campaign.slug_id, 
+                                   campaign_id: campaign.id).present?
 
-          @article_tag = ArticleTag.new article_id: article.id, tag_id: tag_object.id, slug_id: slug_id, campaign_id: campaign.id
+          @article_tag = ArticleTag.new article_id: article.id, tag_id: tag_object.id, slug_id: campaign.slug_id, 
+                                        campaign_id: campaign.id
           if @article_tag.save
             puts 'Article_tag well added '
           else
