@@ -267,11 +267,10 @@ namespace :crawling do
       tags_array = article.css('ul.ech-sgmn__tgls.d-f.fxw-w.jc-fe a').map(&:text)
       # new_article.media_tags = tags_array.join(',')
       new_article.status = 'pending'
-      articlesTagsUrl = ''
       articlesTagsUrl = new_article.url_article unless Article.where(url_article: new_article.url_article)
       new_article.save!
 
-      @articles_for_auto_tag << Article.where(url_article: articlesTagsUrl) unless articlesTagsUrl == ''
+      @articles_for_auto_tag << Article.where(url_article: articlesTagsUrl) if articlesTagsUrl.present?
 
       if new_article.save
         count += 1
@@ -359,7 +358,7 @@ namespace :crawling do
       new_article.body = article.css('body > div.article-section > div > div.article-section__main.wrap__main > article > div.full-article__content').inner_html
       new_article.body = new_article.body.gsub(/<img[^>]*>/, '')
       new_article.date_published = article.at('time[datetime]')['datetime'].to_datetime.change({ hour: 0, min: 0, 
-sec: 0 }) + (1.0 / 24)
+                                                                                                 sec: 0 }) + (1.0 / 24)
       url_array = article.css('body > div.article-section > div > div.article-section__main.wrap__main > article > div.full-article__featured-image > img').map do |link|
  link['src'] end
       new_article.url_image = url_array[0]
@@ -374,11 +373,10 @@ sec: 0 }) + (1.0 / 24)
       # tags_array = article.css('div.article-core__tags a').map(&:text)
       # new_article.media_tags = tags_array.join(',')
       new_article.status = 'pending'
-      articlesTagsUrl = ''
       articlesTagsUrl = new_article.url_article unless Article.where(url_article: new_article.url_article)
       new_article.save!
 
-      @articles_for_auto_tag << Article.where(url_article: articlesTagsUrl) unless articlesTagsUrl == ''
+      @articles_for_auto_tag << Article.where(url_article: articlesTagsUrl) if articlesTagsUrl.present?
       #@articles_for_auto_tag.push(new_article) if new_article.save
       # #tag_check_and_save(tags_array)
     end
@@ -470,11 +468,11 @@ sec: 0 }) + (1.0 / 24)
       # tags_array = article.css('div.article-core__tags a').map(&:text)
       # new_article.media_tags = tags_array.join(',')
       new_article.status = 'pending'
-      articlesTagsUrl = ''
+
       articlesTagsUrl = new_article.url_article unless Article.where(url_article: new_article.url_article)
       new_article.save!
 
-      @articles_for_auto_tag << Article.where(url_article: articlesTagsUrl) unless articlesTagsUrl == ''
+      @articles_for_auto_tag << Article.where(url_article: articlesTagsUrl) if articlesTagsUrl.present?
 
       # #tag_check_and_save(tags_array)
     end
@@ -571,11 +569,11 @@ sec: 0 }) + (1.0 / 24)
       tags_array = article.css('ul.itemTags li').map(&:text)
       # new_article.media_tags = tags_array.join(',')
       new_article.status = 'pending'
-      articlesTagsUrl = ''
+
       articlesTagsUrl = new_article.url_article unless Article.where(url_article: new_article.url_article)
       new_article.save!
 
-      @articles_for_auto_tag << Article.where(url_article: articlesTagsUrl) unless articlesTagsUrl == ''
+      @articles_for_auto_tag << Article.where(url_article: articlesTagsUrl) if articlesTagsUrl.present?
 
       #tag_check_and_save(tags_array)if @media.tag_status == true
     end
@@ -678,11 +676,11 @@ sec: 0 }) + (1.0 / 24)
       #tags_array = article.css('ul.itemTags li').map(&:text)
       # new_article.media_tags = tags_array.join(',')
       new_article.status = 'pending'
-      articlesTagsUrl = ''
+
       articlesTagsUrl = new_article.url_article unless Article.where(url_article: new_article.url_article)
       new_article.save!
 
-      @articles_for_auto_tag << Article.where(url_article: articlesTagsUrl) unless articlesTagsUrl == ''
+      @articles_for_auto_tag << Article.where(url_article: articlesTagsUrl) if articlesTagsUrl.present?
         ##tag_check_and_save(tags_array)if @media.tag_status == true
     end
     puts "json: { crawling_status_le_soir: 'ok' }"
@@ -779,11 +777,11 @@ sec: 0 }) + (1.0 / 24)
       #tags_array = article.css('ul.itemTags li').map(&:text)
       # new_article.media_tags = tags_array.join(',')
       new_article.status = 'pending'
-      articlesTagsUrl = ''
+
       articlesTagsUrl = new_article.url_article unless Article.where(url_article: new_article.url_article)
       new_article.save!
 
-      @articles_for_auto_tag << Article.where(url_article: articlesTagsUrl) unless articlesTagsUrl == ''
+      @articles_for_auto_tag << Article.where(url_article: articlesTagsUrl) if articlesTagsUrl.present?
       ##tag_check_and_save(tags_array)if @media.tag_status == true
     end
     puts "json: { crawling_status_liberte: 'ok' }"
@@ -890,11 +888,11 @@ sec: 0 }) + (1.0 / 24)
       #tags_array = article.css('ul.itemTags li').map(&:text)
       # new_article.media_tags = tags_array.join(',')
       new_article.status = 'pending'
-      articlesTagsUrl = ''
+
       articlesTagsUrl = new_article.url_article unless Article.where(url_article: new_article.url_article)
       new_article.save!
 
-      @articles_for_auto_tag << Article.where(url_article: articlesTagsUrl) unless articlesTagsUrl == ''
+      @articles_for_auto_tag << Article.where(url_article: articlesTagsUrl) if articlesTagsUrl.present?
       ##tag_check_and_save(tags_array)if @media.tag_status == true
     end
     puts "json: { crawling_status_algerie360: 'ok' }"
@@ -985,11 +983,11 @@ sec: 0 }) + (1.0 / 24)
       tags_array = article.css('#tags a').map(&:text)
       # new_article.media_tags = tags_array.join(',')
       new_article.status = 'pending'
-      articlesTagsUrl = ''
+
       articlesTagsUrl = new_article.url_article unless Article.where(url_article: new_article.url_article)
       new_article.save!
 
-      @articles_for_auto_tag << Article.where(url_article: articlesTagsUrl) unless articlesTagsUrl == ''
+      @articles_for_auto_tag << Article.where(url_article: articlesTagsUrl) if articlesTagsUrl.present?
       #tag_check_and_save(tags_array)if @media.tag_status == true
     end
     puts "json: { crawling_status_aps: 'ok' }"
@@ -1087,11 +1085,11 @@ sec: 0 }) + (1.0 / 24)
     # tags_array = article.css('ul.itemTags li').map(&:text)
     # new_article.media_tags = tags_array.join(',')
     new_article.status = 'pending'
-    articlesTagsUrl = ''
+
     articlesTagsUrl = new_article.url_article unless Article.where(url_article: new_article.url_article)
     new_article.save!
 
-    @articles_for_auto_tag << Article.where(url_article: articlesTagsUrl) unless articlesTagsUrl == ''
+    @articles_for_auto_tag << Article.where(url_article: articlesTagsUrl) if articlesTagsUrl.present?
     # #tag_check_and_save(tags_array)
   end
     puts "json: { crawling_status_aps: 'ok' }"
@@ -1202,11 +1200,11 @@ sec: 0 }) + (1.0 / 24)
       new_article.url_image = url_array
       new_article.image = Down.download(url_array) if url_array.present?
       new_article.status = 'pending'
-      articlesTagsUrl = ''
+
       articlesTagsUrl = new_article.url_article unless Article.where(url_article: new_article.url_article)
       new_article.save!
 
-      @articles_for_auto_tag << Article.where(url_article: articlesTagsUrl) unless articlesTagsUrl == ''
+      @articles_for_auto_tag << Article.where(url_article: articlesTagsUrl) if articlesTagsUrl.present?
 
       if new_article.save
         count += 1
@@ -1319,11 +1317,11 @@ hour: 0, min: 0, sec: 0 })
            new_article.image = nil
          end
       new_article.status = 'pending'
-      articlesTagsUrl = ''
+
       articlesTagsUrl = new_article.url_article unless Article.where(url_article: new_article.url_article)
       new_article.save!
 
-      @articles_for_auto_tag << Article.where(url_article: articlesTagsUrl) unless articlesTagsUrl == ''
+      @articles_for_auto_tag << Article.where(url_article: articlesTagsUrl) if articlesTagsUrl.present?
       # #tag_check_and_save(tags_array)
     end
     puts "json: { crawling_status_aps: 'ok' }"
@@ -1428,11 +1426,11 @@ hour: 0, min: 0, sec: 0 })
       tags_array = article.css('div#article_tags_title').map(&:text) if article.css('div#article_tags_title').present?
       # new_article.media_tags = tags_array.join(',')
       new_article.status = 'pending'
-      articlesTagsUrl = ''
+
       articlesTagsUrl = new_article.url_article unless Article.where(url_article: new_article.url_article)
       new_article.save!
 
-      @articles_for_auto_tag << Article.where(url_article: articlesTagsUrl) unless articlesTagsUrl == ''
+      @articles_for_auto_tag << Article.where(url_article: articlesTagsUrl) if articlesTagsUrl.present?
 
       if new_article.save
         count += 1
@@ -1543,11 +1541,11 @@ article.css('div.post-header div.single-featured > a').map  do |link|
       tags_array = article.css('div.entry-terms a').map(&:text)
       # new_article.media_tags = tags_array.join(',')
       new_article.status = 'pending'
-      articlesTagsUrl = ''
+
       articlesTagsUrl = new_article.url_article unless Article.where(url_article: new_article.url_article)
       new_article.save!
 
-      @articles_for_auto_tag << Article.where(url_article: articlesTagsUrl) unless articlesTagsUrl == ''
+      @articles_for_auto_tag << Article.where(url_article: articlesTagsUrl) if articlesTagsUrl.present?
       #tag_check_and_save(tags_array) if @media.tag_status == true
     end
     puts "json: { crawling_status_aps: 'ok' }"
@@ -1654,11 +1652,11 @@ article.css('div.post-header div.single-featured > a').map  do |link|
       #tags_array = article.css('div#article_tags_title').map(&:text)
       # new_article.media_tags = tags_array.join(',')
       new_article.status = 'pending'
-      articlesTagsUrl = ''
+
       articlesTagsUrl = new_article.url_article unless Article.where(url_article: new_article.url_article)
       new_article.save!
 
-      @articles_for_auto_tag << Article.where(url_article: articlesTagsUrl) unless articlesTagsUrl == ''
+      @articles_for_auto_tag << Article.where(url_article: articlesTagsUrl) if articlesTagsUrl.present?
         ##tag_check_and_save(tags_array)
     end
     puts "json: { crawling_status_aps: 'ok' }"
@@ -1763,11 +1761,11 @@ article.css('div.post-header div.single-featured > a').map  do |link|
       tags_array = article.css('div.entry-terms a').map(&:text)
       # new_article.media_tags = tags_array.join(',')
       new_article.status = 'pending'
-      articlesTagsUrl = ''
+
       articlesTagsUrl = new_article.url_article unless Article.where(url_article: new_article.url_article)
       new_article.save!
 
-      @articles_for_auto_tag << Article.where(url_article: articlesTagsUrl) unless articlesTagsUrl == ''
+      @articles_for_auto_tag << Article.where(url_article: articlesTagsUrl) if articlesTagsUrl.present?
       #tag_check_and_save(tags_array)
     end
     puts "json: { crawling_status_aps: 'ok' }"
@@ -1876,11 +1874,11 @@ article.css('div.post-header div.single-featured > a').map  do |link|
       # tags_array = article.css('div.entry-terms a').map(&:text)
       # new_article.media_tags = tags_array.join(',')
       new_article.status = 'pending'
-      articlesTagsUrl = ''
+
       articlesTagsUrl = new_article.url_article unless Article.where(url_article: new_article.url_article)
       new_article.save!
 
-      @articles_for_auto_tag << Article.where(url_article: articlesTagsUrl) unless articlesTagsUrl == ''
+      @articles_for_auto_tag << Article.where(url_article: articlesTagsUrl) if articlesTagsUrl.present?
         # #tag_check_and_save(tags_array)
     end
     puts "json: { crawling_status_aps: 'ok' }"
@@ -1976,11 +1974,11 @@ article.css('div.post-header div.single-featured > a').map  do |link|
       # tags_array = article.css('div.entry-terms a').map(&:text)
       # new_article.media_tags = tags_array.join(',')
       new_article.status = 'pending'
-      articlesTagsUrl = ''
+
       articlesTagsUrl = new_article.url_article unless Article.where(url_article: new_article.url_article)
       new_article.save!
 
-      @articles_for_auto_tag << Article.where(url_article: articlesTagsUrl) unless articlesTagsUrl == ''
+      @articles_for_auto_tag << Article.where(url_article: articlesTagsUrl) if articlesTagsUrl.present?
             # #tag_check_and_save(tags_array)
     end
     puts "json: { crawling_status_aps: 'ok' }"
@@ -2077,11 +2075,11 @@ article.css('div.post-header div.single-featured > a').map  do |link|
       # tags_array = article.css('div.entry-terms a').map(&:text)
       # new_article.media_tags = tags_array.join(',')
       new_article.status = 'pending'
-      articlesTagsUrl = ''
+
       articlesTagsUrl = new_article.url_article unless Article.where(url_article: new_article.url_article)
       new_article.save!
 
-      @articles_for_auto_tag << Article.where(url_article: articlesTagsUrl) unless articlesTagsUrl == ''
+      @articles_for_auto_tag << Article.where(url_article: articlesTagsUrl) if articlesTagsUrl.present?
       # #tag_check_and_save(tags_array)
     end
     puts "json: { crawling_status_aps: 'ok' }"
