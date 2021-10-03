@@ -2245,7 +2245,15 @@ namespace :crawling do
     # all_tags = Tag.where(status: true)
       next if articles_for_autoTag.empty?
 
-      filtered_articles = articles_for_autoTag.where(medium_id: camp_media_array)
+      filtered_articles = []
+      puts "array camp_media_array"
+      puts camp_media_array
+      puts "array camp_media_array"
+      articles_for_autoTag.each do |article|
+        puts article.medium_id
+        filtered_articles << article if camp_media_array.include? article.medium_id
+      end
+
 
       @tags = []
       filtered_articles.map do |article|
