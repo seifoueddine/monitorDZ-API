@@ -161,8 +161,14 @@ namespace :crawling do
         tags_array = article.css('a.post-tag').map(&:text)
       # new_article.media_tags = tags_array.join(',')
         new_article.status = 'pending'
-        @articles_for_auto_tag << new_article unless Article.where(url_article: new_article.url_article)
+        articlesTagsUrl = new_article.url_article unless Article.where(url_article: new_article.url_article)
+        puts "URLURLURLURLURLURLURLURLURLURLURLURLURLURLURL: #{articlesTagsUrl}"
+
         new_article.save!
+        if articlesTagsUrl.present?
+          puts 'add article'
+          @articles_for_auto_tag << Article.where(url_article: articlesTagsUrl)
+        end
       #tag_check_and_save(tags_array) if @media.tag_status == true
       end
 
@@ -268,10 +274,13 @@ namespace :crawling do
       # new_article.media_tags = tags_array.join(',')
       new_article.status = 'pending'
       articlesTagsUrl = new_article.url_article unless Article.where(url_article: new_article.url_article)
+      puts "URLURLURLURLURLURLURLURLURLURLURLURLURLURLURL: #{articlesTagsUrl}"
+
       new_article.save!
-
-      @articles_for_auto_tag << Article.where(url_article: articlesTagsUrl) if articlesTagsUrl.present?
-
+      if articlesTagsUrl.present?
+        puts 'add article'
+        @articles_for_auto_tag << Article.where(url_article: articlesTagsUrl)
+      end
       if new_article.save
         count += 1
 
@@ -374,7 +383,13 @@ namespace :crawling do
       # new_article.media_tags = tags_array.join(',')
       new_article.status = 'pending'
       articlesTagsUrl = new_article.url_article unless Article.where(url_article: new_article.url_article)
+      puts "URLURLURLURLURLURLURLURLURLURLURLURLURLURLURL: #{articlesTagsUrl}"
+
       new_article.save!
+      if articlesTagsUrl.present?
+        puts 'add article'
+        @articles_for_auto_tag << Article.where(url_article: articlesTagsUrl)
+      end
 
       @articles_for_auto_tag << Article.where(url_article: articlesTagsUrl) if articlesTagsUrl.present?
       #@articles_for_auto_tag.push(new_article) if new_article.save
@@ -470,7 +485,13 @@ namespace :crawling do
       new_article.status = 'pending'
 
       articlesTagsUrl = new_article.url_article unless Article.where(url_article: new_article.url_article)
+      puts "URLURLURLURLURLURLURLURLURLURLURLURLURLURLURL: #{articlesTagsUrl}"
+
       new_article.save!
+      if articlesTagsUrl.present?
+        puts 'add article'
+        @articles_for_auto_tag << Article.where(url_article: articlesTagsUrl)
+      end
 
       @articles_for_auto_tag << Article.where(url_article: articlesTagsUrl) if articlesTagsUrl.present?
 
@@ -571,7 +592,13 @@ namespace :crawling do
       new_article.status = 'pending'
 
       articlesTagsUrl = new_article.url_article unless Article.where(url_article: new_article.url_article)
+      puts "URLURLURLURLURLURLURLURLURLURLURLURLURLURLURL: #{articlesTagsUrl}"
+
       new_article.save!
+      if articlesTagsUrl.present?
+        puts 'add article'
+        @articles_for_auto_tag << Article.where(url_article: articlesTagsUrl)
+      end
 
       @articles_for_auto_tag << Article.where(url_article: articlesTagsUrl) if articlesTagsUrl.present?
 
@@ -678,8 +705,13 @@ namespace :crawling do
       new_article.status = 'pending'
 
       articlesTagsUrl = new_article.url_article unless Article.where(url_article: new_article.url_article)
-      new_article.save!
+      puts "URLURLURLURLURLURLURLURLURLURLURLURLURLURLURL: #{articlesTagsUrl}"
 
+      new_article.save!
+      if articlesTagsUrl.present?
+        puts 'add article'
+        @articles_for_auto_tag << Article.where(url_article: articlesTagsUrl)
+      end
       @articles_for_auto_tag << Article.where(url_article: articlesTagsUrl) if articlesTagsUrl.present?
         ##tag_check_and_save(tags_array)if @media.tag_status == true
     end
@@ -777,10 +809,14 @@ namespace :crawling do
       #tags_array = article.css('ul.itemTags li').map(&:text)
       # new_article.media_tags = tags_array.join(',')
       new_article.status = 'pending'
-
       articlesTagsUrl = new_article.url_article unless Article.where(url_article: new_article.url_article)
-      new_article.save!
+      puts "URLURLURLURLURLURLURLURLURLURLURLURLURLURLURL: #{articlesTagsUrl}"
 
+      new_article.save!
+      if articlesTagsUrl.present?
+        puts 'add article'
+        @articles_for_auto_tag << Article.where(url_article: articlesTagsUrl)
+      end
       @articles_for_auto_tag << Article.where(url_article: articlesTagsUrl) if articlesTagsUrl.present?
       ##tag_check_and_save(tags_array)if @media.tag_status == true
     end
@@ -888,9 +924,14 @@ namespace :crawling do
       #tags_array = article.css('ul.itemTags li').map(&:text)
       # new_article.media_tags = tags_array.join(',')
       new_article.status = 'pending'
-
       articlesTagsUrl = new_article.url_article unless Article.where(url_article: new_article.url_article)
+      puts "URLURLURLURLURLURLURLURLURLURLURLURLURLURLURL: #{articlesTagsUrl}"
+
       new_article.save!
+      if articlesTagsUrl.present?
+        puts 'add article'
+        @articles_for_auto_tag << Article.where(url_article: articlesTagsUrl)
+      end
 
       @articles_for_auto_tag << Article.where(url_article: articlesTagsUrl) if articlesTagsUrl.present?
       ##tag_check_and_save(tags_array)if @media.tag_status == true
@@ -985,8 +1026,13 @@ namespace :crawling do
       new_article.status = 'pending'
 
       articlesTagsUrl = new_article.url_article unless Article.where(url_article: new_article.url_article)
-      new_article.save!
+      puts "URLURLURLURLURLURLURLURLURLURLURLURLURLURLURL: #{articlesTagsUrl}"
 
+      new_article.save!
+      if articlesTagsUrl.present?
+        puts 'add article'
+        @articles_for_auto_tag << Article.where(url_article: articlesTagsUrl)
+      end
       @articles_for_auto_tag << Article.where(url_article: articlesTagsUrl) if articlesTagsUrl.present?
       #tag_check_and_save(tags_array)if @media.tag_status == true
     end
@@ -1087,8 +1133,13 @@ namespace :crawling do
     new_article.status = 'pending'
 
     articlesTagsUrl = new_article.url_article unless Article.where(url_article: new_article.url_article)
-    new_article.save!
+    puts "URLURLURLURLURLURLURLURLURLURLURLURLURLURLURL: #{articlesTagsUrl}"
 
+    new_article.save!
+    if articlesTagsUrl.present?
+      puts 'add article'
+      @articles_for_auto_tag << Article.where(url_article: articlesTagsUrl)
+    end
     @articles_for_auto_tag << Article.where(url_article: articlesTagsUrl) if articlesTagsUrl.present?
     # #tag_check_and_save(tags_array)
   end
@@ -1202,8 +1253,13 @@ namespace :crawling do
       new_article.status = 'pending'
 
       articlesTagsUrl = new_article.url_article unless Article.where(url_article: new_article.url_article)
-      new_article.save!
+      puts "URLURLURLURLURLURLURLURLURLURLURLURLURLURLURL: #{articlesTagsUrl}"
 
+      new_article.save!
+      if articlesTagsUrl.present?
+        puts 'add article'
+        @articles_for_auto_tag << Article.where(url_article: articlesTagsUrl)
+      end
       @articles_for_auto_tag << Article.where(url_article: articlesTagsUrl) if articlesTagsUrl.present?
 
       if new_article.save
@@ -1319,8 +1375,13 @@ hour: 0, min: 0, sec: 0 })
       new_article.status = 'pending'
 
       articlesTagsUrl = new_article.url_article unless Article.where(url_article: new_article.url_article)
-      new_article.save!
+      puts "URLURLURLURLURLURLURLURLURLURLURLURLURLURLURL: #{articlesTagsUrl}"
 
+      new_article.save!
+      if articlesTagsUrl.present?
+        puts 'add article'
+        @articles_for_auto_tag << Article.where(url_article: articlesTagsUrl)
+      end
       @articles_for_auto_tag << Article.where(url_article: articlesTagsUrl) if articlesTagsUrl.present?
       # #tag_check_and_save(tags_array)
     end
@@ -1428,8 +1489,13 @@ hour: 0, min: 0, sec: 0 })
       new_article.status = 'pending'
 
       articlesTagsUrl = new_article.url_article unless Article.where(url_article: new_article.url_article)
-      new_article.save!
+      puts "URLURLURLURLURLURLURLURLURLURLURLURLURLURLURL: #{articlesTagsUrl}"
 
+      new_article.save!
+      if articlesTagsUrl.present?
+        puts 'add article'
+        @articles_for_auto_tag << Article.where(url_article: articlesTagsUrl)
+      end
       @articles_for_auto_tag << Article.where(url_article: articlesTagsUrl) if articlesTagsUrl.present?
 
       if new_article.save
@@ -1543,7 +1609,13 @@ article.css('div.post-header div.single-featured > a').map  do |link|
       new_article.status = 'pending'
 
       articlesTagsUrl = new_article.url_article unless Article.where(url_article: new_article.url_article)
+      puts "URLURLURLURLURLURLURLURLURLURLURLURLURLURLURL: #{articlesTagsUrl}"
+
       new_article.save!
+      if articlesTagsUrl.present?
+        puts 'add article'
+        @articles_for_auto_tag << Article.where(url_article: articlesTagsUrl)
+      end
 
       @articles_for_auto_tag << Article.where(url_article: articlesTagsUrl) if articlesTagsUrl.present?
       #tag_check_and_save(tags_array) if @media.tag_status == true
@@ -1654,8 +1726,13 @@ article.css('div.post-header div.single-featured > a').map  do |link|
       new_article.status = 'pending'
 
       articlesTagsUrl = new_article.url_article unless Article.where(url_article: new_article.url_article)
-      new_article.save!
+      puts "URLURLURLURLURLURLURLURLURLURLURLURLURLURLURL: #{articlesTagsUrl}"
 
+      new_article.save!
+      if articlesTagsUrl.present?
+        puts 'add article'
+        @articles_for_auto_tag << Article.where(url_article: articlesTagsUrl)
+      end
       @articles_for_auto_tag << Article.where(url_article: articlesTagsUrl) if articlesTagsUrl.present?
         ##tag_check_and_save(tags_array)
     end
@@ -1763,7 +1840,13 @@ article.css('div.post-header div.single-featured > a').map  do |link|
       new_article.status = 'pending'
 
       articlesTagsUrl = new_article.url_article unless Article.where(url_article: new_article.url_article)
+      puts "URLURLURLURLURLURLURLURLURLURLURLURLURLURLURL: #{articlesTagsUrl}"
+
       new_article.save!
+      if articlesTagsUrl.present?
+        puts 'add article'
+        @articles_for_auto_tag << Article.where(url_article: articlesTagsUrl)
+      end
 
       @articles_for_auto_tag << Article.where(url_article: articlesTagsUrl) if articlesTagsUrl.present?
       #tag_check_and_save(tags_array)
@@ -1876,7 +1959,13 @@ article.css('div.post-header div.single-featured > a').map  do |link|
       new_article.status = 'pending'
 
       articlesTagsUrl = new_article.url_article unless Article.where(url_article: new_article.url_article)
+      puts "URLURLURLURLURLURLURLURLURLURLURLURLURLURLURL: #{articlesTagsUrl}"
+
       new_article.save!
+      if articlesTagsUrl.present?
+        puts 'add article'
+        @articles_for_auto_tag << Article.where(url_article: articlesTagsUrl)
+      end
 
       @articles_for_auto_tag << Article.where(url_article: articlesTagsUrl) if articlesTagsUrl.present?
         # #tag_check_and_save(tags_array)
@@ -1976,8 +2065,13 @@ article.css('div.post-header div.single-featured > a').map  do |link|
       new_article.status = 'pending'
 
       articlesTagsUrl = new_article.url_article unless Article.where(url_article: new_article.url_article)
-      new_article.save!
+      puts "URLURLURLURLURLURLURLURLURLURLURLURLURLURLURL: #{articlesTagsUrl}"
 
+      new_article.save!
+      if articlesTagsUrl.present?
+        puts 'add article'
+        @articles_for_auto_tag << Article.where(url_article: articlesTagsUrl)
+      end
       @articles_for_auto_tag << Article.where(url_article: articlesTagsUrl) if articlesTagsUrl.present?
             # #tag_check_and_save(tags_array)
     end
@@ -2077,7 +2171,13 @@ article.css('div.post-header div.single-featured > a').map  do |link|
       new_article.status = 'pending'
 
       articlesTagsUrl = new_article.url_article unless Article.where(url_article: new_article.url_article)
+      puts "URLURLURLURLURLURLURLURLURLURLURLURLURLURLURL: #{articlesTagsUrl}"
+
       new_article.save!
+      if articlesTagsUrl.present?
+        puts 'add article'
+        @articles_for_auto_tag << Article.where(url_article: articlesTagsUrl)
+      end
 
       @articles_for_auto_tag << Article.where(url_article: articlesTagsUrl) if articlesTagsUrl.present?
       # #tag_check_and_save(tags_array)
