@@ -8,10 +8,9 @@ namespace :crawling do
 
   desc 'carwling all media'
   task scraping: :environment do
-
+    @articles_for_auto_tag = []
     Medium.all.each do |m|
       @media = m
-      @articles_for_auto_tag = []
       if m.url_crawling? && m.name != 'APS'
         url_media_array = m.url_crawling.split(',')
         puts url_media_array
@@ -2241,12 +2240,16 @@ hour: 0, min: 0, sec: 0 })
     # slug_id = params[:slug_id]
     # start_date = params[:start_date]
     # end_date = params[:start_date]
+    reject = []
+    articles_for_autoTag.delete_if { |v| reject << v if Article.where(url_article: v.url_article) }
+  
 
 
 
     campaigns = Campaign.all
     puts "campaigns count#{campaigns.count}"
     puts "articles count#{articles_for_autoTag.count}"
+    puts "reject articles count#{reject.count}"
     campaigns.map do |campaign|
       all_tags = campaign.tags.empty? ? [] : campaign.tags.where(status: true)
       camp_media = campaign.media
