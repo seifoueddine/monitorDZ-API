@@ -321,7 +321,7 @@ namespace :crawling do
         next
       end
 
-      doc.css('h2.card__title.x-middle').map do |link|
+      doc.css('h2.card__title.x-middle a').map do |link|
         articles_url_ennahar << link['href']
       end
       doc.css('time').map do |date|
