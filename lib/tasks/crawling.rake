@@ -58,8 +58,8 @@ namespace :crawling do
       get_articles_elikhbaria(url_media_array)
     when 'ALGERIECO'
       get_articles_algerieco(url_media_array)
-    # when 'CHIFFREAFFAIRE'
-    #   get_articles_chiffreaffaire(url_media_array)
+     when 'CHIFFREAFFAIRE'
+       get_articles_chiffreaffaire(url_media_array)
     when 'ELHIWAR'
       get_articles_elhiwar(url_media_array)
     when 'LE SOIR'
@@ -161,6 +161,7 @@ namespace :crawling do
         tags_array = article.css('a.post-tag').map(&:text)
       # new_article.media_tags = tags_array.join(',')
         new_article.status = 'pending'
+        puts "URLBefoooooooooooooor:" + link
         if Article.where(url_article: link)
           puts 'article present'
         else
@@ -278,6 +279,7 @@ namespace :crawling do
       tags_array = article.css('ul.ech-sgmn__tgls.d-f.fxw-w.jc-fe a').map(&:text)
       # new_article.media_tags = tags_array.join(',')
       new_article.status = 'pending'
+      puts "URLBefoooooooooooooor:" + link
       if Article.where(url_article: link)
         puts 'article present'
       else
@@ -319,7 +321,7 @@ namespace :crawling do
         next
       end
 
-      doc.css('div.article__image.article__image--medium a').map do |link|
+      doc.css('h2.card__title.x-middle').map do |link|
         articles_url_ennahar << link['href']
       end
       doc.css('time').map do |date|
@@ -353,17 +355,17 @@ namespace :crawling do
       new_article.url_article = link
       new_article.medium_id = @media.id
       new_article.language = @media.language
-      new_article.category_article = article.css('div.article-section > div > div.article-section__main.wrap__main > article > div.full-article__meta > div.article__category > a').text
-      new_article.title = article.css('body > div.article-section > div > div.article-section__main.wrap__main > article > h2').text
+      new_article.category_article = article.css('div.sgb1__acat a').text
+      new_article.title = article.css('h1.sgb1__attl').text
       # new_article.author = article.css('div.article-head__author div em a').text
 
       author_exist = Author.where(['lower(name) like ? ',
-                                   article.at('body > div.article-section > div > div.article-section__main.wrap__main > article > div.full-article__author-share > div > span > em').text.downcase ])
+                                   article.at('div.sgb1__aath a').text.downcase ])
 
       new_author = Author.new
       if author_exist.count.zero?
 
-        new_author.name = article.at('body > div.article-section > div > div.article-section__main.wrap__main > article > div.full-article__author-share > div > span > em').text
+        new_author.name = article.at('div.sgb1__aath a').text
         new_author.medium_id = @media.id
         new_author.save!
       else
@@ -373,11 +375,11 @@ namespace :crawling do
 
       end
       new_article.author_id = new_author.id
-      new_article.body = article.css('body > div.article-section > div > div.article-section__main.wrap__main > article > div.full-article__content').inner_html
+      new_article.body = article.css('div.artx').inner_html
       new_article.body = new_article.body.gsub(/<img[^>]*>/, '')
       new_article.date_published = article.at('time[datetime]')['datetime'].to_datetime.change({ hour: 0, min: 0, 
                                                                                                  sec: 0 }) + (1.0 / 24)
-      url_array = article.css('body > div.article-section > div > div.article-section__main.wrap__main > article > div.full-article__featured-image > img').map do |link|
+      url_array = article.css('div.sgb1__afmg.d-f img').map do |link|
  link['src'] end
       new_article.url_image = url_array[0]
       begin
@@ -391,6 +393,8 @@ namespace :crawling do
       # tags_array = article.css('div.article-core__tags a').map(&:text)
       # new_article.media_tags = tags_array.join(',')
       new_article.status = 'pending'
+      puts "URLBefoooooooooooooor:" + link
+      puts "URLBefoooooooooooooor:" + link
       if Article.where(url_article: link)
         puts 'article present'
       else
@@ -496,7 +500,7 @@ namespace :crawling do
       # tags_array = article.css('div.article-core__tags a').map(&:text)
       # new_article.media_tags = tags_array.join(',')
       new_article.status = 'pending'
-
+      puts "URLBefoooooooooooooor:" + link
       if Article.where(url_article: link)
         puts 'article present'
       else
@@ -607,7 +611,7 @@ namespace :crawling do
       tags_array = article.css('ul.itemTags li').map(&:text)
       # new_article.media_tags = tags_array.join(',')
       new_article.status = 'pending'
-
+      puts "URLBefoooooooooooooor:" + link
       if Article.where(url_article: link)
         puts 'article present'
       else
@@ -724,7 +728,7 @@ namespace :crawling do
       #tags_array = article.css('ul.itemTags li').map(&:text)
       # new_article.media_tags = tags_array.join(',')
       new_article.status = 'pending'
-
+      puts "URLBefoooooooooooooor:" + link
       if Article.where(url_article: link)
         puts 'article present'
       else
@@ -834,6 +838,7 @@ namespace :crawling do
       #tags_array = article.css('ul.itemTags li').map(&:text)
       # new_article.media_tags = tags_array.join(',')
       new_article.status = 'pending'
+      puts "URLBefoooooooooooooor:" + link
       if Article.where(url_article: link)
         puts 'article present'
       else
@@ -953,6 +958,7 @@ namespace :crawling do
       #tags_array = article.css('ul.itemTags li').map(&:text)
       # new_article.media_tags = tags_array.join(',')
       new_article.status = 'pending'
+      puts "URLBefoooooooooooooor:" + link
       if Article.where(url_article: link)
         puts 'article present'
       else
@@ -1057,7 +1063,7 @@ namespace :crawling do
       tags_array = article.css('#tags a').map(&:text)
       # new_article.media_tags = tags_array.join(',')
       new_article.status = 'pending'
-
+      puts "URLBefoooooooooooooor:" + link
       if Article.where(url_article: link)
         puts 'article present'
       else
@@ -1168,7 +1174,7 @@ namespace :crawling do
     # tags_array = article.css('ul.itemTags li').map(&:text)
     # new_article.media_tags = tags_array.join(',')
     new_article.status = 'pending'
-
+    puts "URLBefoooooooooooooor:" + link
     if Article.where(url_article: link)
       puts 'article present'
     else
@@ -1292,7 +1298,7 @@ namespace :crawling do
       new_article.url_image = url_array
       new_article.image = Down.download(url_array) if url_array.present?
       new_article.status = 'pending'
-
+      puts "URLBefoooooooooooooor:" + link
       if Article.where(url_article: link)
         puts 'article present'
       else
@@ -1418,7 +1424,7 @@ hour: 0, min: 0, sec: 0 })
            new_article.image = nil
          end
       new_article.status = 'pending'
-
+      puts "URLBefoooooooooooooor:" + link
       if Article.where(url_article: link)
         puts 'article present'
       else
@@ -1536,7 +1542,7 @@ hour: 0, min: 0, sec: 0 })
       tags_array = article.css('div#article_tags_title').map(&:text) if article.css('div#article_tags_title').present?
       # new_article.media_tags = tags_array.join(',')
       new_article.status = 'pending'
-
+      puts "URLBefoooooooooooooor:" + link
       if Article.where(url_article: link)
         puts 'article present'
       else
@@ -1660,7 +1666,7 @@ article.css('div.post-header div.single-featured > a').map  do |link|
       tags_array = article.css('div.entry-terms a').map(&:text)
       # new_article.media_tags = tags_array.join(',')
       new_article.status = 'pending'
-
+      puts "URLBefoooooooooooooor:" + link
       if Article.where(url_article: link)
         puts 'article present'
       else
@@ -1781,7 +1787,7 @@ article.css('div.post-header div.single-featured > a').map  do |link|
       #tags_array = article.css('div#article_tags_title').map(&:text)
       # new_article.media_tags = tags_array.join(',')
       new_article.status = 'pending'
-
+      puts "URLBefoooooooooooooor:" + link
       if Article.where(url_article: link)
         puts 'article present'
       else
@@ -1899,7 +1905,7 @@ article.css('div.post-header div.single-featured > a').map  do |link|
       tags_array = article.css('div.entry-terms a').map(&:text)
       # new_article.media_tags = tags_array.join(',')
       new_article.status = 'pending'
-
+      puts "URLBefoooooooooooooor:" + link
       if Article.where(url_article: link)
         puts 'article present'
       else
@@ -2022,7 +2028,7 @@ article.css('div.post-header div.single-featured > a').map  do |link|
       # tags_array = article.css('div.entry-terms a').map(&:text)
       # new_article.media_tags = tags_array.join(',')
       new_article.status = 'pending'
-
+      puts "URLBefoooooooooooooor:" + link
       if Article.where(url_article: link)
         puts 'article present'
       else
@@ -2132,7 +2138,7 @@ article.css('div.post-header div.single-featured > a').map  do |link|
       # tags_array = article.css('div.entry-terms a').map(&:text)
       # new_article.media_tags = tags_array.join(',')
       new_article.status = 'pending'
-
+      puts "URLBefoooooooooooooor:" + link
       if Article.where(url_article: link)
         puts 'article present'
       else
@@ -2242,7 +2248,7 @@ article.css('div.post-header div.single-featured > a').map  do |link|
       # tags_array = article.css('div.entry-terms a').map(&:text)
       # new_article.media_tags = tags_array.join(',')
       new_article.status = 'pending'
-
+      puts "URLBefoooooooooooooor:" + link
       if Article.where(url_article: link)
         puts 'article present'
       else
