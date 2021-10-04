@@ -379,7 +379,7 @@ namespace :crawling do
       new_article.body = new_article.body.gsub(/<img[^>]*>/, '')
       new_article.date_published = article.at('time[datetime]')['datetime'].to_datetime.change({ hour: 0, min: 0, 
                                                                                                  sec: 0 }) + (1.0 / 24)
-      url_array = article.css('div.sgb1__afmg.d-f img').map do |link|
+      url_array = article.css('figure div.sgb1__afmg.d-f img').map do |link|
  link['src'] end
       new_article.url_image = url_array[0]
       begin
@@ -408,7 +408,6 @@ namespace :crawling do
         @articles_for_auto_tag << Article.where(url_article: articlesTagsUrl)
       end
 
-      @articles_for_auto_tag << Article.where(url_article: articlesTagsUrl) if articlesTagsUrl.present?
       #@articles_for_auto_tag.push(new_article) if new_article.save
       # #tag_check_and_save(tags_array)
     end
@@ -2429,9 +2428,6 @@ article.css('div.post-header div.single-featured > a').map  do |link|
     puts "campaigns count#{campaigns.count}"
     puts "articles count#{articles_for_autoTag.count}"
     puts "reject articles count#{reject.count}"
-    articles_for_autoTag.each do |article|
-      puts article.medium_id
-    end
 
     campaigns.map do |campaign|
       all_tags = campaign.tags.empty? ? [] : campaign.tags.where(status: true)
@@ -2445,7 +2441,8 @@ article.css('div.post-header div.single-featured > a').map  do |link|
       puts 'array camp_media_array'
       puts camp_media_array
       puts 'array camp_media_array'
-      articles_for_autoTag.each do |article|
+
+      articles_for_autoTag.map do |article|
         puts article.medium_id
         filtered_articles << article if camp_media_array.include? article.medium_id
       end
