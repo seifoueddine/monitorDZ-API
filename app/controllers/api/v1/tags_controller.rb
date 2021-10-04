@@ -27,8 +27,7 @@ class Api::V1::TagsController < ApplicationController
   # POST /tags
   def create
 
-    tag_exist = Tag.where(['lower(name) like ? ',
-                            params[:name].downcase ]).count
+    tag_exist = Tag.where(['lower(name) like ? ', params[:name].downcase ]).count
     if tag_exist.zero?
     @tag = Tag.new(tag_params)
 
