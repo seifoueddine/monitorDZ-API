@@ -405,7 +405,7 @@ namespace :crawling do
       new_article.save!
       if articlesTagsUrl.present?
         puts 'add article'
-        @articles_for_auto_tag << Article.where(url_article: articlesTagsUrl)
+        @articles_for_auto_tag << Article.where(url_article: articlesTagsUrl).id
       end
 
       #@articles_for_auto_tag.push(new_article) if new_article.save
@@ -2442,15 +2442,15 @@ article.css('div.post-header div.single-featured > a').map  do |link|
       puts camp_media_array
       puts 'array camp_media_array'
 
-      articles_for_autoTag.map do |article|
-        puts article.medium_id
-        filtered_articles << article if camp_media_array.include? article.medium_id
+      articles_for_autoTag.map do |article_id|
+        article = Article.find(article_id)
+        filtered_articles << article.id if camp_media_array.include? article.medium_id
       end
 
 
       @tags = []
-      filtered_articles.map do |article|
-
+      filtered_articles.map do |article_id|
+        article = Article.find(article_id)
         @tags_objects = []
         all_tags.map do |tag|
           if article.body.downcase.include? tag.name.downcase
