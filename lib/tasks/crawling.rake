@@ -395,7 +395,7 @@ namespace :crawling do
       new_article.status = 'pending'
       puts "URLBefoooooooooooooor:" + link
 
-      if Article.where(['url_article LIKE ? ', "%#{link}%" ])
+      if Article.where(['url_article LIKE ? ', "%#{link}%" ]).present?
         puts 'article present'
       else
         articlesTagsUrl = link
@@ -412,7 +412,7 @@ namespace :crawling do
       #@articles_for_auto_tag.push(new_article) if new_article.save
       # #tag_check_and_save(tags_array)
     end
-    puts "json: { crawling_status_elcherouk: 'ok' }"
+    puts "json: { crawling_status_ennahar: 'ok' }"
   end
     # end method to get ennahar articles
 
