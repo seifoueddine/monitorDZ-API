@@ -3,6 +3,7 @@ class UserMailer < ApplicationMailer
     @articles = articles
     @user = user
     @tags = camp_tags
+
     mail to: user.email, subject: 'Alerte TAG'
   end
 
