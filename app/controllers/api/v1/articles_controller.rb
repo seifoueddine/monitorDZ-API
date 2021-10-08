@@ -26,7 +26,7 @@ class Api::V1::ArticlesController < ApplicationController
                                media_ids
                              else
                                params[:media_id].split(',')
-    end
+                             end
 
     unless params[:medium_type].blank?
       conditions[:medium_type] = params[:medium_type].split(',')
@@ -48,12 +48,12 @@ class Api::V1::ArticlesController < ApplicationController
     if params[:start_date].blank?
       conditions[:date_published] = { gte: Date.today.to_datetime
                                                .change({ hour: 0, min: 0, sec: 0 }), lte: Date.today.to_datetime
-                                               .change({ hour: 0, min: 0, sec: 0 }) }
+                                                                                              .change({ hour: 0, min: 0, sec: 0 }) }
 
     else
       conditions[:date_published] = { gte: params[:start_date].to_datetime
                                                               .change({ hour: 0, min: 0, sec: 0 }), lte: params[:end_date].to_datetime
-                                                              .change({ hour: 0, min: 0, sec: 0 }) }
+                                                                                                                          .change({ hour: 0, min: 0, sec: 0 }) }
     end
 
     conditions[:tag_name] = params[:tag_name] unless params[:tag_name].blank?
@@ -130,7 +130,7 @@ class Api::V1::ArticlesController < ApplicationController
       media_ids << media['id']
     end
     @article_auth_for_client_dash = Article.joins(:author).where(medium_id: media_ids, date_published: Date.today.change({ hour: 0, min: 0, sec: 0 }) )
-                                 .group('authors.name').order('count(authors.id) desc').limit(5).count
+                                           .group('authors.name').order('count(authors.id) desc').limit(5).count
     render json: @article_auth_for_client_dash
   end
 
@@ -144,7 +144,7 @@ class Api::V1::ArticlesController < ApplicationController
       media_ids << media['id']
     end
     @article_tag_for_client_dash = Article.where(medium_id: media_ids, date_published: Date.today.change({ hour: 0, min: 0, sec: 0 })).joins(:tags)
-                                .group('tags.name').count
+                                          .group('tags.name').count
     render json: @article_tag_for_client_dash
   end
 
@@ -1937,7 +1937,7 @@ div.nobreak { page-break-inside: avoid; }
       end
     end
     # last_dates = last_dates.map { |d| change_date_maghrebemergen(d) }
-    last_dates = last_dates.map { |d| d.to_datetime.change({ hour: 0, min: 0, sec: 0 })}
+    last_dates = last_dates.map { |d| d.to_datetime.change({ hour: 0, min: 0, sec: 0 }) + (1.0 / 24)}
     articles_url_elikhbaria = articles_url_elikhbaria.reject(&:nil?)
     last_dates = last_dates.uniq
     last_articles = Article.where(medium_id: @media.id).where(date_published: last_dates)
@@ -1992,7 +1992,7 @@ div.nobreak { page-break-inside: avoid; }
       # date[','] = ''
       date = article.at('time[datetime]')['datetime']
       # d = change_date_maghrebemergen(date)
-      new_article.date_published = date.to_datetime.change({ hour: 0, min: 0, sec: 0 })
+      new_article.date_published = date.to_datetime.change({ hour: 0, min: 0, sec: 0 }) + (1.0 / 24)
       url_array = article.css('div.post-header div.single-featured > a').map  { |link| link['href'] }# and link['class'] == 'b-loaded'
       url_image = url_array[0]
       begin
