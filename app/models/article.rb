@@ -4,7 +4,20 @@ class Article < ApplicationRecord
              merge_mappings: true,
              mappings: {
                properties: {
-                 body: { type: 'text' }
+                 body: {
+                   type: 'text',
+                   fields: {
+                     analyzed: {
+                       type: 'text',
+                       analyzer: 'searchkick_index'
+                     },
+                     suggest: {
+                       type: 'text',
+                       analyzer: 'searchkick_suggest_index'
+                     }
+                   },
+                   ignore_above: 30_000
+                 }
                }
              }
 #              mappings: {
