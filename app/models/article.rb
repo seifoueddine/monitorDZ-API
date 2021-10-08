@@ -18,7 +18,7 @@ class Article < ApplicationRecord
                    }
                  }
                }
-             },
+             }
 #              mappings: {
 #                article: {
 #                  dynamic_templates: [
