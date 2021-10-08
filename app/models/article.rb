@@ -1,11 +1,12 @@
 class Article < ApplicationRecord
   searchkick match: :word,
-            suggest: %i[title body media_area medium_type author_name tag_name],
-             mappings: {
-               properties: {
-                 body: { type: 'text' }
-               }
-             }
+            suggest: %i[title body media_area medium_type author_name tag_name]
+  #,
+             #  mappings: {
+               # properties: {
+                 # body: { type: 'text' }
+               #            }
+  #  }
 
 
 =begin
