@@ -7,10 +7,6 @@ class Article < ApplicationRecord
                  body: {
                    type: 'text',
                    fields: {
-                     analyzed: {
-                       type: 'text',
-                       analyzer: 'searchkick_index'
-                     },
                      suggest: {
                        type: 'text',
                        analyzer: 'searchkick_suggest_index'
