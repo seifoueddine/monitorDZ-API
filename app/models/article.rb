@@ -15,7 +15,8 @@ class Article < ApplicationRecord
                        type: 'text',
                        analyzer: 'searchkick_suggest_index'
                      }
-                   }
+                   },
+                   ignore_above: 30000
                  }
                }
              }
