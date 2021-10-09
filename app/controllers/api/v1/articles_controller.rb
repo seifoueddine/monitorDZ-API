@@ -688,6 +688,8 @@ div.nobreak { page-break-inside: avoid; }
       get_articles_santenews(url_media_array)
     when 'ALGERIE360'
       get_articles_algerie360(url_media_array)
+      #when 'ALGERIEPARTPLUS'
+      #get_articles_algerie_part(url_media_array)
     else
       render json: { crawling_status: 'No media name found!! ', status: 'error' }
     end
