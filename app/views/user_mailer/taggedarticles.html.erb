@@ -19,32 +19,37 @@
       <tr>
         <td align="left" valign="center"
             style="padding-bottom:40px;border-top:0;height:100% !important;width:100% !important;">
-        <b>MONITOR DZ</b>
+        <b>MEDIAS MONITORING</b>
         </td>
         <td align="right" valign="center"
             style="padding-bottom:40px;border-top:0;height:100% !important;width:100% !important;">
           <span style="color: #8f8f8f; font-weight: normal; line-height: 2; font-size: 14px;"><%= Date.today.strftime("%d/%m/%Y") %></span>
         </td>
       </tr>
+
+      <tr>
+        <td colSpan="2" style="padding-bottom:20px;">
+          <h3 style="color:#303030; font-size:18px; line-height: 1.6; font-weight:500;">Bonjour <%= @user.name %> </h3>
+          <p
+            style="color:#8f8f8f; font-size: 14px; padding-bottom: 20px; line-height: 1.4; margin-bottom:0;">
+            Voici ce qui se dit sur tout les media par rapport a vos tags :
+            <%# @tags.each do |tag| %>
+            <%= @tags.join(' - ') %>
+            <%# end %>
+          </p>
+          <p
+            style="color:#8f8f8f; font-size: 14px; padding-bottom: 20px; line-height: 1.4; margin-bottom:0;">
+            Nombre d'articles : <%= @articles.count.to_s %>
+          </p>
+        </td>
+      </tr>
+
+
+
       <tr>
         <td colSpan="2" style="padding-top:10px; border-top:3px solid #e4e2e2">
-          <table>
-            <tr>
-              <td colSpan="2" style="padding-bottom:20px;">
-                <h3 style="color:#303030; font-size:18px; line-height: 1.6; font-weight:500;">Bonjour <%= @user.name %> </h3>
-                <p
-                  style="color:#8f8f8f; font-size: 14px; padding-bottom: 20px; line-height: 1.4; margin-bottom:0;">
-                  Voici ce qui se dit sur tout les media par rapport a vos tags :
-                  <%# @tags.each do |tag| %>
-                   <%= @tags.join(' - ') %>
-                  <%# end %>
-                </p>
-                <p
-                  style="color:#8f8f8f; font-size: 14px; padding-bottom: 20px; line-height: 1.4; margin-bottom:0;">
-                  Nombre d'articles : <%= @articles.count.to_s %>
-                </p>
-              </td>
-            </tr>
+          <table  style="width:100% !important; background-color:#ffffff;border:1px solid #e4e2e2;border-collapse:separate !important; border-radius:10px;border-spacing:0;color:#242128; margin:0;padding:40px;">
+
 
             <% @articles.each do |article| %>
           <% if article.language == 'fr' %>
@@ -123,7 +128,7 @@
     </table>
   </div>
   <div class="justify-content-center d-flex">
-    <table style="margin-top:30px; padding-bottom:20px; margin-bottom: 40px;">
+    <table style="margin-top:30px; padding-bottom:20px; margin-bottom: 40px;align-items: center; display: flex; justify-content: center; ">
       <tbody>
       <tr>
         <td align="center" valign="center">
