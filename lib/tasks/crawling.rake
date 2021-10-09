@@ -1052,7 +1052,7 @@ namespace :crawling do
       # new_article.body = new_article.body.gsub('(adsbygoogle=window.adsbygoogle||[]).push({});', '')
       #date_with_time = article.css('li.entry__meta-date.pt-xl-1').text
       # date_with_a = date_with_time.split('à')[0]
-       date = article.css('div.tdb-block-inner.td-fix-index time').text
+       date = article.css('div.vc_column-inner div div div.tdb-block-inner.td-fix-index time').text
        d = change_date_autobip_aps(date)
       new_article.date_published = d.to_datetime.change({ hour: 0, min: 0, sec: 0 })
 
