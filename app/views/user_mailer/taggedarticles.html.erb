@@ -27,31 +27,28 @@
         </td>
       </tr>
 
-      <tr>
-        <td colSpan="2" style="padding-bottom:20px;">
-          <h3 style="color:#303030; font-size:18px; line-height: 1.6; font-weight:500;">Bonjour <%= @user.name %> </h3>
-          <p
-            style="color:#8f8f8f; font-size: 14px; padding-bottom: 20px; line-height: 1.4; margin-bottom:0;">
-            Voici ce qui se dit sur tout les media par rapport a vos tags :
-            <%# @tags.each do |tag| %>
-            <%= @tags.join(' - ') %>
-            <%# end %>
-          </p>
-          <p
-            style="color:#8f8f8f; font-size: 14px; padding-bottom: 20px; line-height: 1.4; margin-bottom:0;">
-            Nombre d'articles : <%= @articles.count.to_s %>
-          </p>
-        </td>
-      </tr>
-
-
 
       <tr>
         <td colSpan="2" style="padding-top:10px; border-top:3px solid #e4e2e2">
-          <table  style="width:100% !important; background-color:#ffffff;border:1px solid #e4e2e2;border-collapse:separate !important; border-radius:10px;border-spacing:0;color:#242128; margin:0;padding:40px;">
+          <table  style="width:100% !important; background-color:#ffffff;border-collapse:separate !important;border-spacing:0;color:#242128;">
+            <tr>
+              <td colSpan="2" style="padding-bottom:20px;">
+                <h3 style="color:#303030; font-size:18px; line-height: 1.6; font-weight:500;">Bonjour <%= @user.name %> </h3>
+                <p
+                  style="color:#8f8f8f; font-size: 14px; padding-bottom: 20px; line-height: 1.4; margin-bottom:0;">
+                  Voici ce qui se dit sur tout les media par rapport a vos tags :
+                  <%# @tags.each do |tag| %>
+                  <%= @tags.join(' - ') %>
+                  <%# end %>
+                </p>
+                <p
+                  style="color:#8f8f8f; font-size: 14px; padding-bottom: 20px; line-height: 1.4; margin-bottom:0;">
+                  Nombre d'articles : <%= @articles.count.to_s %>
+                </p>
+              </td>
+            </tr>
 
-
-            <% @articles.each do |article| %>
+            <% @articles.each do |article, index| %>
           <% if article.language == 'fr' %>
             <tr>
               <td style="padding-top:0px; padding-bottom:20px; width:140px; ">
@@ -75,9 +72,11 @@
                 </p>
               </td>
             </tr>
+                <% if @articles.length != index %>
                 <tr>
                   <td colSpan="3" style="border-top:1px solid #e4e2e2;">&nbsp;</td>
                 </tr>
+                <% end %>
               <% end %>
 
 
