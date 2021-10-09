@@ -75,7 +75,7 @@ namespace :crawling do
           get_articles_algerie360(url_media_array)
 =end
     when 'ALGERIEPARTPLUS'
-          get_articles_algerie_part(url_media_array)
+      get_articles_algerie_part(url_media_array)
     else
       puts "crawling_status: 'No media name found!! ', status: 'error' "
     end
@@ -180,7 +180,7 @@ namespace :crawling do
           @articles_for_auto_tag << Article.where(url_article: articlesTagsUrl)[0]
         end
       #tag_check_and_save(tags_array) if @media.tag_status == true
-      end
+    end
 
     puts "json: { crawling_status_autobip: 'ok' }"
   end
@@ -1020,7 +1020,11 @@ namespace :crawling do
       new_article.url_article = link
       new_article.medium_id = @media.id
       new_article.language = @media.language
-      new_article.category_article = article.css('div.tdb-entry-category')[0].text
+      categories = []
+      article.css('div.tdb-entry-category').map do |category|
+       categories << category.text
+      end
+      new_article.category_article = categories.join(',')
       new_article.title = article.css('h1.tdb-title-text').text
       #  new_article.author = article.css('div.article-head__author div em a').text
       #  if article.at('li.entry__meta-author a').nil?
@@ -1288,7 +1292,7 @@ namespace :crawling do
     end
 
     # #tag_check_and_save(tags_array)
-  end
+    end
     puts "json: { crawling_status_aps: 'ok' }"
   end
     # end method to get maghrebemergent articles
