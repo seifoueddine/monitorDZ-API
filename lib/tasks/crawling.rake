@@ -34,7 +34,6 @@ namespace :crawling do
   def get_articles(url_media_array, media)
     puts "get article of #{media.name}"
     case media.name
-=begin
     when 'AUTOBIP'
           get_articles_autobip(url_media_array)
     when 'ELCHEROUK'
@@ -73,7 +72,6 @@ namespace :crawling do
          get_articles_santenews(url_media_array)
     when 'ALGERIE360'
           get_articles_algerie360(url_media_array)
-=end
     when 'ALGERIEPARTPLUS'
       get_articles_algerie_part(url_media_array)
     else
@@ -1026,14 +1024,6 @@ namespace :crawling do
       end
       new_article.category_article = categories.join(',')
       new_article.title = article.css('h1.tdb-title-text').text
-      #  new_article.author = article.css('div.article-head__author div em a').text
-      #  if article.at('li.entry__meta-author a').nil?
-      #  author_exist = Author.where(['lower(name) like ? ', ('AlgériePart auteur').downcase ])
-      # else
-      #  author_exist = Author.where(['lower(name) like ? ',
-      #                              article.at('li.entry__meta-author a').text.downcase ])
-      # end
-
       new_author = Author.new
       author = Author.where(['lower(name) like ? ', 'AlgériePart auteur'.downcase])
       if author.present?
@@ -1048,17 +1038,10 @@ namespace :crawling do
       end
       new_article.author_id = new_author.id
       new_article.body = article.css('div.tdb-block-inner.td-fix-index').inner_html
-      # new_article.body = new_article.body.gsub(/<img[^>]*>/, '')
-      # new_article.body = new_article.body.gsub('(adsbygoogle=window.adsbygoogle||[]).push({});', '')
-      #date_with_time = article.css('li.entry__meta-date.pt-xl-1').text
-      # date_with_a = date_with_time.split('à')[0]
-       date = article.css('div.vc_column-inner div div div.tdb-block-inner.td-fix-index time').text
-       d = change_date_autobip_aps(date)
+      date = article.css('div.vc_column-inner div div div.tdb-block-inner.td-fix-index time').text
+      d = change_date_autobip_aps(date)
       new_article.date_published = d.to_datetime.change({ hour: 0, min: 0, sec: 0 })
-
-
       new_article.url_image = nil
-
       new_article.status = 'pending'
       puts "URLBefoooooooooooooor:" + link
       if Article.where(url_article: link).present?
