@@ -791,7 +791,7 @@ namespace :crawling do
       new_article.medium_id = @media.id
       new_article.language = @media.language
       new_article.category_article = article.css('div#global div h3 strong').text
-      new_article.title = "#{article.css('div#main-post span h4').text} : #{article.css('div#main-post span h4').text}"
+      new_article.title = "#{article.css('div#main-post span h4').text} : #{article.css('div#main-post span h1').text}"
       #  new_article.author = article.css('div.article-head__author div em a').text
       if article.at('div#side-post div div p a').nil?
         author_exist = Author.where(['lower(name) like ? ', 'Liberté auteur'.downcase ])
@@ -1079,12 +1079,11 @@ namespace :crawling do
         puts
         next
       end
-      doc.css('div.typo a.post_title').map do |link|
-        articles_url_bilad << "http://www.elbilad.net#{link['href']}"
-      end
-      doc.css('span.date').map do |date|
-        last_dates << date.text.to_datetime.change({ hour: 0, min: 0, sec: 0 })
-      end
+      articles_url_bilad = doc.css('article ul li h3 a').map { |link| link['href'] }
+      date_category_time = doc.css('article ul li ul li').map(&:text)
+      dates = date_category_time.select { |x| x.include?('-') }
+
+      last_dates = dates.map { |date| date.to_datetime.change({ hour: 0, min: 0, sec: 0 }) }
     end
     articles_url_bilad = articles_url_bilad.reject(&:nil?)
     last_dates = last_dates.uniq
@@ -1112,18 +1111,18 @@ namespace :crawling do
       new_article.category_article = article.css('div#right_area a').text
       new_article.title = article.css('div.right_area h1').text
       # new_article.author = article.css('div.article-head__author div em a').text
-      auteur_date = article.css('div#post_conteur .date_heure').map(&:text)
-      author_exist = if auteur_date[1].nil?
-                       Author.where(['lower(name) like ? ', 'Bilad auteur'.downcase ])
+      auteur = article.css('ul.list-share li.title a span.strong').text
+      author_exist = if auteur.present?
+                       Author.where(['lower(name) like ? ', ('Bilad auteur').downcase])
                      else
                        Author.where(['lower(name) like ? ',
-                                     auteur_date[1].downcase ])
+                                     auteur.downcase])
                      end
 
       new_author = Author.new
       if author_exist.count.zero?
 
-        new_author.name = auteur_date[1].nil? ? 'Bilad auteur' : auteur_date[1]
+        new_author.name = auteur.present? ? 'Bilad auteur' : auteur
         new_author.medium_id = @media.id
         new_author.save!
       else
@@ -1132,21 +1131,26 @@ namespace :crawling do
         new_author.name = author_exist.first.name
 
       end
+
       new_article.author_id = new_author.id
-      new_article.body = article.css('#flash_post_head p').inner_html + article.css('#text_space p').inner_html
+      new_article.body = article.css('article.module-detail').inner_html
       new_article.body = new_article.body.gsub(/<img[^>]*>/, '')
-      new_article.date_published = auteur_date[0].to_datetime.change({ hour: 0, min: 0, sec: 0 })
-      url_array = article.css('#post_banner img').map { |link| link['src'] }
+      date_array = article.css('ul.list-share li.title a span').map do |a| a.text  end
+      date = date_array.select { |x| x.include?('-') }
+      new_article.date_published = date.to_datetime.change({ hour: 0, min: 0, sec: 0 })
+      url_array = article.css('article.module-detail figure img').map { |link| link['src'] }
       new_article.url_image = url_array[0]
       begin
-           new_article.image = Down.download(url_array[0]) if url_array[0].present?
-         rescue Down::Error => e
-           puts "Can't download this image #{url_array[0]}"
-           puts e.message
-           puts
-           new_article.image = nil
-         end
-      tags_array = article.css('#tags a').map(&:text)
+        if url_array[0].present?
+          new_article.image = Down.download(url_array[0])
+        end
+      rescue Down::Error => e
+        puts "Can't download this image #{url_array[0]}"
+        puts e.message
+        puts
+        new_article.image = nil
+      end
+      # tags_array = article.css('#tags a').map(&:text)
       # new_article.media_tags = tags_array.join(',')
       new_article.status = 'pending'
       puts "URLBefoooooooooooooor:" + link

@@ -642,7 +642,7 @@ div.nobreak { page-break-inside: avoid; }
     #  json_string = ArticleSerializer.new(@articles)
     stats = { stats: { archived: archived,
                        pending: pending } }
-    render json: { articles: json_string, archived: archived, pending: pending  }
+    render json: { articles: json_string, archived: archived, pending: pending }
   end
 
 
@@ -893,7 +893,7 @@ div.nobreak { page-break-inside: avoid; }
       count += 1 if new_article.save
         # tag_check_and_save(tags_array)if @media.tag_status == true
     end
-    render json: { crawling_count_elcherouk:  count  }
+    render json: { crawling_count_elcherouk: count }
   end
   # end method to get elcherouk articles
 
@@ -922,7 +922,7 @@ div.nobreak { page-break-inside: avoid; }
         last_dates << date['datetime']
       end
     end
-    last_dates = last_dates.map { |d| d.to_datetime.change({ hour: 0, min: 0, sec: 0 }) + (1.0 / 24)}
+    last_dates = last_dates.map { |d| d.to_datetime.change({ hour: 0, min: 0, sec: 0 }) + (1.0 / 24) }
     articles_url_ennahar = articles_url_ennahar.reject(&:nil?)
     last_dates = last_dates.uniq
     last_articles = Article.where(medium_id: @media.id).where(date_published: last_dates)
@@ -1068,7 +1068,7 @@ div.nobreak { page-break-inside: avoid; }
            if url_array[0].present?
              new_article.image = Down.download(url_array[0])
            end
-         rescue Down::Error => e
+      rescue Down::Error => e
            puts "Can't download this image #{url_array[0]}"
            puts e.message
            puts
@@ -1106,7 +1106,7 @@ div.nobreak { page-break-inside: avoid; }
       end
     end
     last_dates = last_dates.map { |d| change_date_autobip_aps(d) }
-    last_dates = last_dates.map{ |d| d.to_datetime.change({ hour: 0, min: 0, sec: 0 })}
+    last_dates = last_dates.map{ |d| d.to_datetime.change({ hour: 0, min: 0, sec: 0 }) }
     # last_dates = last_dates.map(&:to_datetime.change({ hour: 0, min: 0, sec: 0 }))
     articles_url_aps = articles_url_aps.reject(&:nil?)
     last_dates = last_dates.uniq
@@ -1203,7 +1203,7 @@ div.nobreak { page-break-inside: avoid; }
       end
     end
     last_dates = last_dates.map { |d| change_date_autobip_aps(d) }
-    last_dates = last_dates.map{ |d| d.to_datetime.change({ hour: 0, min: 0, sec: 0 })}
+    last_dates = last_dates.map{ |d| d.to_datetime.change({ hour: 0, min: 0, sec: 0 }) }
     # last_dates = last_dates.map(&:to_datetime.change({ hour: 0, min: 0, sec: 0 }))
     articles_url_le_soir = articles_url_le_soir.reject(&:nil?)
     last_dates = last_dates.uniq
@@ -1305,7 +1305,7 @@ div.nobreak { page-break-inside: avoid; }
       end
     end
     last_dates = last_dates.map { |d| change_date_autobip_aps(d) }
-    last_dates = last_dates.map{ |d| d.to_datetime.change({ hour: 0, min: 0, sec: 0 })}
+    last_dates = last_dates.map{ |d| d.to_datetime.change({ hour: 0, min: 0, sec: 0 }) }
     # last_dates = last_dates.map(&:to_datetime.change({ hour: 0, min: 0, sec: 0 }))
     articles_url_liberte = articles_url_liberte.reject(&:nil?)
     last_dates = last_dates.uniq
@@ -1329,7 +1329,7 @@ div.nobreak { page-break-inside: avoid; }
       new_article.medium_id = @media.id
       new_article.language = @media.language
       new_article.category_article = article.css('div#global div h3 strong').text
-      new_article.title = article.css('div#main-post span h4').text + ' : ' + article.css('div#main-post span h4').text
+      new_article.title = article.css('div#main-post span h4').text + ' : ' + article.css('div#main-post span h1').text
       #  new_article.author = article.css('div.article-head__author div em a').text
       author_exist = if article.at('div#side-post div div p a').nil?
                        Author.where(['lower(name) like ? ', ('Liberté auteur').downcase])
@@ -1358,7 +1358,7 @@ div.nobreak { page-break-inside: avoid; }
       # d = change_date_autobip_aps(date)
       new_article.date_published = date.to_datetime.change({ hour: 0, min: 0, sec: 0 })
       # new_article.date_published =
-      url_array = article.css('div.media img.post-image').map { |link|  link['src'] }
+      url_array = article.css('div.media img.post-image').map { |link| link['src'] }
       new_article.url_image = url_array[0]
       begin
         new_article.image = Down.download(url_array[0]) if url_array[0].present?
@@ -1398,12 +1398,11 @@ div.nobreak { page-break-inside: avoid; }
         puts
         next
       end
-      doc.css('div.typo a.post_title').map do |link|
-        articles_url_bilad << 'http://www.elbilad.net' + link['href']
-      end
-      doc.css('span.date').map do |date|
-        last_dates << date.text.to_datetime.change({ hour: 0, min: 0, sec: 0 })
-      end
+      articles_url_bilad = doc.css('article ul li h3 a').map { |link| link['href'] }
+      date_category_time = doc.css('article ul li ul li').map(&:text)
+      dates = date_category_time.select { |x| x.include?('-') }
+
+      last_dates = dates.map { |date| date.to_datetime.change({ hour: 0, min: 0, sec: 0 }) } 
     end
     articles_url_bilad = articles_url_bilad.reject(&:nil?)
     last_dates = last_dates.uniq
@@ -1431,18 +1430,18 @@ div.nobreak { page-break-inside: avoid; }
       new_article.category_article = article.css('div#right_area a').text
       new_article.title = article.css('div.right_area h1').text
       # new_article.author = article.css('div.article-head__author div em a').text
-      auteur_date = article.css('div#post_conteur .date_heure').map(&:text)
-      author_exist = if auteur_date[1].nil?
+      auteur = article.css('ul.list-share li.title a span.strong').text
+      author_exist = if auteur.present?
                        Author.where(['lower(name) like ? ', ('Bilad auteur').downcase])
                      else
                        Author.where(['lower(name) like ? ',
-                                     auteur_date[1].downcase])
+                                     auteur.downcase])
                      end
 
       new_author = Author.new
       if author_exist.count.zero?
 
-        new_author.name = auteur_date[1].nil? ? 'Bilad auteur' : auteur_date[1]
+        new_author.name = auteur.present? ? 'Bilad auteur' : auteur
         new_author.medium_id = @media.id
         new_author.save!
       else
@@ -1452,22 +1451,24 @@ div.nobreak { page-break-inside: avoid; }
 
       end
       new_article.author_id = new_author.id
-      new_article.body = article.css('#flash_post_head p').inner_html + article.css('#text_space p').inner_html
+      new_article.body = article.css('article.module-detail').inner_html
       new_article.body = new_article.body.gsub(/<img[^>]*>/, '')
-      new_article.date_published = auteur_date[0].to_datetime.change({ hour: 0, min: 0, sec: 0 })
-      url_array = article.css('#post_banner img').map { |link| link['src'] }
+      date_array = article.css('ul.list-share li.title a span').map do |a| a.text  end
+      date = date_array.select { |x| x.include?('-') }
+      new_article.date_published = date.to_datetime.change({ hour: 0, min: 0, sec: 0 })
+      url_array = article.css('article.module-detail figure img').map { |link| link['src'] }
       new_article.url_image = url_array[0]
       begin
            if url_array[0].present?
              new_article.image = Down.download(url_array[0])
            end
-         rescue Down::Error => e
+      rescue Down::Error => e
            puts "Can't download this image #{url_array[0]}"
            puts e.message
            puts
            new_article.image = nil
          end
-      tags_array = article.css('#tags a').map(&:text)
+      # tags_array = article.css('#tags a').map(&:text)
       # new_article.media_tags = tags_array.join(',')
       new_article.status = 'pending'
       new_article.save!
@@ -1501,7 +1502,7 @@ div.nobreak { page-break-inside: avoid; }
       end
     end
     last_dates = last_dates.map { |d| change_date_maghrebemergen(d) }
-    last_dates = last_dates.map { |d| d.to_datetime.change({ hour: 0, min: 0, sec: 0 })}
+    last_dates = last_dates.map { |d| d.to_datetime.change({ hour: 0, min: 0, sec: 0 }) }
     articles_url_maghrebemergent = articles_url_maghrebemergent.reject(&:nil?)
     last_dates = last_dates.uniq
     last_articles = Article.where(medium_id: @media.id).where(date_published: last_dates)
@@ -1554,7 +1555,7 @@ div.nobreak { page-break-inside: avoid; }
     date = article.at('div.elementor-widget-container ul li a span.elementor-icon-list-text.elementor-post-info__item.elementor-post-info__item--type-date').text
     d = change_date_maghrebemergen(date)
     new_article.date_published = d.to_datetime.change({ hour: 0, min: 0, sec: 0 })
-    url_array = article.css('div.elementor-element.elementor-element-c05ee34.elementor-widget.elementor-widget-theme-post-featured-image.elementor-widget-image div div img').map  { |link| link['src'] }
+    url_array = article.css('div.elementor-element.elementor-element-c05ee34.elementor-widget.elementor-widget-theme-post-featured-image.elementor-widget-image div div img').map { |link| link['src'] }
     new_article.url_image = url_array[0]
     begin
       new_article.image = Down.download(url_array[0]) if url_array[0].present?
@@ -1785,7 +1786,7 @@ div.nobreak { page-break-inside: avoid; }
            if url_array[0].present?
              new_article.image = Down.download(url_array[0])
            end
-         rescue Down::Error => e
+      rescue Down::Error => e
            puts "Can't download this image #{url_array[0]}"
            puts e.message
            puts
@@ -1828,7 +1829,7 @@ div.nobreak { page-break-inside: avoid; }
     end
 
     last_dates = last_dates.map { |d| change_date_maghrebemergen(d) }
-    last_dates = last_dates.map { |d| d.to_datetime.change({ hour: 0, min: 0, sec: 0 })}
+    last_dates = last_dates.map { |d| d.to_datetime.change({ hour: 0, min: 0, sec: 0 }) }
     articles_url_elkhabar = articles_url_elkhabar.reject(&:nil?)
     articles_url_elkhabar = articles_url_elkhabar.uniq
     last_dates = last_dates.uniq
@@ -1939,7 +1940,7 @@ div.nobreak { page-break-inside: avoid; }
       end
     end
     # last_dates = last_dates.map { |d| change_date_maghrebemergen(d) }
-    last_dates = last_dates.map { |d| d.to_datetime.change({ hour: 0, min: 0, sec: 0 }) + (1.0 / 24)}
+    last_dates = last_dates.map { |d| d.to_datetime.change({ hour: 0, min: 0, sec: 0 }) + (1.0 / 24) }
     articles_url_elikhbaria = articles_url_elikhbaria.reject(&:nil?)
     last_dates = last_dates.uniq
     last_articles = Article.where(medium_id: @media.id).where(date_published: last_dates)
@@ -2041,7 +2042,7 @@ div.nobreak { page-break-inside: avoid; }
       end
     end
     # last_dates = last_dates.map { |d| change_date_maghrebemergen(d) }
-    last_dates = last_dates.map { |d| d.to_datetime.change({ hour: 0, min: 0, sec: 0 })}
+    last_dates = last_dates.map { |d| d.to_datetime.change({ hour: 0, min: 0, sec: 0 }) }
     articles_url_algerieco = articles_url_algerieco.reject(&:nil?)
     last_dates = last_dates.uniq
     last_articles = Article.where(medium_id: @media.id).where(date_published: last_dates)
@@ -2149,7 +2150,7 @@ div.nobreak { page-break-inside: avoid; }
       end
     end
     # last_dates = last_dates.map { |d| change_date_maghrebemergen(d) }
-    last_dates = last_dates.map { |d| d.to_datetime.change({ hour: 0, min: 0, sec: 0 }) + (2.0 / 24)}
+    last_dates = last_dates.map { |d| d.to_datetime.change({ hour: 0, min: 0, sec: 0 }) + (2.0 / 24) }
     articles_url_chiffreaffaire = articles_url_chiffreaffaire.reject(&:nil?)
     last_dates = last_dates.uniq
     last_articles = Article.where(medium_id: @media.id).where(date_published: last_dates)
@@ -2258,7 +2259,7 @@ div.nobreak { page-break-inside: avoid; }
       end
     end
     # last_dates = last_dates.map { |d| change_date_maghrebemergen(d) }
-    last_dates = last_dates.map { |d| d.to_datetime.change({ hour: 0, min: 0, sec: 0 }) + (1.0 / 24)}
+    last_dates = last_dates.map { |d| d.to_datetime.change({ hour: 0, min: 0, sec: 0 }) + (1.0 / 24) }
     articles_url_elhiwar = articles_url_elhiwar.reject(&:nil?)
     last_dates = last_dates.uniq
     last_articles = Article.where(medium_id: @media.id).where(date_published: last_dates)
@@ -2372,7 +2373,7 @@ div.nobreak { page-break-inside: avoid; }
       end
     end
     # last_dates = last_dates.map { |d| change_date_maghrebemergen(d) }
-    last_dates = last_dates.map { |d| d.to_datetime.change({ hour: 0, min: 0, sec: 0 }) + (1.0 / 24)}
+    last_dates = last_dates.map { |d| d.to_datetime.change({ hour: 0, min: 0, sec: 0 }) + (1.0 / 24) }
     articles_url_visadz = articles_url_visadz.reject(&:nil?)
     last_dates = last_dates.uniq
     last_articles = Article.where(medium_id: @media.id).where(date_published: last_dates)
@@ -2525,7 +2526,7 @@ div.nobreak { page-break-inside: avoid; }
       # new_article.date_published =
       url_array = article.css('entry__img-holder.px-2.px-md-0 img').map { |link|  link['src'] }
       puts "this is url  image"
-      puts  url_array
+      puts url_array
       puts "this is url  image "
       new_article.url_image = url_array[0]
       begin
@@ -2594,7 +2595,7 @@ div.nobreak { page-break-inside: avoid; }
       new_article.medium_id = @media.id
       new_article.language = @media.language
       categories = []
-      article.css('div.tdb-entry-category').map do |category|
+      article.css('div.tdb-category.td-fix-index a.tdb-entry-category').map do |category|
         categories << category.text
       end
       new_article.category_article = categories.join(',')
@@ -2665,7 +2666,7 @@ div.nobreak { page-break-inside: avoid; }
       end
     end
     last_dates = last_dates.map { |d| change_date_autobip_aps(d) }
-    last_dates = last_dates.map { |d| d.to_datetime.change({ hour: 0, min: 0, sec: 0 })}
+    last_dates = last_dates.map { |d| d.to_datetime.change({ hour: 0, min: 0, sec: 0 }) }
     articles_url_santenews = articles_url_santenews.reject(&:nil?)
     last_dates = last_dates.uniq
     last_articles = Article.where(medium_id: @media.id).where(date_published: last_dates)
@@ -2721,7 +2722,7 @@ div.nobreak { page-break-inside: avoid; }
            if url_array[0].present?
              new_article.image = Down.download(url_array[0])
            end
-         rescue Down::Error => e
+      rescue Down::Error => e
            puts "Can't download this image #{url_array[0]}"
            puts e.message
            puts
@@ -2761,7 +2762,7 @@ div.nobreak { page-break-inside: avoid; }
   # change_date_autobip_aps
   def change_date_autobip_aps(d)
 
-    d.split.map { |m|
+    d.split.map do |m|
       case m.downcase
       when 'Janvier'.downcase
         'January'
@@ -2792,7 +2793,7 @@ div.nobreak { page-break-inside: avoid; }
       else
         m
       end
-    }.join(' ')
+    end.join(' ')
   end
   # change_date_autobip_aps
   #
@@ -2800,7 +2801,7 @@ div.nobreak { page-break-inside: avoid; }
   # change_date_maghrebemergent
   def change_date_maghrebemergen(d)
 
-    d.split.map { |m|
+    d.split.map do |m|
       case m.downcase
       when 'Janvier,'.downcase
         'January'
@@ -2881,7 +2882,7 @@ div.nobreak { page-break-inside: avoid; }
       else
         m
       end
-    }.join(' ')
+    end.join(' ')
   end
   # change_date_maghrebemergents
   #                 <p style="font-size: 12px; line-height: 1; color:brown; margin-top:5px;">
