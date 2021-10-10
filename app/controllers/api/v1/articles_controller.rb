@@ -1453,7 +1453,7 @@ div.nobreak { page-break-inside: avoid; }
       new_article.author_id = new_author.id
       new_article.body = article.css('article.module-detail').inner_html
       new_article.body = new_article.body.gsub(/<img[^>]*>/, '')
-      date_array = article.css('ul.list-share li.title a span').map do |a| a.text  end
+      date_array = article.css('header.header-a ul.list-share li.title a span').map(&:text)
       date = date_array.select { |x| x.include?('-') }
       new_article.date_published = date[0].to_datetime.change({ hour: 0, min: 0, sec: 0 })
       url_array = article.css('article.module-detail figure img').map { |link| link['src'] }

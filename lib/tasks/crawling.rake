@@ -379,7 +379,7 @@ namespace :crawling do
       new_article.author_id = new_author.id
       new_article.body = article.css('div.artx').inner_html
       new_article.body = new_article.body.gsub(/<img[^>]*>/, '')
-      new_article.date_published = article.at('time[datetime]')['datetime'].to_datetime.change({ hour: 0, min: 0, 
+      new_article.date_published = article.at('time[datetime]')['datetime'].to_datetime.change({ hour: 0, min: 0,
                                                                                                  sec: 0 }) + (1.0 / 24)
       url_array = article.css('figure div.sgb1__afmg.d-f img').map { |link| link['src'] }
       new_article.url_image = url_array[0]
@@ -1135,9 +1135,9 @@ namespace :crawling do
       new_article.author_id = new_author.id
       new_article.body = article.css('article.module-detail').inner_html
       new_article.body = new_article.body.gsub(/<img[^>]*>/, '')
-      date_array = article.css('ul.list-share li.title a span').map do |a| a.text  end
-      date = date_array.select { |x| x.include?('-') }
-      new_article.date_published = date[0].to_datetime.change({ hour: 0, min: 0, sec: 0 })
+      date_array = article.css('header.header-a ul.list-share li.title a span').map(&:text)
+      date99 = date_array.select { |x| x.include?('-') }
+      new_article.date_published = date99[0].to_datetime.change({ hour: 0, min: 0, sec: 0 })
       url_array = article.css('article.module-detail figure img').map { |link| link['src'] }
       new_article.url_image = url_array[0]
       begin
@@ -1501,7 +1501,7 @@ namespace :crawling do
       new_article.author_id = new_author.id
       new_article.body = article.css('#text_article').inner_html
       new_article.body = new_article.body.gsub(/<img[^>]*>/, '')
-      new_article.date_published = article.css('#contenu > div.At > span').text.split(':')[1].to_datetime.change({ 
+      new_article.date_published = article.css('#contenu > div.At > span').text.split(':')[1].to_datetime.change({
 hour: 0, min: 0, sec: 0 })
       url_array = article.css('#articlecontent > div.TxArtcile > div.ImgCapt > img').map { |link| link['src'] }
       new_article.url_image = url_array[0]
@@ -1685,7 +1685,7 @@ hour: 0, min: 0, sec: 0 })
       end
     end
     # last_dates = last_dates.map { |d| change_date_maghrebemergen(d) }
-    last_dates = last_dates.map { |d| d.to_datetime.change({ hour: 0, min: 0, sec: 0 }) }
+    last_dates = last_dates.map { |d| d.to_datetime.change({ hour: 0, min: 0, sec: 0 }) + (1.0 / 24) }
     articles_url_elikhbaria = articles_url_elikhbaria.reject(&:nil?)
     last_dates = last_dates.uniq
     last_articles = Article.where(medium_id: @media.id).where(date_published: last_dates)
@@ -1740,7 +1740,7 @@ hour: 0, min: 0, sec: 0 })
       # date[','] = ''
       date = article.at('time[datetime]')['datetime']
       # d = change_date_maghrebemergen(date)
-      new_article.date_published = date.to_datetime.change({ hour: 0, min: 0, sec: 0 })
+      new_article.date_published = date.to_datetime.change({ hour: 0, min: 0, sec: 0 }) + (1.0 / 24)
       url_array = # and link['class'] == 'b-loaded'
 article.css('div.post-header div.single-featured > a').map do |link|
  link['href'] end
