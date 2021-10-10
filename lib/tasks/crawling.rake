@@ -46,8 +46,8 @@ namespace :crawling do
            get_articles_aps(url_media_array)
     when 'MAGHREBEMERGENT'
            get_articles_maghrebemergent(url_media_array)
-    when 'ELBILAD'
-           get_articles_bilad(url_media_array)
+           # when 'ELBILAD'
+           # get_articles_bilad(url_media_array)
     when 'ELMOUDJAHID'
        get_articles_elmoudjahid(url_media_array)
     when 'ELMOUDJAHID-FR'
