@@ -1455,7 +1455,7 @@ div.nobreak { page-break-inside: avoid; }
       new_article.body = new_article.body.gsub(/<img[^>]*>/, '')
       date_array = article.css('ul.list-share li.title a span').map do |a| a.text  end
       date = date_array.select { |x| x.include?('-') }
-      new_article.date_published = date.to_datetime.change({ hour: 0, min: 0, sec: 0 })
+      new_article.date_published = date[0].to_datetime.change({ hour: 0, min: 0, sec: 0 })
       url_array = article.css('article.module-detail figure img').map { |link| link['src'] }
       new_article.url_image = url_array[0]
       begin
