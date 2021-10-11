@@ -2628,10 +2628,6 @@ div.nobreak { page-break-inside: avoid; }
       puts "URLURLURLURLURLURLURLURLURLURLURLURLURLURLURL: #{articlesTagsUrl}"
 
       new_article.save!
-      if articlesTagsUrl.present?
-        puts 'add article'
-        @articles_for_auto_tag << Article.where(url_article: articlesTagsUrl)[0]
-      end
     end
     render json: { crawling_status_aps: 'ok' }
   end
