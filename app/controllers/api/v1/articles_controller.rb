@@ -90,8 +90,7 @@ class Api::V1::ArticlesController < ApplicationController
   end
 
   def articles_by_tag
-    @article_tag_for_dash = Article.where(date_published: Date.today.change({ hour: 0, min: 0, sec: 0 })).joins(:tags)
-                                   .group('tags.name').count
+    @article_tag_for_dash = Article.where(date_published: Date.today.change({ hour: 0, min: 0, sec: 0 })).joins(:tags).group('tags.name').count
     render json: @article_tag_for_dash
   end
 
@@ -99,6 +98,14 @@ class Api::V1::ArticlesController < ApplicationController
     days = params[:number_days] || 7
     @article_date_for_dash = Article.group('date_published').order('date_published desc').limit(days).count
     render json: @article_date_for_dash
+  end
+
+  def tags_by_date
+    start_date = params[:start_d]
+    end_date = params[:end_d]
+    @tags_by_date = ArticleTag.where(created_at: start_date.to_datetime.beginning_of_day..end_date.to_datetime.end_of_day)
+                              .joins(:tag).group('tags.name').count
+    render json: @tags_by_date
   end
 
   def articles_client_by_medium
@@ -118,7 +125,6 @@ class Api::V1::ArticlesController < ApplicationController
                                        .group('media.name').count
     render json: @articles_for_client_dash
   end
-
 
   def articles_client_by_author
     slug_id = get_slug_id
@@ -161,11 +167,6 @@ class Api::V1::ArticlesController < ApplicationController
     @article_date_for_client_dash = Article.where(medium_id: media_ids).group('date_published').order('date_published desc').limit(days).count
     render json: @article_date_for_client_dash
   end
-
-
-
-
-
 
   # GET /articlesclass
   def index
