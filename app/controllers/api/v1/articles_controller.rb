@@ -94,6 +94,17 @@ class Api::V1::ArticlesController < ApplicationController
     render json: @article_tag_for_dash
   end
 
+
+=begin
+  def articles_client_by_tag
+    @article_tag_for_dash = ArticleTag.where(created_at: Date.today.beginning_of_day..Date.today.end_of_day).joins(:article).joins(:tag).group('tags.name').count
+    render json: @article_tag_for_dash
+  end
+=end
+
+
+
+
   def articles_by_date
     days = params[:number_days] || 7
     @article_date_for_dash = Article.group('date_published').order('date_published desc').limit(days).count
@@ -103,10 +114,11 @@ class Api::V1::ArticlesController < ApplicationController
   def tags_by_date
     start_date = params[:start_d]
     end_date = params[:end_d]
-    @tags_by_date = ArticleTag.where(slug_id: slug_id, created_at: start_date.to_datetime.beginning_of_day..end_date.to_datetime.end_of_day)
+    @tags_by_date = ArticleTag.where(created_at: start_date.to_datetime.beginning_of_day..end_date.to_datetime.end_of_day)
                               .joins(:tag).group('tags.name').count
     render json: @tags_by_date
   end
+
 
 
   def tags_client_by_date
