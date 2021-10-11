@@ -103,7 +103,17 @@ class Api::V1::ArticlesController < ApplicationController
   def tags_by_date
     start_date = params[:start_d]
     end_date = params[:end_d]
-    @tags_by_date = ArticleTag.where(created_at: start_date.to_datetime.beginning_of_day..end_date.to_datetime.end_of_day)
+    @tags_by_date = ArticleTag.where(slug_id: slug_id, created_at: start_date.to_datetime.beginning_of_day..end_date.to_datetime.end_of_day)
+                              .joins(:tag).group('tags.name').count
+    render json: @tags_by_date
+  end
+
+
+  def tags_client_by_date
+    start_date = params[:start_d]
+    end_date = params[:end_d]
+    slug_id = get_slug_id
+    @tags_by_date = ArticleTag.where(slug_id: slug_id, created_at: start_date.to_datetime.beginning_of_day..end_date.to_datetime.end_of_day)
                               .joins(:tag).group('tags.name').count
     render json: @tags_by_date
   end
