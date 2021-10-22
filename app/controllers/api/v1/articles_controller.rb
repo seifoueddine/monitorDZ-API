@@ -77,10 +77,11 @@ class Api::V1::ArticlesController < ApplicationController
     end_date = params[:end_date]
 
     @articles_for_dash = Article.where('date_published >= :start AND date_published <= :end', start: start_date.to_datetime.change({ hour: 0, min: 0, sec: 0 }) , end: end_date.to_datetime.change({ hour: 0, min: 0, sec: 0 }))
-                                .joins(:medium).order('COUNT(jobs.id) DESC')
+                                .joins(:medium)
                                 .group('media.name').count
+    sort = @articles_for_dash.sort_by {|_key, value| value}.reverse.to_h
 
-    render json: @articles_for_dash
+    render json: sort
   end
 
   def articles_by_author
@@ -1631,7 +1632,7 @@ div.nobreak { page-break-inside: avoid; }
       date_category_time = doc.css('article ul li ul li').map(&:text)
       dates = date_category_time.select { |x| x.include?('-') }
 
-      last_dates = dates.map { |date| date.to_datetime.change({ hour: 0, min: 0, sec: 0 }) } 
+      last_dates = dates.map { |date| date.to_datetime.change({ hour: 0, min: 0, sec: 0 }) }
     end
     articles_url_bilad = articles_url_bilad.reject(&:nil?)
     last_dates = last_dates.uniq
