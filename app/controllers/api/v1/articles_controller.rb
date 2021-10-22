@@ -77,7 +77,7 @@ class Api::V1::ArticlesController < ApplicationController
     end_date = params[:end_date]
 
     @articles_for_dash = Article.where('date_published >= :start AND date_published <= :end', start: start_date.to_datetime.change({ hour: 0, min: 0, sec: 0 }) , end: end_date.to_datetime.change({ hour: 0, min: 0, sec: 0 }))
-                                .joins(:medium)
+                                .joins(:medium).order('COUNT(jobs.id) DESC')
                                 .group('media.name').count
 
     render json: @articles_for_dash
@@ -1596,19 +1596,11 @@ div.nobreak { page-break-inside: avoid; }
       #tags_array = article.css('ul.itemTags li').map(&:text)
       # new_article.media_tags = tags_array.join(',')
       new_article.status = 'pending'
-      puts "URLBefoooooooooooooor:" + link
-      if Article.where(url_article: link).present?
-        puts 'article present'
-      else
-        articlesTagsUrl = link
-      end
-      puts "URLURLURLURLURLURLURLURLURLURLURLURLURLURLURL: #{articlesTagsUrl}"
-
       new_article.save!
-      if articlesTagsUrl.present?
-        puts 'add article'
-        @articles_for_auto_tag << Article.where(url_article: articlesTagsUrl)[0]
-      end
+      #if articlesTagsUrl.present?
+        # puts 'add article'
+        # @articles_for_auto_tag << Article.where(url_article: articlesTagsUrl)[0]
+        #end
       ##tag_check_and_save(tags_array)if @media.tag_status == true
     end
     puts "json: { crawling_status_reporteur: 'ok' }"
