@@ -715,6 +715,8 @@ div.nobreak { page-break-inside: avoid; }
       get_articles_algerie_part(url_media_array)
     when '24H-DZ'
       get_articles_24hdz(url_media_array)
+    when 'REPORTERS'
+      get_articles_reporters(url_media_array)
     else
       render json: { crawling_status: 'No media name found!! ', status: 'error' }
     end
@@ -997,7 +999,7 @@ div.nobreak { page-break-inside: avoid; }
       new_article.body = article.css('div.artx').inner_html
       new_article.body = new_article.body.gsub(/<img[^>]*>/, '')
       new_article.date_published = article.at('time[datetime]')['datetime'].to_datetime.change({ hour: 0, min: 0, sec: 0 }) + (1.0 / 24)
-      url_array = article.css('div.sgb1__afmg.d-f img').map { |link| link['src'] }
+      url_array = article.css('figure.sgb1__afig div.sgb1__afmg img').map { |link| link['data-src'] }
       new_article.url_image = url_array[0]
       begin
         new_article.image = Down.download(url_array[0]) if url_array[0].present?
@@ -1509,6 +1511,113 @@ div.nobreak { page-break-inside: avoid; }
 
 
 
+  # start method to get reporters articles
+  def get_articles_reporters(url_media_array)
+    articles_url_reporters = []
+    last_dates = []
+    url_media_array.map do |url|
+      begin
+        doc = Nokogiri::HTML(URI.open(url))
+      rescue OpenURI::HTTPError => e
+        puts "Can't access #{url}"
+        puts e.message
+        puts
+        next
+      end
+      doc.css('h3.entry-title.td-module-title a').map do |link|
+        articles_url_reporters << link['href']
+      end
+      doc.css('time.entry-date.updated.td-module-date').map do |date|
+        last_dates << date['datetime']
+      end
+    end
+    last_dates = last_dates.map { |d| d.to_datetime.change({ hour: 0, min: 0, sec: 0 }) }
+    # last_dates = last_dates.map(&:to_datetime.change({ hour: 0, min: 0, sec: 0 }))
+    articles_url_reporters = articles_url_reporters.reject(&:nil?)
+    last_dates = last_dates.uniq
+    last_articles = Article.where(medium_id: @media.id).where(date_published: last_dates)
+    list_articles_url = []
+    last_articles.map do |article|
+      list_articles_url << article.url_article
+    end
+    articles_url_reporters_after_check = articles_url_reporters - list_articles_url
+    articles_url_reporters_after_check.map do |link|
+      begin
+        article = Nokogiri::HTML(URI.open(link))
+      rescue OpenURI::HTTPError => e
+        puts "Can't access #{link}"
+        puts e.message
+        puts
+        next
+      end
+      new_article = Article.new
+      new_article.url_article = link
+      new_article.medium_id = @media.id
+      new_article.language = @media.language
+      new_article.category_article = article.css('header.td-post-title ul.td-category a').text
+      new_article.title = article.css('h1.entry-title').text
+      #  new_article.author = article.css('div.article-head__author div em a').text
+      if article.at('div.td-post-author-name').nil?
+        author_exist = Author.where(['lower(name) like ? ', 'reporters auteur'.downcase ])
+      else
+        author_exist = Author.where(['lower(name) like ? ',
+                                     article.at('div.td-post-author-name').text.downcase ])
+      end
+
+      new_author = Author.new
+      if author_exist.count.zero?
+
+        new_author.name = article.at('div.td-post-author-name').nil? ? 'reporters auteur' : article.at('div.td-post-author-name').text.delete(' ')
+        new_author.medium_id = @media.id
+        new_author.save!
+      else
+
+        new_author.id = author_exist.first.id
+        new_author.name = author_exist.first.name
+
+      end
+      new_article.author_id = new_author.id
+      new_article.body = article.css('div.td-post-content').inner_html
+      new_article.body = new_article.body.gsub(/<img[^>]*>/, '')
+
+      # d = change_date_autobip_aps(date)
+      new_article.date_published = article.at('time[datetime]')['datetime'].to_datetime.change({ hour: 0, min: 0, sec: 0 })
+      # new_article.date_published =
+      url_array = article.css('div.td-post-featured-image img').map { |link| link['src'] }
+      new_article.url_image = url_array[0]
+      begin
+        new_article.image = Down.download(url_array[0]) if url_array[0].present?
+      rescue Down::Error => e
+        puts "Can't download this image #{url_array[0]}"
+        puts e.message
+        puts
+        new_article.image = nil
+      end
+      #tags_array = article.css('ul.itemTags li').map(&:text)
+      # new_article.media_tags = tags_array.join(',')
+      new_article.status = 'pending'
+      puts "URLBefoooooooooooooor:" + link
+      if Article.where(url_article: link).present?
+        puts 'article present'
+      else
+        articlesTagsUrl = link
+      end
+      puts "URLURLURLURLURLURLURLURLURLURLURLURLURLURLURL: #{articlesTagsUrl}"
+
+      new_article.save!
+      if articlesTagsUrl.present?
+        puts 'add article'
+        @articles_for_auto_tag << Article.where(url_article: articlesTagsUrl)[0]
+      end
+      ##tag_check_and_save(tags_array)if @media.tag_status == true
+    end
+    puts "json: { crawling_status_reporteur: 'ok' }"
+  end
+  # end method to get reporters articles
+
+
+
+
 
 
 
@@ -1683,8 +1792,8 @@ div.nobreak { page-break-inside: avoid; }
     date = article.at('div.elementor-widget-container ul li a span.elementor-icon-list-text.elementor-post-info__item.elementor-post-info__item--type-date').text
     d = change_date_maghrebemergen(date)
     new_article.date_published = d.to_datetime.change({ hour: 0, min: 0, sec: 0 })
-    url_array = article.css('div.elementor-element.elementor-element-c05ee34.elementor-widget.elementor-widget-theme-post-featured-image.elementor-widget-image div div img').map { |link| link['src'] }
-    new_article.url_image = url_array[0]
+    url_array = article.css('section div div div div div div.elementor-widget-wrap div.elementor-widget-container div.elementor-image img').map { |link| link['src'] }
+    new_article.url_image = url_array[1]
     begin
       new_article.image = Down.download(url_array[0]) if url_array[0].present?
     rescue Down::Error => e
@@ -2652,7 +2761,7 @@ div.nobreak { page-break-inside: avoid; }
       d = change_date_maghrebemergen(date)
       new_article.date_published = d.to_datetime.change({ hour: 0, min: 0, sec: 0 })
       # new_article.date_published =
-      url_array = article.css('entry__img-holder.px-2.px-md-0 img').map { |link|  link['src'] }
+      url_array = article.css('div.entry__img-holder.px-2.px-md-0 img').map { |link| link['data-src'] }
       puts "this is url  image"
       puts url_array
       puts "this is url  image "
