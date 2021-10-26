@@ -231,6 +231,7 @@ class Api::V1::ArticlesController < ApplicationController
   def update
     if @article.update(article_params)
       json_string = ArticleSerializer.new(@article).serializable_hash.to_json
+      @article.reindex
       render json: json_string
     else
       render json: @article.errors, status: :unprocessable_entity
