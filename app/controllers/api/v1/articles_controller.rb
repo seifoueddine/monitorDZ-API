@@ -230,6 +230,11 @@ class Api::V1::ArticlesController < ApplicationController
   # PATCH/PUT /articles/1
   def update
     if @article.update(article_params)
+      if params[:author_id]
+        @article.author.clear
+        author = Author.where(id: params[:author_id])
+        @article.author = author
+      end
       json_string = ArticleSerializer.new(@article).serializable_hash.to_json
       render json: json_string
     else
@@ -2969,7 +2974,7 @@ div.nobreak { page-break-inside: avoid; }
   # Only allow a trusted parameter "white list" through.
   def article_params
     params.permit(:title, :date_published, :author, :body,
-                  :media_tags, :language, :url_image)
+                  :media_tags, :language, :url_image, :author_id)
   end
 
   # tag_check_and_savetag_check_and_save
