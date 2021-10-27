@@ -16,9 +16,8 @@ class Api::V1::AuthorsController < ApplicationController
       end
     # set_pagination_headers :authors
     # json_string = AuthorSerializer.new(@authors).serializable_hash.to_json
-    @authors.map do |author|
-      puts author
-      puts author.name
+    @authors.select do |author|
+      puts author.articles.count
       # author.merge!(articles_count: author.articles.count)
     end
     render json: @authors
