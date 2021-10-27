@@ -75,6 +75,6 @@ class Api::V1::AuthorsController < ApplicationController
 
   # Only allow a trusted parameter "white list" through.
   def author_params
-    params.permit(:name,:medium_id)
+    params.permit(:name,:medium_id, :articles_count)
   end
 end
