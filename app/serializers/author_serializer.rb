@@ -1,4 +1,4 @@
 class AuthorSerializer
   include JSONAPI::Serializer
-  attributes :name
+  attributes :name, :medium_id
 end

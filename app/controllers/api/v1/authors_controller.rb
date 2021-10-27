@@ -4,13 +4,23 @@ class Api::V1::AuthorsController < ApplicationController
 
   # GET /authors
   def index
-    @authors = Author.all
-
+    @authors =
+      if params[:search].blank?
+        Author.order(order_and_direction).page(page).per(per_page)
+      elsif params[:medium_id].blank?
+        Author.order(order_and_direction).page(page).per(per_page)
+              .where(['lower(name) like ? ',
+                      '%' + params[:search].downcase + '%'])
+      else
+        Author.where(medium_id: params[:medium_id])
+      end
     # set_pagination_headers :authors
-    json_string = AuthorSerializer.new(@authors).serializable_hash.to_json
-    render json: json_string
+    # json_string = AuthorSerializer.new(@authors).serializable_hash.to_json
+    @author.map do |author|
+      author[:count] = author.articles.count
+    end
+    render json: @author
   end
-
 
   def authors_client
     slug_id = get_slug_id
@@ -25,9 +35,10 @@ class Api::V1::AuthorsController < ApplicationController
     render json: json_string
     end
 
-    # GET /authors/1
+  # GET /authors/1
   def show
-    render json: @author
+    json_string = AuthorSerializer.new(@author).serializable_hash.to_json
+    render  json: json_string
   end
 
   # POST /authors
@@ -64,6 +75,6 @@ class Api::V1::AuthorsController < ApplicationController
 
   # Only allow a trusted parameter "white list" through.
   def author_params
-    params.permit(:name)
+    params.permit(:name,:medium_id)
   end
 end
