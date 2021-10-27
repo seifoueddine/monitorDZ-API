@@ -14,13 +14,13 @@ class Api::V1::AuthorsController < ApplicationController
       else
         Author.where(medium_id: params[:medium_id])
       end
-    # set_pagination_headers :authors
-    # json_string = AuthorSerializer.new(@authors).serializable_hash.to_json
-    @authors = @authors.each do |author|
-      puts author.articles.count
-      author['articles_count'] = author.articles.count
-    end
-    render json: @authors
+     set_pagination_headers :authors
+     json_string = AuthorSerializer.new(@authors).serializable_hash.to_json
+    #@authors = @authors.each do |author|
+    # puts author.articles.count
+    # author['articles_count'] = author.articles.count
+    # end
+    render json: json_string
   end
 
   def authors_client
