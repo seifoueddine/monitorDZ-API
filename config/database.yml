@@ -95,4 +95,4 @@ production:
   <<: *default
   database: newmm
   username: root
-  password: 'N7RvvyVpzcPMtKbx'
+  password: N7RvvyVpzcPMtKbx
