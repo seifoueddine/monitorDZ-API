@@ -31,6 +31,9 @@ class Api::V1::AuthorsController < ApplicationController
         Author.order(order_and_direction).page(page).per(per_page)
       end
 
+    @authors.map do |author|
+      author.articles_count = author.article.count
+    end
      set_pagination_headers :authors
      json_string = AuthorSerializer.new(@authors).serializable_hash.to_json
     #@authors = @authors.each do |author|
@@ -39,7 +42,7 @@ class Api::V1::AuthorsController < ApplicationController
     # end
     render json: json_string
   end
-
+  articles_count
   def authors_client
     slug_id = get_slug_id
     campaign = Campaign.where(slug_id: slug_id)
