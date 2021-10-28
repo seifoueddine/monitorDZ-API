@@ -4,6 +4,7 @@ class Api::V1::AuthorsController < ApplicationController
 
   # GET /authors
   def index
+=begin
     @authors =
       if params[:search].blank?
         Author.order(order_and_direction).page(page).per(per_page)
@@ -14,6 +15,21 @@ class Api::V1::AuthorsController < ApplicationController
       else
         Author.where(medium_id: params[:medium_id])
       end
+=end
+
+
+    @authors =
+      if params[:search].present?
+        Author.order(order_and_direction).page(page).per(per_page)
+              .where(['lower(name) like ? ',
+                      '%' + params[:search].downcase + '%'])
+
+      elsif params[:medium_id].blank?
+        Author.order(order_and_direction).page(page).per(per_page)
+      else
+        Author.where(medium_id: params[:medium_id])
+      end
+
      set_pagination_headers :authors
      json_string = AuthorSerializer.new(@authors).serializable_hash.to_json
     #@authors = @authors.each do |author|
