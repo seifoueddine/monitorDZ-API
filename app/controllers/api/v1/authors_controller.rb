@@ -32,11 +32,7 @@ class Api::V1::AuthorsController < ApplicationController
       end
 
     @authors.each do |author|
-      puts author.name
-      #puts author.articles_count
-      puts author.articles.count
-      puts '*********'
-      # author.update articles_count: author.articles.count
+      author.update articles_count: author.articles.count
     end
     set_pagination_headers :authors
      json_string = AuthorSerializer.new(@authors).serializable_hash.to_json
@@ -46,7 +42,6 @@ class Api::V1::AuthorsController < ApplicationController
     # end
     render json: json_string
   end
-  articles_count
   def authors_client
     slug_id = get_slug_id
     campaign = Campaign.where(slug_id: slug_id)
