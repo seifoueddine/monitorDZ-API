@@ -31,8 +31,8 @@ class Api::V1::AuthorsController < ApplicationController
         Author.order(order_and_direction).page(page).per(per_page)
       end
 
-    @authors.map do |author|
-      author.articles_count = author.article.count
+    @authors.each do |author|
+      author.articles_count = author.articles.count
     end
      set_pagination_headers :authors
      json_string = AuthorSerializer.new(@authors).serializable_hash.to_json
