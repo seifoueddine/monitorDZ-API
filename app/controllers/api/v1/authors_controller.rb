@@ -32,7 +32,11 @@ class Api::V1::AuthorsController < ApplicationController
       end
 
     @authors.each do |author|
-      author.update_attributes articles_count: author.articles.count
+      puts author.name
+      puts author.articles_count
+      puts author.articles.count
+      puts '*********'
+      # author.update articles_count: author.articles.count
     end
     set_pagination_headers :authors
      json_string = AuthorSerializer.new(@authors).serializable_hash.to_json
