@@ -24,10 +24,11 @@ class Api::V1::AuthorsController < ApplicationController
               .where(['lower(name) like ? ',
                       '%' + params[:search].downcase + '%'])
 
-      elsif params[:medium_id].blank?
-        Author.order(order_and_direction).page(page).per(per_page)
-      else
+      elsif params[:medium_id].present?
         Author.where(medium_id: params[:medium_id])
+
+      else
+        Author.all.order(order_and_direction).page(page).per(per_page)
       end
 
      set_pagination_headers :authors
