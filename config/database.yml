@@ -93,6 +93,6 @@ test:
 #
 production:
   <<: *default
-  database: newmm
+  database: monitordz
   username: root
   password: 'N7RvvyVpzcPMtKbx'
