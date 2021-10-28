@@ -33,7 +33,7 @@ class Api::V1::AuthorsController < ApplicationController
 
     @authors.each do |author|
       puts author.name
-      puts author.articles_count
+      #puts author.articles_count
       puts author.articles.count
       puts '*********'
       # author.update articles_count: author.articles.count
