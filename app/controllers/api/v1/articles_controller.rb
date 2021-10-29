@@ -85,13 +85,17 @@ class Api::V1::ArticlesController < ApplicationController
   end
 
   def articles_by_author
-    @article_auth_for_dash = Article.joins(:author).where(date_published: Date.today.change({ hour: 0, min: 0, sec: 0 }))
+    start_date = params[:start_dat] || Date.today.change({ hour: 0, min: 0, sec: 0 })
+    end_date = params[:end_dat] || Date.today.change({ hour: 0, min: 0, sec: 0 })
+    @article_auth_for_dash = Article.joins(:author).where(date_published: start_date.to_datetime.beginning_of_day..end_date.to_datetime.end_of_day)
                                     .group('authors.name').order('count(authors.id) desc').limit(5).count
     render json: @article_auth_for_dash
   end
 
   def articles_by_tag
-    @article_tag_for_dash = Article.where(date_published: Date.today.change({ hour: 0, min: 0, sec: 0 })).joins(:tags).group('tags.name').count
+    start_date = params[:start_datt] || Date.today.change({ hour: 0, min: 0, sec: 0 })
+    end_date = params[:end_datt] || Date.today.change({ hour: 0, min: 0, sec: 0 })
+    @article_tag_for_dash = Article.where(date_published: start_date.to_datetime.beginning_of_day..end_date.to_datetime.end_of_day).joins(:tags).group('tags.name').count
     render json: @article_tag_for_dash
   end
 
@@ -151,28 +155,30 @@ class Api::V1::ArticlesController < ApplicationController
 
   def articles_client_by_author
     slug_id = get_slug_id
-
+    start_date = params[:start_dat] || Date.today.change({ hour: 0, min: 0, sec: 0 })
+    end_date = params[:end_dat] || Date.today.change({ hour: 0, min: 0, sec: 0 })
     campaign = Campaign.where(slug_id: slug_id)
     media = campaign[0].media
     media_ids = []
     media.map do |media|
       media_ids << media['id']
     end
-    @article_auth_for_client_dash = Article.joins(:author).where(medium_id: media_ids, date_published: Date.today.change({ hour: 0, min: 0, sec: 0 }) )
+    @article_auth_for_client_dash = Article.joins(:author).where(medium_id: media_ids, date_published: start_date.to_datetime.beginning_of_day..end_date.to_datetime.end_of_day )
                                            .group('authors.name').order('count(authors.id) desc').limit(5).count
     render json: @article_auth_for_client_dash
   end
 
   def articles_client_by_tag
     slug_id = get_slug_id
-
+    start_date = params[:start_datt] || Date.today.change({ hour: 0, min: 0, sec: 0 })
+    end_date = params[:end_datt] || Date.today.change({ hour: 0, min: 0, sec: 0 })
     campaign = Campaign.where(slug_id: slug_id)
     media = campaign[0].media
     media_ids = []
     media.map do |media|
       media_ids << media['id']
     end
-    @article_tag_for_client_dash = Article.where(medium_id: media_ids, date_published: Date.today.change({ hour: 0, min: 0, sec: 0 })).joins(:tags)
+    @article_tag_for_client_dash = Article.where(medium_id: media_ids, date_published: start_date.to_datetime.beginning_of_day..end_date.to_datetime.end_of_day).joins(:tags)
                                           .group('tags.name').count
     render json: @article_tag_for_client_dash
   end
