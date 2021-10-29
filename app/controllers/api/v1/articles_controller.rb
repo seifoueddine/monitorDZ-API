@@ -884,13 +884,11 @@ div.nobreak { page-break-inside: avoid; }
         new_author.name = article.css('article div.d-f.fxd-c.ai-fs a').text
         new_author.medium_id = @media.id
         new_author.save!
+        new_article.author_id = new_author.id
       else
-
-        new_author.id = author_exist.first.id
-        new_author.name = author_exist.first.name
+        new_article.author_id = author_exist.first.id
 
       end
-      new_article.author_id = new_author.id
       new_article.body = article.css('article div.ech-artx').inner_html
       new_article.body = new_article.body.gsub(/<img[^>]*>/, '')
 
@@ -991,13 +989,11 @@ div.nobreak { page-break-inside: avoid; }
         new_author.name = article.at('div.sgb1__aath a').text
         new_author.medium_id = @media.id
         new_author.save!
+        new_article.author_id = new_author.id
       else
-
-        new_author.id = author_exist.first.id
-        new_author.name = author_exist.first.name
+        new_article.author_id = author_exist.first.id
 
       end
-      new_article.author_id = new_author.id
       new_article.body = article.css('div.artx').inner_html
       new_article.body = new_article.body.gsub(/<img[^>]*>/, '')
       new_article.date_published = article.at('time[datetime]')['datetime'].to_datetime.change({ hour: 0, min: 0, sec: 0 }) + (1.0 / 24)
@@ -1080,13 +1076,11 @@ div.nobreak { page-break-inside: avoid; }
         new_author.name = article.at('span.article__meta-author').nil? ? 'TSA auteur' : article.at('span.article__meta-author').text
         new_author.medium_id = @media.id
         new_author.save!
+        new_article.author_id = new_author.id
       else
-
-        new_author.id = author_exist.first.id
-        new_author.name = author_exist.first.name
+        new_article.author_id = author_exist.first.id
 
       end
-      new_article.author_id = new_author.id
       new_article.body = article.css('div.article__content').inner_html
       new_article.body = new_article.body.gsub(/<img[^>]*>/, '')
       date = article.at('time[datetime]')['datetime']
@@ -1175,13 +1169,11 @@ div.nobreak { page-break-inside: avoid; }
         new_author.name = article.at('span.article__meta-author').nil? ? 'APS auteur' : article.at('span.article__meta-author').text
         new_author.medium_id = @media.id
         new_author.save!
+        new_article.author_id = new_author.id
       else
-
-        new_author.id = author_exist.first.id
-        new_author.name = author_exist.first.name
+        new_article.author_id = author_exist.first.id
 
       end
-      new_article.author_id = new_author.id
       new_article.body = article.css('div.itemIntroText strong').inner_html + article.css('div.itemFullText').inner_html
       new_article.body = new_article.body.gsub(/<img[^>]*>/, '')
       date = article.css('span.itemDateCreated').text
@@ -1373,13 +1365,11 @@ div.nobreak { page-break-inside: avoid; }
         new_author.name = article.at('div#side-post div div p a').nil? ? 'Liberté auteur' : article.at('div#side-post div div p a').text.delete(' ')
         new_author.medium_id = @media.id
         new_author.save!
+        new_article.author_id = new_author.id
       else
-
-        new_author.id = author_exist.first.id
-        new_author.name = author_exist.first.name
+        new_article.author_id = author_exist.first.id
 
       end
-      new_article.author_id = new_author.id
       new_article.body = article.css('div#text_core').inner_html
       new_article.body = new_article.body.gsub(/<img[^>]*>/, '')
       date = article.css('div#side-post div div.date-heure span')[0].text.delete(' ')
@@ -1470,13 +1460,12 @@ div.nobreak { page-break-inside: avoid; }
         new_author.name = article.at('div.td-post-author-name').nil? ? '24h-dz auteur' : article.at('div.td-post-author-name').text.delete(' ')
         new_author.medium_id = @media.id
         new_author.save!
+        new_article.author_id = new_author.id
       else
-
-        new_author.id = author_exist.first.id
-        new_author.name = author_exist.first.name
+        new_article.author_id = author_exist.first.id
 
       end
-      new_article.author_id = new_author.id
+
       new_article.body = article.css('div.td-post-content').inner_html
       new_article.body = new_article.body.gsub(/<img[^>]*>/, '')
 
@@ -1569,16 +1558,14 @@ div.nobreak { page-break-inside: avoid; }
       new_author = Author.new
       if author_exist.count.zero?
 
-        new_author.name = article.at('div.td-post-author-name').nil? ? 'reporters auteur' : article.at('div.td-post-author-name').text.delete(' ')
+        new_author.name = article.at('div.td-post-author-name').nil? ? 'reporters auteur' : article.at('div.td-post-author-name').text
         new_author.medium_id = @media.id
         new_author.save!
+        new_article.author_id = new_author.id
       else
-
-        new_author.id = author_exist.first.id
-        new_author.name = author_exist.first.name
+        new_article.author_id = author_exist.first.id
 
       end
-      new_article.author_id = new_author.id
       new_article.body = article.css('div.td-post-content').inner_html
       new_article.body = new_article.body.gsub(/<img[^>]*>/, '')
 
@@ -1772,13 +1759,11 @@ div.nobreak { page-break-inside: avoid; }
       new_author.name = article.at('div.elementor-widget-container ul li a span.elementor-icon-list-text elementor-post-info__item elementor-post-info__item--type-author').nil? ? 'Maghrebemergent auteur' : article.at('div.elementor-widget-container ul li a span.elementor-icon-list-text elementor-post-info__item elementor-post-info__item--type-author').text
       new_author.medium_id = @media.id
       new_author.save!
+      new_article.author_id = new_author.id
     else
-
-      new_author.id = author_exist.first.id
-      new_author.name = author_exist.first.name
+      new_article.author_id = author_exist.first.id
 
     end
-    new_article.author_id = new_author.id
     new_article.body = article.css('div.elementor-element.elementor-element-c93088c.elementor-widget.elementor-widget-theme-post-content').inner_html
       new_article.body = new_article.body.gsub(/<img[^>]*>/, '')
     # date = article.at('p.text-capitalize span').text
@@ -1892,11 +1877,10 @@ div.nobreak { page-break-inside: avoid; }
         new_author.name = article.at('p.text-muted').nil? ? 'Elmoudjahid-fr auteur' : article.at('p.text-muted').text
         new_author.medium_id = @media.id
         new_author.save!
+        new_article.author_id = new_author.id
       else
-        new_author.id = author_exist.first.id
-        new_author.name = author_exist.first.name
+        new_article.author_id = author_exist.first.id
       end
-      new_article.author_id = new_author.id
       new_article.body = article.css('article.module-article section').inner_html
       new_article.body = new_article.body.gsub(/<img[^>]*>/, '')
       get_dates = []
@@ -2003,11 +1987,10 @@ div.nobreak { page-break-inside: avoid; }
         new_author.name = article.at('p.text-muted').nil? ? 'Elmoudjahid auteur' : article.at('p.text-muted').text
         new_author.medium_id = @media.id
         new_author.save!
+        new_article.author_id = new_author.id
       else
-        new_author.id = author_exist.first.id
-        new_author.name = author_exist.first.name
+        new_article.author_id = author_exist.first.id
       end
-      new_article.author_id = new_author.id
       new_article.body = article.css('#text_article').inner_html
       new_article.body = new_article.body.gsub(/<img[^>]*>/, '')
       new_article.date_published = article.css('#contenu > div.At > span').text.split(':')[1].to_datetime.change({ hour: 0, min: 0, sec: 0 })
@@ -2104,13 +2087,11 @@ div.nobreak { page-break-inside: avoid; }
         new_author.name = article.at('span.time-blog b').present? ? 'Elkhabar auteur' : article.at('span.time-blog b').text
         new_author.medium_id = @media.id
         new_author.save!
+        new_article.author_id = new_author.id
       else
-
-        new_author.id = author_exist.first.id
-        new_author.name = author_exist.first.name
+        new_article.author_id = author_exist.first.id
 
       end
-      new_article.author_id = new_author.id
       new_article.body = article.css('div#article_body_content').inner_html
       new_article.body = new_article.body.gsub(/<img[^>]*>/, '')
       # date = article.at('p.text-capitalize span').text
@@ -2212,14 +2193,12 @@ div.nobreak { page-break-inside: avoid; }
         new_author.name = 'Elikhbaria auteur'
         new_author.medium_id = @media.id
         new_author.save!
+        new_article.author_id = new_author.id
       else
-
-        new_author.id = author_exist.first.id
-        new_author.name = author_exist.first.name
+        new_article.author_id = author_exist.first.id
 
       end
 
-      new_article.author_id = new_author.id
       new_article.body = article.css('div.entry-content.clearfix.single-post-content').inner_html
       new_article.body = new_article.body.gsub(/<img[^>]*>/, '')
       # date = article.at('p.text-capitalize span').text
@@ -2304,8 +2283,6 @@ div.nobreak { page-break-inside: avoid; }
         author_exist = Author.where(['lower(name) like ? ', ('Algerieco auteur').downcase])
       else
         author = article.at('div.td-module-meta-info div').text
-        author['Par '] = ''
-        author[' - '] = ''
         author_exist = Author.where(['lower(name) like ? ',
                                      author.downcase])
       end
@@ -2313,18 +2290,14 @@ div.nobreak { page-break-inside: avoid; }
       new_author = Author.new
       if author_exist.count.zero?
         author = article.at('div.td-module-meta-info div').text
-        author['Par '] = ''
-        author[' - '] = ''
         new_author.name = article.at('div.td-module-meta-info div').text.nil? ? 'Algerieco auteur' : author
         new_author.medium_id = @media.id
         new_author.save!
+        new_article.author_id = new_author.id
       else
-
-        new_author.id = author_exist.first.id
-        new_author.name = author_exist.first.name
+        new_article.author_id = author_exist.first.id
 
       end
-      new_article.author_id = new_author.id
       new_article.body = article.css('div.td-post-content').inner_html
       new_article.body = new_article.body.gsub(/<img[^>]*>/, '')
       new_article.body = new_article.body.gsub(%r{<div class="td-post-featured-image">(.*?)<\/a><\/div>}, '')
@@ -2411,7 +2384,6 @@ div.nobreak { page-break-inside: avoid; }
         author_exist = Author.where(['lower(name) like ? ', ('Chiffreaffaire auteur').downcase])
       else
         author = article.at('span.post-author-name').text
-        author['par '] = ''
         author_exist = Author.where(['lower(name) like ? ',
                                      author.downcase])
       end
@@ -2419,17 +2391,14 @@ div.nobreak { page-break-inside: avoid; }
       new_author = Author.new
       if author_exist.count.zero?
         author = article.at('span.post-author-name').text
-        author['par '] = ''
         new_author.name = article.at('span.post-author-name').text.nil? ? 'Chiffreaffaire auteur' : author
         new_author.medium_id = @media.id
         new_author.save!
+        new_article.author_id = new_author.id
       else
-
-        new_author.id = author_exist.first.id
-        new_author.name = author_exist.first.name
+        new_article.author_id = author_exist.first.id
 
       end
-      new_article.author_id = new_author.id
       new_article.body = article.css('div.entry-content').inner_html
       new_article.body = new_article.body.gsub(/<img[^>]*>/, '')
       # date = article.at('p.text-capitalize span').text
@@ -2533,13 +2502,11 @@ div.nobreak { page-break-inside: avoid; }
         new_author.name = article.at('span.author').text.nil? ? 'Elhiwar auteur' : author
         new_author.medium_id = @media.id
         new_author.save!
+        new_article.author_id = new_author.id
       else
-
-        new_author.id = author_exist.first.id
-        new_author.name = author_exist.first.name
+        new_article.author_id = author_exist.first.id
 
       end
-      new_article.author_id = new_author.id
       new_article.body = article.css('div.penci-entry-content').inner_html
       new_article.body = new_article.body.gsub(/<img[^>]*>/, '')
       # date = article.at('p.text-capitalize span').text
@@ -2645,13 +2612,11 @@ div.nobreak { page-break-inside: avoid; }
         new_author.name = article.at('em.article__atnm').text.nil? ? 'Visa Algérie auteur' : author
         new_author.medium_id = @media.id
         new_author.save!
+        new_article.author_id = new_author.id
       else
-
-        new_author.id = author_exist.first.id
-        new_author.name = author_exist.first.name
+        new_article.author_id = author_exist.first.id
 
       end
-      new_article.author_id = new_author.id
       new_article.body = article.css('p.article__desc').inner_html + article.css('div.article__cntn').inner_html
       new_article.body = new_article.body.gsub(/<img[^>]*>/, '')
       # date = article.at('p.text-capitalize span').text
@@ -2736,16 +2701,14 @@ div.nobreak { page-break-inside: avoid; }
       new_author = Author.new
       if author_exist.count.zero?
 
-        new_author.name = article.at('li.entry__meta-author a').nil? ? 'Algérie360 auteur' : article.at('li.entry__meta-author a').text.delete(' ')
+        new_author.name = article.at('li.entry__meta-author a').nil? ? 'Algérie360 auteur' : article.at('li.entry__meta-author a').text
         new_author.medium_id = @media.id
         new_author.save!
+        new_article.author_id = new_author.id
       else
-
-        new_author.id = author_exist.first.id
-        new_author.name = author_exist.first.name
+        new_article.author_id = author_exist.first.id
 
       end
-      new_article.author_id = new_author.id
       new_article.body = article.css('article.entry.mb-0').inner_html
       new_article.body = new_article.body.gsub(/<img[^>]*>/, '')
       new_article.body = new_article.body.gsub('(adsbygoogle=window.adsbygoogle||[]).push({});', '')
@@ -2834,16 +2797,18 @@ div.nobreak { page-break-inside: avoid; }
       new_author = Author.new
       author = Author.where(['lower(name) like ? ', 'AlgériePart auteur'.downcase])
       if author.present?
-        new_author.id = author.first.id
-        new_author.name = author.first.name
+        new_article.author_id = author.first.id
 
       else
 
         new_author.name = 'AlgériePart auteur'
         new_author.medium_id = @media.id
         new_author.save!
+        new_article.author_id = new_author.id
       end
-      new_article.author_id = new_author.id
+
+
+
       new_article.body = article.css('div.tdb-block-inner.td-fix-index').inner_html
       date = article.css('div.vc_column-inner div div div.tdb-block-inner.td-fix-index time').text
       d = change_date_autobip_aps(date)

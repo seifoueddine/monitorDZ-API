@@ -35,43 +35,43 @@ namespace :crawling do
     puts "get article of #{media.name}"
     case media.name
     when 'AUTOBIP'
-          get_articles_autobip(url_media_array)
+      get_articles_autobip(url_media_array)
     when 'ELCHEROUK'
-          get_articles_elcherouk(url_media_array)
+      get_articles_elcherouk(url_media_array)
     when 'ENNAHAR'
-           get_articles_ennahar(url_media_array)
+      get_articles_ennahar(url_media_array)
     when 'TSA'
-           get_articles_tsa(url_media_array)
+      get_articles_tsa(url_media_array)
     when 'APS'
-           get_articles_aps(url_media_array)
+      get_articles_aps(url_media_array)
     when 'MAGHREBEMERGENT'
-           get_articles_maghrebemergent(url_media_array)
+      get_articles_maghrebemergent(url_media_array)
            # when 'ELBILAD'
            # get_articles_bilad(url_media_array)
     when 'ELMOUDJAHID'
-       get_articles_elmoudjahid(url_media_array)
+      get_articles_elmoudjahid(url_media_array)
     when 'ELMOUDJAHID-FR'
-        get_articles_elmoudjahid_fr(url_media_array)
+      get_articles_elmoudjahid_fr(url_media_array)
     when 'ELKHABAR'
-           get_articles_elkhabar(url_media_array)
+      get_articles_elkhabar(url_media_array)
     when 'ELIKHABARIA'
-          get_articles_elikhbaria(url_media_array)
+      get_articles_elikhbaria(url_media_array)
     when 'ALGERIECO'
-         get_articles_algerieco(url_media_array)
+      get_articles_algerieco(url_media_array)
     when 'CHIFFREAFFAIRE'
-             get_articles_chiffreaffaire(url_media_array)
+      get_articles_chiffreaffaire(url_media_array)
     when 'ELHIWAR'
-          get_articles_elhiwar(url_media_array)
+      get_articles_elhiwar(url_media_array)
     when 'LE SOIR'
-          get_articles_le_soir(url_media_array)
+      get_articles_le_soir(url_media_array)
     when 'LIBERTE'
-          get_articles_liberte(url_media_array)
+      get_articles_liberte(url_media_array)
     when 'VISAALGERIE'
-         get_articles_visadz(url_media_array)
+      get_articles_visadz(url_media_array)
     when 'SANTENEWS'
-         get_articles_santenews(url_media_array)
+      get_articles_santenews(url_media_array)
     when 'ALGERIE360'
-          get_articles_algerie360(url_media_array)
+      get_articles_algerie360(url_media_array)
     when 'ALGERIEPARTPLUS'
       get_articles_algerie_part(url_media_array)
     when '24H-DZ'
@@ -118,14 +118,14 @@ namespace :crawling do
     articles_url_autobip_after_check.map do |link|
 
 
-        begin
-          article = Nokogiri::HTML(URI.open(URI.escape(link)))
-        rescue OpenURI::HTTPError => e
-          puts "Can't access #{link}"
-          puts e.message
-          puts
-          next
-        end
+      begin
+        article = Nokogiri::HTML(URI.open(URI.escape(link)))
+      rescue OpenURI::HTTPError => e
+        puts "Can't access #{link}"
+        puts e.message
+        puts
+        next
+      end
 
         new_article = Article.new
         new_article.url_article = link
@@ -252,13 +252,10 @@ namespace :crawling do
         new_author.name = article.css('article div.d-f.fxd-c.ai-fs a').text
         new_author.medium_id = @media.id
         new_author.save!
+        new_article.author_id = new_author.id
       else
-
-        new_author.id = author_exist.first.id
-        new_author.name = author_exist.first.name
-
+        new_article.author_id = author_exist.first.id
       end
-      new_article.author_id = new_author.id
       new_article.body = article.css('article div.ech-artx').inner_html
       new_article.body = new_article.body.gsub(/<img[^>]*>/, '')
 
@@ -374,13 +371,11 @@ namespace :crawling do
         new_author.name = article.at('div.sgb1__aath a').text
         new_author.medium_id = @media.id
         new_author.save!
+        new_article.author_id = new_author.id
       else
-
-        new_author.id = author_exist.first.id
-        new_author.name = author_exist.first.name
+        new_article.author_id = author_exist.first.id
 
       end
-      new_article.author_id = new_author.id
       new_article.body = article.css('div.artx').inner_html
       new_article.body = new_article.body.gsub(/<img[^>]*>/, '')
       new_article.date_published = article.at('time[datetime]')['datetime'].to_datetime.change({ hour: 0, min: 0,
@@ -464,12 +459,11 @@ namespace :crawling do
       new_article.title = article.css('div.article__title').text
       # new_article.author = article.css('div.article-head__author div em a').text
 
-      if article.at('span.article__meta-author').nil?
-        author_exist = Author.where(['lower(name) like ? ', 'TSA auteur'.downcase ])
-      else
-        author_exist = Author.where(['lower(name) like ? ',
-                                     article.at('span.article__meta-author').text.downcase ])
-      end
+      author_exist = if article.at('span.article__meta-author').nil?
+                       Author.where(['lower(name) like ? ', 'TSA auteur'.downcase ])
+                     else
+                       Author.where(['lower(name) like ? ', article.at('span.article__meta-author').text.downcase ])
+                     end
 
       new_author = Author.new
       if author_exist.count.zero?
@@ -477,13 +471,11 @@ namespace :crawling do
         new_author.name = article.at('span.article__meta-author').nil? ? 'TSA auteur' : article.at('span.article__meta-author').text
         new_author.medium_id = @media.id
         new_author.save!
+        new_article.author_id = new_author.id
       else
-
-        new_author.id = author_exist.first.id
-        new_author.name = author_exist.first.name
+        new_article.author_id = author_exist.first.id
 
       end
-      new_article.author_id = new_author.id
       new_article.body = article.css('div.article__content').inner_html
       new_article.body = new_article.body.gsub(/<img[^>]*>/, '')
       date = article.at('time[datetime]')['datetime']
@@ -572,12 +564,12 @@ namespace :crawling do
       new_article.title = article.css('div.itemHeader h2.itemTitle').text
       # new_article.author = article.css('div.article-head__author div em a').text
 
-      if article.at('span.article__meta-author').nil?
-        author_exist = Author.where(['lower(name) like ? ', 'APS auteur'.downcase ])
+      author_exist = if article.at('span.article__meta-author').nil?
+                       Author.where(['lower(name) like ? ', 'APS auteur'.downcase ])
       else
-        author_exist = Author.where(['lower(name) like ? ',
+        Author.where(['lower(name) like ? ',
                                      article.at('span.article__meta-author').text.downcase ])
-      end
+                     end
 
       new_author = Author.new
       if author_exist.count.zero?
@@ -585,13 +577,11 @@ namespace :crawling do
         new_author.name = article.at('span.article__meta-author').nil? ? 'APS auteur' : article.at('span.article__meta-author').text
         new_author.medium_id = @media.id
         new_author.save!
+        new_article.author_id = new_author.id
       else
-
-        new_author.id = author_exist.first.id
-        new_author.name = author_exist.first.name
+        new_article.author_id = author_exist.first.id
 
       end
-      new_article.author_id = new_author.id
       new_article.body = article.css('div.itemIntroText strong').inner_html + article.css('div.itemFullText').inner_html
       new_article.body = new_article.body.gsub(/<img[^>]*>/, '')
       date = article.css('span.itemDateCreated').text
@@ -687,12 +677,12 @@ namespace :crawling do
         anchor << header.text
 
       end
-      if article.at('div.category-content div div.published a').nil?
-        author_exist = Author.where(['lower(name) like ? ', 'Le soir auteur'.downcase ])
+      author_exist = if article.at('div.category-content div div.published a').nil?
+                       Author.where(['lower(name) like ? ', 'Le soir auteur'.downcase ])
       else
-        author_exist = Author.where(['lower(name) like ? ',
+        Author.where(['lower(name) like ? ',
                                      article.at('div.category-content div div a').text.downcase ])
-      end
+                     end
 
       new_author = Author.new
       if author_exist.count.zero?
@@ -796,12 +786,12 @@ namespace :crawling do
       new_article.category_article = article.css('div#global div h3 strong').text
       new_article.title = "#{article.css('div#main-post span h4').text} : #{article.css('div#main-post span h1').text}"
       #  new_article.author = article.css('div.article-head__author div em a').text
-      if article.at('div#side-post div div p a').nil?
-        author_exist = Author.where(['lower(name) like ? ', 'Liberté auteur'.downcase ])
+      author_exist = if article.at('div#side-post div div p a').nil?
+                       Author.where(['lower(name) like ? ', 'Liberté auteur'.downcase ])
       else
-        author_exist = Author.where(['lower(name) like ? ',
+        Author.where(['lower(name) like ? ',
                                      article.at('div#side-post div div p a').text.downcase ])
-      end
+                     end
 
       new_author = Author.new
       if author_exist.count.zero?
@@ -809,13 +799,11 @@ namespace :crawling do
         new_author.name = article.at('div#side-post div div p a').nil? ? 'Liberté auteur' : article.at('div#side-post div div p a').text.delete(' ')
         new_author.medium_id = @media.id
         new_author.save!
+        new_article.author_id = new_author.id
       else
-
-        new_author.id = author_exist.first.id
-        new_author.name = author_exist.first.name
+        new_article.author_id = author_exist.first.id
 
       end
-      new_article.author_id = new_author.id
       new_article.body = article.css('div#text_core').inner_html
       new_article.body = new_article.body.gsub(/<img[^>]*>/, '')
       date = article.css('div#side-post div div.date-heure span')[0].text.delete(' ')
@@ -903,12 +891,12 @@ namespace :crawling do
       new_article.category_article = article.css('span a.entry-crumb').text
       new_article.title = article.css('header.td-post-title').text
       #  new_article.author = article.css('div.article-head__author div em a').text
-      if article.at('div.td-post-author-name').nil?
-        author_exist = Author.where(['lower(name) like ? ', '24h-dz auteur'.downcase ])
+      author_exist = if article.at('div.td-post-author-name').nil?
+                       Author.where(['lower(name) like ? ', '24h-dz auteur'.downcase])
       else
-        author_exist = Author.where(['lower(name) like ? ',
+        Author.where(['lower(name) like ? ',
                                      article.at('div.td-post-author-name').text.downcase ])
-      end
+                     end
 
       new_author = Author.new
       if author_exist.count.zero?
@@ -916,13 +904,11 @@ namespace :crawling do
         new_author.name = article.at('div.td-post-author-name').nil? ? '24h-dz auteur' : article.at('div.td-post-author-name').text.delete(' ')
         new_author.medium_id = @media.id
         new_author.save!
+        new_article.author_id = new_author.id
       else
-
-        new_author.id = author_exist.first.id
-        new_author.name = author_exist.first.name
+        new_article.author_id = author_exist.first.id
 
       end
-      new_article.author_id = new_author.id
       new_article.body = article.css('div.td-post-content').inner_html
       new_article.body = new_article.body.gsub(/<img[^>]*>/, '')
 
@@ -1010,26 +996,24 @@ namespace :crawling do
       new_article.category_article = article.css('header.td-post-title ul.td-category a').text
       new_article.title = article.css('h1.entry-title').text
       #  new_article.author = article.css('div.article-head__author div em a').text
-      if article.at('div.td-post-author-name').nil?
-        author_exist = Author.where(['lower(name) like ? ', 'reporters auteur'.downcase ])
-      else
-        author_exist = Author.where(['lower(name) like ? ',
+      author_exist = if article.at('div.td-post-author-name').nil?
+                       Author.where(['lower(name) like ? ', 'reporters auteur'.downcase ])
+                     else
+                       Author.where(['lower(name) like ? ',
                                      article.at('div.td-post-author-name').text.downcase ])
-      end
+                     end
 
       new_author = Author.new
       if author_exist.count.zero?
 
-        new_author.name = article.at('div.td-post-author-name').nil? ? 'reporters auteur' : article.at('div.td-post-author-name').text.delete(' ')
+        new_author.name = article.at('div.td-post-author-name').nil? ? 'reporters auteur' : article.at('div.td-post-author-name').text
         new_author.medium_id = @media.id
         new_author.save!
+        new_article.author_id = new_author.id
       else
-
-        new_author.id = author_exist.first.id
-        new_author.name = author_exist.first.name
+        new_article.author_id = author_exist.first.id
 
       end
-      new_article.author_id = new_author.id
       new_article.body = article.css('div.td-post-content').inner_html
       new_article.body = new_article.body.gsub(/<img[^>]*>/, '')
 
@@ -1119,26 +1103,23 @@ namespace :crawling do
       new_article.category_article = 'algerie360.com'
       new_article.title = article.css('h1.single-post__entry-title.mt-0').text
       #  new_article.author = article.css('div.article-head__author div em a').text
-      if article.at('li.entry__meta-author a').nil?
-        author_exist = Author.where(['lower(name) like ? ', 'Algérie360 auteur'.downcase ])
+      author_exist = if article.at('li.entry__meta-author a').nil?
+                       Author.where(['lower(name) like ? ', 'Algérie360 auteur'.downcase ])
       else
-        author_exist = Author.where(['lower(name) like ? ',
+        Author.where(['lower(name) like ? ',
                                      article.at('li.entry__meta-author a').text.downcase ])
-      end
+                     end
 
       new_author = Author.new
       if author_exist.count.zero?
-
-        new_author.name = article.at('li.entry__meta-author a').nil? ? 'Algérie360 auteur' : article.at('li.entry__meta-author a').text.delete(' ')
+        new_author.name = article.at('li.entry__meta-author a').nil? ? 'Algérie360 auteur' : article.at('li.entry__meta-author a').text
         new_author.medium_id = @media.id
         new_author.save!
+        new_article.author_id = new_author.id
       else
-
-        new_author.id = author_exist.first.id
-        new_author.name = author_exist.first.name
-
+        new_article.author_id = author_exist.first.id
       end
-      new_article.author_id = new_author.id
+
       new_article.body = article.css('article.entry.mb-0').inner_html
       new_article.body = new_article.body.gsub(/<img[^>]*>/, '')
       new_article.body = new_article.body.gsub('(adsbygoogle=window.adsbygoogle||[]).push({});', '')
@@ -1232,23 +1213,23 @@ namespace :crawling do
       new_article.language = @media.language
       categories = []
       article.css('div.tdb-entry-category').map do |category|
-       categories << category.text
+        categories << category.text
       end
       new_article.category_article = categories.join(',')
       new_article.title = article.css('h1.tdb-title-text').text
       new_author = Author.new
       author = Author.where(['lower(name) like ? ', 'AlgériePart auteur'.downcase])
       if author.present?
-        new_author.id = author.first.id
-        new_author.name = author.first.name
+        new_article.author_id = author.first.id
 
       else
 
         new_author.name = 'AlgériePart auteur'
         new_author.medium_id = @media.id
         new_author.save!
+        new_article.author_id = new_author.id
       end
-      new_article.author_id = new_author.id
+
       new_article.body = article.css('div.tdb-block-inner.td-fix-index').inner_html
       date = article.css('div.vc_column-inner div div div.tdb-block-inner.td-fix-index time').text
       d = change_date_autobip_aps(date)
@@ -1419,14 +1400,14 @@ namespace :crawling do
     end
     articles_url_maghrebemergent_after_check = articles_url_maghrebemergent - list_articles_url
     articles_url_maghrebemergent_after_check.map do |link|
-    begin
-      article = Nokogiri::HTML(URI.open(link))
-    rescue OpenURI::HTTPError => e
-      puts "Can't access #{link}"
-      puts e.message
-      puts
-      next
-    end
+      begin
+        article = Nokogiri::HTML(URI.open(link))
+      rescue OpenURI::HTTPError => e
+        puts "Can't access #{link}"
+        puts e.message
+        puts
+        next
+      end
     new_article = Article.new
     new_article.url_article = link
     new_article.medium_id = @media.id
@@ -1448,13 +1429,11 @@ namespace :crawling do
       new_author.name = article.at('div.elementor-widget-container ul li a span.elementor-icon-list-text elementor-post-info__item elementor-post-info__item--type-author').nil? ? 'Maghrebemergent auteur' : article.at('div.elementor-widget-container ul li a span.elementor-icon-list-text elementor-post-info__item elementor-post-info__item--type-author').text
       new_author.medium_id = @media.id
       new_author.save!
+      new_article.author_id = new_author.id
     else
-
-      new_author.id = author_exist.first.id
-      new_author.name = author_exist.first.name
+      new_article.author_id = author_exist.first.id
 
     end
-    new_article.author_id = new_author.id
     new_article.body = article.css('div.elementor-element.elementor-element-c93088c.elementor-widget.elementor-widget-theme-post-content').inner_html
     new_article.body = new_article.body.gsub(/<img[^>]*>/, '')
     # date = article.at('p.text-capitalize span').text
@@ -1568,12 +1547,12 @@ namespace :crawling do
       new_article.title = article.css('header.heading-article h1').text
 
 
-      if article.at('p.text-muted').nil?
-        author_exist = Author.where(['lower(name) like ? ', 'Elmoudjahid-fr auteur'.downcase ])
+      author_exist = if article.at('p.text-muted').nil?
+                       Author.where(['lower(name) like ? ', 'Elmoudjahid-fr auteur'.downcase ])
       else
-        author_exist = Author.where(['lower(name) like ? ',
+        Author.where(['lower(name) like ? ',
                                      article.at('p.text-muted').text.downcase ])
-      end
+                     end
 
       new_author = Author.new
       if author_exist.count.zero?
@@ -1581,11 +1560,10 @@ namespace :crawling do
         new_author.name = article.at('p.text-muted').nil? ? 'Elmoudjahid-fr auteur' : article.at('p.text-muted').text
         new_author.medium_id = @media.id
         new_author.save!
+        new_article.author_id = new_author.id
       else
-        new_author.id = author_exist.first.id
-        new_author.name = author_exist.first.name
+        new_article.author_id = author_exist.first.id
       end
-      new_article.author_id = new_author.id
       new_article.body = article.css('article.module-article section').inner_html
       new_article.body = new_article.body.gsub(/<img[^>]*>/, '')
       get_dates = []
@@ -1692,12 +1670,12 @@ namespace :crawling do
       new_article.title = article.css('div.At h1 a').text
 
 
-      if article.at('p.text-muted').nil?
-        author_exist = Author.where(['lower(name) like ? ', 'Elmoudjahid auteur'.downcase ])
+      author_exist = if article.at('p.text-muted').nil?
+                       Author.where(['lower(name) like ? ', 'Elmoudjahid auteur'.downcase ])
       else
-        author_exist = Author.where(['lower(name) like ? ',
+        Author.where(['lower(name) like ? ',
                                      article.at('p.text-muted').text.downcase ])
-      end
+                     end
 
       new_author = Author.new
       if author_exist.count.zero?
@@ -1705,11 +1683,10 @@ namespace :crawling do
         new_author.name = article.at('p.text-muted').nil? ? 'Elmoudjahid auteur' : article.at('p.text-muted').text
         new_author.medium_id = @media.id
         new_author.save!
+        new_article.author_id = new_author.id
       else
-        new_author.id = author_exist.first.id
-        new_author.name = author_exist.first.name
+        new_article.author_id = author_exist.first.id
       end
-      new_article.author_id = new_author.id
       new_article.body = article.css('#text_article').inner_html
       new_article.body = new_article.body.gsub(/<img[^>]*>/, '')
       new_article.date_published = article.css('#contenu > div.At > span').text.split(':')[1].to_datetime.change({
@@ -1800,13 +1777,13 @@ hour: 0, min: 0, sec: 0 })
       new_article.title = article.css('h2.title').text if article.css('h2.title').present?
       # new_article.author = article.css('div.article-head__author div em a').text
 
-      if article.at('span.time-blog b').present?
-        author_exist = Author.where(['lower(name) like ? ',
-                                     article.at('span.time-blog b').text.downcase ])
+      author_exist = if article.at('span.time-blog b').present?
+                       Author.where(['lower(name) like ? ',
+                                                    article.at('span.time-blog b').text.downcase ])
 
       else
-        author_exist = Author.where(['lower(name) like ? ', 'Elkhabar auteur'.downcase ])
-      end
+        Author.where(['lower(name) like ? ', 'Elkhabar auteur'.downcase ])
+                     end
 
       new_author = Author.new
       if author_exist.count.zero?
@@ -1814,13 +1791,11 @@ hour: 0, min: 0, sec: 0 })
         new_author.name = article.at('span.time-blog b').present? ? article.at('span.time-blog b').text : 'Elkhabar auteur'
         new_author.medium_id = @media.id
         new_author.save!
+        new_article.author_id = new_author.id
       else
-
-        new_author.id = author_exist.first.id
-        new_author.name = author_exist.first.name
+        new_article.author_id = author_exist.first.id
 
       end
-      new_article.author_id = new_author.id
       new_article.body = article.css('div#article_body_content').inner_html
       new_article.body = new_article.body.gsub(/<img[^>]*>/, '')
       # date = article.at('p.text-capitalize span').text
@@ -1937,14 +1912,12 @@ hour: 0, min: 0, sec: 0 })
         new_author.name = 'Elikhbaria auteur'
         new_author.medium_id = @media.id
         new_author.save!
+        new_article.author_id = new_author.id
       else
-
-        new_author.id = author_exist.first.id
-        new_author.name = author_exist.first.name
+        new_article.author_id = author_exist.first.id
 
       end
 
-      new_article.author_id = new_author.id
       new_article.body = article.css('div.entry-content.clearfix.single-post-content').inner_html
       new_article.body = new_article.body.gsub(/<img[^>]*>/, '')
       # date = article.at('p.text-capitalize span').text
@@ -2045,8 +2018,6 @@ article.css('div.post-header div.single-featured > a').map do |link|
         author_exist = Author.where(['lower(name) like ? ', 'Algerieco auteur'.downcase ])
       else
         author = article.at('div.td-module-meta-info div').text
-        author['Par '] = ''
-        author[' - '] = ''
         author_exist = Author.where(['lower(name) like ? ',
                                      author.downcase ])
       end
@@ -2054,18 +2025,14 @@ article.css('div.post-header div.single-featured > a').map do |link|
       new_author = Author.new
       if author_exist.count.zero?
         author = article.at('div.td-module-meta-info div').text
-        author['Par '] = ''
-        author[' - '] = ''
         new_author.name = article.at('div.td-module-meta-info div').text.nil? ? 'Algerieco auteur' : author
         new_author.medium_id = @media.id
         new_author.save!
+        new_article.author_id = new_author.id
       else
-
-        new_author.id = author_exist.first.id
-        new_author.name = author_exist.first.name
+        new_article.author_id = author_exist.first.id
 
       end
-      new_article.author_id = new_author.id
       new_article.body = article.css('div.td-post-content').inner_html
       new_article.body = new_article.body.gsub(/<img[^>]*>/, '')
       new_article.body = new_article.body.gsub(%r{<div class="td-post-featured-image">(.*?)<\/a><\/div>}, '')
@@ -2164,7 +2131,6 @@ article.css('div.post-header div.single-featured > a').map do |link|
         author_exist = Author.where(['lower(name) like ? ', 'Chiffreaffaire auteur'.downcase ])
       else
         author = article.at('span.post-author-name').text
-        author['par '] = ''
         author_exist = Author.where(['lower(name) like ? ',
                                      author.downcase ])
       end
@@ -2172,17 +2138,14 @@ article.css('div.post-header div.single-featured > a').map do |link|
       new_author = Author.new
       if author_exist.count.zero?
         author = article.at('span.post-author-name').text
-        author['par '] = ''
         new_author.name = article.at('span.post-author-name').text.nil? ? 'Chiffreaffaire auteur' : author
         new_author.medium_id = @media.id
         new_author.save!
+        new_article.author_id = new_author.id
       else
-
-        new_author.id = author_exist.first.id
-        new_author.name = author_exist.first.name
+        new_article.author_id = author_exist.first.id
 
       end
-      new_article.author_id = new_author.id
       new_article.body = article.css('div.entry-content').inner_html
       new_article.body = new_article.body.gsub(/<img[^>]*>/, '')
       # date = article.at('p.text-capitalize span').text
@@ -2296,13 +2259,11 @@ article.css('div.post-header div.single-featured > a').map do |link|
         new_author.name = article.at('span.author').text.nil? ? 'Elhiwar auteur' : author
         new_author.medium_id = @media.id
         new_author.save!
+        new_article.author_id = new_author.id
       else
-
-        new_author.id = author_exist.first.id
-        new_author.name = author_exist.first.name
+        new_article.author_id = author_exist.first.id
 
       end
-      new_article.author_id = new_author.id
       new_article.body = article.css('div.penci-entry-content').inner_html
       new_article.body = new_article.body.gsub(/<img[^>]*>/, '')
       # date = article.at('p.text-capitalize span').text
@@ -2419,13 +2380,10 @@ article.css('div.post-header div.single-featured > a').map do |link|
         new_author.name = article.at('em.article__atnm').text.nil? ? 'Visa Algérie auteur' : author
         new_author.medium_id = @media.id
         new_author.save!
+        new_article.author_id = new_author.id
       else
-
-        new_author.id = author_exist.first.id
-        new_author.name = author_exist.first.name
-
+        new_article.author_id = author_exist.first.id
       end
-      new_article.author_id = new_author.id
       new_article.body = article.css('p.article__desc').inner_html + article.css('div.article__cntn').inner_html
       new_article.body = new_article.body.gsub(/<img[^>]*>/, '')
       # date = article.at('p.text-capitalize span').text
