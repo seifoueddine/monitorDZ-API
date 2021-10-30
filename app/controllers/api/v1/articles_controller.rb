@@ -2961,6 +2961,8 @@ div.nobreak { page-break-inside: avoid; }
       doc.css('div.post-details h2.post-title a').map do |link|
         articles_url_shihabpresse << link['href']
       end
+      puts '*************'
+      puts articles_url_shihabpresse
 
     end
     articles_url_shihabpresse = articles_url_shihabpresse.reject(&:nil?)
@@ -2969,6 +2971,9 @@ div.nobreak { page-break-inside: avoid; }
     articles_url_shihabpresse.map do |link|
       articles_url_shihabpresse_after_check << link if Article.where(medium_id: @media.id,url_article: link).nil?
     end
+    puts '----------'
+    puts articles_url_shihabpresse_after_check
+    puts '----------'
     articles_url_shihabpresse_after_check.map do |link|
       begin
         article = Nokogiri::HTML(URI.open(link))
@@ -3034,7 +3039,7 @@ div.nobreak { page-break-inside: avoid; }
       count += 1 if new_article.save
       # tag_check_and_save(tags_array)if @media.tag_status == true
     end
-    render json: { crawling_count_elcherouk: count }
+    render json: { crawling_count_shihabpresse: count }
   end
   # end method to get shihabpresse articles
 
