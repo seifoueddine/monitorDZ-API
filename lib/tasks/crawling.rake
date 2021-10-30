@@ -630,7 +630,6 @@ namespace :crawling do
     # start method to get le soir articles
   def get_articles_le_soir(url_media_array)
     articles_url_le_soir = []
-    last_dates = []
     url_media_array.map do |url|
       begin
         doc = Nokogiri::HTML(URI.open(url))
@@ -640,24 +639,17 @@ namespace :crawling do
         puts
         next
       end
-      doc.css('div.description a').map do |link|
-        articles_url_le_soir << "https://www.lesoirdalgerie.com#{link['href']}"# if link['class'] == 'main_article'
-      end
-      doc.css('div.description div.type-date').map do |date|
-        last_dates << date.text
+      doc.css('div.categorie-liste-details a:nth-child(2)').map do |link|
+        articles_url_le_soir << 'https://www.lesoirdalgerie.com' + link['href']
       end
     end
-    last_dates = last_dates.map { |d| change_date_autobip_aps(d) }
-    last_dates = last_dates.map { |d| d.to_datetime.change({ hour: 0, min: 0, sec: 0 }) }
-    # last_dates = last_dates.map(&:to_datetime.change({ hour: 0, min: 0, sec: 0 }))
     articles_url_le_soir = articles_url_le_soir.reject(&:nil?)
-    last_dates = last_dates.uniq
-    last_articles = Article.where(medium_id: @media.id).where(date_published: last_dates)
-    list_articles_url = []
-    last_articles.map do |article|
-      list_articles_url << article.url_article
+
+    articles_url_le_soir_after_check = []
+    articles_url_le_soir .map do |link|
+      articles_url_le_soir_after_check << link unless Article.where(medium_id: @media.id,url_article: link).present?
     end
-    articles_url_le_soir_after_check = articles_url_le_soir - list_articles_url
+
     articles_url_le_soir_after_check.map do |link|
       begin
         article = Nokogiri::HTML(URI.open(link))
@@ -671,43 +663,42 @@ namespace :crawling do
       new_article.url_article = link
       new_article.medium_id = @media.id
       new_article.language = @media.language
-      new_article.category_article = article.css('div.content div div.title-category').text
-      new_article.title = "#{article.css('div.article-content div div h1 span.grey-text').text} : #{article.css('div.article-content div div h1 span.black-text').text}"
+      new_article.category_article = article.css('body > section.breadcrumb > span:nth-child(3) > a').text
+      new_article.title = article.css('div.title h1 span.grey-text').text + ', ' + article.css('div.title h1 span.black-text').text
       # new_article.author = article.css('div.article-head__author div em a').text
       anchor = []
       article.css('div.published').each do |header|
         anchor << header.text
 
       end
-      author_exist = if article.at('div.category-content div div.published a').nil?
+      author_exist = if article.css('div.published a').nil?
                        Author.where(['lower(name) like ? ', 'Le soir auteur'.downcase ])
       else
         Author.where(['lower(name) like ? ',
-                                     article.at('div.category-content div div a').text.downcase ])
+                      article.css('div.published a').text.downcase ])
                      end
 
       new_author = Author.new
       if author_exist.count.zero?
 
-        new_author.name = article.at('div.category-content div div a').nil? ? 'Le soir auteur' : article.at('div.category-content div div a').text
+        new_author.name = article.css('div.published a').nil? ? 'Le soir auteur' : article.css('div.published a').text
         new_author.medium_id = @media.id
         new_author.save!
+        new_article.author_id = new_author.id
       else
 
-        new_author.id = author_exist.first.id
-        new_author.name = author_exist.first.name
-
+        new_article.author_id = author_exist.first.id
       end
-      new_article.author_id = new_author.id
-      new_article.body = article.css('div.article-content div.text').inner_html
+
+      new_article.body =  article.css('div.text p').inner_html
       new_article.body = new_article.body.gsub(/<img[^>]*>/, '')
-      date = article.css('div.category-content div div.published').text
-      date['le '] = ''
-      # d = change_date_autobip_aps(date)
+      date_published = article.at('/html/body/section[3]/div/div[2]/div/div[2]/text()[2]').text
+      first = date_published.split(',')[0]
+      date = first.sub! 'le', ''
       new_article.date_published = date.to_datetime.change({ hour: 0, min: 0, sec: 0 })
-      # new_article.date_published =
-      url_array = article.css('div.article-details div.picture img').map do |link|
- "https://www.lesoirdalgerie.com#{link['src']}" end
+
+      url_array = article.css('div.article-content div.article-details div.picture img')
+                         .map{ |link| 'https://www.lesoirdalgerie.com'+ link['data-original']}
       new_article.url_image = url_array[0]
       begin
         new_article.image = Down.download(url_array[0]) if url_array[0].present?
