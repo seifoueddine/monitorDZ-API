@@ -2582,7 +2582,7 @@ article.css('div.post-header div.single-featured > a').map do |link|
       # new_article.author = article.css('div.article-head__author div em a').text
 
       author_exist = Author.where(['lower(name) like ? ',
-                                   'shihabpresse auteur'.text.downcase])
+                                   'shihabpresse auteur'.downcase])
 
       new_author = Author.new
       if author_exist.count.zero?
