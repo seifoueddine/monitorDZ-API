@@ -2969,7 +2969,7 @@ div.nobreak { page-break-inside: avoid; }
 
     articles_url_shihabpresse_after_check = []
     articles_url_shihabpresse.map do |link|
-      articles_url_shihabpresse_after_check << link if Article.where(medium_id: @media.id,url_article: link).nil?
+      articles_url_shihabpresse_after_check << link unless Article.where(medium_id: @media.id,url_article: link).present?
     end
     puts '----------'
     puts articles_url_shihabpresse_after_check
