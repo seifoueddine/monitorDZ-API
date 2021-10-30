@@ -725,6 +725,8 @@ div.nobreak { page-break-inside: avoid; }
       get_articles_24hdz(url_media_array)
     when 'REPORTERS'
       get_articles_reporters(url_media_array)
+    when 'SHIHABPRESSE'
+      get_articles_shihabpresse(url_media_array)
     else
       render json: { crawling_status: 'No media name found!! ', status: 'error' }
     end
@@ -2935,6 +2937,106 @@ div.nobreak { page-break-inside: avoid; }
     render json: { crawling_status_aps: 'ok' }
   end
   # end method to get elhiwar articles
+
+
+
+
+  # start method to get shihabpresse articles
+  def get_articles_shihabpresse(url_media_array)
+    articles_url_shihabpresse = []
+    count = 0
+    url_media_array.map do |url|
+      # doc = Nokogiri::HTML(URI.open(url))
+
+      begin
+        doc = Nokogiri::HTML(URI.open(url))
+      rescue OpenURI::HTTPError => e
+        puts "Can't access #{url}"
+        puts e.message
+        puts
+        next
+      end
+
+
+      doc.css('div.post-details h2.post-title a').map do |link|
+        articles_url_shihabpresse << link['href']
+      end
+
+    end
+    articles_url_shihabpresse = articles_url_shihabpresse.reject(&:nil?)
+
+    articles_url_shihabpresse_after_check = []
+    articles_url_shihabpresse.map do |link|
+      articles_url_shihabpresse_after_check << link if Article.where(medium_id: @media.id,url_article: link).nil?
+    end
+    articles_url_shihabpresse_after_check.map do |link|
+      begin
+        article = Nokogiri::HTML(URI.open(link))
+      rescue OpenURI::HTTPError => e
+        puts "Can't access #{link}"
+        puts e.message
+        puts
+        next
+      rescue RuntimeError => e
+        puts "Can't access #{link}"
+        puts e.message
+        puts
+        next
+      end
+      new_article = Article.new
+      new_article.url_article = link
+      new_article.medium_id = @media.id
+      new_article.language = @media.language
+      new_article.category_article = article.css('div.entry-header span.post-cat-wrap a').text
+      new_article.title = article.css('div.entry-header h1.post-title.entry-title').text
+      # new_article.author = article.css('div.article-head__author div em a').text
+
+      author_exist = Author.where(['lower(name) like ? ',
+                                   'shihabpresse auteur'.text.downcase])
+
+      new_author = Author.new
+      if author_exist.count.zero?
+
+        new_author.name = 'shihabpresse auteur'
+        new_author.medium_id = @media.id
+        new_author.save!
+        new_article.author_id = new_author.id
+      else
+        new_article.author_id = author_exist.first.id
+
+      end
+      new_article.body = article.css('div.entry-content.entry.clearfix p').inner_html
+      new_article.body = new_article.body.gsub(/<img[^>]*>/, '')
+
+      new_article.date_published = Date.today.change({ hour: 0, min: 0, sec: 0 })
+
+      unless article.at_css('div.featured-area figure img').nil?
+        url_array = article.css('div.featured-area figure img').map{ |link| link['src'] }
+      end
+      new_article.url_image = url_array[0]
+
+      # new_article.image = Down.download(url_array[0]) if url_array[0].present?
+
+      begin
+        new_article.image = Down.download(url_array[0]) if url_array[0].present?
+      rescue Down::ResponseError => e
+        puts "Can't download this image #{url_array[0]}"
+        puts e.message
+        puts
+        new_article.image = nil
+      end
+
+
+
+      # new_article.media_tags = tags_array.join(',')
+      new_article.status = 'pending'
+      new_article.save!
+      count += 1 if new_article.save
+      # tag_check_and_save(tags_array)if @media.tag_status == true
+    end
+    render json: { crawling_count_elcherouk: count }
+  end
+  # end method to get shihabpresse articles
 
 
 
