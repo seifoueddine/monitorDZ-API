@@ -2311,7 +2311,7 @@ article.css('div.post-header div.single-featured > a').map do |link|
     last_dates = []
     url_media_array.map do |url|
       begin
-        doc = Nokogiri::HTML(URI.open(url, allow_redirections: all))
+        doc = Nokogiri::HTML(URI.open(url, allow_redirections: :all))
       rescue OpenURI::HTTPError => e
         puts "Can't access #{url}"
         puts e.message
