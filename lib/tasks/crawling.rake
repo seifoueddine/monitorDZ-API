@@ -1801,7 +1801,7 @@ hour: 0, min: 0, sec: 0 })
       end
       # url_image = url_array[0]
       begin
-        new_article.image = Down.download(url_array[0]) if url_array[0].present?
+        new_article.image = Down.download(url_array[0]) if url_array.present?
       rescue Down::Error => e
         puts "Can't download this image #{url_array[0]}"
         puts e.message
