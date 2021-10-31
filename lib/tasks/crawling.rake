@@ -789,7 +789,7 @@ namespace :crawling do
       new_author = Author.new
       if author_exist.count.zero?
 
-        new_author.name = article.at('div#side-post div div p a').nil? ? 'Liberté auteur' : article.at('div#side-post div div p a').text.delete(' ')
+        new_author.name = article.at('div#side-post div div p a').nil? ? 'Liberté auteur' : article.at('div#side-post div div p a').text
         new_author.medium_id = @media.id
         new_author.save!
         new_article.author_id = new_author.id
