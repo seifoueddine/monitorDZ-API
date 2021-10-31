@@ -1067,8 +1067,8 @@ div.nobreak { page-break-inside: avoid; }
       new_article.url_article = link
       new_article.medium_id = @media.id
       new_article.language = @media.language
-      new_article.category_article = article.css('div.article__meta a.article__meta-category').text
-      new_article.title = article.css('div.article__title').text
+      new_article.category_article = article.css('div.article__meta a.article__meta-category').nil? ? article.css('div.anarticle__meta div a.article-meta__category').text : article.css('div.article__meta a.article__meta-category').text
+      new_article.title = article.css('div.article__title').nil? ? article.css('h2.anarticle__title span').text : article.css('div.article__title').text
       # new_article.author = article.css('div.article-head__author div em a').text
 
       author_exist = if article.at('span.article__meta-author').nil?
@@ -1089,9 +1089,9 @@ div.nobreak { page-break-inside: avoid; }
         new_article.author_id = author_exist.first.id
 
       end
-      new_article.body = article.css('div.article__content').inner_html
+      new_article.body = article.css('div.article__content').nil? ? article.css('div.anarticle__content').inner_html : article.css('div.article__content').inner_html
       new_article.body = new_article.body.gsub(/<img[^>]*>/, '')
-      date = article.at('time[datetime]')['datetime']
+      date = article.at('time[datetime]').nil? ? Date.today : article.at('time[datetime]')['datetime']
       new_article.date_published = date.to_datetime.change({ hour: 0, min: 0, sec: 0 }) + (1.0 / 24)
       url_array = article.css('body > div.article-section > div > div.article-section__main.wrap__main > article > div.full-article__featured-image > img').map { |link| link['src'] }
       new_article.url_image = url_array[0]
@@ -1458,7 +1458,7 @@ div.nobreak { page-break-inside: avoid; }
       new_author = Author.new
       if author_exist.count.zero?
 
-        new_author.name = article.at('div.td-post-author-name').nil? ? '24h-dz auteur' : article.at('div.td-post-author-name').text.delete(' ')
+        new_author.name = article.at('div.td-post-author-name').nil? ? '24h-dz auteur' : article.at('div.td-post-author-name').text
         new_author.medium_id = @media.id
         new_author.save!
         new_article.author_id = new_author.id
@@ -2103,7 +2103,7 @@ div.nobreak { page-break-inside: avoid; }
       if article.css('div#article_img img').present?
         url_array = article.css('div#article_img img').map { |link| 'https://www.elkhabar.com' + link['src'] }
       end
-      url_image = url_array[0]
+      # url_image = url_array[0]
       begin
         new_article.image = Down.download(url_array[0]) if url_array[0].present?
       rescue Down::Error => e
@@ -2551,7 +2551,7 @@ div.nobreak { page-break-inside: avoid; }
     last_dates = []
     url_media_array.map do |url|
       begin
-        doc = Nokogiri::HTML(URI.open(url))
+        doc = Nokogiri::HTML(URI.open(url, allow_redirections: all))
       rescue OpenURI::HTTPError => e
         puts "Can't access #{url}"
         puts e.message
@@ -2584,7 +2584,7 @@ div.nobreak { page-break-inside: avoid; }
     articles_url_visadz_after_check.map do |link|
 
       begin
-        article = Nokogiri::HTML(URI.open(link))
+        article = Nokogiri::HTML(URI.open(link, allow_redirections: all))
       rescue OpenURI::HTTPError => e
         puts "Can't access #{link}"
         puts e.message
@@ -2599,7 +2599,7 @@ div.nobreak { page-break-inside: avoid; }
       new_article.title = article.css('h1.article__title').text
       # new_article.author = article.css('div.article-head__author div em a').text
 
-      if article.at('em.article__atnm').text.nil?
+      if article.at('em.article__atnm').nil?
         author_exist = Author.where(['lower(name) like ? ', ('Visa Algérie auteur').downcase])
       else
         author = article.at('em.article__atnm').text
