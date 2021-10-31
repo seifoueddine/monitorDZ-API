@@ -2086,7 +2086,7 @@ div.nobreak { page-break-inside: avoid; }
       new_author = Author.new
       if author_exist.count.zero?
 
-        new_author.name = article.at('span.time-blog b').present? ? 'Elkhabar auteur' : article.at('span.time-blog b').text
+        new_author.name = article.at('span.time-blog b').present? ? article.at('span.time-blog b').text : 'Elkhabar auteur'
         new_author.medium_id = @media.id
         new_author.save!
         new_article.author_id = new_author.id
