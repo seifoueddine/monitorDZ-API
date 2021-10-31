@@ -2076,10 +2076,11 @@ div.nobreak { page-break-inside: avoid; }
       # new_article.author = article.css('div.article-head__author div em a').text
 
       author_exist = if article.at('span.time-blog b').present?
-                       Author.where(['lower(name) like ? ', ('Elkhabar auteur').downcase])
-                     else
                        Author.where(['lower(name) like ? ',
                                      article.at('span.time-blog b').text.downcase])
+                     else
+                       Author.where(['lower(name) like ? ', ('Elkhabar auteur').downcase])
+
                      end
 
       new_author = Author.new
