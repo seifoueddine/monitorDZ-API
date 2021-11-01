@@ -83,7 +83,15 @@ class Api::V1::AuthorsController < ApplicationController
 
   # DELETE /authors/1
   def destroy
-    @author.destroy
+    if @author.articles.count.zero?
+      @author.destroy
+    else
+      render json: {
+        code: 'E010',
+        message: 'Author has articles'
+      },  status: 406
+    end
+
   end
 
   private
