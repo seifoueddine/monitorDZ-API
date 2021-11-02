@@ -34,50 +34,50 @@ namespace :crawling do
   def get_articles(url_media_array, media)
     puts "get article of #{media.name}"
     case media.name
-    when 'AUTOBIP'
-      get_articles_autobip(url_media_array)
-    when 'ELCHEROUK'
-      get_articles_elcherouk(url_media_array)
-    when 'ENNAHAR'
-      get_articles_ennahar(url_media_array)
-    when 'TSA'
-      get_articles_tsa(url_media_array)
+    # when 'AUTOBIP'
+    #   get_articles_autobip(url_media_array)
+    #  when 'ELCHEROUK'
+    #   get_articles_elcherouk(url_media_array)
+    #  when 'ENNAHAR'
+    #   get_articles_ennahar(url_media_array)
+    # when 'TSA'
+    #    get_articles_tsa(url_media_array)
     when 'APS'
       get_articles_aps(url_media_array)
-    when 'MAGHREBEMERGENT'
-      get_articles_maghrebemergent(url_media_array)
+      # when 'MAGHREBEMERGENT'
+      #   get_articles_maghrebemergent(url_media_array)
            # when 'ELBILAD'
            # get_articles_bilad(url_media_array)
-    when 'ELMOUDJAHID'
-      get_articles_elmoudjahid(url_media_array)
-    when 'ELMOUDJAHID-FR'
-      get_articles_elmoudjahid_fr(url_media_array)
-    when 'ELKHABAR'
-      get_articles_elkhabar(url_media_array)
-    when 'ELIKHABARIA'
-      get_articles_elikhbaria(url_media_array)
-    when 'ALGERIECO'
-      get_articles_algerieco(url_media_array)
-    when 'CHIFFREAFFAIRE'
-      get_articles_chiffreaffaire(url_media_array)
-    when 'ELHIWAR'
-      get_articles_elhiwar(url_media_array)
-    when 'LE SOIR'
-      get_articles_le_soir(url_media_array)
-    when 'LIBERTE'
-      get_articles_liberte(url_media_array)
+      #  when 'ELMOUDJAHID'
+      #    get_articles_elmoudjahid(url_media_array)
+      #  when 'ELMOUDJAHID-FR'
+      #    get_articles_elmoudjahid_fr(url_media_array)
+      #  when 'ELKHABAR'
+      #    get_articles_elkhabar(url_media_array)
+      #  when 'ELIKHABARIA'
+      #   get_articles_elikhbaria(url_media_array)
+      #   when 'ALGERIECO'
+      #    get_articles_algerieco(url_media_array)
+      #  when 'CHIFFREAFFAIRE'
+      #  get_articles_chiffreaffaire(url_media_array)
+      #  when 'ELHIWAR'
+      #  get_articles_elhiwar(url_media_array)
+      #  when 'LE SOIR'
+      #  get_articles_le_soir(url_media_array)
+      # when 'LIBERTE'
+      # get_articles_liberte(url_media_array)
       # when 'VISAALGERIE'
       #   get_articles_visadz(url_media_array)
-    when 'SANTENEWS'
-      get_articles_santenews(url_media_array)
-    when 'ALGERIE360'
-      get_articles_algerie360(url_media_array)
+      #  when 'SANTENEWS'
+      #  get_articles_santenews(url_media_array)
+      # when 'ALGERIE360'
+      #  get_articles_algerie360(url_media_array)
       # when 'ALGERIEPARTPLUS'
       # get_articles_algerie_part(url_media_array)
-    when '24H-DZ'
-      get_articles_24hdz(url_media_array)
-    when 'REPORTERS'
-      get_articles_reporters(url_media_array)
+      # when '24H-DZ'
+      #  get_articles_24hdz(url_media_array)
+      # when 'REPORTERS'
+      #  get_articles_reporters(url_media_array)
     when 'SHIHABPRESSE'
       get_articles_shihabpresse(url_media_array)
     else
@@ -2548,8 +2548,9 @@ article.css('div.post-header div.single-featured > a').map do |link|
 
     articles_url_shihabpresse_after_check = []
     articles_url_shihabpresse.map do |link|
-      articles_url_shihabpresse_after_check << link if Article.where(medium_id: @media.id,url_article: link).nil?
+      articles_url_shihabpresse_after_check << link unless Article.where(medium_id: @media.id,url_article: link).present?
     end
+
     articles_url_shihabpresse_after_check.map do |link|
       begin
         article = Nokogiri::HTML(URI.open(link))
