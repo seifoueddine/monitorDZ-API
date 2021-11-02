@@ -2356,7 +2356,7 @@ div.nobreak { page-break-inside: avoid; }
       end
     end
     # last_dates = last_dates.map { |d| change_date_maghrebemergen(d) }
-    last_dates = last_dates.map { |d| d.to_datetime.change({ hour: 0, min: 0, sec: 0 }) + (2.0 / 24) }
+    last_dates = last_dates.map { |d| d.to_datetime.change({ hour: 0, min: 0, sec: 0 }) + (1.0 / 24) }
     articles_url_chiffreaffaire = articles_url_chiffreaffaire.reject(&:nil?)
     last_dates = last_dates.uniq
     last_articles = Article.where(medium_id: @media.id).where(date_published: last_dates)
@@ -2407,7 +2407,7 @@ div.nobreak { page-break-inside: avoid; }
       # date[','] = ''
       date = article.at('time[datetime]')['datetime']
       # d = change_date_maghrebemergen(date)
-      new_article.date_published = date.to_datetime.change({ hour: 0, min: 0, sec: 0 }) + (2.0 / 24)
+      new_article.date_published = date.to_datetime.change({ hour: 0, min: 0, sec: 0 }) + (1.0 / 24)
       url_array = article.css('div.single-featured a').map { |link| link['href'] }
       url_image = url_array[0]
       #  new_article.image = Down.download(url_array[0]) if url_array[0].present?
