@@ -66,8 +66,8 @@ namespace :crawling do
        get_articles_le_soir(url_media_array)
        when 'LIBERTE'
        get_articles_liberte(url_media_array)
-      when 'VISAALGERIE'
-         get_articles_visadz(url_media_array)
+       #when 'VISAALGERIE'
+       # get_articles_visadz(url_media_array)
         when 'SANTENEWS'
         get_articles_santenews(url_media_array)
       when 'ALGERIE360'
