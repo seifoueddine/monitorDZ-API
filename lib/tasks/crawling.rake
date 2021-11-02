@@ -36,48 +36,48 @@ namespace :crawling do
     case media.name
     # when 'AUTOBIP'
     #   get_articles_autobip(url_media_array)
-    #  when 'ELCHEROUK'
-    #   get_articles_elcherouk(url_media_array)
-    #  when 'ENNAHAR'
-    #   get_articles_ennahar(url_media_array)
-    # when 'TSA'
-    #    get_articles_tsa(url_media_array)
+     when 'ELCHEROUK'
+       get_articles_elcherouk(url_media_array)
+     when 'ENNAHAR'
+      get_articles_ennahar(url_media_array)
+     when 'TSA'
+        get_articles_tsa(url_media_array)
     when 'APS'
       get_articles_aps(url_media_array)
-      # when 'MAGHREBEMERGENT'
-      #   get_articles_maghrebemergent(url_media_array)
-           # when 'ELBILAD'
-           # get_articles_bilad(url_media_array)
-      #  when 'ELMOUDJAHID'
-      #    get_articles_elmoudjahid(url_media_array)
-      #  when 'ELMOUDJAHID-FR'
-      #    get_articles_elmoudjahid_fr(url_media_array)
-      #  when 'ELKHABAR'
-      #    get_articles_elkhabar(url_media_array)
-      #  when 'ELIKHABARIA'
-      #   get_articles_elikhbaria(url_media_array)
-      #   when 'ALGERIECO'
-      #    get_articles_algerieco(url_media_array)
-      #  when 'CHIFFREAFFAIRE'
-      #  get_articles_chiffreaffaire(url_media_array)
-      #  when 'ELHIWAR'
-      #  get_articles_elhiwar(url_media_array)
-      #  when 'LE SOIR'
-      #  get_articles_le_soir(url_media_array)
-      # when 'LIBERTE'
-      # get_articles_liberte(url_media_array)
-      # when 'VISAALGERIE'
-      #   get_articles_visadz(url_media_array)
-      #  when 'SANTENEWS'
-      #  get_articles_santenews(url_media_array)
-      # when 'ALGERIE360'
-      #  get_articles_algerie360(url_media_array)
-      # when 'ALGERIEPARTPLUS'
-      # get_articles_algerie_part(url_media_array)
-      # when '24H-DZ'
-      #  get_articles_24hdz(url_media_array)
-      # when 'REPORTERS'
-      #  get_articles_reporters(url_media_array)
+       when 'MAGHREBEMERGENT'
+        get_articles_maghrebemergent(url_media_array)
+    when 'ELBILAD'
+      get_articles_bilad(url_media_array)
+        when 'ELMOUDJAHID'
+          get_articles_elmoudjahid(url_media_array)
+        when 'ELMOUDJAHID-FR'
+          get_articles_elmoudjahid_fr(url_media_array)
+        when 'ELKHABAR'
+         get_articles_elkhabar(url_media_array)
+        when 'ELIKHABARIA'
+         get_articles_elikhbaria(url_media_array)
+         when 'ALGERIECO'
+          get_articles_algerieco(url_media_array)
+        when 'CHIFFREAFFAIRE'
+        get_articles_chiffreaffaire(url_media_array)
+        when 'ELHIWAR'
+        get_articles_elhiwar(url_media_array)
+        when 'LE SOIR'
+       get_articles_le_soir(url_media_array)
+       when 'LIBERTE'
+       get_articles_liberte(url_media_array)
+      when 'VISAALGERIE'
+         get_articles_visadz(url_media_array)
+        when 'SANTENEWS'
+        get_articles_santenews(url_media_array)
+      when 'ALGERIE360'
+        get_articles_algerie360(url_media_array)
+       when 'ALGERIEPARTPLUS'
+       get_articles_algerie_part(url_media_array)
+       when '24H-DZ'
+        get_articles_24hdz(url_media_array)
+       when 'REPORTERS'
+        get_articles_reporters(url_media_array)
     when 'SHIHABPRESSE'
       get_articles_shihabpresse(url_media_array)
     else
@@ -1255,7 +1255,6 @@ namespace :crawling do
     # start method to get bilad articles
   def get_articles_bilad(url_media_array)
     articles_url_bilad = []
-    last_dates = []
     url_media_array.map do |url|
       begin
         doc = Nokogiri::HTML(open(url, 'User-Agent' => 'ruby'))
@@ -1265,21 +1264,22 @@ namespace :crawling do
         puts
         next
       end
-      articles_url_bilad = doc.css('article ul li h3 a').map { |link| link['href'] }
-      date_category_time = doc.css('article ul li ul li').map(&:text)
-      dates = date_category_time.select { |x| x.include?('-') }
 
-      last_dates = dates.map { |date| date.to_datetime.change({ hour: 0, min: 0, sec: 0 }) }
+      doc.css('article#categoryArticles h3 a').map do |link|
+        articles_url_bilad << link['href']
+      end
+      doc.css('ul.list-news.int h1 a').map do |link|
+        articles_url_bilad << link['href']
+      end
     end
     articles_url_bilad = articles_url_bilad.reject(&:nil?)
-    last_dates = last_dates.uniq
-    last_articles = Article.where(medium_id: @media.id).where(date_published: last_dates)
-    list_articles_url = []
-    last_articles.map do |article|
-      list_articles_url << article.url_article
+
+    articles_url_biled_after_check = []
+    articles_url_bilad.map do |link|
+      articles_url_biled_after_check << link unless Article.where(medium_id: @media.id,url_article: link).present?
     end
-    articles_url_bilad_after_check = articles_url_bilad - list_articles_url
-    articles_url_bilad_after_check.map do |link|
+
+    articles_url_biled_after_check.map do |link|
 
 
       begin
@@ -1294,37 +1294,34 @@ namespace :crawling do
       new_article.url_article = link
       new_article.medium_id = @media.id
       new_article.language = @media.language
-      new_article.category_article = article.css('div#right_area a').text
-      new_article.title = article.css('div.right_area h1').text
+      new_article.category_article =  article.css('#content > header > ul.list-breadcrumbs > li:nth-child(2)').text
+      new_article.title = article.css('#content > header > h1').text
       # new_article.author = article.css('div.article-head__author div em a').text
-      auteur = article.css('ul.list-share li.title a span.strong').text
-      author_exist = if auteur.present?
+      author_exist = if article.at('ul.list-share li a span.strong').text == '0'
                        Author.where(['lower(name) like ? ', ('Bilad auteur').downcase])
                      else
+                       a = article.at('ul.list-share li a span.strong').text
                        Author.where(['lower(name) like ? ',
-                                     auteur.downcase])
+                                     a.downcase])
                      end
 
       new_author = Author.new
       if author_exist.count.zero?
 
-        new_author.name = auteur.present? ? 'Bilad auteur' : auteur
+        new_author.name = article.at('ul.list-share li a span.strong').text == '0' ? 'Bilad auteur' : article.at('ul.list-share li a span.strong').text
         new_author.medium_id = @media.id
         new_author.save!
+        new_article.author_id = new_author.id
       else
-
-        new_author.id = author_exist.first.id
-        new_author.name = author_exist.first.name
+        new_article.author_id = author_exist.first.id
 
       end
 
-      new_article.author_id = new_author.id
-      new_article.body = article.css('article.module-detail').inner_html
+      new_article.body = article.css('article.module-detail p').inner_html
       new_article.body = new_article.body.gsub(/<img[^>]*>/, '')
-      date_array = article.css('header.header-a ul.list-share li.title a span').map(&:text)
-      date99 = date_array.select { |x| x.include?('-') }
-      new_article.date_published = date99[0].to_datetime.change({ hour: 0, min: 0, sec: 0 })
-      url_array = article.css('article.module-detail figure img').map { |link| link['src'] }
+      date_array = article.css('ul.list-share li a span').map{ |span| span.text }
+      new_article.date_published = date_array.to_s.include?('0') ? Date.today.to_datetime.change({ hour: 0, min: 0, sec: 0 }) : date_published_array[1].split(',')[0].to_datetime.change({ hour: 0, min: 0, sec: 0 })
+      url_array = article.css('article.module-detail img').map{ |link| link['data-src'] }
       new_article.url_image = url_array[0]
       begin
         if url_array[0].present?
@@ -1336,8 +1333,6 @@ namespace :crawling do
         puts
         new_article.image = nil
       end
-      # tags_array = article.css('#tags a').map(&:text)
-      # new_article.media_tags = tags_array.join(',')
       new_article.status = 'pending'
       puts "URLBefoooooooooooooor:" + link
       if Article.where(url_article: link).present?
@@ -1352,10 +1347,8 @@ namespace :crawling do
         puts 'add article'
         @articles_for_auto_tag << Article.where(url_article: articlesTagsUrl)[0]
       end
-
-      #tag_check_and_save(tags_array)if @media.tag_status == true
     end
-    puts "json: { crawling_status_aps: 'ok' }"
+    puts "json: { crawling_status_bilad: 'ok' }"
   end
     # end method to get bilad articles
     #
