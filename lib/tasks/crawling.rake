@@ -72,8 +72,8 @@ namespace :crawling do
         get_articles_santenews(url_media_array)
       when 'ALGERIE360'
         get_articles_algerie360(url_media_array)
-       when 'ALGERIEPARTPLUS'
-       get_articles_algerie_part(url_media_array)
+        # when 'ALGERIEPARTPLUS'
+         #  get_articles_algerie_part(url_media_array)
        when '24H-DZ'
         get_articles_24hdz(url_media_array)
        when 'REPORTERS'
