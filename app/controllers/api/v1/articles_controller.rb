@@ -1422,7 +1422,7 @@ div.nobreak { page-break-inside: avoid; }
       end
     end
     last_dates = last_dates.map { |d| change_date_autobip_aps(d) }
-    last_dates = last_dates.map { |d| d.to_datetime.change({ hour: 0, min: 0, sec: 0 }) }
+    last_dates = last_dates.map { |d| d.to_datetime.change({ hour: 0, min: 0, sec: 0 }) + (1.0 / 24) }
     # last_dates = last_dates.map(&:to_datetime.change({ hour: 0, min: 0, sec: 0 }))
     articles_url_24hdz = articles_url_24hdz.reject(&:nil?)
     last_dates = last_dates.uniq
@@ -1471,7 +1471,7 @@ div.nobreak { page-break-inside: avoid; }
       new_article.body = new_article.body.gsub(/<img[^>]*>/, '')
 
       # d = change_date_autobip_aps(date)
-      new_article.date_published = article.at('time[datetime]')['datetime'].to_datetime.change({ hour: 0, min: 0, sec: 0 })
+      new_article.date_published = article.at('time[datetime]')['datetime'].to_datetime.change({ hour: 0, min: 0, sec: 0 }) + (1.0 / 24)
       # new_article.date_published =
       url_array = article.css('div.td-post-featured-image img').map { |link| link['src'] }
       new_article.url_image = url_array[0]
