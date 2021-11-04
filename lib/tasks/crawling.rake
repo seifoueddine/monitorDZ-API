@@ -2676,7 +2676,7 @@ article.css('div.post-header div.single-featured > a').map do |link|
       new_article.category_article =  article.css('#content > nav > ol > li:nth-child(3) > a').text
       new_article.title = article.css('article header.heading-a p',).text + ', '+ article.css('article header.heading-a h1',).text
       # new_article.author = article.css('div.article-head__author div em a').text
-      author_exist = if article.css('h3.scheme-user').nil?
+      author_exist = if article.css('h3.scheme-user').text.nil?
                        Author.where(['lower(name) like ? ', ("L'expressiondz auteur").downcase])
                      else
                        a = article.css('h3.scheme-user').text
@@ -2687,7 +2687,7 @@ article.css('div.post-header div.single-featured > a').map do |link|
       new_author = Author.new
       if author_exist.count.zero?
 
-        new_author.name = article.css('h3.scheme-user').nil? ? "L'expressiondz auteur" : article.css('h3.scheme-user').text
+        new_author.name = article.css('h3.scheme-user').text.nil? ? "L'expressiondz auteur" : article.css('h3.scheme-user').text
         new_author.medium_id = @media.id
         new_author.save!
         new_article.author_id = new_author.id
