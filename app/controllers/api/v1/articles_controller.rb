@@ -3083,8 +3083,8 @@ div.nobreak { page-break-inside: avoid; }
       new_author = Author.new
       puts "*****************"
       puts author_exist
-      author_exist.count.zero?
-      article.css('h3.scheme-user').text.nil?
+      puts author_exist.count.zero?
+      puts article.css('h3.scheme-user').text.nil?
       puts "*****************"
       if author_exist.count.zero?
 
