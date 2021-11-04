@@ -3081,6 +3081,11 @@ div.nobreak { page-break-inside: avoid; }
                      end
 
       new_author = Author.new
+      puts "*****************"
+      puts author_exist
+      author_exist.count.zero?
+      article.css('h3.scheme-user').text.nil?
+      puts "*****************"
       if author_exist.count.zero?
 
         new_author.name = article.css('h3.scheme-user').text.nil? ? "L'expressiondz auteur" : article.css('h3.scheme-user').text
