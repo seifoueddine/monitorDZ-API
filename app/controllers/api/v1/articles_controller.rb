@@ -3083,7 +3083,7 @@ div.nobreak { page-break-inside: avoid; }
       new_author = Author.new
       if author_exist.count.zero?
 
-        new_author.name = article.css('h3.scheme-user').text.nil? ? "L'expressiondz auteur" : article.css('h3.scheme-user').text
+        new_author.name = article.css('h3.scheme-user').text == '' ? "L'expressiondz auteur" : article.css('h3.scheme-user').text
         new_author.medium_id = @media.id
         new_author.save!
         new_article.author_id = new_author.id
