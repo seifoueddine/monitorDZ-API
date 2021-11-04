@@ -3075,7 +3075,7 @@ div.nobreak { page-break-inside: avoid; }
       author_exist = if article.css('h3.scheme-user').nil?
                        Author.where(['lower(name) like ? ', ("L'expressiondz auteur").downcase])
                      else
-                       a = article.at('h3.scheme-user').text
+                       a = article.css('h3.scheme-user').text
                        Author.where(['lower(name) like ? ',
                                      a.downcase])
                      end

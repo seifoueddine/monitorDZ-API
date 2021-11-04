@@ -80,6 +80,8 @@ namespace :crawling do
         get_articles_reporters(url_media_array)
     when 'SHIHABPRESSE'
       get_articles_shihabpresse(url_media_array)
+    when 'LEXPRESSIONDZ'
+      get_articles_lexpressiondz(url_media_array)
     else
       puts "crawling_status: 'No media name found!! ', status: 'error' "
     end
@@ -2677,7 +2679,7 @@ article.css('div.post-header div.single-featured > a').map do |link|
       author_exist = if article.css('h3.scheme-user').nil?
                        Author.where(['lower(name) like ? ', ("L'expressiondz auteur").downcase])
                      else
-                       a = article.at('h3.scheme-user').text
+                       a = article.css('h3.scheme-user').text
                        Author.where(['lower(name) like ? ',
                                      a.downcase])
                      end
