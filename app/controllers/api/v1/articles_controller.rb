@@ -3072,7 +3072,7 @@ div.nobreak { page-break-inside: avoid; }
       new_article.category_article =  article.css('#content > nav > ol > li:nth-child(3) > a').text
       new_article.title = article.css('article header.heading-a p',).text + ', '+ article.css('article header.heading-a h1',).text
       # new_article.author = article.css('div.article-head__author div em a').text
-      author_exist = if article.css('h3.scheme-user').text.nil?
+      author_exist = if article.css('h3.scheme-user').text == ''
                        Author.where(['lower(name) like ? ', ("L'expressiondz auteur").downcase])
                      else
                        a = article.css('h3.scheme-user').text
@@ -3081,11 +3081,6 @@ div.nobreak { page-break-inside: avoid; }
                      end
 
       new_author = Author.new
-      puts "*****************"
-      puts author_exist
-      puts author_exist.count.zero?
-      puts article.css('h3.scheme-user').text.nil?
-      puts "*****************"
       if author_exist.count.zero?
 
         new_author.name = article.css('h3.scheme-user').text.nil? ? "L'expressiondz auteur" : article.css('h3.scheme-user').text

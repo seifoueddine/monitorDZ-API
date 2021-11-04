@@ -2676,7 +2676,7 @@ article.css('div.post-header div.single-featured > a').map do |link|
       new_article.category_article =  article.css('#content > nav > ol > li:nth-child(3) > a').text
       new_article.title = article.css('article header.heading-a p',).text + ', '+ article.css('article header.heading-a h1',).text
       # new_article.author = article.css('div.article-head__author div em a').text
-      author_exist = if article.css('h3.scheme-user').text.nil?
+      author_exist = if article.css('h3.scheme-user').text == ''
                        Author.where(['lower(name) like ? ', ("L'expressiondz auteur").downcase])
                      else
                        a = article.css('h3.scheme-user').text
