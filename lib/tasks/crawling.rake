@@ -82,6 +82,8 @@ namespace :crawling do
       get_articles_shihabpresse(url_media_array)
     when 'LEXPRESSIONDZ'
       get_articles_lexpressiondz(url_media_array)
+    when 'LEMATIN-MA'
+      get_articles_lematin(url_media_array)
     else
       puts "crawling_status: 'No media name found!! ', status: 'error' "
     end
@@ -2678,7 +2680,6 @@ article.css('div.post-header div.single-featured > a').map do |link|
       # tags_array = article.css('#tags a').map(&:text)
       # new_article.media_tags = tags_array.join(',')
       new_article.status = 'pending'
-      new_article.save!
       puts "URLBefoooooooooooooor:" + link
       if Article.where(url_article: link).present?
         puts 'article present'
@@ -2699,6 +2700,112 @@ article.css('div.post-header div.single-featured > a').map do |link|
     # end method to get expression articles
     #
 
+
+
+
+
+    # start method to get lematin articles
+  def get_articles_lematin(url_media_array)
+    articles_url_lematin = []
+    url_media_array.map do |url|
+      begin
+        doc = Nokogiri::HTML(open(url, 'User-Agent' => 'ruby'))
+      rescue OpenURI::HTTPError => e
+        puts "Can't access #{url}"
+        puts e.message
+        puts
+        next
+      end
+
+      doc.css('div.card.h-100 a').map do |link|
+        articles_url_lematin << link['href']
+      end
+    end
+    articles_url_lematin = articles_url_lematin.reject(&:nil?)
+
+    articles_url_lematin_after_check = []
+    articles_url_lematin.map do |link|
+      articles_url_lematin_after_check << link unless Article.where(medium_id: @media.id,url_article: link).present?
+    end
+
+    articles_url_lematin_after_check.map do |link|
+
+
+      begin
+        article = Nokogiri::HTML(open(link, 'User-Agent' => 'ruby'))
+      rescue OpenURI::HTTPError => e
+        puts "Can't access #{link}"
+        puts e.message
+        puts
+        next
+      end
+      new_article = Article.new
+      new_article.url_article = link
+      new_article.medium_id = @media.id
+      new_article.language = @media.language
+      new_article.category_article =   article.css('h3.title-section.mb-2').text
+      new_article.title = article.css('h1#title').text
+      # new_article.author = article.css('div.article-head__author div em a').text
+      author_exist_array = article.css('p.author span a').map{ |link|  link['title']}
+      author_exist_final = author_exist_array.reject(&:nil?)
+      author_exist = if author_exist_final.count.zero?
+                       Author.where(['lower(name) like ? ', ("Lematin auteur").downcase])
+                     else
+                       a = author_exist_final[0]
+                       Author.where(['lower(name) like ? ',
+                                     a.downcase])
+                     end
+
+      new_author = Author.new
+      if author_exist.count.zero?
+
+        new_author.name = author_exist_final.count.zero? ? "Lematin auteur" : author_exist_final[0]
+        new_author.medium_id = @media.id
+        new_author.save!
+        new_article.author_id = new_author.id
+      else
+        new_article.author_id = author_exist.first.id
+
+      end
+
+      new_article.body = article.css('p.lead.caption').inner_html + article.css('div.card-body.p-2').inner_html
+      new_article.body = new_article.body.gsub(/<img[^>]*>/, '')
+
+      date_published_array =  article.css('p.author span meta').map { |date|  date['content'] if date['itemprop'] == 'datePublished' }
+      new_article.date_published = date_published_array.reject(&:nil?)[0].to_datetime.change({ hour: 0, min: 0, sec: 0 })
+      url_array = article.css('img.d-block.w-100').map{ |link|  link['src']}
+      new_article.url_image = url_array[0]
+      begin
+        if url_array[0].present?
+          new_article.image = Down.download(url_array[0])
+        end
+      rescue Down::Error => e
+        puts "Can't download this image #{url_array[0]}"
+        puts e.message
+        puts
+        new_article.image = nil
+      end
+      # tags_array = article.css('#tags a').map(&:text)
+      # new_article.media_tags = tags_array.join(',')
+      new_article.status = 'pending'
+      puts "URLBefoooooooooooooor:" + link
+      if Article.where(url_article: link).present?
+        puts 'article present'
+      else
+        articlesTagsUrl = link
+      end
+      puts "URLURLURLURLURLURLURLURLURLURLURLURLURLURLURL: #{articlesTagsUrl}"
+
+      new_article.save!
+      if articlesTagsUrl.present?
+        puts 'add article'
+        @articles_for_auto_tag << Article.where(url_article: articlesTagsUrl)[0]
+      end
+    end
+    puts "json: { crawling_status_lematin: 'ok' }"
+  end
+    # end method to get lematin articles
+    #
 
 
 

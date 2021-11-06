@@ -729,7 +729,7 @@ div.nobreak { page-break-inside: avoid; }
       get_articles_shihabpresse(url_media_array)
     when 'LEXPRESSIONDZ'
       get_articles_lexpressiondz(url_media_array)
-    when 'LEMATIN'
+    when 'LEMATIN-MA'
       get_articles_lematin(url_media_array)
     else
       render json: { crawling_status: 'No media name found!! ', status: 'error' }
