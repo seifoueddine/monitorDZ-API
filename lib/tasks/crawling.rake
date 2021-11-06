@@ -1464,11 +1464,10 @@ namespace :crawling do
     #
 
 
-    # start method to get elmoudjahid articles
+    # start method to get elmoudjahid_fr articles
   def get_articles_elmoudjahid_fr(url_media_array)
     articles_url_elmoudjahid = []
-    last_dates = []
-    new_last_dates = []
+
     count = 0
     url_media_array.map do |url|
       begin
@@ -1479,44 +1478,16 @@ namespace :crawling do
         puts
         next
       end
-      doc.css('article ul li h2 a').map do |link|
+      doc.css('article ul.list-category h2 a').map do |link|
         articles_url_elmoudjahid << link['href'] # if link['class'] == 'main_article'
       end
-      # doc.css('#main > div.UnCat > div > ul > li > a').map do |link|
-        # articles_url_elmoudjahid6 << link['href'] # if link['class'] == 'main_article'
-        # end
-      # doc.css('#main > div.CBox > div > h4 > a').map do |link|
-        # articles_url_elmoudjahid << link['href'] # if link['class'] == 'main_article'
-        #  end
-      # if doc.at('li p')['style'] == 'width: 520px;'
-        #  first_date = doc.at('li p span').text
-        # end
-      # last_dates << first_date.split(':')[0].to_datetime
-      doc.css('article ul li ul li').map do |date|
-        last_dates << date.text unless date.text.include? ':'
-      end
-      last_dates.first(12).map do |date|
-        new_last_dates << date.to_datetime
-      end
     end
-    # last_dates = last_dates.map { |d| change_date_maghrebemergen(d) }
-    # last_dates = last_dates.map { |d| d.to_datetime.change({ hour: 0, min: 0, sec: 0 })}
     articles_url_elmoudjahid = articles_url_elmoudjahid.reject(&:nil?)
-    last_dates = new_last_dates.uniq
-    last_articles = Article.where(medium_id: @media.id).where(date_published: last_dates)
 
-    list_articles_url = []
-    last_articles.map do |article|
-      list_articles_url << article.url_article
+    articles_url_elmoudjahid_after_check = []
+    articles_url_elmoudjahid.map do |link|
+      articles_url_elmoudjahid_after_check << link unless Article.where(medium_id: @media.id,url_article: link).present?
     end
-    articles_url_elmoudjahid_after_check = articles_url_elmoudjahid - list_articles_url
-
-    #  articles_url_elmoudjahid6.map do |article|
-
-      #   if Article.where(medium_id: @media.id).where(url_article: article)[0].nil?
-        #   articles_url_elmoudjahid_after_check << article
-        #  end
-      #  end
     articles_url_elmoudjahid_after_check.map do |link|
       begin
         article = Nokogiri::HTML(URI.open(link))
@@ -1530,40 +1501,32 @@ namespace :crawling do
       new_article.url_article = link
       new_article.medium_id = @media.id
       new_article.language = @media.language
-      category = article.css('aside ul.list-details li.text-uppercase a').text
+      category = article.css('article.module-article ul.list-details li.text-uppercase a').text
       new_article.category_article = category
       new_article.title = article.css('header.heading-article h1').text
 
 
-      author_exist = if article.at('p.text-muted').nil?
-                       Author.where(['lower(name) like ? ', 'Elmoudjahid-fr auteur'.downcase ])
-      else
-        Author.where(['lower(name) like ? ',
-                                     article.at('p.text-muted').text.downcase ])
-                     end
+      author_exist = Author.where(['lower(name) like ? ', ('Elmoudjahid-fr auteur').downcase])
+
 
       new_author = Author.new
       if author_exist.count.zero?
 
-        new_author.name = article.at('p.text-muted').nil? ? 'Elmoudjahid-fr auteur' : article.at('p.text-muted').text
+        new_author.name = 'Elmoudjahid-fr auteur'
         new_author.medium_id = @media.id
         new_author.save!
         new_article.author_id = new_author.id
       else
         new_article.author_id = author_exist.first.id
       end
-      new_article.body = article.css('article.module-article section').inner_html
+      new_article.body = article.css('article.module-article p').inner_html
       new_article.body = new_article.body.gsub(/<img[^>]*>/, '')
-      get_dates = []
+      get_date = article.at('#content > div:nth-child(4) > article > aside > ul > li.text-uppercase > ul > li:nth-child(2)').text
 
-      article.css('aside ul li.text-uppercase ul li').map do |date|
-        get_dates << date.text unless date.text.include? ':'
-      end
-
-      new_article.date_published = get_dates[0].to_datetime.change({ hour: 0, min: 0, sec: 0 })
-      url_array = article.css('article section figure img').attr('data-src')
-      new_article.url_image = url_array
-      new_article.image = Down.download(url_array) if url_array.present?
+      new_article.date_published = get_date.to_datetime.change({ hour: 0, min: 0, sec: 0 })
+      url_array = article.css('article.module-article figure img').map{ |link| link['data-src'] }
+      new_article.url_image = url_array[0]
+      new_article.image = Down.download(url_array[0]) if url_array[0].present?
       new_article.status = 'pending'
       puts "URLBefoooooooooooooor:" + link
       if Article.where(url_article: link).present?
@@ -1586,9 +1549,8 @@ namespace :crawling do
       end
       # #tag_check_and_save(tags_array)
     end
-    puts 'json: { crawling_count_aps: count }'
+    puts 'json: { crawling_count_elmoudjahid: count }'
   end
-    # end method to get elmoudjahid articles
     # start method to get elmoudjahid_fr articles
     #
 
