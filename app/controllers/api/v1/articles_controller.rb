@@ -1806,13 +1806,15 @@ div.nobreak { page-break-inside: avoid; }
       doc.css('article ul.list-category h2 a').map do |link|
         articles_url_elmoudjahid << link['href'] # if link['class'] == 'main_article'
       end
-      end
+    end
+    puts articles_url_elmoudjahid.count
       articles_url_elmoudjahid = articles_url_elmoudjahid.reject(&:nil?)
 
       articles_url_elmoudjahid_after_check = []
       articles_url_elmoudjahid.map do |link|
         articles_url_elmoudjahid_after_check << link unless Article.where(medium_id: @media.id,url_article: link).present?
       end
+    puts articles_url_elmoudjahid_after_check.count
     articles_url_elmoudjahid_after_check.map do |link|
       begin
         article = Nokogiri::HTML(URI.open(link, 'User-Agent' => 'ruby/2.6.5'))
