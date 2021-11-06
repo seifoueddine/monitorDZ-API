@@ -3304,7 +3304,11 @@ div.nobreak { page-break-inside: avoid; }
       new_article.body = article.css('div.entry-content.clearfix p').inner_html
       new_article.body = new_article.body.gsub(/<img[^>]*>/, '')
 
-      date_array = article.at('time.entry-date.updated').map { |date|  date['datetime']}
+      date_array = []
+
+      puts article.at('time.entry-date').attr('datetime')
+      puts article.at('time.entry-date').map { |date|  date['datetime']}
+      puts article.at('time.entry-date.updated').text { |date|  date['datetime']}
       new_article.date_published = date_array[0].change({ hour: 0, min: 0, sec: 0 })
       url_array = article.css('div.entry-content.clearfix figure.post-thumbnail img').map{ |link|  
                     if link['src'].include? 'https'
