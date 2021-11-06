@@ -1179,7 +1179,7 @@ namespace :crawling do
         puts
         next
       end
-      doc.css('h3.entry-title.td-module-title a').map do |link|
+      doc.css('div.tdb_module_loop.td_module_wrap.td-animation-stack div.td-module-meta-info h3.entry-title.td-module-title a').map do |link|
         articles_url_algeriepart << link['href']
       end
       doc.css('time').map do |date|

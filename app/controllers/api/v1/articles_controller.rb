@@ -28,21 +28,13 @@ class Api::V1::ArticlesController < ApplicationController
                                params[:media_id].split(',')
                              end
 
-    unless params[:medium_type].blank?
-      conditions[:medium_type] = params[:medium_type].split(',')
-    end
+    conditions[:medium_type] = params[:medium_type].split(',') unless params[:medium_type].blank?
 
-    unless params[:media_area].blank?
-      conditions[:media_area] = params[:media_area].split(',')
-    end
+    conditions[:media_area] = params[:media_area].split(',') unless params[:media_area].blank?
 
-    unless params[:authors_ids].blank?
-      conditions[:author_id] = params[:authors_ids].split(',')
-    end
+    conditions[:author_id] = params[:authors_ids].split(',') unless params[:authors_ids].blank?
 
-    unless params[:language].blank?
-      conditions[:language] = params[:language].split(',')
-    end
+    conditions[:language] = params[:language].split(',') unless params[:language].blank?
 
 
     if params[:start_date].blank?
@@ -288,7 +280,9 @@ class Api::V1::ArticlesController < ApplicationController
       old_tags << @tags
       #  article.media_tags = old_tags.join(',')
       @tags_objects.map do |tag_object|
-        next if ArticleTag.where(article_id: article.id, tag_id: tag_object.id, slug_id: slug_id, campaign_id: campaign[0].id).present?
+        if ArticleTag.where(article_id: article.id, tag_id: tag_object.id, slug_id: slug_id, campaign_id: campaign[0].id).present?
+          next
+        end
         @article_tag = ArticleTag.new article_id: article.id, tag_id: tag_object.id, slug_id: slug_id, campaign_id: campaign[0].id
         if @article_tag.save
           puts 'Article_tag well added '
@@ -530,21 +524,13 @@ div.nobreak { page-break-inside: avoid; }
                                params[:media_id].split(',')
                              end
 
-    unless params[:medium_type].blank?
-      conditions[:medium_type] = params[:medium_type].split(',')
-    end
+    conditions[:medium_type] = params[:medium_type].split(',') unless params[:medium_type].blank?
 
-    unless params[:media_area].blank?
-      conditions[:media_area] = params[:media_area].split(',')
-    end
+    conditions[:media_area] = params[:media_area].split(',') unless params[:media_area].blank?
 
-    unless params[:authors_ids].blank?
-      conditions[:author_id] = params[:authors_ids].split(',')
-    end
+    conditions[:author_id] = params[:authors_ids].split(',') unless params[:authors_ids].blank?
 
-    unless params[:language].blank?
-      conditions[:language] = params[:language].split(',')
-    end
+    conditions[:language] = params[:language].split(',') unless params[:language].blank?
 
 
     unless params[:start_date].blank?
@@ -606,26 +592,16 @@ div.nobreak { page-break-inside: avoid; }
     # end
 
     conditions = {}
-    unless params[:media_id].blank?
-      conditions[:medium_id] = params[:media_id].split(',')
-    end
+    conditions[:medium_id] = params[:media_id].split(',') unless params[:media_id].blank?
     #conditions[:status] = 'confirmed'
 
-    unless params[:medium_type].blank?
-      conditions[:medium_type] = params[:medium_type].split(',')
-    end
+    conditions[:medium_type] = params[:medium_type].split(',') unless params[:medium_type].blank?
 
-    unless params[:media_area].blank?
-      conditions[:media_area] = params[:media_area].split(',')
-    end
+    conditions[:media_area] = params[:media_area].split(',') unless params[:media_area].blank?
 
-    unless params[:authors_ids].blank?
-      conditions[:author_id] = params[:authors_ids].split(',')
-    end
+    conditions[:author_id] = params[:authors_ids].split(',') unless params[:authors_ids].blank?
 
-    unless params[:language].blank?
-      conditions[:language] = params[:language].split(',')
-    end
+    conditions[:language] = params[:language].split(',') unless params[:language].blank?
 
 
     unless params[:start_date].blank?
@@ -1103,9 +1079,7 @@ div.nobreak { page-break-inside: avoid; }
       url_array = article.css('body > div.article-section > div > div.article-section__main.wrap__main > article > div.full-article__featured-image > img').map { |link| link['src'] }
       new_article.url_image = url_array[0]
       begin
-           if url_array[0].present?
-             new_article.image = Down.download(url_array[0])
-           end
+           new_article.image = Down.download(url_array[0]) if url_array[0].present?
       rescue Down::Error => e
         puts "Can't download this image #{url_array[0]}"
            puts e.message
@@ -1678,9 +1652,7 @@ div.nobreak { page-break-inside: avoid; }
       url_array = article.css('article.module-detail img').map{ |link| link['data-src'] }
       new_article.url_image = url_array[0]
       begin
-           if url_array[0].present?
-             new_article.image = Down.download(url_array[0])
-           end
+           new_article.image = Down.download(url_array[0]) if url_array[0].present?
       rescue Down::Error => e
         puts "Can't download this image #{url_array[0]}"
            puts e.message
@@ -1817,7 +1789,9 @@ div.nobreak { page-break-inside: avoid; }
 
       articles_url_elmoudjahid_after_check = []
       articles_url_elmoudjahid.map do |link|
-        articles_url_elmoudjahid_after_check << link unless Article.where(medium_id: @media.id,url_article: link).present?
+        unless Article.where(medium_id: @media.id,url_article: link).present?
+          articles_url_elmoudjahid_after_check << link
+        end
       end
     puts articles_url_elmoudjahid_after_check.count
     articles_url_elmoudjahid_after_check.map do |link|
@@ -1895,9 +1869,7 @@ div.nobreak { page-break-inside: avoid; }
       doc.css('#main > div.CBox > div > h4 > a').map do |link|
         articles_url_elmoudjahid << link['href'] # if link['class'] == 'main_article'
       end
-      if doc.at('li p')['style'] == 'width: 520px;'
-        first_date = doc.at('li p span').text
-      end
+      first_date = doc.at('li p span').text if doc.at('li p')['style'] == 'width: 520px;'
       last_dates << first_date.split(':')[0].to_datetime
       doc.css('div.ModliArtilUne span').map do |date|
         last_dates << date.text.split(':')[0].to_datetime
@@ -1963,9 +1935,7 @@ div.nobreak { page-break-inside: avoid; }
       url_array = article.css('#articlecontent > div.TxArtcile > div.ImgCapt > img').map { |link| link['src'] }
       new_article.url_image = url_array[0]
       begin
-           if url_array[0].present?
-             new_article.image = Down.download(url_array[0])
-           end
+           new_article.image = Down.download(url_array[0]) if url_array[0].present?
       rescue Down::Error => e
         puts "Can't download this image #{url_array[0]}"
            puts e.message
@@ -1999,9 +1969,7 @@ div.nobreak { page-break-inside: avoid; }
         next
       end
       doc.css('h3.panel-title a').map do |link|
-        unless link.css('i').present?
-          articles_url_elkhabar << 'https://www.elkhabar.com' + link['href']
-        end
+        articles_url_elkhabar << 'https://www.elkhabar.com' + link['href'] unless link.css('i').present?
       end
       doc.css('time').map do |date|
         last_dates << date['datetime']
@@ -2035,9 +2003,7 @@ div.nobreak { page-break-inside: avoid; }
       if article.css('span.category-blog').present?
         new_article.category_article = article.css('span.category-blog').text
       end
-      if article.css('h2.title').present?
-        new_article.title = article.css('h2.title').text
-      end
+      new_article.title = article.css('h2.title').text if article.css('h2.title').present?
       # new_article.author = article.css('div.article-head__author div em a').text
 
       author_exist = if article.at('span.time-blog b').present?
@@ -2078,9 +2044,7 @@ div.nobreak { page-break-inside: avoid; }
         puts
         new_article.image = nil
       end
-      if article.css('div#article_tags_title').present?
-        tags_array = article.css('div#article_tags_title').map(&:text)
-      end
+      tags_array = article.css('div#article_tags_title').map(&:text) if article.css('div#article_tags_title').present?
       # new_article.media_tags = tags_array.join(',')
       new_article.status = 'pending'
       new_article.save!
@@ -2878,9 +2842,7 @@ div.nobreak { page-break-inside: avoid; }
       url_array = article.css('div.single-post-thumb  img').map { |link| link['src'] }
       url_image = url_array[0]
       begin
-           if url_array[0].present?
-             new_article.image = Down.download(url_array[0])
-           end
+           new_article.image = Down.download(url_array[0]) if url_array[0].present?
       rescue Down::Error => e
         puts "Can't download this image #{url_array[0]}"
            puts e.message
@@ -2926,7 +2888,9 @@ div.nobreak { page-break-inside: avoid; }
 
     articles_url_shihabpresse_after_check = []
     articles_url_shihabpresse.map do |link|
-      articles_url_shihabpresse_after_check << link unless Article.where(medium_id: @media.id,url_article: link).present?
+      unless Article.where(medium_id: @media.id,url_article: link).present?
+        articles_url_shihabpresse_after_check << link
+      end
     end
 
     articles_url_shihabpresse_after_check.map do |link|
@@ -3021,7 +2985,9 @@ div.nobreak { page-break-inside: avoid; }
 
     articles_url_lexpressiondz_after_check = []
     articles_url_lexpressiondz.map do |link|
-      articles_url_lexpressiondz_after_check << link unless Article.where(medium_id: @media.id,url_article: link).present?
+      unless Article.where(medium_id: @media.id,url_article: link).present?
+        articles_url_lexpressiondz_after_check << link
+      end
     end
 
     articles_url_lexpressiondz_after_check.map do |link|
@@ -3070,9 +3036,7 @@ div.nobreak { page-break-inside: avoid; }
       url_array = article.css('figure.image-featured img').map{ |link|  link['data-src']}
       new_article.url_image = url_array[0]
       begin
-        if url_array[0].present?
-          new_article.image = Down.download(url_array[0])
-        end
+        new_article.image = Down.download(url_array[0]) if url_array[0].present?
       rescue Down::Error => e
         puts "Can't download this image #{url_array[0]}"
         puts e.message
@@ -3159,14 +3123,15 @@ div.nobreak { page-break-inside: avoid; }
       new_article.body = article.css('p.lead.caption').inner_html + article.css('div.card-body.p-2').inner_html
       new_article.body = new_article.body.gsub(/<img[^>]*>/, '')
 
-      date_published_array =  article.css('p.author span meta').map { |date|  date['content'] if date['itemprop'] == 'datePublished' }
+      date_published_array =  article.css('p.author span meta').map { |date|  
+                                if date['itemprop'] == 'datePublished'
+                                                                                date['content']
+                                                                              end }
       new_article.date_published = date_published_array.reject(&:nil?)[0].to_datetime.change({ hour: 0, min: 0, sec: 0 })
       url_array = article.css('img.d-block.w-100').map{ |link|  link['src']}
       new_article.url_image = url_array[0]
       begin
-        if url_array[0].present?
-          new_article.image = Down.download(url_array[0])
-        end
+        new_article.image = Down.download(url_array[0]) if url_array[0].present?
       rescue Down::Error => e
         puts "Can't download this image #{url_array[0]}"
         puts e.message
@@ -3256,9 +3221,7 @@ div.nobreak { page-break-inside: avoid; }
       url_array = article.css('figure.single-featured-image img').map{ |link|  link['src']}
       new_article.url_image = url_array[0]
       begin
-        if url_array[0].present?
-          new_article.image = Down.download(url_array[0])
-        end
+        new_article.image = Down.download(url_array[0]) if url_array[0].present?
       rescue Down::Error => e
         puts "Can't download this image #{url_array[0]}"
         puts e.message
@@ -3271,6 +3234,98 @@ div.nobreak { page-break-inside: avoid; }
     render json: { crawling_status_almaghreb24: 'ok' }
   end
   # end method to get Almaghreb24 articles
+
+
+
+
+  # start method to get aujourdhui articles
+  def get_articles_aujourdhui(url_media_array)
+    articles_url_aujourdhui = []
+    url_media_array.map do |url|
+      begin
+        doc = Nokogiri::HTML(open(url, 'User-Agent' => 'ruby'))
+      rescue OpenURI::HTTPError => e
+        puts "Can't access #{url}"
+        puts e.message
+        puts
+        next
+      end
+
+      doc.css('h2.cat-list-title a').map do |link|
+        articles_url_aujourdhui << link['href']
+      end
+    end
+    articles_url_aujourdhui = articles_url_aujourdhui.reject(&:nil?)
+
+    articles_url_aujourdhui_after_check = []
+    articles_url_aujourdhui.map do |link|
+      articles_url_aujourdhui_after_check << link unless Article.where(medium_id: @media.id,url_article: link).present?
+    end
+
+    articles_url_aujourdhui_after_check.map do |link|
+
+      begin
+        article = Nokogiri::HTML(open(link, 'User-Agent' => 'ruby'))
+      rescue OpenURI::HTTPError => e
+        puts "Can't access #{link}"
+        puts e.message
+        puts
+        next
+      end
+      new_article = Article.new
+      new_article.url_article = link
+      new_article.medium_id = @media.id
+      new_article.language = @media.language
+      new_article.category_article = article.css('div.entry-cat a').text
+      new_article.title = article.css('div.author-link span').text
+      # new_article.author = article.css('div.article-head__author div em a').text
+      author_exist_final = article.css('span.meta-author a').text
+      author_exist = if author_exist_final.nil? || author_exist_final == ''
+                       Author.where(['lower(name) like ? ', ("Aujourdhui-MA auteur").downcase])
+                     else
+                       a = author_exist_final
+                       Author.where(['lower(name) like ? ',
+                                     a.downcase])
+                     end
+
+      new_author = Author.new
+      if author_exist.count.zero?
+
+        new_author.name = (author_exist_final.nil? || author_exist_final == '') ? "Aujourdhui-MA auteur" : author_exist_final
+        new_author.medium_id = @media.id
+        new_author.save!
+        new_article.author_id = new_author.id
+      else
+        new_article.author_id = author_exist.first.id
+
+      end
+
+      new_article.body = article.css('div.entry-content.clearfix p').inner_html
+      new_article.body = new_article.body.gsub(/<img[^>]*>/, '')
+
+      date_array = article.at('time.entry-date.updated').map { |date|  date['datetime']}
+      new_article.date_published = date_array[0].change({ hour: 0, min: 0, sec: 0 })
+      url_array = article.css('div.entry-content.clearfix figure.post-thumbnail img').map{ |link|  
+                    if link['src'].include? 'https'
+                     link['src']
+                      end }
+      url_array = url_array.reject(&:nil?)
+      new_article.url_image = url_array[0]
+      begin
+        new_article.image = Down.download(url_array[0]) if url_array[0].present?
+      rescue Down::Error => e
+        puts "Can't download this image #{url_array[0]}"
+        puts e.message
+        puts
+        new_article.image = nil
+      end
+      new_article.status = 'pending'
+      new_article.save!
+    end
+    render json: { crawling_status_aujourdhui: 'ok' }
+  end
+  # end method to get Aujourdhui articles
+
 
 
 
