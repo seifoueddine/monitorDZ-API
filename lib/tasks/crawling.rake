@@ -2911,6 +2911,104 @@ article.css('div.post-header div.single-featured > a').map do |link|
     # end method to get Almaghreb24 articles
 
 
+    # start method to get aujourdhui articles
+  def get_articles_aujourdhui(url_media_array)
+    articles_url_aujourdhui = []
+    url_media_array.map do |url|
+      begin
+        doc = Nokogiri::HTML(open(url, 'User-Agent' => 'ruby'))
+      rescue OpenURI::HTTPError => e
+        puts "Can't access #{url}"
+        puts e.message
+        puts
+        next
+      end
+
+      doc.css('h2.cat-list-title a').map do |link|
+        articles_url_aujourdhui << link['href']
+      end
+    end
+    articles_url_aujourdhui = articles_url_aujourdhui.reject(&:nil?)
+
+    articles_url_aujourdhui_after_check = []
+    articles_url_aujourdhui.map do |link|
+      articles_url_aujourdhui_after_check << link unless Article.where(medium_id: @media.id,url_article: link).present?
+    end
+
+    articles_url_aujourdhui_after_check.map do |link|
+
+      begin
+        article = Nokogiri::HTML(open(link, 'User-Agent' => 'ruby'))
+      rescue OpenURI::HTTPError => e
+        puts "Can't access #{link}"
+        puts e.message
+        puts
+        next
+      end
+      new_article = Article.new
+      new_article.url_article = link
+      new_article.medium_id = @media.id
+      new_article.language = @media.language
+      new_article.category_article = article.css('div.entry-cat a').text
+      new_article.title = article.css('div.author-link span').text
+      # new_article.author = article.css('div.article-head__author div em a').text
+      author_exist_final = article.css('span.meta-author a').text
+      author_exist = if author_exist_final.nil? || author_exist_final == ''
+                       Author.where(['lower(name) like ? ', ("Aujourdhui-MA auteur").downcase])
+                     else
+                       a = author_exist_final
+                       Author.where(['lower(name) like ? ',
+                                     a.downcase])
+                     end
+
+      new_author = Author.new
+      if author_exist.count.zero?
+
+        new_author.name = (author_exist_final.nil? || author_exist_final == '') ? "Aujourdhui-MA auteur" : author_exist_final
+        new_author.medium_id = @media.id
+        new_author.save!
+        new_article.author_id = new_author.id
+      else
+        new_article.author_id = author_exist.first.id
+
+      end
+
+      new_article.body = article.css('div.entry-content.clearfix p').inner_html
+      new_article.body = new_article.body.gsub(/<img[^>]*>/, '')
+      new_article.date_published = article.at('time.entry-date').attr('datetime').to_datetime.change({ hour: 0, min: 0, sec: 0 })
+      url_array = article.css('div.entry-content.clearfix figure.post-thumbnail img').map{ |link|
+        if link['src'].include? 'https'
+          link['src']
+        end }
+      url_array = url_array.reject(&:nil?)
+      new_article.url_image = url_array[0]
+      begin
+        new_article.image = Down.download(url_array[0]) if url_array[0].present?
+      rescue Down::Error => e
+        puts "Can't download this image #{url_array[0]}"
+        puts e.message
+        puts
+        new_article.image = nil
+      end
+      new_article.status = 'pending'
+      puts "URLBefoooooooooooooor:" + link
+      if Article.where(url_article: link).present?
+        puts 'article present'
+      else
+        articlesTagsUrl = link
+      end
+      puts "URLURLURLURLURLURLURLURLURLURLURLURLURLURLURL: #{articlesTagsUrl}"
+
+      new_article.save!
+      if articlesTagsUrl.present?
+        puts 'add article'
+        @articles_for_auto_tag << Article.where(url_article: articlesTagsUrl)[0]
+      end
+    end
+    puts "json: { crawling_status_aujourdhui: 'ok' }"
+  end
+    # end method to get Aujourdhui articles
+
 
 
       # tag_check_and_savetag_check_and_save
