@@ -2724,7 +2724,7 @@ div.nobreak { page-break-inside: avoid; }
         puts
         next
       end
-      doc.css('h3.entry-title.td-module-title a').map do |link|
+      doc.css('div.tdb_module_loop.td_module_wrap.td-animation-stack div.td-module-meta-info h3.entry-title.td-module-title a').map do |link|
         articles_url_algeriepart << link['href']
       end
       doc.css('time').map do |date|
@@ -3228,7 +3228,6 @@ div.nobreak { page-break-inside: avoid; }
       new_article.title = article.css('div.entry-header h1.post-title.entry-title').text
       # new_article.author = article.css('div.article-head__author div em a').text
       author_exist_final = article.css('span.meta-author a').text
-      puts author_exist_final
       author_exist = if author_exist_final.nil? || author_exist_final == ''
                        Author.where(['lower(name) like ? ', ("Almaghreb24 auteur").downcase])
                      else
@@ -3240,7 +3239,7 @@ div.nobreak { page-break-inside: avoid; }
       new_author = Author.new
       if author_exist.count.zero?
 
-        new_author.name = (author_exist_final.nil? || author_exist_final == '') ? "Almaghreb24 auteur" : author_exist_final[0]
+        new_author.name = (author_exist_final.nil? || author_exist_final == '') ? "Almaghreb24 auteur" : author_exist_final
         new_author.medium_id = @media.id
         new_author.save!
         new_article.author_id = new_author.id
