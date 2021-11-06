@@ -709,7 +709,8 @@ div.nobreak { page-break-inside: avoid; }
       get_articles_lematin(url_media_array)
     when 'ALMAGHREB24'
       get_articles_almaghreb24(url_media_array)
-
+    when 'AUJOURDHUI-MA'
+      get_articles_aujourdhui(url_media_array)
     else
       render json: { crawling_status: 'No media name found!! ', status: 'error' }
     end
