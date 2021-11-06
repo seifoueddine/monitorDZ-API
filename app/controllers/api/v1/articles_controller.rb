@@ -3228,6 +3228,7 @@ div.nobreak { page-break-inside: avoid; }
       new_article.title = article.css('div.entry-header h1.post-title.entry-title').text
       # new_article.author = article.css('div.article-head__author div em a').text
       author_exist_final = article.css('span.meta-author a').text
+      puts author_exist_final
       author_exist = if author_exist_final.nil? || author_exist_final == ''
                        Author.where(['lower(name) like ? ', ("Almaghreb24 auteur").downcase])
                      else
