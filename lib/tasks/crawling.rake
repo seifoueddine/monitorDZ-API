@@ -2950,7 +2950,7 @@ article.css('div.post-header div.single-featured > a').map do |link|
       new_article.medium_id = @media.id
       new_article.language = @media.language
       new_article.category_article = article.css('div.entry-cat a').text
-      new_article.title = article.css('div.author-link span').text
+      new_article.title = article.css('h1.entry-title').text
       # new_article.author = article.css('div.article-head__author div em a').text
       author_exist_final = article.css('span.meta-author a').text
       author_exist = if author_exist_final.nil? || author_exist_final == ''
