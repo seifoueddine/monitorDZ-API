@@ -2515,7 +2515,7 @@ div.nobreak { page-break-inside: avoid; }
     articles_url_visadz_after_check.map do |link|
 
       begin
-        article = Nokogiri::HTML(URI.open(link, allow_redirections: all))
+        article = Nokogiri::HTML(URI.open(link))
       rescue OpenURI::HTTPError => e
         puts "Can't access #{link}"
         puts e.message
