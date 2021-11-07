@@ -36,17 +36,14 @@ namespace :crawling do
     case media.name
     # when 'AUTOBIP'
     #   get_articles_autobip(url_media_array)
-=begin
      when 'ELCHEROUK'
        get_articles_elcherouk(url_media_array)
      when 'ENNAHAR'
       get_articles_ennahar(url_media_array)
      when 'TSA'
         get_articles_tsa(url_media_array)
-=end
     when 'APS'
       get_articles_aps(url_media_array)
-=begin
        when 'MAGHREBEMERGENT'
         get_articles_maghrebemergent(url_media_array)
     when 'ELBILAD'
@@ -89,7 +86,6 @@ namespace :crawling do
       get_articles_lematin(url_media_array)
     when 'ALMAGHREB24'
       get_articles_almaghreb24(url_media_array)
-=end
     else
       puts "crawling_status: 'No media name found!! ', status: 'error' "
     end
