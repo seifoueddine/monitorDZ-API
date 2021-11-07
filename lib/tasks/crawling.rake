@@ -11,7 +11,7 @@ namespace :crawling do
     @articles_for_auto_tag = []
     Medium.all.each do |m|
       @media = m
-      if m.url_crawling? && m.name != 'APS'
+      if m.url_crawling?
         url_media_array = m.url_crawling.split(',')
         puts url_media_array
         get_articles(url_media_array, m)
