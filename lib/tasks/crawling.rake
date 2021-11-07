@@ -66,8 +66,8 @@ namespace :crawling do
        get_articles_le_soir(url_media_array)
        when 'LIBERTE'
        get_articles_liberte(url_media_array)
-       #when 'VISAALGERIE'
-       # get_articles_visadz(url_media_array)
+       when 'VISAALGERIE'
+        get_articles_visadz(url_media_array)
         when 'SANTENEWS'
         get_articles_santenews(url_media_array)
       when 'ALGERIE360'
@@ -2272,7 +2272,7 @@ article.css('div.post-header div.single-featured > a').map do |link|
     last_dates = []
     url_media_array.map do |url|
       begin
-        doc = Nokogiri::HTML(URI.open(url, allow_redirections: :all))
+        doc = Nokogiri::HTML(URI.open(url, 'User-Agent' => 'ruby'))
       rescue OpenURI::HTTPError => e
         puts "Can't access #{url}"
         puts e.message
@@ -2305,7 +2305,7 @@ article.css('div.post-header div.single-featured > a').map do |link|
     articles_url_visadz_after_check.map do |link|
 
       begin
-        article = Nokogiri::HTML(URI.open(link, allow_redirections: all))
+        article = Nokogiri::HTML(URI.open(link, 'User-Agent' => 'ruby'))
       rescue OpenURI::HTTPError => e
         puts "Can't access #{link}"
         puts e.message
@@ -2320,12 +2320,12 @@ article.css('div.post-header div.single-featured > a').map do |link|
       new_article.title = article.css('h1.article__title').text
       # new_article.author = article.css('div.article-head__author div em a').text
 
-      if article.at('em.article__atnm').text.nil?
-        author_exist = Author.where(['lower(name) like ? ', 'Visa Algérie auteur'.downcase ])
+      if article.at('em.article__atnm').nil?
+        author_exist = Author.where(['lower(name) like ? ', ('Visa Algérie auteur').downcase])
       else
         author = article.at('em.article__atnm').text
         author_exist = Author.where(['lower(name) like ? ',
-                                     author.downcase ])
+                                     author.downcase])
       end
 
       new_author = Author.new
@@ -2337,6 +2337,7 @@ article.css('div.post-header div.single-featured > a').map do |link|
         new_article.author_id = new_author.id
       else
         new_article.author_id = author_exist.first.id
+
       end
       new_article.body = article.css('p.article__desc').inner_html + article.css('div.article__cntn').inner_html
       new_article.body = new_article.body.gsub(/<img[^>]*>/, '')
@@ -2351,6 +2352,7 @@ article.css('div.post-header div.single-featured > a').map do |link|
       # tags_array = article.css('div.entry-terms a').map(&:text)
       # new_article.media_tags = tags_array.join(',')
       new_article.status = 'pending'
+
       puts "URLBefoooooooooooooor:" + link
       if Article.where(url_article: link).present?
         puts 'article present'
@@ -2367,9 +2369,9 @@ article.css('div.post-header div.single-featured > a').map do |link|
 
             # #tag_check_and_save(tags_array)
     end
-    puts "json: { crawling_status_aps: 'ok' }"
+    puts "json: { crawling_status_visadz: 'ok' }"
   end
-    # end method to get elhiwar articles
+    # end method to get visadz articles
 
 
 
