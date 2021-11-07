@@ -2565,7 +2565,7 @@ div.nobreak { page-break-inside: avoid; }
       new_article.save!
       # tag_check_and_save(tags_array)
     end
-    render json: { crawling_status_aps: 'ok' }
+    render json: { crawling_status_visadz: 'ok' }
   end
   # end method to get elhiwar articles
 
@@ -2757,7 +2757,7 @@ div.nobreak { page-break-inside: avoid; }
 
       new_article.save!
     end
-    render json: { crawling_status_aps: 'ok' }
+    render json: { crawling_status_algeriepart: 'ok' }
   end
   # end method to get algeriepart
 
@@ -2856,7 +2856,7 @@ div.nobreak { page-break-inside: avoid; }
       new_article.save!
       # tag_check_and_save(tags_array)
     end
-    render json: { crawling_status_aps: 'ok' }
+    render json: { crawling_status_elhiwar: 'ok' }
   end
   # end method to get elhiwar articles
 

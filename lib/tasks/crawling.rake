@@ -530,7 +530,7 @@ namespace :crawling do
     last_dates = []
     url_media_array.map do |url|
       begin
-        doc = Nokogiri::HTML(URI.open(url))
+        doc = Nokogiri::HTML(URI.open(url, 'User-Agent' => 'ruby'))
       rescue OpenURI::HTTPError => e
         puts "Can't access #{url}"
         puts e.message
@@ -538,14 +538,14 @@ namespace :crawling do
         next
       end
       doc.css('#itemListLeading h3 a').map do |link|
-        articles_url_aps << "http://www.aps.dz#{link['href']}"# if link['class'] == 'main_article'
+        articles_url_aps << 'http://www.aps.dz' + link['href']# if link['class'] == 'main_article'
       end
       doc.css('span.catItemDateCreated').map do |date|
         last_dates << date.text
       end
     end
     last_dates = last_dates.map { |d| change_date_autobip_aps(d) }
-    last_dates = last_dates.map { |d| d.to_datetime.change({ hour: 0, min: 0, sec: 0 }) }
+    last_dates = last_dates.map{ |d| d.to_datetime.change({ hour: 0, min: 0, sec: 0 }) }
     # last_dates = last_dates.map(&:to_datetime.change({ hour: 0, min: 0, sec: 0 }))
     articles_url_aps = articles_url_aps.reject(&:nil?)
     last_dates = last_dates.uniq
@@ -557,7 +557,7 @@ namespace :crawling do
     articles_url_aps_after_check = articles_url_aps - list_articles_url
     articles_url_aps_after_check.map do |link|
       begin
-        article = Nokogiri::HTML(URI.open(link))
+        article = Nokogiri::HTML(URI.open(link,read_timeout: 150))
       rescue OpenURI::HTTPError => e
         puts "Can't access #{link}"
         puts e.message
@@ -573,10 +573,10 @@ namespace :crawling do
       # new_article.author = article.css('div.article-head__author div em a').text
 
       author_exist = if article.at('span.article__meta-author').nil?
-                       Author.where(['lower(name) like ? ', 'APS auteur'.downcase ])
-      else
-        Author.where(['lower(name) like ? ',
-                                     article.at('span.article__meta-author').text.downcase ])
+                       Author.where(['lower(name) like ? ', ('APS auteur').downcase])
+                     else
+                       Author.where(['lower(name) like ? ',
+                                     article.at('span.article__meta-author').text.downcase])
                      end
 
       new_author = Author.new
@@ -597,7 +597,7 @@ namespace :crawling do
       d = change_date_autobip_aps(date)
       new_article.date_published = d.to_datetime.change({ hour: 0, min: 0, sec: 0 })
       # new_article.date_published =
-      url_array = article.css('div.itemImageBlock span.itemImage img').map { |link| "http://www.aps.dz#{link['src']}" }
+      url_array = article.css('div.itemImageBlock span.itemImage img').map { |link| 'http://www.aps.dz' + link['src'] }
       new_article.url_image = url_array[0]
       begin
         new_article.image = Down.download(url_array[0]) if url_array[0].present?
@@ -2140,7 +2140,7 @@ article.css('div.post-header div.single-featured > a').map do |link|
 
       #tag_check_and_save(tags_array)
     end
-    puts "json: { crawling_status_aps: 'ok' }"
+    puts "json: { crawling_status_chiffreaffaire: 'ok' }"
   end
     # end method to get chiffreaffaire articles
 
@@ -2261,7 +2261,7 @@ article.css('div.post-header div.single-featured > a').map do |link|
 
         # #tag_check_and_save(tags_array)
     end
-    puts "json: { crawling_status_aps: 'ok' }"
+    puts "json: { crawling_status_elhiwar: 'ok' }"
   end
     # end method to get elhiwar articles
 
@@ -2478,7 +2478,7 @@ article.css('div.post-header div.single-featured > a').map do |link|
       end
       # #tag_check_and_save(tags_array)
     end
-    puts "json: { crawling_status_aps: 'ok' }"
+    puts "json: { crawling_status_elhiwar: 'ok' }"
   end
     # end method to get elhiwar articles
 
