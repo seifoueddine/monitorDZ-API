@@ -243,6 +243,7 @@ GEM
       mini_portile2 (~> 2.4.0)
     nokogiri (1.10.10-x64-mingw32)
       mini_portile2 (~> 2.4.0)
+    open_uri_redirections (0.2.1)
     orm_adapter (0.5.0)
     pg (1.2.3)
     pg (1.2.3-x64-mingw32)
@@ -354,6 +355,7 @@ DEPENDENCIES
   kaminari
   lograge
   nokogiri (~> 1.10.10)
+  open_uri_redirections
   pg (>= 0.18, < 2.0)
   pry-rails
   puma (~> 4.1)
