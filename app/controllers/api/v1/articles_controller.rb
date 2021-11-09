@@ -711,6 +711,8 @@ div.nobreak { page-break-inside: avoid; }
       get_articles_almaghreb24(url_media_array)
     when 'AUJOURDHUI-MA'
       get_articles_aujourdhui(url_media_array)
+    when 'ELDJAZAIR-ELDJADIDA'
+      get_articles_eldjazaireldjadida(url_media_array)
     else
       render json: { crawling_status: 'No media name found!! ', status: 'error' }
     end
@@ -3328,6 +3330,95 @@ div.nobreak { page-break-inside: avoid; }
 
 
 
+  # start method to get eldjazaireldjadida articles
+  def get_articles_eldjazaireldjadida(url_media_array)
+    articles_url_eldjazaireldjadida = []
+    url_media_array.map do |url|
+      begin
+        doc = Nokogiri::HTML(URI.open(url,'User-Agent' => 'ruby/2.6.5', 'From' => 'foo@bar.invalid'), nil, "UTF-8")
+      rescue OpenURI::HTTPError => e
+        puts "Can't access #{url}"
+        puts e.message
+        puts
+        next
+      end
+
+      doc.css('h2.post-title a').map do |link|
+        articles_url_eldjazaireldjadida << link['href']
+      end
+    end
+    articles_url_eldjazaireldjadida = articles_url_eldjazaireldjadida.reject(&:nil?)
+
+    articles_url_eldjazaireldjadida_after_check = []
+    articles_url_eldjazaireldjadida.map do |link|
+      articles_url_eldjazaireldjadida_after_check << link unless Article.where(medium_id: @media.id,url_article: link).present?
+    end
+
+    articles_url_eldjazaireldjadida_after_check.map do |link|
+
+      begin
+        article = Nokogiri::HTML(open(link, 'User-Agent' => 'ruby'))
+      rescue OpenURI::HTTPError => e
+        puts "Can't access #{link}"
+        puts e.message
+        puts
+        next
+      end
+      new_article = Article.new
+      new_article.url_article = link
+      new_article.medium_id = @media.id
+      new_article.language = @media.language
+      new_article.category_article = article.css('header.entry-header-outer div.entry-header span.post-cat-wrap a:last-child').text
+      new_article.title = article.css('h1.post-title.entry-title').text
+      # new_article.author = article.css('div.article-head__author div em a').text
+      author_exist_final = article.at('span.meta-item.meta-author-wrapper span.meta-author').text
+      author_exist = if author_exist_final.nil? || author_exist_final == ''
+                       Author.where(['lower(name) like ? ', ('ELDJAZAIR-ELDJADIDA auteur').downcase])
+                     else
+                       a = author_exist_final
+                       Author.where(['lower(name) like ? ',
+                                     a.downcase])
+                     end
+
+      new_author = Author.new
+      if author_exist.count.zero?
+
+        new_author.name = (author_exist_final.nil? || author_exist_final == '') ? "ELDJAZAIR-ELDJADIDA auteur" : author_exist_final
+        new_author.medium_id = @media.id
+        new_author.save!
+        new_article.author_id = new_author.id
+      else
+        new_article.author_id = author_exist.first.id
+
+      end
+
+      new_article.body = article.css('div.entry-content.entry.clearfix p').inner_html
+      new_article.body = new_article.body.gsub(/<img[^>]*>/, '')
+      date_arabe = article.at('span.date.meta-item.tie-icon').text
+      date = change_date_maghrebemergen(date_arabe)
+      new_article.date_published = date.to_datetime.change({ hour: 0, min: 0, sec: 0 })
+      url_array = article.css('figure.single-featured-image img').map{ |link|
+        if link['src'].include? 'https'
+          link['src']
+        end }
+      url_array = url_array.reject(&:nil?)
+      new_article.url_image = url_array[0]
+      begin
+        new_article.image = Down.download(url_array[0]) if url_array[0].present?
+      rescue Down::Error => e
+        puts "Can't download this image #{url_array[0]}"
+        puts e.message
+        puts
+        new_article.image = nil
+      end
+      new_article.status = 'pending'
+      new_article.save!
+    end
+    render json: { crawling_status_eldjazaireldjadida: 'ok' }
+  end
+  # end method to get eldjazaireldjadida articles
+
+
 
   # Only allow a trusted parameter "white list" through.
   def article_params
@@ -3466,6 +3557,35 @@ div.nobreak { page-break-inside: avoid; }
       when 'سبتمبر'.downcase
         'September'
       when 'اوت'.downcase
+        'August'
+
+      when 'جانفي،'.downcase
+        'January'
+      when 'فيفري،'.downcase
+        'February'
+      when 'مارس،'.downcase
+        'March'
+      when 'افريل،'.downcase
+        'April'
+      when 'ماي،'.downcase
+        'May'
+      when 'جوان،'.downcase
+        'June'
+      when 'جويلية،'.downcase
+        'July'
+      when 'جولية،'.downcase
+        'July'
+      when 'أكتوبر،'.downcase
+        'October'
+      when 'نوفمبر،'.downcase
+        'November'
+      when 'نونمبر،'.downcase
+        'November'
+      when 'ديسمبر،'.downcase
+        'December'
+      when 'سبتمبر،'.downcase
+        'September'
+      when 'اوت،'.downcase
         'August'
 
       else
