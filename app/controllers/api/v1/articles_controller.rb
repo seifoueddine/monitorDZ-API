@@ -713,6 +713,8 @@ div.nobreak { page-break-inside: avoid; }
       get_articles_aujourdhui(url_media_array)
     when 'ELDJAZAIR-ELDJADIDA'
       get_articles_eldjazaireldjadida(url_media_array)
+    when 'ALGERIE-PATRIOTIQUE'
+      get_articles_algeriepatriotique(url_media_array)
     else
       render json: { crawling_status: 'No media name found!! ', status: 'error' }
     end
@@ -3418,6 +3420,90 @@ div.nobreak { page-break-inside: avoid; }
   end
   # end method to get eldjazaireldjadida articles
 
+
+  # start method to get algeriepatriotique articles
+  def get_articles_algeriepatriotique(url_media_array)
+    articles_url_algeriepatriotique = []
+    url_media_array.map do |url|
+      begin
+        doc = Nokogiri::HTML(URI.open(url,'User-Agent' => 'ruby/2.6.5', 'From' => 'foo@bar.invalid'), nil, "UTF-8")
+      rescue OpenURI::HTTPError => e
+        puts "Can't access #{url}"
+        puts e.message
+        puts
+        next
+      end
+
+      doc.css('div.blog-content.grid-layout h2.entry-title a').map do |link|
+        articles_url_algeriepatriotique << link['href']
+      end
+    end
+    articles_url_algeriepatriotique = articles_url_algeriepatriotique.reject(&:nil?)
+
+    articles_url_algeriepatriotique_after_check = []
+    articles_url_algeriepatriotique.map do |link|
+      articles_url_algeriepatriotique_after_check << link unless Article.where(medium_id: @media.id,url_article: link).present?
+    end
+
+    articles_url_algeriepatriotique_after_check.map do |link|
+
+      begin
+        article = Nokogiri::HTML(open(link, 'User-Agent' => 'ruby'))
+      rescue OpenURI::HTTPError => e
+        puts "Can't access #{link}"
+        puts e.message
+        puts
+        next
+      end
+      new_article = Article.new
+      new_article.url_article = link
+      new_article.medium_id = @media.id
+      new_article.language = @media.language
+      new_article.category_article = article.css('header.entry-header ul.breadcrumbs  li:nth-child(2) a').text
+      new_article.title = article.css('h1.entry-title').text
+      # new_article.author = article.css('div.article-head__author div em a').text
+      author_exist_final = article.at('div.entry-info span.posted-date span.author.vcard a').text
+      author_exist = if author_exist_final.nil? || author_exist_final == ''
+                       Author.where(['lower(name) like ? ', ('ALGERIE-PATRIOTIQUE auteur').downcase])
+                     else
+                       a = author_exist_final
+                       Author.where(['lower(name) like ? ',
+                                     a.downcase])
+                     end
+
+      new_author = Author.new
+      if author_exist.count.zero?
+
+        new_author.name = (author_exist_final.nil? || author_exist_final == '') ? "ALGERIE-PATRIOTIQUE auteur" : author_exist_final
+        new_author.medium_id = @media.id
+        new_author.save!
+        new_article.author_id = new_author.id
+      else
+        new_article.author_id = author_exist.first.id
+
+      end
+
+      new_article.body = article.css('div.the-content  p').inner_html
+      new_article.body = new_article.body.gsub(/<img[^>]*>/, '')
+      date_arabe = article.at('div.entry-info span.posted-date').text
+      date = change_date_maghrebemergen(date_arabe.split('-')[0])
+      new_article.date_published = date.to_datetime.change({ hour: 0, min: 0, sec: 0 })
+      url_array = article.css('div.post-formats-wrapper a.post-image img').map{ |link| link['src'] }
+      new_article.url_image = url_array[0]
+      begin
+        new_article.image = Down.download(url_array[0]) if url_array[0].present?
+      rescue Down::Error => e
+        puts "Can't download this image #{url_array[0]}"
+        puts e.message
+        puts
+        new_article.image = nil
+      end
+      new_article.status = 'pending'
+      new_article.save!
+    end
+    render json: { crawling_status_algeriepatriotique: 'ok' }
+  end
+  # end method to get algeriepatriotique articles
 
 
   # Only allow a trusted parameter "white list" through.
