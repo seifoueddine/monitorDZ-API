@@ -717,6 +717,8 @@ div.nobreak { page-break-inside: avoid; }
       get_articles_algeriepatriotique(url_media_array)
     when 'ELMAOUID'
       get_articles_elmaouid(url_media_array)
+    when 'HUFFINGTON-POST'
+      get_articles_huffingtonpost(url_media_array)
 
     else
       render json: { crawling_status: 'No media name found!! ', status: 'error' }
@@ -3512,7 +3514,7 @@ div.nobreak { page-break-inside: avoid; }
 
   # start method to get elmaouid articles
   def get_articles_elmaouid(url_media_array)
-    articles_url_algeriepatriotique = []
+    articles_url_elmaouid = []
     url_media_array.map do |url|
       begin
         doc = Nokogiri::HTML(URI.open(url,'User-Agent' => 'ruby/2.6.5', 'From' => 'foo@bar.invalid'), nil, "UTF-8")
@@ -3524,17 +3526,17 @@ div.nobreak { page-break-inside: avoid; }
       end
 
       doc.css('h2.post-box-title a').map do |link|
-        articles_url_algeriepatriotique << link['href']
+        articles_url_elmaouid << link['href']
       end
     end
-    articles_url_algeriepatriotique = articles_url_algeriepatriotique.reject(&:nil?)
+    articles_url_elmaouid = articles_url_elmaouid.reject(&:nil?)
 
-    articles_url_algeriepatriotique_after_check = []
-    articles_url_algeriepatriotique.map do |link|
-      articles_url_algeriepatriotique_after_check << link unless Article.where(medium_id: @media.id,url_article: link).present?
+    articles_url_elmaouid_after_check = []
+    articles_url_elmaouid.map do |link|
+      articles_url_elmaouid_after_check << link unless Article.where(medium_id: @media.id,url_article: link).present?
     end
 
-    articles_url_algeriepatriotique_after_check.map do |link|
+    articles_url_elmaouid_after_check.map do |link|
 
       begin
         article = Nokogiri::HTML(open(link, 'User-Agent' => 'ruby'))
@@ -3563,7 +3565,7 @@ div.nobreak { page-break-inside: avoid; }
       new_author = Author.new
       if author_exist.count.zero?
 
-        new_author.name = (author_exist_final.nil? || author_exist_final == '') ? "Elmaouid" : author_exist_final
+        new_author.name = (author_exist_final.nil? || author_exist_final == '') ? "Elmaouid auteur" : author_exist_final
         new_author.medium_id = @media.id
         new_author.save!
         new_article.author_id = new_author.id
@@ -3592,6 +3594,97 @@ div.nobreak { page-break-inside: avoid; }
     render json: { crawling_status_elmaouid: 'ok' }
   end
   # end method to get elmaouid articles
+
+
+
+
+  # start method to get huffingtonpost articles
+  def get_articles_huffingtonpost(url_media_array)
+    articles_url_huffingtonpost = []
+    url_media_array.map do |url|
+      begin
+        doc = Nokogiri::HTML(URI.open(url,'User-Agent' => 'ruby/2.6.5', 'From' => 'foo@bar.invalid'), nil, "UTF-8")
+      rescue OpenURI::HTTPError => e
+        puts "Can't access #{url}"
+        puts e.message
+        puts
+        next
+      end
+
+      doc.css('div#zone-twilight1 div.zone__content a').map do |link|
+        articles_url_huffingtonpost << link['href']
+      end
+    end
+    articles_url_huffingtonpost = articles_url_huffingtonpost.reject(&:nil?)
+
+    articles_url_huffingtonpost_after_check = []
+    articles_url_huffingtonpost.map do |link|
+      articles_url_huffingtonpost_after_check << link unless Article.where(medium_id: @media.id,url_article: link).present?
+    end
+
+    articles_url_huffingtonpost_after_check.map do |link|
+
+      begin
+        article = Nokogiri::HTML(open(link, 'User-Agent' => 'ruby'))
+      rescue OpenURI::HTTPError => e
+        puts "Can't access #{link}"
+        puts e.message
+        puts
+        next
+      end
+      new_article = Article.new
+      new_article.url_article = link
+      new_article.medium_id = @media.id
+      new_article.language = @media.language
+      new_article.category_article = article.css('div.page__content header.entry__header.yr-entry-header a.entry-eyebrow span').text
+      new_article.title = article.css('h1.headline__title').text + article.css('h2.headline__subtitle').text
+      # new_article.author = article.css('div.article-head__author div em a').text
+      find_author = article.at('a.author-card__details__name').present? ? article.at('a.author-card__details__name').text : article.at('span.author-card_details_name').text
+      author_exist_final = find_author
+      author_exist = if author_exist_final.nil? || author_exist_final == ''
+                       Author.where(['lower(name) like ? ', ('Huffington-post auteur').downcase])
+                     else
+                       a = author_exist_final
+                       Author.where(['lower(name) like ? ',
+                                     a.downcase])
+                     end
+
+      new_author = Author.new
+      if author_exist.count.zero?
+
+        new_author.name = (author_exist_final.nil? || author_exist_final == '') ? "Huffington-post auteur" : author_exist_final
+        new_author.medium_id = @media.id
+        new_author.save!
+        new_article.author_id = new_author.id
+      else
+        new_article.author_id = author_exist.first.id
+
+      end
+
+      new_article.body = article.css('div.content-list-component.text p').inner_html
+      new_article.body = new_article.body.gsub(/<img[^>]*>/, '')
+      date = article.at('div.timestamp span').text
+      new_article.date_published = date.to_datetime.change({ hour: 0, min: 0, sec: 0 })
+      url_array =  article.css('div.post-contents.yr-entry-text img.image__src').map{ |link| link['src'] }
+      new_article.url_image = url_array[0]
+      begin
+        new_article.image = Down.download(url_array[0]) if url_array[0].present?
+      rescue Down::Error => e
+        puts "Can't download this image #{url_array[0]}"
+        puts e.message
+        puts
+        new_article.image = nil
+      end
+      new_article.status = 'pending'
+      new_article.save!
+    end
+    render json: { crawling_status_huffingtonpost: 'ok' }
+  end
+  # end method to get huffingtonpost articles
+
+
+
+
 
   # Only allow a trusted parameter "white list" through.
   def article_params
