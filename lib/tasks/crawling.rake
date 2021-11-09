@@ -2977,7 +2977,7 @@ article.css('div.post-header div.single-featured > a').map do |link|
 
       new_article.body = article.css('div.entry-content.clearfix p').inner_html
       new_article.body = new_article.body.gsub(/<img[^>]*>/, '')
-      new_article.date_published = article.at('time.entry-date').attr('datetime').to_datetime.change({ hour: 0, min: 0, sec: 0 })
+      new_article.date_published = article.at('time.entry-date').attr('datetime').to_datetime.change({ hour: 0, min: 0, sec: 0 }) + (1.0 / 24)
       url_array = article.css('div.entry-content.clearfix figure.post-thumbnail img').map{ |link|
         if link['src'].include? 'https'
           link['src']
