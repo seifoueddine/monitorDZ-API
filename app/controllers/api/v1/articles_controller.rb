@@ -1774,7 +1774,7 @@ div.nobreak { page-break-inside: avoid; }
     count = 0
     url_media_array.map do |url|
       begin
-        doc = Nokogiri::HTML(URI.open(url, 'User-Agent' => 'ruby/2.6.5'))
+        doc = Nokogiri::HTML(URI.open(url, 'User-Agent' => 'Googlebot/2.1'))
       rescue OpenURI::HTTPError => e
         puts "Can't access #{url}"
         puts e.message
@@ -1797,7 +1797,7 @@ div.nobreak { page-break-inside: avoid; }
     puts articles_url_elmoudjahid_after_check.count
     articles_url_elmoudjahid_after_check.map do |link|
       begin
-        article = Nokogiri::HTML(URI.open(link, 'User-Agent' => 'ruby/2.6.5'))
+        article = Nokogiri::HTML(URI.open(link, 'User-Agent' => 'Googlebot/2.1'))
       rescue OpenURI::HTTPError => e
         puts "Can't access #{link}"
         puts e.message
