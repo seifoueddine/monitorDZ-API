@@ -719,6 +719,8 @@ div.nobreak { page-break-inside: avoid; }
       get_articles_elmaouid(url_media_array)
     when 'HUFFINGTON-POST'
       get_articles_huffingtonpost(url_media_array)
+    when 'ELWATAN'
+      get_articles_elwatan(url_media_array)
 
     else
       render json: { crawling_status: 'No media name found!! ', status: 'error' }
@@ -3681,6 +3683,85 @@ div.nobreak { page-break-inside: avoid; }
     render json: { crawling_status_huffingtonpost: 'ok' }
   end
   # end method to get huffingtonpost articles
+
+
+
+
+
+  # start method to get elwatan articles
+  def get_articles_elwatan(url_media_array)
+    articles_url_elwatan = []
+    url_media_array.map do |url|
+      begin
+        doc = Nokogiri::HTML(URI.open(url,'User-Agent' => 'ruby/2.6.5', 'From' => 'foo@bar.invalid'), nil, "UTF-8")
+      rescue OpenURI::HTTPError => e
+        puts "Can't access #{url}"
+        puts e.message
+        puts
+        next
+      end
+
+      doc.css('h3.title-14 a').map do |link|
+        articles_url_elwatan << link['href']
+      end
+    end
+    articles_url_elwatan = articles_url_elwatan.reject(&:nil?)
+
+    articles_url_elwatan_after_check = []
+    articles_url_elwatan.map do |link|
+      articles_url_elwatan_after_check << link unless Article.where(medium_id: @media.id,url_article: link).present?
+    end
+
+    articles_url_elwatan_after_check.map do |link|
+
+      begin
+        article = Nokogiri::HTML(open(link, 'User-Agent' => 'ruby'))
+      rescue OpenURI::HTTPError => e
+        puts "Can't access #{link}"
+        puts e.message
+        puts
+        next
+      end
+      new_article = Article.new
+      new_article.url_article = link
+      new_article.medium_id = @media.id
+      new_article.language = @media.language
+      new_article.category_article = article.css('ul > li:nth-child(2) > a:nth-child(2)').text
+      new_article.title = article.css('h1.title-21').text
+      # new_article.author = article.css('div.article-head__author div em a').text
+      author_exist_final = article.at('div.author-tp-2 a').text
+      author_exist = if author_exist_final.nil? || author_exist_final == ''
+                       Author.where(['lower(name) like ? ', ('Elwatan auteur').downcase])
+                     else
+                       a = author_exist_final
+                       Author.where(['lower(name) like ? ',
+                                     a.downcase])
+                     end
+
+      new_author = Author.new
+      if author_exist.count.zero?
+
+        new_author.name = (author_exist_final.nil? || author_exist_final == '') ? "Elwatan auteur" : author_exist_final
+        new_author.medium_id = @media.id
+        new_author.save!
+        new_article.author_id = new_author.id
+      else
+        new_article.author_id = author_exist.first.id
+
+      end
+
+      new_article.body = article.css('div.texte p').inner_html
+      new_article.body = new_article.body.gsub(/<img[^>]*>/, '')
+      date = article.at('div.date-tp-4').text
+      new_article.date_published = date.split('à')[0].to_datetime.change({ hour: 0, min: 0, sec: 0 })
+      new_article.url_image = nil
+      new_article.status = 'pending'
+      new_article.save!
+    end
+    render json: { crawling_status_elwatan: 'ok' }
+  end
+  # end method to get elwatan articles
+
 
 
 
