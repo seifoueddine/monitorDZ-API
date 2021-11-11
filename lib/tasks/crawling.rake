@@ -94,7 +94,10 @@ namespace :crawling do
       get_articles_algeriepatriotique(url_media_array)
     when 'ELMAOUID'
       get_articles_elmaouid(url_media_array)
+    when 'ALYAOUM24'
+      get_articles_alyaoum24(url_media_array)
     else
+
       puts "crawling_status: 'No media name found!! ', status: 'error' "
     end
   end
@@ -3316,6 +3319,104 @@ article.css('div.post-header div.single-featured > a').map do |link|
     puts "json: { crawling_status_elmaouid: 'ok' }"
   end
     # end method to get elmaouid articles
+
+
+
+    # start method to get alyaoum24 articles
+  def get_articles_alyaoum24(url_media_array)
+    articles_url_alyaoum24 = []
+    url_media_array.map do |url|
+      begin
+        doc = Nokogiri::HTML(URI.open(url,'User-Agent' => 'ruby/2.6.5', 'From' => 'foo@bar.invalid'), nil, "UTF-8")
+      rescue OpenURI::HTTPError => e
+        puts "Can't access #{url}"
+        puts e.message
+        puts
+        next
+      end
+
+      doc.css('ul.listing-archive div.descriptionPostArchive a').map do |link|
+        articles_url_alyaoum24 << link['href']
+      end
+    end
+    articles_url_alyaoum24 = articles_url_alyaoum24.reject(&:nil?)
+
+    articles_url_alyaoum24_after_check = []
+    articles_url_alyaoum24.map do |link|
+      articles_url_alyaoum24_after_check << link unless Article.where(medium_id: @media.id,url_article: link).present?
+    end
+
+    articles_url_alyaoum24_after_check.map do |link|
+
+      begin
+        article = Nokogiri::HTML(open(link, 'User-Agent' => 'ruby'))
+      rescue OpenURI::HTTPError => e
+        puts "Can't access #{link}"
+        puts e.message
+        puts
+        next
+      end
+      new_article = Article.new
+      new_article.url_article = link
+      new_article.medium_id = @media.id
+      new_article.language = @media.language
+      new_article.category_article = article.css('ul.breadcrumb li:nth(2)').text
+      new_article.title =  article.css('div.infoSingle h1').text
+      # new_article.author = article.css('div.article-head__author div em a').text
+      author_exist_final =  article.at('div.nameAuthor').text
+      author_exist = if author_exist_final.nil? || author_exist_final == ''
+                       Author.where(['lower(name) like ? ', ('Alyaoum24 auteur').downcase])
+                     else
+                       a = author_exist_final
+                       Author.where(['lower(name) like ? ',
+                                     a.downcase])
+                     end
+
+      new_author = Author.new
+      if author_exist.count.zero?
+
+        new_author.name = (author_exist_final.nil? || author_exist_final == '') ? "Alyaoum24 auteur" : author_exist_final
+        new_author.medium_id = @media.id
+        new_author.save!
+        new_article.author_id = new_author.id
+      else
+        new_article.author_id = author_exist.first.id
+
+      end
+
+      new_article.body = article.css('div.post_content p').inner_html
+      new_article.body = new_article.body.gsub(/<img[^>]*>/, '')
+      date = article.at('span.timePost').text
+      new_article.date_published = date.to_datetime.change({ hour: 0, min: 0, sec: 0 })
+      url_array =  article.css('div.article-image img.attachment-full.size-full.wp-post-image').map{  |link| link['src'] }
+      new_article.url_image = url_array[0]
+      begin
+        new_article.image = Down.download(url_array[0]) if url_array[0].present?
+      rescue Down::Error => e
+        puts "Can't download this image #{url_array[0]}"
+        puts e.message
+        puts
+        new_article.image = nil
+      end
+      new_article.status = 'pending'
+      puts "URLBefoooooooooooooor:" + link
+      if Article.where(url_article: link).present?
+        puts 'article present'
+      else
+        articlesTagsUrl = link
+      end
+      puts "URLURLURLURLURLURLURLURLURLURLURLURLURLURLURL: #{articlesTagsUrl}"
+
+      new_article.save!
+      if articlesTagsUrl.present?
+        puts 'add article'
+        @articles_for_auto_tag << Article.where(url_article: articlesTagsUrl)[0]
+      end
+    end
+    puts "json: { crawling_status_alyaoum24: 'ok' }"
+  end
+    # end method to get alyaoum24 articles
+
 
 
     # start method to get elwatan articles
