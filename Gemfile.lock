@@ -356,7 +356,6 @@ DEPENDENCIES
   jsonapi-serializer
   kaminari
   lograge
-  nokogiri (~> 1.12.5)
   open_uri_redirections
   pg (>= 0.18, < 2.0)
   pry-rails
