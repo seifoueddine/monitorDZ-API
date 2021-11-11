@@ -246,7 +246,7 @@ class Api::V1::ArticlesController < ApplicationController
     camp_media = campaign[0].media
     camp_media_array = camp_media.map(&:id)
     puts "******************************"
-    puts "start date :" + all_tags.count.to_s
+    puts "start date :#{all_tags.count.to_s}"
     puts "******************************"
     puts "******************************"
     puts start_date
@@ -260,7 +260,7 @@ class Api::V1::ArticlesController < ApplicationController
     # all_tags = Tag.where(status: true)
     articles_with_date = Article.where(medium_id: camp_media_array, date_published: start_date.to_datetime.beginning_of_day..end_date.to_datetime.end_of_day)
     puts "******************************"
-    puts "articles_with_date :" + articles_with_date.count.to_s
+    puts "articles_with_date :#{articles_with_date.count.to_s}"
     puts "******************************"
     @tags = []
     articles_with_date.map do |article|
@@ -299,7 +299,7 @@ class Api::V1::ArticlesController < ApplicationController
       article.reindex
     end
     puts "******************************"
-    puts "Nombre d'articles :" + articles.count.to_s
+    puts "Nombre d'articles :#{articles.count.to_s}"
     puts "******************************"
     puts "tag******************************tag"
     puts @tags
@@ -338,7 +338,7 @@ class Api::V1::ArticlesController < ApplicationController
     @article = Article.find(id)
     @html = @article.language == 'ar' ? get_html_ar : get_html_fr
     pdf = WickedPdf.new.pdf_from_string(@html)
-    send_data pdf, filename: 'Article_' + @article.id.to_s + '.pdf' , type: 'application/pdf'
+    send_data pdf, filename: "Article_#{@article.id.to_s}.pdf" , type: 'application/pdf'
   end
 
   def get_html_fr
@@ -1124,7 +1124,7 @@ div.nobreak { page-break-inside: avoid; }
         next
       end
       doc.css('#itemListLeading h3 a').map do |link|
-        articles_url_aps << 'http://www.aps.dz' + link['href']# if link['class'] == 'main_article'
+        articles_url_aps << "http://www.aps.dz#{link['href']}"# if link['class'] == 'main_article'
       end
       doc.css('span.catItemDateCreated').map do |date|
         last_dates << date.text
@@ -1183,7 +1183,7 @@ div.nobreak { page-break-inside: avoid; }
       d = change_date_autobip_aps(date)
       new_article.date_published = d.to_datetime.change({ hour: 0, min: 0, sec: 0 })
       # new_article.date_published =
-      url_array = article.css('div.itemImageBlock span.itemImage img').map { |link| 'http://www.aps.dz' + link['src'] }
+      url_array = article.css('div.itemImageBlock span.itemImage img').map { |link| "http://www.aps.dz#{link['src']}" }
       new_article.url_image = url_array[0]
       begin
         new_article.image = Down.download(url_array[0]) if url_array[0].present?
@@ -1219,7 +1219,7 @@ div.nobreak { page-break-inside: avoid; }
         next
       end
       doc.css('div.categorie-liste-details a:nth-child(2)').map do |link|
-        articles_url_le_soir << 'https://www.lesoirdalgerie.com' + link['href']
+        articles_url_le_soir << "https://www.lesoirdalgerie.com#{link['href']}"
       end
     end
     articles_url_le_soir = articles_url_le_soir.reject(&:nil?)
@@ -1243,7 +1243,7 @@ div.nobreak { page-break-inside: avoid; }
       new_article.medium_id = @media.id
       new_article.language = @media.language
       new_article.category_article = article.css('body > section.breadcrumb > span:nth-child(3) > a').text
-      new_article.title = article.css('div.title h1 span.grey-text').text + ', ' + article.css('div.title h1 span.black-text').text
+      new_article.title = "#{article.css('div.title h1 span.grey-text').text}, #{article.css('div.title h1 span.black-text').text}"
       # new_article.author = article.css('div.article-head__author div em a').text
       anchor = []
       article.css('div.published').each do |header|
@@ -1277,7 +1277,7 @@ div.nobreak { page-break-inside: avoid; }
       new_article.date_published = date.to_datetime.change({ hour: 0, min: 0, sec: 0 })
 
       url_array = article.css('div.article-content div.article-details div.picture img')
-                         .map{ |link| 'https://www.lesoirdalgerie.com'+ link['data-original']}
+                         .map{ |link| "https://www.lesoirdalgerie.com#{link['data-original']}"}
       new_article.url_image = url_array[0]
       begin
         new_article.image = Down.download(url_array[0]) if url_array[0].present?
@@ -1314,7 +1314,7 @@ div.nobreak { page-break-inside: avoid; }
         next
       end
       doc.css('div.right-side a.title').map do |link|
-        articles_url_liberte << 'https://www.liberte-algerie.com' + link['href']# if link['class'] == 'main_article'
+        articles_url_liberte << "https://www.liberte-algerie.com#{link['href']}"# if link['class'] == 'main_article'
       end
       doc.css('div.right-side div.date-heure span.date').map do |date|
         last_dates << date.text
@@ -1345,7 +1345,7 @@ div.nobreak { page-break-inside: avoid; }
       new_article.medium_id = @media.id
       new_article.language = @media.language
       new_article.category_article = article.css('div#global div h3 strong').text
-      new_article.title = article.css('div#main-post span h4').text + ' : ' + article.css('div#main-post span h1').text
+      new_article.title = "#{article.css('div#main-post span h4').text} : #{article.css('div#main-post span h1').text}"
       #  new_article.author = article.css('div.article-head__author div em a').text
       author_exist = if article.at('div#side-post div div p a').nil?
                        Author.where(['lower(name) like ? ', ('Liberté auteur').downcase])
@@ -1400,6 +1400,7 @@ div.nobreak { page-break-inside: avoid; }
     articles_url_24hdz = []
     last_dates = []
     url_media_array.map do |url|
+      puts "Start category parsing : #{url} :) "
       begin
         doc = Nokogiri::HTML(URI.open(url))
       rescue OpenURI::HTTPError => e
@@ -1427,6 +1428,7 @@ div.nobreak { page-break-inside: avoid; }
     end
     articles_url_24hdz_after_check = articles_url_24hdz - list_articles_url
     articles_url_24hdz_after_check.map do |link|
+      puts "Start article parsing : #{link} :) "
       begin
         article = Nokogiri::HTML(URI.open(link))
       rescue OpenURI::HTTPError => e
@@ -1480,7 +1482,7 @@ div.nobreak { page-break-inside: avoid; }
       #tags_array = article.css('ul.itemTags li').map(&:text)
       # new_article.media_tags = tags_array.join(',')
       new_article.status = 'pending'
-      puts "URLBefoooooooooooooor:" + link
+      puts "URLBefoooooooooooooor:#{link}"
       if Article.where(url_article: link).present?
         puts 'article present'
       else
@@ -1982,7 +1984,7 @@ div.nobreak { page-break-inside: avoid; }
         next
       end
       doc.css('h3.panel-title a').map do |link|
-        articles_url_elkhabar << 'https://www.elkhabar.com' + link['href'] unless link.css('i').present?
+        articles_url_elkhabar << "https://www.elkhabar.com#{link['href']}" unless link.css('i').present?
       end
       doc.css('time').map do |date|
         last_dates << date['datetime']
@@ -2046,7 +2048,7 @@ div.nobreak { page-break-inside: avoid; }
       # d = change_date_maghrebemergen(date)
       new_article.date_published = date.to_datetime.change({ hour: 0, min: 0, sec: 0 })
       if article.css('div#article_img img').present?
-        url_array = article.css('div#article_img img').map { |link| 'https://www.elkhabar.com' + link['src'] }
+        url_array = article.css('div#article_img img').map { |link| "https://www.elkhabar.com#{link['src']}" }
       end
       # url_image = url_array[0]
       begin
@@ -2759,7 +2761,7 @@ div.nobreak { page-break-inside: avoid; }
       new_article.date_published = d.to_datetime.change({ hour: 0, min: 0, sec: 0 })
       new_article.url_image = nil
       new_article.status = 'pending'
-      puts "URLBefoooooooooooooor:" + link
+      puts "URLBefoooooooooooooor:#{link}"
       if Article.where(url_article: link).present?
         puts 'article present'
       else
@@ -3019,7 +3021,7 @@ div.nobreak { page-break-inside: avoid; }
       new_article.medium_id = @media.id
       new_article.language = @media.language
       new_article.category_article =  article.css('#content > nav > ol > li:nth-child(3) > a').text
-      new_article.title = article.css('article header.heading-a p',).text + ', '+ article.css('article header.heading-a h1',).text
+      new_article.title = "#{article.css('article header.heading-a p',).text}, #{article.css('article header.heading-a h1',).text}"
       # new_article.author = article.css('div.article-head__author div em a').text
       author_exist = if article.css('h3.scheme-user').text == ''
                        Author.where(['lower(name) like ? ', ("L'expressiondz auteur").downcase])
