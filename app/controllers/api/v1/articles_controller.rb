@@ -4067,7 +4067,13 @@ div.nobreak { page-break-inside: avoid; }
       Date.today.to_datetime.change({ hour: 0, min: 0, sec: 0 }) - number.to_i
     when string.include?('أسابيع') == true
       array = string.split(' ')
+      puts "----------------"
+      puts array
+      puts "----------------"
       number = array[1]
+      puts "++++++++++++++++"
+      puts array[1]
+      puts "++++++++++++++++"
       Date.today.to_datetime.change({ hour: 0, min: 0, sec: 0 }) - number.to_i * 7
     else
       string.to_datetime.change({ hour: 0, min: 0, sec: 0 })
