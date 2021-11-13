@@ -4041,7 +4041,9 @@ div.nobreak { page-break-inside: avoid; }
   #                     </p>
   def get_date_from_string(string)
     puts "*******************"
+    puts string
     string = string.gsub! 'أسابيع', 'weeks'
+    puts string
     puts "*******************"
     case string
     when string.include?('ثانية') == true
