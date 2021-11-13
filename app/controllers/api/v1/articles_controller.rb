@@ -4037,6 +4037,9 @@ div.nobreak { page-break-inside: avoid; }
   #                       الكلمات الدالة :  <%= article.tags.map(&:name).uniq.join(' - ')  %>
   #                     </p>
   def get_date_from_string(string)
+    puts "*******************"
+    puts string
+    puts "*******************"
     case string
     when string.include?('ثانية') == true
       Date.today.to_datetime.change({ hour: 0, min: 0, sec: 0 })
