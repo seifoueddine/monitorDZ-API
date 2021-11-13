@@ -4058,22 +4058,18 @@ div.nobreak { page-break-inside: avoid; }
     when string.include?('منذ يومين') == true
       Date.today.to_datetime.change({ hour: 0, min: 0, sec: 0 }) - 2
     when string.include?('منذ أسبوعين') == true
-      Date.today.to_datetime.change({ hour: 0, min: 0, sec: 0 }) - 11
+      Date.today.to_datetime.change({ hour: 0, min: 0, sec: 0 }) - 14
     when string.include?('منذ أسبوع واحد') == true
-      Date.today.to_datetime.change({ hour: 0, min: 0, sec: 0 }) - 9
+      Date.today.to_datetime.change({ hour: 0, min: 0, sec: 0 }) - 7
+    when string.include?('منذ 4 أسابيع') == true
+      Date.today.to_datetime.change({ hour: 0, min: 0, sec: 0 }) - 28
     when string.include?('أيام') == true
       array = string.split(' ')
       number = array[1]
       Date.today.to_datetime.change({ hour: 0, min: 0, sec: 0 }) - number.to_i
     when string.include?('أسابيع') == true
       array = string.split(' ')
-      puts "----------------"
-      puts array
-      puts "----------------"
       number = array[1]
-      puts "++++++++++++++++"
-      puts array[1]
-      puts "++++++++++++++++"
       Date.today.to_datetime.change({ hour: 0, min: 0, sec: 0 }) - number.to_i * 7
     else
       string.to_datetime.change({ hour: 0, min: 0, sec: 0 })
