@@ -4043,9 +4043,6 @@ div.nobreak { page-break-inside: avoid; }
     puts "*******************"
     puts string
     puts string.include?('أسابيع')
-    string = string.gsub! 'أسابيع', 'weeks'
-    puts string
-    puts string.include?('weeks')
     puts "*******************"
     case string
     when string.include?('ثانية') == true
@@ -4074,11 +4071,13 @@ div.nobreak { page-break-inside: avoid; }
       array = string.split(' ')
       number = array[1]
       Date.today.to_datetime.change({ hour: 0, min: 0, sec: 0 }) - number.to_i
-    when string.include?('weeks') == true
+    when string.include?('أسابيع') == true
+      puts 'weeks'
       array = string.split(' ')
       number = array[0]
       Date.today.to_datetime.change({ hour: 0, min: 0, sec: 0 }) - number.to_i * 7
     else
+      puts 'date normal'
       string.to_datetime.change({ hour: 0, min: 0, sec: 0 })
     end
   end
