@@ -4070,7 +4070,7 @@ div.nobreak { page-break-inside: avoid; }
       array = string.split(' ')
       number = array[1]
       Date.today.to_datetime.change({ hour: 0, min: 0, sec: 0 }) - number.to_i
-    when string.include?('أسابيع') == true
+    when string.include?('سابيع') == true
       array = string.split(' ')
       number = array[1]
       Date.today.to_datetime.change({ hour: 0, min: 0, sec: 0 }) - number.to_i * 7
