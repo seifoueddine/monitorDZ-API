@@ -1116,7 +1116,7 @@ div.nobreak { page-break-inside: avoid; }
     last_dates = []
     url_media_array.map do |url|
       begin
-        doc = Nokogiri::HTML(URI.open(url, 'User-Agent' => 'ruby'))
+        doc = Nokogiri::HTML(URI.open(url, 'User-Agent' => 'ruby', read_timeout: 3600))
       rescue OpenURI::HTTPError => e
         puts "Can't access #{url}"
         puts e.message
@@ -1143,7 +1143,7 @@ div.nobreak { page-break-inside: avoid; }
     articles_url_aps_after_check = articles_url_aps - list_articles_url
     articles_url_aps_after_check.map do |link|
       begin
-        article = Nokogiri::HTML(URI.open(link,read_timeout: 150))
+        article = Nokogiri::HTML(URI.open(link,read_timeout: 3600))
       rescue OpenURI::HTTPError => e
         puts "Can't access #{link}"
         puts e.message
@@ -2946,8 +2946,8 @@ div.nobreak { page-break-inside: avoid; }
       end
       new_article.body = article.css('div.entry-content.entry.clearfix p').inner_html
       new_article.body = new_article.body.gsub(/<img[^>]*>/, '')
-
-      new_article.date_published = Date.today.change({ hour: 0, min: 0, sec: 0 })
+      date = article.at('span.date.meta-item.tie-icon').text
+      new_article.date_published = get_date_from_string(date)
 
       unless article.at_css('div.featured-area figure img').nil?
         url_array = article.css('div.featured-area figure img').map{ |link| link['src'] }
@@ -4036,4 +4036,34 @@ div.nobreak { page-break-inside: avoid; }
   #        <p style="font-size: 12px; line-height: 1; color:brown; margin-top:5px;direction: rtl;">
   #                       الكلمات الدالة :  <%= article.tags.map(&:name).uniq.join(' - ')  %>
   #                     </p>
+  def get_date_from_string(string)
+    case string
+    when string.include?('ثانية') == true
+      Date.today.to_datetime.change({ hour: 0, min: 0, sec: 0 })
+    when string.include?('ساعتين') == true
+      Date.today.to_datetime.change({ hour: 0, min: 0, sec: 0 })
+    when string.include?('دقيقة') == true
+      Date.today.to_datetime.change({ hour: 0, min: 0, sec: 0 })
+    when string.include?('منذ ساعة واحدة') == true
+      Date.today.to_datetime.change({ hour: 0, min: 0, sec: 0 })
+    when string.include?('ساعات') == true
+      Date.today.to_datetime.change({ hour: 0, min: 0, sec: 0 })
+    when string.include?('ساعة') == true
+      Date.today.to_datetime.change({ hour: 0, min: 0, sec: 0 })
+    when string.include?('منذ يوم واحد') == true
+      Date.today.to_datetime.change({ hour: 0, min: 0, sec: 0 }) - 1
+    when string.include?('منذ يومين') == true
+      Date.today.to_datetime.change({ hour: 0, min: 0, sec: 0 }) - 2
+    when string.include?('منذ أسبوعين') == true
+      Date.today.to_datetime.change({ hour: 0, min: 0, sec: 0 }) - 11
+    when string.include?('منذ أسبوع واحد') == true
+      Date.today.to_datetime.change({ hour: 0, min: 0, sec: 0 }) - 9
+    when string.include?('أيام') == true
+      array = string.split(' ')
+      number = array[1]
+      Date.today.to_datetime.change({ hour: 0, min: 0, sec: 0 }) - number.to_i
+    else
+      string.to_datetime.change({ hour: 0, min: 0, sec: 0 })
+    end
+  end
 end

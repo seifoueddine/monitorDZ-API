@@ -541,7 +541,7 @@ namespace :crawling do
     last_dates = []
     url_media_array.map do |url|
       begin
-        doc = Nokogiri::HTML(URI.open(url, 'User-Agent' => 'ruby'))
+        doc = Nokogiri::HTML(URI.open(url, 'User-Agent' => 'ruby', read_timeout: 3600))
       rescue OpenURI::HTTPError => e
         puts "Can't access #{url}"
         puts e.message
@@ -568,7 +568,7 @@ namespace :crawling do
     articles_url_aps_after_check = articles_url_aps - list_articles_url
     articles_url_aps_after_check.map do |link|
       begin
-        article = Nokogiri::HTML(URI.open(link,read_timeout: 150))
+        article = Nokogiri::HTML(URI.open(link,read_timeout: 3600))
       rescue OpenURI::HTTPError => e
         puts "Can't access #{link}"
         puts e.message
