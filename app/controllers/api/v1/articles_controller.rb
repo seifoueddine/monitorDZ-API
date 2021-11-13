@@ -4064,7 +4064,7 @@ div.nobreak { page-break-inside: avoid; }
       Date.today.to_datetime.change({ hour: 0, min: 0, sec: 0 }) - 14
     when string.include?('منذ أسبوع واحد') == true
       Date.today.to_datetime.change({ hour: 0, min: 0, sec: 0 }) - 7
-    when string.include?('منذ 4 أسابيع') == true thx
+    when string.include?('منذ 4 أسابيع') == true
       Date.today.to_datetime.change({ hour: 0, min: 0, sec: 0 }) - 28
     when string.include?('أيام') == true
       array = string.split(' ')
