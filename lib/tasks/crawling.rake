@@ -42,8 +42,8 @@ namespace :crawling do
       get_articles_ennahar(url_media_array)
      when 'TSA'
         get_articles_tsa(url_media_array)
-    when 'APS'
-      get_articles_aps(url_media_array)
+        #   when 'APS'
+        #get_articles_aps(url_media_array)
        when 'MAGHREBEMERGENT'
         get_articles_maghrebemergent(url_media_array)
     when 'ELBILAD'
@@ -2563,8 +2563,8 @@ article.css('div.post-header div.single-featured > a').map do |link|
       end
       new_article.body = article.css('div.entry-content.entry.clearfix p').inner_html
       new_article.body = new_article.body.gsub(/<img[^>]*>/, '')
-
-      new_article.date_published = Date.today.change({ hour: 0, min: 0, sec: 0 })
+      date = article.at('span.date.meta-item.tie-icon').text
+      new_article.date_published = get_date_from_string(date)
 
       unless article.at_css('div.featured-area figure img').nil?
         url_array = article.css('div.featured-area figure img').map{ |link| link['src'] }
@@ -3760,6 +3760,48 @@ article.css('div.post-header div.single-featured > a').map do |link|
     end
     puts "json: { tags: 'ok' }"
     #render json: { tags: 'ok' }
+  end
+
+
+
+  def get_date_from_string(string)
+    puts "*******************"
+    puts string
+    puts "*******************"
+
+    if string.include?('ثانية') == true
+      Date.today.to_datetime.change({ hour: 0, min: 0, sec: 0 })
+    elsif string.include?('ساعتين') == true
+      Date.today.to_datetime.change({ hour: 0, min: 0, sec: 0 })
+    elsif string.include?('دقيقة') == true
+      Date.today.to_datetime.change({ hour: 0, min: 0, sec: 0 })
+    elsif  string.include?('دقيقتين') == true
+      Date.today.to_datetime.change({ hour: 0, min: 0, sec: 0 })
+    elsif string.include?('منذ ساعة واحدة') == true
+      Date.today.to_datetime.change({ hour: 0, min: 0, sec: 0 })
+    elsif string.include?('ساعات') == true
+      Date.today.to_datetime.change({ hour: 0, min: 0, sec: 0 })
+    elsif  string.include?('ساعة') == true
+      Date.today.to_datetime.change({ hour: 0, min: 0, sec: 0 })
+    elsif string.include?('منذ يوم واحد') == true
+      Date.today.to_datetime.change({ hour: 0, min: 0, sec: 0 }) - 1
+    elsif string.include?('منذ يومين') == true
+      Date.today.to_datetime.change({ hour: 0, min: 0, sec: 0 }) - 2
+    elsif string.include?('منذ أسبوعين') == true
+      Date.today.to_datetime.change({ hour: 0, min: 0, sec: 0 }) - 14
+    elsif string.include?('منذ أسبوع واحد') == true
+      Date.today.to_datetime.change({ hour: 0, min: 0, sec: 0 }) - 7
+    elsif string.include?('أيام') == true
+      array = string.split(' ')
+      number = array[1]
+      Date.today.to_datetime.change({ hour: 0, min: 0, sec: 0 }) - number.to_i
+    elsif string.include?('أسابيع') == true
+      array = string.split(' ')
+      number = array[0]
+      Date.today.to_datetime.change({ hour: 0, min: 0, sec: 0 }) - number.to_i * 7
+    else
+      string.to_datetime.change({ hour: 0, min: 0, sec: 0 })
+    end
   end
 
 
