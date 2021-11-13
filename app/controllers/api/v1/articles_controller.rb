@@ -4041,9 +4041,7 @@ div.nobreak { page-break-inside: avoid; }
   #                     </p>
   def get_date_from_string(string)
     puts "*******************"
-    puts string
-    x = string.gsub! 'أسابيع', '7'
-    puts x
+    string = string.gsub! 'أسابيع', 'weeks'
     puts "*******************"
     case string
     when string.include?('ثانية') == true
@@ -4051,6 +4049,8 @@ div.nobreak { page-break-inside: avoid; }
     when string.include?('ساعتين') == true
       Date.today.to_datetime.change({ hour: 0, min: 0, sec: 0 })
     when string.include?('دقيقة') == true
+      Date.today.to_datetime.change({ hour: 0, min: 0, sec: 0 })
+    when string.include?('دقيقتين') == true
       Date.today.to_datetime.change({ hour: 0, min: 0, sec: 0 })
     when string.include?('منذ ساعة واحدة') == true
       Date.today.to_datetime.change({ hour: 0, min: 0, sec: 0 })
@@ -4066,13 +4066,14 @@ div.nobreak { page-break-inside: avoid; }
       Date.today.to_datetime.change({ hour: 0, min: 0, sec: 0 }) - 14
     when string.include?('منذ أسبوع واحد') == true
       Date.today.to_datetime.change({ hour: 0, min: 0, sec: 0 }) - 7
-    when string.include?('منذ 4 أسابيع') == true
-      Date.today.to_datetime.change({ hour: 0, min: 0, sec: 0 }) - 28
     when string.include?('أيام') == true
       array = string.split(' ')
       number = array[1]
       Date.today.to_datetime.change({ hour: 0, min: 0, sec: 0 }) - number.to_i
-
+    when string.include?('weeks') == true
+      array = string.split(' ')
+      number = array[1]
+      Date.today.to_datetime.change({ hour: 0, min: 0, sec: 0 }) - number.to_i * 7
     else
       string.to_datetime.change({ hour: 0, min: 0, sec: 0 })
     end
