@@ -4042,42 +4042,39 @@ div.nobreak { page-break-inside: avoid; }
   def get_date_from_string(string)
     puts "*******************"
     puts string
-    puts string.include?('أسابيع')
     puts "*******************"
-    case string
-    when string.include?('ثانية') == true
+
+    if string.include?('ثانية') == true
       Date.today.to_datetime.change({ hour: 0, min: 0, sec: 0 })
-    when string.include?('ساعتين') == true
+    elsif string.include?('ساعتين') == true
       Date.today.to_datetime.change({ hour: 0, min: 0, sec: 0 })
-    when string.include?('دقيقة') == true
+    elsif string.include?('دقيقة') == true
       Date.today.to_datetime.change({ hour: 0, min: 0, sec: 0 })
-    when string.include?('دقيقتين') == true
+    elsif  string.include?('دقيقتين') == true
       Date.today.to_datetime.change({ hour: 0, min: 0, sec: 0 })
-    when string.include?('منذ ساعة واحدة') == true
+    elsif string.include?('منذ ساعة واحدة') == true
       Date.today.to_datetime.change({ hour: 0, min: 0, sec: 0 })
-    when string.include?('ساعات') == true
+    elsif string.include?('ساعات') == true
       Date.today.to_datetime.change({ hour: 0, min: 0, sec: 0 })
-    when string.include?('ساعة') == true
+    elsif  string.include?('ساعة') == true
       Date.today.to_datetime.change({ hour: 0, min: 0, sec: 0 })
-    when string.include?('منذ يوم واحد') == true
+    elsif string.include?('منذ يوم واحد') == true
       Date.today.to_datetime.change({ hour: 0, min: 0, sec: 0 }) - 1
-    when string.include?('منذ يومين') == true
+    elsif string.include?('منذ يومين') == true
       Date.today.to_datetime.change({ hour: 0, min: 0, sec: 0 }) - 2
-    when string.include?('منذ أسبوعين') == true
+    elsif string.include?('منذ أسبوعين') == true
       Date.today.to_datetime.change({ hour: 0, min: 0, sec: 0 }) - 14
-    when string.include?('منذ أسبوع واحد') == true
+    elsif string.include?('منذ أسبوع واحد') == true
       Date.today.to_datetime.change({ hour: 0, min: 0, sec: 0 }) - 7
-    when string.include?('أيام') == true
+    elsif string.include?('أيام') == true
       array = string.split(' ')
       number = array[1]
       Date.today.to_datetime.change({ hour: 0, min: 0, sec: 0 }) - number.to_i
-    when string.include?('أسابيع') == true
-      puts 'weeks'
+    elsif string.include?('أسابيع') == true
       array = string.split(' ')
       number = array[0]
       Date.today.to_datetime.change({ hour: 0, min: 0, sec: 0 }) - number.to_i * 7
     else
-      puts 'date normal'
       string.to_datetime.change({ hour: 0, min: 0, sec: 0 })
     end
   end
