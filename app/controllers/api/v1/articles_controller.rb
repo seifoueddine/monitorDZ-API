@@ -2909,6 +2909,9 @@ div.nobreak { page-break-inside: avoid; }
     end
 
     articles_url_shihabpresse_after_check.map do |link|
+      puts "link link link link link link link link"
+      puts link
+      puts "link link link link link link link link"
       begin
         article = Nokogiri::HTML(URI.open(link))
       rescue OpenURI::HTTPError => e
