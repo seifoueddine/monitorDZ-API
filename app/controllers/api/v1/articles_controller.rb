@@ -3860,7 +3860,7 @@ div.nobreak { page-break-inside: avoid; }
       end
 
       doc.css('h3 a').map do |link|
-        articles_url_radioalgerie_ar << link['href']
+        articles_url_radioalgerie_ar << 'https://news.radioalgerie.dz' + link['href']
       end
     end
     articles_url_radioalgerie_ar = articles_url_radioalgerie_ar.reject(&:nil?)
@@ -3946,7 +3946,7 @@ div.nobreak { page-break-inside: avoid; }
       end
 
       doc.css('h3 a').map do |link|
-        articles_url_radioalgerie_fr << link['href']
+        articles_url_radioalgerie_fr << 'https://news.radioalgerie.dz' + link['href']
       end
     end
     articles_url_radioalgerie_fr = articles_url_radioalgerie_fr.reject(&:nil?)

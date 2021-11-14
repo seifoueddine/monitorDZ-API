@@ -3524,7 +3524,7 @@ article.css('div.post-header div.single-featured > a').map do |link|
       end
 
       doc.css('h3 a').map do |link|
-        articles_url_radioalgerie_ar << link['href']
+        articles_url_radioalgerie_ar << 'https://news.radioalgerie.dz' + link['href']
       end
     end
     articles_url_radioalgerie_ar = articles_url_radioalgerie_ar.reject(&:nil?)
@@ -3622,7 +3622,7 @@ article.css('div.post-header div.single-featured > a').map do |link|
       end
 
       doc.css('h3 a').map do |link|
-        articles_url_radioalgerie_fr << link['href']
+        articles_url_radioalgerie_fr << 'https://news.radioalgerie.dz' + link['href']
       end
     end
     articles_url_radioalgerie_fr = articles_url_radioalgerie_fr.reject(&:nil?)
@@ -3702,9 +3702,6 @@ article.css('div.post-header div.single-featured > a').map do |link|
     puts "json: { crawling_status_radioalgerie_ar: 'ok' }"
   end
     # end method to get radioalgerie-fr articles
-
-
-
 
 
 
