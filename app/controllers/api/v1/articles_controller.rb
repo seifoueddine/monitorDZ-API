@@ -1707,7 +1707,7 @@ div.nobreak { page-break-inside: avoid; }
         last_dates << date.text
       end
     end
-    last_dates = last_dates.map { |d| change_date_maghrebemergen(d) }
+    last_dates = last_dates.map { |d| change_translate_date(d) }
     last_dates = last_dates.map { |d| d.to_datetime.change({ hour: 0, min: 0, sec: 0 }) }
     articles_url_maghrebemergent = articles_url_maghrebemergent.reject(&:nil?)
     last_dates = last_dates.uniq
@@ -1757,7 +1757,7 @@ div.nobreak { page-break-inside: avoid; }
     # date = article.at('p.text-capitalize span').text
     # date[','] = ''
     date = article.at('div.elementor-widget-container ul li a span.elementor-icon-list-text.elementor-post-info__item.elementor-post-info__item--type-date').text
-    d = change_date_maghrebemergen(date)
+    d = change_translate_date(date)
     new_article.date_published = d.to_datetime.change({ hour: 0, min: 0, sec: 0 })
     url_array = article.css('section div div div div div div.elementor-widget-wrap div.elementor-widget-container div.elementor-image img').map { |link| link['src'] }
     new_article.url_image = url_array[1]
@@ -1890,8 +1890,6 @@ div.nobreak { page-break-inside: avoid; }
         last_dates << date.text.split(':')[0].to_datetime
       end
     end
-    # last_dates = last_dates.map { |d| change_date_maghrebemergen(d) }
-    # last_dates = last_dates.map { |d| d.to_datetime.change({ hour: 0, min: 0, sec: 0 })}
     articles_url_elmoudjahid = articles_url_elmoudjahid.reject(&:nil?)
     last_dates = last_dates.uniq
     last_articles = Article.where(medium_id: @media.id).where(date_published: last_dates)
@@ -1991,7 +1989,7 @@ div.nobreak { page-break-inside: avoid; }
       end
     end
 
-    last_dates = last_dates.map { |d| change_date_maghrebemergen(d) }
+    last_dates = last_dates.map { |d| change_translate_date(d) }
     last_dates = last_dates.map { |d| d.to_datetime.change({ hour: 0, min: 0, sec: 0 }) }
     articles_url_elkhabar = articles_url_elkhabar.reject(&:nil?)
     articles_url_elkhabar = articles_url_elkhabar.uniq
@@ -2045,7 +2043,6 @@ div.nobreak { page-break-inside: avoid; }
       # date = article.at('p.text-capitalize span').text
       # date[','] = ''
       date = article.at('time[datetime]')['datetime']
-      # d = change_date_maghrebemergen(date)
       new_article.date_published = date.to_datetime.change({ hour: 0, min: 0, sec: 0 })
       if article.css('div#article_img img').present?
         url_array = article.css('div#article_img img').map { |link| "https://www.elkhabar.com#{link['src']}" }
@@ -2097,7 +2094,6 @@ div.nobreak { page-break-inside: avoid; }
         last_dates << date['datetime']
       end
     end
-    # last_dates = last_dates.map { |d| change_date_maghrebemergen(d) }
     last_dates = last_dates.map { |d| d.to_datetime.change({ hour: 0, min: 0, sec: 0 }) + (1.0 / 24) }
     articles_url_elikhbaria = articles_url_elikhbaria.reject(&:nil?)
     last_dates = last_dates.uniq
@@ -2147,10 +2143,7 @@ div.nobreak { page-break-inside: avoid; }
 
       new_article.body = article.css('div.entry-content.clearfix.single-post-content').inner_html
       new_article.body = new_article.body.gsub(/<img[^>]*>/, '')
-      # date = article.at('p.text-capitalize span').text
-      # date[','] = ''
       date = article.at('time[datetime]')['datetime']
-      # d = change_date_maghrebemergen(date)
       new_article.date_published = date.to_datetime.change({ hour: 0, min: 0, sec: 0 }) + (1.0 / 24)
       url_array = article.css('div.post-header div.single-featured > a').map  { |link| link['href'] }# and link['class'] == 'b-loaded'
       url_image = url_array[0]
@@ -2197,7 +2190,6 @@ div.nobreak { page-break-inside: avoid; }
         last_dates << date['datetime']
       end
     end
-    # last_dates = last_dates.map { |d| change_date_maghrebemergen(d) }
     last_dates = last_dates.map { |d| d.to_datetime.change({ hour: 0, min: 0, sec: 0 }) }
     articles_url_algerieco = articles_url_algerieco.reject(&:nil?)
     last_dates = last_dates.uniq
@@ -2247,10 +2239,7 @@ div.nobreak { page-break-inside: avoid; }
       new_article.body = article.css('div.td-post-content').inner_html
       new_article.body = new_article.body.gsub(/<img[^>]*>/, '')
       new_article.body = new_article.body.gsub(%r{<div class="td-post-featured-image">(.*?)<\/a><\/div>}, '')
-      # date = article.at('p.text-capitalize span').text
-      # date[','] = ''
       date = article.at('time[datetime]')['datetime']
-      # d = change_date_maghrebemergen(date)
       new_article.date_published = date.to_datetime.change({ hour: 0, min: 0, sec: 0 })
       url_array = article.css('div.td-post-featured-image img').map { |link| link['src'] }
       url_image = url_array[0]
@@ -2299,7 +2288,6 @@ div.nobreak { page-break-inside: avoid; }
         last_dates << date['datetime']
       end
     end
-    # last_dates = last_dates.map { |d| change_date_maghrebemergen(d) }
     last_dates = last_dates.map { |d| d.to_datetime.change({ hour: 0, min: 0, sec: 0 }) + (1.0 / 24) }
     articles_url_chiffreaffaire = articles_url_chiffreaffaire.reject(&:nil?)
     last_dates = last_dates.uniq
@@ -2350,7 +2338,6 @@ div.nobreak { page-break-inside: avoid; }
       # date = article.at('p.text-capitalize span').text
       # date[','] = ''
       date = article.at('time[datetime]')['datetime']
-      # d = change_date_maghrebemergen(date)
       new_article.date_published = date.to_datetime.change({ hour: 0, min: 0, sec: 0 }) + (1.0 / 24)
       url_array = article.css('div.single-featured a').map { |link| link['href'] }
       url_image = url_array[0]
@@ -2404,7 +2391,6 @@ div.nobreak { page-break-inside: avoid; }
         last_dates << date['datetime']
       end
     end
-    # last_dates = last_dates.map { |d| change_date_maghrebemergen(d) }
     last_dates = last_dates.map { |d| d.to_datetime.change({ hour: 0, min: 0, sec: 0 }) + (1.0 / 24) }
     articles_url_elhiwar = articles_url_elhiwar.reject(&:nil?)
     last_dates = last_dates.uniq
@@ -2458,7 +2444,6 @@ div.nobreak { page-break-inside: avoid; }
       # date = article.at('p.text-capitalize span').text
       # date[','] = ''
       date = article.at('time[datetime]')['datetime']
-      # d = change_date_maghrebemergen(date)
       new_article.date_published = date.to_datetime.change({ hour: 0, min: 0, sec: 0 }) + (1.0 / 24)
       url_array = article.css('div.entry-media img').map { |link| link['src'] }
 
@@ -2516,7 +2501,6 @@ div.nobreak { page-break-inside: avoid; }
         last_dates << date['datetime']
       end
     end
-    # last_dates = last_dates.map { |d| change_date_maghrebemergen(d) }
     last_dates = last_dates.map { |d| d.to_datetime.change({ hour: 0, min: 0, sec: 0 }) + (1.0 / 24) }
     articles_url_visadz = articles_url_visadz.reject(&:nil?)
     last_dates = last_dates.uniq
@@ -2565,10 +2549,9 @@ div.nobreak { page-break-inside: avoid; }
       end
       new_article.body = article.css('p.article__desc').inner_html + article.css('div.article__cntn').inner_html
       new_article.body = new_article.body.gsub(/<img[^>]*>/, '')
-      # date = article.at('p.text-capitalize span').text
-      # date[','] = ''
+
       date = article.at('time[datetime]')['datetime']
-      # d = change_date_maghrebemergen(date)
+
       new_article.date_published = date.to_datetime.change({ hour: 0, min: 0, sec: 0 }) + (1.0 / 24)
       #url_array = article.css('div.entry-media img').map {  |link| link['src'] }
       # url_image = url_array[0]
@@ -2661,7 +2644,7 @@ div.nobreak { page-break-inside: avoid; }
       date_with_time = article.css('li.entry__meta-date.pt-xl-1').text
       date_with_a = date_with_time.split('à')[0]
       date = date_with_a
-      d = change_date_maghrebemergen(date)
+      d = change_translate_date(date)
       new_article.date_published = d.to_datetime.change({ hour: 0, min: 0, sec: 0 })
       # new_article.date_published =
       url_array = article.css('div.entry__img-holder.px-2.px-md-0 img').map { |link| link['data-src'] }
@@ -3410,7 +3393,7 @@ div.nobreak { page-break-inside: avoid; }
       new_article.body = article.css('div.entry-content.entry.clearfix p').inner_html
       new_article.body = new_article.body.gsub(/<img[^>]*>/, '')
       date_arabe = article.at('span.date.meta-item.tie-icon').text
-      date = change_date_maghrebemergen(date_arabe)
+      date = change_translate_date(date_arabe)
       new_article.date_published = date.to_datetime.change({ hour: 0, min: 0, sec: 0 })
       url_array = article.css('figure.single-featured-image img').map{ |link|
         if link['src'].include? 'https'
@@ -3499,7 +3482,7 @@ div.nobreak { page-break-inside: avoid; }
       new_article.body = article.css('div.the-content  p').inner_html
       new_article.body = new_article.body.gsub(/<img[^>]*>/, '')
       date_arabe = article.at('div.entry-info span.posted-date').text
-      date = change_date_maghrebemergen(date_arabe.split('-')[0])
+      date = change_translate_date(date_arabe.split('-')[0])
       new_article.date_published = date.to_datetime.change({ hour: 0, min: 0, sec: 0 })
       url_array = article.css('div.post-formats-wrapper a.post-image img').map{ |link| link['src'] }
       new_article.url_image = url_array[0]
@@ -3836,7 +3819,8 @@ div.nobreak { page-break-inside: avoid; }
       new_article.body = article.css('div.post_content p').inner_html
       new_article.body = new_article.body.gsub(/<img[^>]*>/, '')
       date = article.at('span.timePost').text
-      new_article.date_published = date.to_datetime.change({ hour: 0, min: 0, sec: 0 })
+      date_checked = change_translate_date(date)
+      new_article.date_published = date_checked.to_datetime.change({ hour: 0, min: 0, sec: 0 })
       url_array =  article.css('div.article-image img.attachment-full.size-full.wp-post-image').map{  |link| link['src'] }
       new_article.url_image = url_array[0]
       begin
@@ -3916,8 +3900,8 @@ div.nobreak { page-break-inside: avoid; }
   # change_date_autobip_aps
   #
 
-  # change_date_maghrebemergent
-  def change_date_maghrebemergen(d)
+  # change_translate_date
+  def change_translate_date(d)
 
     d.split.map do |m|
       case m.downcase
@@ -4026,12 +4010,27 @@ div.nobreak { page-break-inside: avoid; }
       when 'اوت،'.downcase
         'August'
 
+      when 'يناير'.downcase
+        'January'
+      when 'فبراير'.downcase
+        'February'
+      when 'ابريل'.downcase
+        'April'
+      when 'مايو'.downcase
+        'May'
+      when 'يونيو'.downcase
+        'June'
+      when 'يوليو'.downcase
+        'July'
+      when 'أغسطس'.downcase
+        'August'
+
       else
         m
       end
     end.join(' ')
   end
-  # change_date_maghrebemergents
+  # change_translate_date
   #                 <p style="font-size: 12px; line-height: 1; color:brown; margin-top:5px;">
   #                  TAGS :  <%= article.tags.map(&:name).uniq.join(' - ')  %>
   #

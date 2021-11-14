@@ -3640,6 +3640,20 @@ article.css('div.post-header div.single-featured > a').map do |link|
       when 'اوت'.downcase
         'August'
 
+      when 'يناير'.downcase
+        'January'
+      when 'فبراير'.downcase
+        'February'
+      when 'ابريل'.downcase
+        'April'
+      when 'مايو'.downcase
+        'May'
+      when 'يونيو'.downcase
+        'June'
+      when 'يوليو'.downcase
+        'July'
+      when 'أغسطس'.downcase
+        'August'
       else
         m
       end
