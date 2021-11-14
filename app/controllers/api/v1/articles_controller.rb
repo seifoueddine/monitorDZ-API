@@ -4016,6 +4016,8 @@ div.nobreak { page-break-inside: avoid; }
         'February'
       when 'ابريل'.downcase
         'April'
+      when 'أبريل'.downcase
+        'April'
       when 'مايو'.downcase
         'May'
       when 'يونيو'.downcase

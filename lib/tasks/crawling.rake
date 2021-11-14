@@ -3387,7 +3387,8 @@ article.css('div.post-header div.single-featured > a').map do |link|
       new_article.body = article.css('div.post_content p').inner_html
       new_article.body = new_article.body.gsub(/<img[^>]*>/, '')
       date = article.at('span.timePost').text
-      new_article.date_published = date.to_datetime.change({ hour: 0, min: 0, sec: 0 })
+      date_checked = change_date_maghrebemergen(date)
+      new_article.date_published = date_checked.to_datetime.change({ hour: 0, min: 0, sec: 0 })
       url_array =  article.css('div.article-image img.attachment-full.size-full.wp-post-image').map{  |link| link['src'] }
       new_article.url_image = url_array[0]
       begin
@@ -3645,6 +3646,8 @@ article.css('div.post-header div.single-featured > a').map do |link|
       when 'فبراير'.downcase
         'February'
       when 'ابريل'.downcase
+        'April'
+      when 'أبريل'.downcase
         'April'
       when 'مايو'.downcase
         'May'
