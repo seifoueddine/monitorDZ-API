@@ -4297,7 +4297,8 @@ div.nobreak { page-break-inside: avoid; }
 
       new_article.body = article.css('div.articles-holder p').inner_html
       new_article.body = new_article.body.gsub(/<img[^>]*>/, '')
-      date =  article.at('//*[@id="block-system-main"]/div/div[1]/div[3]/span[1]/text()[2]').text
+      date_published_treat = article.at('div.articles-holder span.date-ttl').text{|audate|}.split('le')
+      date =  date_published_treat[1]
       # date_checked = change_translate_date(date)
       new_article.date_published = date.to_datetime.change({ hour: 0, min: 0, sec: 0 })
       url_array =  article.css('div.full-item div.holder img').map{ |link| link['src'] }
