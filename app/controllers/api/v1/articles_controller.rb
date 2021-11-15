@@ -4238,10 +4238,18 @@ div.nobreak { page-break-inside: avoid; }
       end
     end
     articles_url_maroco360 = articles_url_maroco360.reject(&:nil?)
+    articles_url_maroco360.map do |link|
+      puts '*------------'
+      puts link
+    end
 
     articles_url_maroco360_after_check = []
     articles_url_maroco360.map do |link|
       articles_url_maroco360_after_check << link unless Article.where(medium_id: @media.id,url_article: link).present?
+    end
+    articles_url_maroco360_after_check.map do |link|
+      puts '*******'
+      puts link
     end
 
     articles_url_maroco360_after_check.map do |link|
