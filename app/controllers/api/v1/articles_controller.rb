@@ -3860,7 +3860,7 @@ div.nobreak { page-break-inside: avoid; }
       end
 
       doc.css('h3 a').map do |link|
-        articles_url_radioalgerie_ar << 'https://news.radioalgerie.dz' + link['href']
+        articles_url_radioalgerie_ar << "https://news.radioalgerie.dz#{link['href']}"
       end
     end
     articles_url_radioalgerie_ar = articles_url_radioalgerie_ar.reject(&:nil?)
@@ -3912,8 +3912,8 @@ div.nobreak { page-break-inside: avoid; }
       new_article.body = new_article.body.gsub(/<img[^>]*>/, '')
       date = article.at('div.content span.field.field--name-created.field--type-created.field--label-inline').text
       new_article.date_published = date.to_datetime.change({ hour: 0, min: 0, sec: 0 })
-      url_pic = article.at('div.col-lg-8 picture img').attr('data-src')
-      new_article.url_image = url_pic
+      url_pic = "https://news.radioalgerie.dz#{article.at('div.col-lg-8 picture img').attr('data-src')}"
+      new_article.url_image =  url_pic
       begin
         new_article.image = Down.download(url_pic) if url_pic.present?
       rescue Down::Error => e
@@ -3946,7 +3946,7 @@ div.nobreak { page-break-inside: avoid; }
       end
 
       doc.css('h3 a').map do |link|
-        articles_url_radioalgerie_fr << 'https://news.radioalgerie.dz' + link['href']
+        articles_url_radioalgerie_fr << "https://news.radioalgerie.dz#{link['href']}"
       end
     end
     articles_url_radioalgerie_fr = articles_url_radioalgerie_fr.reject(&:nil?)
@@ -3998,7 +3998,7 @@ div.nobreak { page-break-inside: avoid; }
       new_article.body = new_article.body.gsub(/<img[^>]*>/, '')
       date = article.at('div.content span.field.field--name-created.field--type-created.field--label-inline').text
       new_article.date_published = date.to_datetime.change({ hour: 0, min: 0, sec: 0 })
-      url_pic = article.at('div.col-lg-8 picture img').attr('data-src')
+      url_pic = "https://news.radioalgerie.dz#{article.at('div.col-lg-8 picture img').attr('data-src')}"
       new_article.url_image = url_pic
       begin
         new_article.image = Down.download(url_pic) if url_pic.present?
