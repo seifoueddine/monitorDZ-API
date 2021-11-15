@@ -4236,7 +4236,7 @@ div.nobreak { page-break-inside: avoid; }
         next
       end
 
-      doc.css('ul.listing-archive div.descriptionPostArchive a').map do |link|
+      doc.css('div.text h3 a').map do |link|
         puts '33333333333333'
         puts link
         articles_url_maroco360 << "https://fr.le360.ma#{link['href']}"
