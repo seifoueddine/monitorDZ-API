@@ -4222,8 +4222,11 @@ div.nobreak { page-break-inside: avoid; }
 
   # start method to get maroco360 articles
   def get_articles_maroco360(url_media_array)
+    puts '111111111111111'
     articles_url_maroco360 = []
     url_media_array.map do |url|
+      puts '22222222222222'
+      puts url
       begin
         doc = Nokogiri::HTML(URI.open(url,'User-Agent' => 'ruby/2.6.5', 'From' => 'foo@bar.invalid'), nil, "UTF-8")
       rescue OpenURI::HTTPError => e
@@ -4234,6 +4237,8 @@ div.nobreak { page-break-inside: avoid; }
       end
 
       doc.css('ul.listing-archive div.descriptionPostArchive a').map do |link|
+        puts '33333333333333'
+        puts link
         articles_url_maroco360 << "https://fr.le360.ma#{link['href']}"
       end
     end
