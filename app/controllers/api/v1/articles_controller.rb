@@ -2098,7 +2098,7 @@ div.nobreak { page-break-inside: avoid; }
       end
     end
 
-    last_dates = last_dates.map { |d| change_date_maghrebemergen(d) }
+    last_dates = last_dates.map { |d| change_translate_date(d) }
     last_dates = last_dates.map { |d| d.to_datetime.change({ hour: 0, min: 0, sec: 0 }) }
     articles_url_elkhabar_fr = articles_url_elkhabar_fr.reject(&:nil?)
     articles_url_elkhabar_fr = articles_url_elkhabar_fr.uniq
