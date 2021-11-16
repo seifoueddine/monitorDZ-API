@@ -667,6 +667,8 @@ div.nobreak { page-break-inside: avoid; }
       get_articles_tsa(url_media_array)
     when 'APS'
       get_articles_aps(url_media_array)
+    when 'APS-AR'
+      get_articles_aps_ar(url_media_array)
     when 'MAGHREBEMERGENT'
       get_articles_maghrebemergent(url_media_array)
       when 'ELBILAD'
@@ -1212,6 +1214,102 @@ div.nobreak { page-break-inside: avoid; }
     render json: { crawling_status_aps: 'ok' }
   end
   # end method to get APS articles
+
+
+
+  # start method to get APS-AR articles
+  def get_articles_aps_ar(url_media_array)
+    articles_url_aps_ar = []
+    last_dates = []
+    url_media_array.map do |url|
+      begin
+        doc = Nokogiri::HTML(URI.open(url, 'User-Agent' => 'ruby', read_timeout: 3600))
+      rescue OpenURI::HTTPError => e
+        puts "Can't access #{url}"
+        puts e.message
+        puts
+        next
+      end
+      doc.css('#itemListLeading h3 a').map do |link|
+        articles_url_aps_ar << "http://www.aps.dz#{link['href']}"# if link['class'] == 'main_article'
+      end
+      doc.css('span.catItemDateCreated').map do |date|
+        last_dates << date.text
+      end
+    end
+    last_dates = last_dates.map { |d| change_date_autobip_aps(d) }
+    last_dates = last_dates.map{ |d| d.to_datetime.change({ hour: 0, min: 0, sec: 0 }) }
+    # last_dates = last_dates.map(&:to_datetime.change({ hour: 0, min: 0, sec: 0 }))
+    articles_url_aps_ar = articles_url_aps_ar.reject(&:nil?)
+    last_dates = last_dates.uniq
+    last_articles = Article.where(medium_id: @media.id).where(date_published: last_dates)
+    list_articles_url = []
+    last_articles.map do |article|
+      list_articles_url << article.url_article
+    end
+    articles_url_aps_ar_after_check = articles_url_aps_ar - list_articles_url
+    articles_url_aps_ar_after_check.map do |link|
+      begin
+        article = Nokogiri::HTML(URI.open(link,read_timeout: 3600))
+      rescue OpenURI::HTTPError => e
+        puts "Can't access #{link}"
+        puts e.message
+        puts
+        next
+      end
+      new_article = Article.new
+      new_article.url_article = link
+      new_article.medium_id = @media.id
+      new_article.language = @media.language
+      new_article.category_article = article.css('nav.wrap.t3-navhelper > div > ol > li a').text == '' ? article.css('body > div.t3-wrapper > nav.wrap.t3-navhelper > div > ol > li:nth-child(2) > span').text : article.css('nav.wrap.t3-navhelper > div > ol > li a').text
+      new_article.title = article.css('div.itemHeader h2.itemTitle').text
+      # new_article.author = article.css('div.article-head__author div em a').text
+
+      author_exist = if article.at('span.article__meta-author').nil?
+                       Author.where(['lower(name) like ? ', ('APS-AR auteur').downcase])
+                     else
+                       Author.where(['lower(name) like ? ',
+                                     article.at('span.article__meta-author').text.downcase])
+                     end
+
+      new_author = Author.new
+      if author_exist.count.zero?
+
+        new_author.name = article.at('span.article__meta-author').nil? ? 'APS-AR auteur' : article.at('span.article__meta-author').text
+        new_author.medium_id = @media.id
+        new_author.save!
+        new_article.author_id = new_author.id
+      else
+        new_article.author_id = author_exist.first.id
+
+      end
+      new_article.body = article.css('div.itemIntroText strong').inner_html + article.css('div.itemFullText').inner_html
+      new_article.body = new_article.body.gsub(/<img[^>]*>/, '')
+      date = article.css('span.itemDateCreated').text
+      date['Publié le : '] = ''
+      d = change_date_autobip_aps(date)
+      new_article.date_published = d.to_datetime.change({ hour: 0, min: 0, sec: 0 })
+      # new_article.date_published =
+      url_array = article.css('div.itemImageBlock span.itemImage img').map { |link| "http://www.aps.dz#{link['src']}" }
+      new_article.url_image = url_array[0]
+      begin
+        new_article.image = Down.download(url_array[0]) if url_array[0].present?
+      rescue Down::Error => e
+        puts "Can't download this image #{url_array[0]}"
+        puts e.message
+        puts
+        new_article.image = nil
+      end
+      tags_array = article.css('ul.itemTags li').map(&:text)
+      # new_article.media_tags = tags_array.join(',')
+      new_article.status = 'pending'
+      new_article.save!
+      # tag_check_and_save(tags_array)if @media.tag_status == true
+    end
+    render json: { crawling_status_aps_ar: 'ok' }
+  end
+  # end method to get APS-AR articles
+
 
 
 
