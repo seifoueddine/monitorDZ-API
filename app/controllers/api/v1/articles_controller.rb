@@ -1080,7 +1080,7 @@ div.nobreak { page-break-inside: avoid; }
       # new_article.author = article.css('div.article-head__author div em a').text
 
       author_exist = if article.at('span.article__meta-author').nil?
-                       Author.where(['lower(name) like ? ', ('TSA auteur').downcase])
+                       Author.where(['lower(name) like ? ', 'TSA auteur'.downcase])
                      else
                        Author.where(['lower(name) like ? ',
                                      article.at('span.article__meta-author').text.downcase])
@@ -1171,7 +1171,7 @@ div.nobreak { page-break-inside: avoid; }
       # new_article.author = article.css('div.article-head__author div em a').text
 
       author_exist = if article.at('span.article__meta-author').nil?
-                       Author.where(['lower(name) like ? ', ('APS auteur').downcase])
+                       Author.where(['lower(name) like ? ', 'APS auteur'.downcase])
                      else
                        Author.where(['lower(name) like ? ',
                                      article.at('span.article__meta-author').text.downcase])
@@ -1233,7 +1233,7 @@ div.nobreak { page-break-inside: avoid; }
       end
 
       doc.css('div.itemList div.catItemHeader h3.catItemTitle a').map do |link|
-        articles_url_APSar << link['href']
+        articles_url_APSar <<  "https://www.aps.dz#{link['href']}"
       end
     end
     articles_url_APSar = articles_url_APSar.reject(&:nil?)
@@ -1241,6 +1241,9 @@ div.nobreak { page-break-inside: avoid; }
     articles_url_APSar_after_check = []
     articles_url_APSar.map do |link|
       articles_url_APSar_after_check << link unless Article.where(medium_id: @media.id,url_article: link).present?
+    end
+    articles_url_APSar_after_check.map do |link|
+
     end
 
     articles_url_APSar_after_check.map do |link|
@@ -1262,7 +1265,7 @@ div.nobreak { page-break-inside: avoid; }
       # new_article.author = article.css('div.article-head__author div em a').text
       author_exist_final =  article.at('div.nameAuthor').text
       author_exist = if author_exist_final.nil? || author_exist_final == ''
-                       Author.where(['lower(name) like ? ', ('APSar auteur').downcase])
+                       Author.where(['lower(name) like ? ', 'APSar auteur'.downcase])
                      else
                        a = author_exist_final
                        Author.where(['lower(name) like ? ',
@@ -1451,7 +1454,7 @@ div.nobreak { page-break-inside: avoid; }
       new_article.title = "#{article.css('div#main-post span h4').text} : #{article.css('div#main-post span h1').text}"
       #  new_article.author = article.css('div.article-head__author div em a').text
       author_exist = if article.at('div#side-post div div p a').nil?
-                       Author.where(['lower(name) like ? ', ('Liberté auteur').downcase])
+                       Author.where(['lower(name) like ? ', 'Liberté auteur'.downcase])
                      else
                        Author.where(['lower(name) like ? ',
                                      article.at('div#side-post div div p a').text.downcase])
@@ -1545,7 +1548,7 @@ div.nobreak { page-break-inside: avoid; }
       new_article.title = "#{article.css('div#main-post span h4').text} : #{article.css('div#main-post span h1').text}"
       #  new_article.author = article.css('div.article-head__author div em a').text
       author_exist = if article.at('div#side-post div div p a').nil?
-                       Author.where(['lower(name) like ? ', ('Liberté-ar auteur').downcase])
+                       Author.where(['lower(name) like ? ', 'Liberté-ar auteur'.downcase])
                      else
                        Author.where(['lower(name) like ? ',
                                      article.at('div#side-post div div p a').text.downcase])
@@ -1838,7 +1841,7 @@ div.nobreak { page-break-inside: avoid; }
       new_article.title = article.css('#content > header > h1').text
       # new_article.author = article.css('div.article-head__author div em a').text
       author_exist = if article.at('ul.list-share li a span.strong').text == '0'
-                       Author.where(['lower(name) like ? ', ('Bilad auteur').downcase])
+                       Author.where(['lower(name) like ? ', 'Bilad auteur'.downcase])
                      else
                        a = article.at('ul.list-share li a span.strong').text
                        Author.where(['lower(name) like ? ',
@@ -1932,7 +1935,7 @@ div.nobreak { page-break-inside: avoid; }
     # new_article.author = article.css('div.article-head__author div em a').text
 
     if article.at('div.elementor-widget-container ul li a span.elementor-icon-list-text elementor-post-info__item elementor-post-info__item--type-author').nil?
-      author_exist = Author.where(['lower(name) like ? ', ('Maghrebemergent auteur').downcase])
+      author_exist = Author.where(['lower(name) like ? ', 'Maghrebemergent auteur'.downcase])
     else
       author_exist = Author.where(['lower(name) like ? ',
                                    article.at('div.elementor-widget-container ul li a span.elementor-icon-list-text elementor-post-info__item elementor-post-info__item--type-author').text.downcase])
@@ -2024,7 +2027,7 @@ div.nobreak { page-break-inside: avoid; }
       new_article.title = article.css('header.heading-article h1').text
 
 
-      author_exist = Author.where(['lower(name) like ? ', ('Elmoudjahid-fr auteur').downcase])
+      author_exist = Author.where(['lower(name) like ? ', 'Elmoudjahid-fr auteur'.downcase])
 
 
       new_author = Author.new
@@ -2123,7 +2126,7 @@ div.nobreak { page-break-inside: avoid; }
 
 
       author_exist = if article.at('p.text-muted').nil?
-                       Author.where(['lower(name) like ? ', ('Elmoudjahid auteur').downcase])
+                       Author.where(['lower(name) like ? ', 'Elmoudjahid auteur'.downcase])
                      else
                        Author.where(['lower(name) like ? ',
                                      article.at('p.text-muted').text.downcase])
@@ -2220,7 +2223,7 @@ div.nobreak { page-break-inside: avoid; }
                        Author.where(['lower(name) like ? ',
                                      article.at('span.time-blog b').text.downcase])
                      else
-                       Author.where(['lower(name) like ? ', ('Elkhabar auteur').downcase])
+                       Author.where(['lower(name) like ? ', 'Elkhabar auteur'.downcase])
 
                      end
 
@@ -2421,7 +2424,7 @@ div.nobreak { page-break-inside: avoid; }
       # new_article.author = article.css('div.article-head__author div em a').text
 
       # if article.at("div.subinfo b").text.nil?
-      author_exist = Author.where(['lower(name) like ? ', ('Elikhbaria auteur').downcase])
+      author_exist = Author.where(['lower(name) like ? ', 'Elikhbaria auteur'.downcase])
       # else
       #  author_exist = Author.where(['lower(name) like ? ',
       #                              article.at("div.subinfo b").text.downcase ])
@@ -2517,7 +2520,7 @@ div.nobreak { page-break-inside: avoid; }
       # new_article.author = article.css('div.article-head__author div em a').text
 
       if article.at('div.td-module-meta-info div').text.nil?
-        author_exist = Author.where(['lower(name) like ? ', ('Algerieco auteur').downcase])
+        author_exist = Author.where(['lower(name) like ? ', 'Algerieco auteur'.downcase])
       else
         author = article.at('div.td-module-meta-info div').text
         author_exist = Author.where(['lower(name) like ? ',
@@ -2614,7 +2617,7 @@ div.nobreak { page-break-inside: avoid; }
       # new_article.author = article.css('div.article-head__author div em a').text
 
       if article.at('span.post-author-name').text.nil?
-        author_exist = Author.where(['lower(name) like ? ', ('Chiffreaffaire auteur').downcase])
+        author_exist = Author.where(['lower(name) like ? ', 'Chiffreaffaire auteur'.downcase])
       else
         author = article.at('span.post-author-name').text
         author_exist = Author.where(['lower(name) like ? ',
@@ -2720,7 +2723,7 @@ div.nobreak { page-break-inside: avoid; }
       # new_article.author = article.css('div.article-head__author div em a').text
 
       if article.at('span.author').text.nil?
-        author_exist = Author.where(['lower(name) like ? ', ('Elhiwar auteur').downcase])
+        author_exist = Author.where(['lower(name) like ? ', 'Elhiwar auteur'.downcase])
       else
         author = article.at('span.author').text
         author_exist = Author.where(['lower(name) like ? ',
@@ -2828,7 +2831,7 @@ div.nobreak { page-break-inside: avoid; }
       # new_article.author = article.css('div.article-head__author div em a').text
 
       if article.at('em.article__atnm').nil?
-        author_exist = Author.where(['lower(name) like ? ', ('Visa Algérie auteur').downcase])
+        author_exist = Author.where(['lower(name) like ? ', 'Visa Algérie auteur'.downcase])
       else
         author = article.at('em.article__atnm').text
         author_exist = Author.where(['lower(name) like ? ',
@@ -2920,7 +2923,7 @@ div.nobreak { page-break-inside: avoid; }
       new_article.title = article.css('h1.single-post__entry-title.mt-0').text
       #  new_article.author = article.css('div.article-head__author div em a').text
       author_exist = if article.at('li.entry__meta-author a').nil?
-                       Author.where(['lower(name) like ? ', ('Algérie360 auteur').downcase])
+                       Author.where(['lower(name) like ? ', 'Algérie360 auteur'.downcase])
                      else
                        Author.where(['lower(name) like ? ',
                                      article.at('li.entry__meta-author a').text.downcase])
@@ -3113,7 +3116,7 @@ div.nobreak { page-break-inside: avoid; }
       # new_article.author = article.css('div.article-head__author div em a').text
 
 
-      author_exist = Author.where(['lower(name) like ? ', ('Santenews auteur').downcase])
+      author_exist = Author.where(['lower(name) like ? ', 'Santenews auteur'.downcase])
 
 
       new_author = Author.new
@@ -3309,7 +3312,7 @@ div.nobreak { page-break-inside: avoid; }
       new_article.title = "#{article.css('article header.heading-a p',).text}, #{article.css('article header.heading-a h1',).text}"
       # new_article.author = article.css('div.article-head__author div em a').text
       author_exist = if article.css('h3.scheme-user').text == ''
-                       Author.where(['lower(name) like ? ', ("L'expressiondz auteur").downcase])
+                       Author.where(['lower(name) like ? ', "L'expressiondz auteur".downcase])
                      else
                        a = article.css('h3.scheme-user').text
                        Author.where(['lower(name) like ? ',
@@ -3401,7 +3404,7 @@ div.nobreak { page-break-inside: avoid; }
       author_exist_array = article.css('p.author span a').map{ |link|  link['title']}
       author_exist_final = author_exist_array.reject(&:nil?)
       author_exist = if author_exist_final.count.zero?
-                       Author.where(['lower(name) like ? ', ("Lematin auteur").downcase])
+                       Author.where(['lower(name) like ? ', "Lematin auteur".downcase])
                      else
                        a = author_exist_final[0]
                        Author.where(['lower(name) like ? ',
@@ -3494,7 +3497,7 @@ div.nobreak { page-break-inside: avoid; }
       # new_article.author = article.css('div.article-head__author div em a').text
       author_exist_final = article.css('span.meta-author a').text
       author_exist = if author_exist_final.nil? || author_exist_final == ''
-                       Author.where(['lower(name) like ? ', ("Almaghreb24 auteur").downcase])
+                       Author.where(['lower(name) like ? ', "Almaghreb24 auteur".downcase])
                      else
                        a = author_exist_final
                        Author.where(['lower(name) like ? ',
@@ -3581,7 +3584,7 @@ div.nobreak { page-break-inside: avoid; }
       # new_article.author = article.css('div.article-head__author div em a').text
       author_exist_final = article.css('span.meta-author a').text
       author_exist = if author_exist_final.nil? || author_exist_final == ''
-                       Author.where(['lower(name) like ? ', ("Aujourdhui-MA auteur").downcase])
+                       Author.where(['lower(name) like ? ', "Aujourdhui-MA auteur".downcase])
                      else
                        a = author_exist_final
                        Author.where(['lower(name) like ? ',
@@ -3670,7 +3673,7 @@ div.nobreak { page-break-inside: avoid; }
       # new_article.author = article.css('div.article-head__author div em a').text
       author_exist_final = article.at('span.meta-item.meta-author-wrapper span.meta-author').text
       author_exist = if author_exist_final.nil? || author_exist_final == ''
-                       Author.where(['lower(name) like ? ', ('ELDJAZAIR-ELDJADIDA auteur').downcase])
+                       Author.where(['lower(name) like ? ', 'ELDJAZAIR-ELDJADIDA auteur'.downcase])
                      else
                        a = author_exist_final
                        Author.where(['lower(name) like ? ',
@@ -3759,7 +3762,7 @@ div.nobreak { page-break-inside: avoid; }
       # new_article.author = article.css('div.article-head__author div em a').text
       author_exist_final = article.at('div.entry-info span.posted-date span.author.vcard a').text
       author_exist = if author_exist_final.nil? || author_exist_final == ''
-                       Author.where(['lower(name) like ? ', ('ALGERIE-PATRIOTIQUE auteur').downcase])
+                       Author.where(['lower(name) like ? ', 'ALGERIE-PATRIOTIQUE auteur'.downcase])
                      else
                        a = author_exist_final
                        Author.where(['lower(name) like ? ',
@@ -3845,7 +3848,7 @@ div.nobreak { page-break-inside: avoid; }
       # new_article.author = article.css('div.article-head__author div em a').text
       author_exist_final = 'Elmaouid auteur'
       author_exist = if author_exist_final.nil? || author_exist_final == ''
-                       Author.where(['lower(name) like ? ', ('Elmaouid auteur').downcase])
+                       Author.where(['lower(name) like ? ', 'Elmaouid auteur'.downcase])
                      else
                        a = author_exist_final
                        Author.where(['lower(name) like ? ',
@@ -3932,7 +3935,7 @@ div.nobreak { page-break-inside: avoid; }
       find_author = article.at('a.author-card__details__name').present? ? article.at('a.author-card__details__name').text : article.at('span.author-card_details_name').text
       author_exist_final = find_author
       author_exist = if author_exist_final.nil? || author_exist_final == ''
-                       Author.where(['lower(name) like ? ', ('Huffington-post auteur').downcase])
+                       Author.where(['lower(name) like ? ', 'Huffington-post auteur'.downcase])
                      else
                        a = author_exist_final
                        Author.where(['lower(name) like ? ',
@@ -4019,7 +4022,7 @@ div.nobreak { page-break-inside: avoid; }
       # new_article.author = article.css('div.article-head__author div em a').text
       author_exist_final = article.at('div.author-tp-2 a').text
       author_exist = if author_exist_final.nil? || author_exist_final == ''
-                       Author.where(['lower(name) like ? ', ('Elwatan auteur').downcase])
+                       Author.where(['lower(name) like ? ', 'Elwatan auteur'.downcase])
                      else
                        a = author_exist_final
                        Author.where(['lower(name) like ? ',
@@ -4096,7 +4099,7 @@ div.nobreak { page-break-inside: avoid; }
       # new_article.author = article.css('div.article-head__author div em a').text
       author_exist_final =  article.at('div.nameAuthor').text
       author_exist = if author_exist_final.nil? || author_exist_final == ''
-                       Author.where(['lower(name) like ? ', ('Alyaoum24 auteur').downcase])
+                       Author.where(['lower(name) like ? ', 'Alyaoum24 auteur'.downcase])
                      else
                        a = author_exist_final
                        Author.where(['lower(name) like ? ',
@@ -4184,7 +4187,7 @@ div.nobreak { page-break-inside: avoid; }
       # new_article.author = article.css('div.article-head__author div em a').text
       author_exist_final = 'Radioalgerie-AR auteur'
       author_exist = if author_exist_final.nil? || author_exist_final == ''
-                       Author.where(['lower(name) like ? ', ('Radioalgerie-AR auteur').downcase])
+                       Author.where(['lower(name) like ? ', 'Radioalgerie-AR auteur'.downcase])
                      else
                        a = author_exist_final
                        Author.where(['lower(name) like ? ',
@@ -4270,7 +4273,7 @@ div.nobreak { page-break-inside: avoid; }
       # new_article.author = article.css('div.article-head__author div em a').text
       author_exist_final = 'Radioalgerie-FR auteur'
       author_exist = if author_exist_final.nil? || author_exist_final == ''
-                       Author.where(['lower(name) like ? ', ('Radioalgerie-FR auteur').downcase])
+                       Author.where(['lower(name) like ? ', 'Radioalgerie-FR auteur'.downcase])
                      else
                        a = author_exist_final
                        Author.where(['lower(name) like ? ',
@@ -4369,7 +4372,7 @@ div.nobreak { page-break-inside: avoid; }
       # new_article.author = article.css('div.article-head__author div em a').text
       author_exist_final =  article.at('span.date-ttl u a').text
       author_exist = if author_exist_final.nil? || author_exist_final == ''
-                       Author.where(['lower(name) like ? ', ('Maroco360 auteur').downcase])
+                       Author.where(['lower(name) like ? ', 'Maroco360 auteur'.downcase])
                      else
                        a = author_exist_final
                        Author.where(['lower(name) like ? ',
