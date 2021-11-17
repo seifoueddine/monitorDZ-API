@@ -1263,7 +1263,7 @@ div.nobreak { page-break-inside: avoid; }
       new_article.category_article = article.css('div.itemToolbar span a').text
       new_article.title =  article.css('div.itemHeader h2.itemTitle').text
       # new_article.author = article.css('div.article-head__author div em a').text
-      author_exist_final =  article.at('div.nameAuthor').text
+      author_exist_final =  'APSar auteur'
       author_exist = if author_exist_final.nil? || author_exist_final == ''
                        Author.where(['lower(name) like ? ', 'APSar auteur'.downcase])
                      else
