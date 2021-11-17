@@ -4326,6 +4326,8 @@ article.css('div.post-header div.single-featured > a').map do |link|
       Date.today.to_datetime.change({ hour: 0, min: 0, sec: 0 })
     elsif string.include?('دقيقة') == true
       Date.today.to_datetime.change({ hour: 0, min: 0, sec: 0 })
+    elsif string.include?('دقائق') == true
+      Date.today.to_datetime.change({ hour: 0, min: 0, sec: 0 })
     elsif  string.include?('دقيقتين') == true
       Date.today.to_datetime.change({ hour: 0, min: 0, sec: 0 })
     elsif string.include?('منذ ساعة واحدة') == true
