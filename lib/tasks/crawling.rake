@@ -36,52 +36,54 @@ namespace :crawling do
     case media.name
     # when 'AUTOBIP'
     #   get_articles_autobip(url_media_array)
-     when 'ELCHEROUK'
+    when 'ELCHEROUK'
        get_articles_elcherouk(url_media_array)
-     when 'ENNAHAR'
+    when 'ENNAHAR'
       get_articles_ennahar(url_media_array)
-     when 'TSA'
-        get_articles_tsa(url_media_array)
-        #   when 'APS'
-        #get_articles_aps(url_media_array)
-       when 'MAGHREBEMERGENT'
-        get_articles_maghrebemergent(url_media_array)
+    when 'TSA'
+      get_articles_tsa(url_media_array)
+    when 'APS'
+      get_articles_aps(url_media_array)
+    when 'APS-AR'
+      get_articles_aps_ar(url_media_array)
+    when 'MAGHREBEMERGENT'
+      get_articles_maghrebemergent(url_media_array)
     when 'ELBILAD'
       get_articles_bilad(url_media_array)
-        when 'ELMOUDJAHID'
-          get_articles_elmoudjahid(url_media_array)
-        when 'ELMOUDJAHID-FR'
-          get_articles_elmoudjahid_fr(url_media_array)
-        when 'ELKHABAR'
-         get_articles_elkhabar(url_media_array)
+    when 'ELMOUDJAHID'
+      get_articles_elmoudjahid(url_media_array)
+    when 'ELMOUDJAHID-FR'
+      get_articles_elmoudjahid_fr(url_media_array)
+    when 'ELKHABAR'
+      get_articles_elkhabar(url_media_array)
     when 'ELKHABAR-FR'
       get_articles_elkhabar_fr(url_media_array)
-        when 'ELIKHABARIA'
-         get_articles_elikhbaria(url_media_array)
-         when 'ALGERIECO'
-          get_articles_algerieco(url_media_array)
-        when 'CHIFFREAFFAIRE'
-        get_articles_chiffreaffaire(url_media_array)
-        when 'ELHIWAR'
-        get_articles_elhiwar(url_media_array)
-        when 'LE SOIR'
-       get_articles_le_soir(url_media_array)
-       when 'LIBERTE'
-       get_articles_liberte(url_media_array)
+    when 'ELIKHABARIA'
+      get_articles_elikhbaria(url_media_array)
+    when 'ALGERIECO'
+      get_articles_algerieco(url_media_array)
+    when 'CHIFFREAFFAIRE'
+      get_articles_chiffreaffaire(url_media_array)
+    when 'ELHIWAR'
+      get_articles_elhiwar(url_media_array)
+    when 'LE SOIR'
+      get_articles_le_soir(url_media_array)
+    when 'LIBERTE'
+      get_articles_liberte(url_media_array)
     when 'LIBERTE-AR'
       get_articles_liberte_ar(url_media_array)
-       when 'VISAALGERIE'
-        get_articles_visadz(url_media_array)
-        when 'SANTENEWS'
-        get_articles_santenews(url_media_array)
-      when 'ALGERIE360'
-        get_articles_algerie360(url_media_array)
+    when 'VISAALGERIE'
+      get_articles_visadz(url_media_array)
+    when 'SANTENEWS'
+      get_articles_santenews(url_media_array)
+    when 'ALGERIE360'
+      get_articles_algerie360(url_media_array)
         # when 'ALGERIEPARTPLUS'
          #  get_articles_algerie_part(url_media_array)
-       when '24H-DZ'
-        get_articles_24hdz(url_media_array)
-       when 'REPORTERS'
-        get_articles_reporters(url_media_array)
+    when '24H-DZ'
+      get_articles_24hdz(url_media_array)
+    when 'REPORTERS'
+      get_articles_reporters(url_media_array)
     when 'SHIHABPRESSE'
       get_articles_shihabpresse(url_media_array)
     when 'LEXPRESSIONDZ'
@@ -645,6 +647,115 @@ namespace :crawling do
     puts "json: { crawling_status_aps: 'ok' }"
   end
     # end method to get APS articles
+
+
+
+    # start method to get APS-ar articles
+  def get_articles_aps_ar(url_media_array)
+
+    articles_url_APSar = []
+    url_media_array.map do |url|
+      begin
+        doc = Nokogiri::HTML(URI.open(url,'User-Agent' => 'ruby/2.6.5', 'From' => 'foo@bar.invalid'), nil, "UTF-8")
+      rescue OpenURI::HTTPError => e
+        puts "Can't access #{url}"
+        puts e.message
+        puts
+        next
+      end
+
+      doc.css('div.itemList div.catItemHeader h3.catItemTitle a').map do |link|
+        articles_url_APSar <<  "https://www.aps.dz#{link['href']}"
+      end
+    end
+    articles_url_APSar = articles_url_APSar.reject(&:nil?)
+
+    articles_url_APSar_after_check = []
+    articles_url_APSar.map do |link|
+      articles_url_APSar_after_check << link unless Article.where(medium_id: @media.id,url_article: link).present?
+    end
+    articles_url_APSar_after_check.map do |link|
+
+    end
+
+    articles_url_APSar_after_check.map do |link|
+
+      begin
+        article = Nokogiri::HTML(open(link, 'User-Agent' => 'ruby'))
+      rescue OpenURI::HTTPError => e
+        puts "Can't access #{link}"
+        puts e.message
+        puts
+        next
+      end
+      new_article = Article.new
+      new_article.url_article = link
+      new_article.medium_id = @media.id
+      new_article.language = @media.language
+      new_article.category_article = article.css('div.itemToolbar span a').text
+      new_article.title =  article.css('div.itemHeader h2.itemTitle').text
+      # new_article.author = article.css('div.article-head__author div em a').text
+      author_exist_final =  'APSar auteur'
+      author_exist = if author_exist_final.nil? || author_exist_final == ''
+                       Author.where(['lower(name) like ? ', 'APSar auteur'.downcase])
+                     else
+                       a = author_exist_final
+                       Author.where(['lower(name) like ? ',
+                                     a.downcase])
+                     end
+
+      new_author = Author.new
+      if author_exist.count.zero?
+
+        new_author.name = (author_exist_final.nil? || author_exist_final == '') ? "APSar auteur" : author_exist_final
+        new_author.medium_id = @media.id
+        new_author.save!
+        new_article.author_id = new_author.id
+      else
+        new_article.author_id = author_exist.first.id
+
+      end
+
+      new_article.body = article.css('div.itemIntroText.col-xs-hidden p').inner_html + article.css('div.itemFullText p').inner_html
+      new_article.body = new_article.body.gsub(/<img[^>]*>/, '')
+      date_published_treat = article.at('div.itemToolbar span.itemDateCreated').text.split(',')
+      date = date_published_treat[1]
+      #date_checked = change_translate_date(date)
+      new_article.date_published = date.to_datetime.change({ hour: 0, min: 0, sec: 0 })
+      url_array =  article.css('span.itemImage img').map{ |link| "https://www.aps.dz#{link['src']}" }
+      # tags_array = article.css('ul.itemTags li a').map(&:text)
+      new_article.url_image = url_array[0]
+      begin
+        new_article.image = Down.download(url_array[0]) if url_array[0].present?
+      rescue Down::Error => e
+        puts "Can't download this image #{url_array[0]}"
+        puts e.message
+        puts
+        new_article.image = nil
+      end
+      new_article.status = 'pending'
+      puts "URLBefoooooooooooooor:" + link
+      if Article.where(url_article: link).present?
+        puts 'article present'
+      else
+        articlesTagsUrl = link
+      end
+      puts "URLURLURLURLURLURLURLURLURLURLURLURLURLURLURL: #{articlesTagsUrl}"
+
+      new_article.save!
+      if articlesTagsUrl.present?
+        puts 'add article'
+        @articles_for_auto_tag << Article.where(url_article: articlesTagsUrl)[0]
+      end
+
+    end
+    puts "json: { crawling_status_APSar: 'ok' }"
+  end
+    # end method to get APS-ar articles
+
+
+
+
 
 
 
