@@ -102,6 +102,8 @@ namespace :crawling do
       get_articles_elmaouid(url_media_array)
     when 'ALYAOUM24'
       get_articles_alyaoum24(url_media_array)
+    when 'RADIOALGERIE-FR'
+      get_articles_radioalgerie_fr(url_media_array)
     else
 
       puts "crawling_status: 'No media name found!! ', status: 'error' "
