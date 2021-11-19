@@ -1697,7 +1697,7 @@ div.nobreak { page-break-inside: avoid; }
   # start method to get reporters articles
   def get_articles_reporters(url_media_array)
     articles_url_reporters = []
-    last_dates = []
+
     url_media_array.map do |url|
       begin
         doc = Nokogiri::HTML(URI.open(url))
@@ -1710,20 +1710,17 @@ div.nobreak { page-break-inside: avoid; }
       doc.css('h3.entry-title.td-module-title a').map do |link|
         articles_url_reporters << link['href']
       end
-      doc.css('time.entry-date.updated.td-module-date').map do |date|
-        last_dates << date['datetime']
-      end
+
     end
-    last_dates = last_dates.map { |d| d.to_datetime.change({ hour: 0, min: 0, sec: 0 }) }
-    # last_dates = last_dates.map(&:to_datetime.change({ hour: 0, min: 0, sec: 0 }))
+
     articles_url_reporters = articles_url_reporters.reject(&:nil?)
-    last_dates = last_dates.uniq
-    last_articles = Article.where(medium_id: @media.id).where(date_published: last_dates)
-    list_articles_url = []
-    last_articles.map do |article|
-      list_articles_url << article.url_article
+
+
+    articles_url_reporters_after_check = []
+    articles_url_reporters.map do |link|
+      articles_url_reporters_after_check << link unless Article.where(medium_id: @media.id,url_article: link).present?
     end
-    articles_url_reporters_after_check = articles_url_reporters - list_articles_url
+
     articles_url_reporters_after_check.map do |link|
       begin
         article = Nokogiri::HTML(URI.open(link))
