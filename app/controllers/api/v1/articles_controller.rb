@@ -1598,7 +1598,6 @@ div.nobreak { page-break-inside: avoid; }
   # start method to get 24hdz articles
   def get_articles_24hdz(url_media_array)
     articles_url_24hdz = []
-    last_dates = []
     url_media_array.map do |url|
       puts "Start category parsing : #{url} :) "
       begin
@@ -1612,21 +1611,17 @@ div.nobreak { page-break-inside: avoid; }
       doc.css('h3.entry-title.td-module-title a').map do |link|
         articles_url_24hdz << link['href']
       end
-      doc.css('time.entry-date.updated.td-module-date').map do |date|
-        last_dates << date['datetime']
-      end
+
     end
-    last_dates = last_dates.map { |d| change_date_autobip_aps(d) }
-    last_dates = last_dates.map { |d| d.to_datetime.change({ hour: 0, min: 0, sec: 0 }) + (1.0 / 24) }
-    # last_dates = last_dates.map(&:to_datetime.change({ hour: 0, min: 0, sec: 0 }))
+
+
     articles_url_24hdz = articles_url_24hdz.reject(&:nil?)
-    last_dates = last_dates.uniq
-    last_articles = Article.where(medium_id: @media.id).where(date_published: last_dates)
-    list_articles_url = []
-    last_articles.map do |article|
-      list_articles_url << article.url_article
+
+    articles_url_24hdz_after_check = []
+    articles_url_24hdz.map do |link|
+      articles_url_24hdz_after_check << link unless Article.where(medium_id: @media.id,url_article: link).present?
     end
-    articles_url_24hdz_after_check = articles_url_24hdz - list_articles_url
+
     articles_url_24hdz_after_check.map do |link|
       puts "Start article parsing : #{link} :) "
       begin
@@ -2570,7 +2565,6 @@ div.nobreak { page-break-inside: avoid; }
   # start method to get chiffreaffaire articles
   def get_articles_chiffreaffaire(url_media_array)
     articles_url_chiffreaffaire = []
-    last_dates = []
     url_media_array.map do |url|
       begin
         doc = Nokogiri::HTML(URI.open(url))
@@ -2586,19 +2580,17 @@ div.nobreak { page-break-inside: avoid; }
         articles_url_chiffreaffaire << link['href']
 
       end
-      doc.css('time').map do |date|
-        last_dates << date['datetime']
-      end
+
     end
-    last_dates = last_dates.map { |d| d.to_datetime.change({ hour: 0, min: 0, sec: 0 }) + (1.0 / 24) }
+
     articles_url_chiffreaffaire = articles_url_chiffreaffaire.reject(&:nil?)
-    last_dates = last_dates.uniq
-    last_articles = Article.where(medium_id: @media.id).where(date_published: last_dates)
-    list_articles_url = []
-    last_articles.map do |article|
-      list_articles_url << article.url_article
+
+
+    articles_url_chiffreaffaire_after_check = []
+    articles_url_chiffreaffaire.map do |link|
+      articles_url_chiffreaffaire_after_check << link unless Article.where(medium_id: @media.id,url_article: link).present?
     end
-    articles_url_chiffreaffaire_after_check = articles_url_chiffreaffaire - list_articles_url
+
     articles_url_chiffreaffaire_after_check.map do |link|
       begin
         article = Nokogiri::HTML(URI.open(link))

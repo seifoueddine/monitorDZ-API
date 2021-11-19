@@ -1087,7 +1087,7 @@ namespace :crawling do
     # start method to get 24hdz articles
   def get_articles_24hdz(url_media_array)
     articles_url_24hdz = []
-    last_dates = []
+
     url_media_array.map do |url|
       begin
         doc = Nokogiri::HTML(URI.open(url))
@@ -1100,20 +1100,18 @@ namespace :crawling do
       doc.css('h3.entry-title.td-module-title a').map do |link|
         articles_url_24hdz << link['href']
       end
-      doc.css('time.entry-date.updated.td-module-date').map do |date|
-        last_dates << date['datetime']
-      end
+
     end
-    last_dates = last_dates.map { |d| d.to_datetime.change({ hour: 0, min: 0, sec: 0 }) + (1.0 / 24) }
-    # last_dates = last_dates.map(&:to_datetime.change({ hour: 0, min: 0, sec: 0 }))
+
+
     articles_url_24hdz = articles_url_24hdz.reject(&:nil?)
-    last_dates = last_dates.uniq
-    last_articles = Article.where(medium_id: @media.id).where(date_published: last_dates)
-    list_articles_url = []
-    last_articles.map do |article|
-      list_articles_url << article.url_article
+
+    articles_url_24hdz_after_check = []
+    articles_url_24hdz.map do |link|
+      articles_url_24hdz_after_check << link unless Article.where(medium_id: @media.id,url_article: link).present?
     end
-    articles_url_24hdz_after_check = articles_url_24hdz - list_articles_url
+
+
     articles_url_24hdz_after_check.map do |link|
       begin
         article = Nokogiri::HTML(URI.open(link))
@@ -2389,7 +2387,7 @@ article.css('div.post-header div.single-featured > a').map do |link|
     # start method to get chiffreaffaire articles
   def get_articles_chiffreaffaire(url_media_array)
     articles_url_chiffreaffaire = []
-    last_dates = []
+
     url_media_array.map do |url|
       begin
         doc = Nokogiri::HTML(URI.open(url))
@@ -2405,20 +2403,15 @@ article.css('div.post-header div.single-featured > a').map do |link|
         articles_url_chiffreaffaire << link['href']
 
       end
-      doc.css('time').map do |date|
-        last_dates << date['datetime']
-      end
+
     end
-    # last_dates = last_dates.map { |d| change_date_maghrebemergen(d) }
-    last_dates = last_dates.map { |d| d.to_datetime.change({ hour: 0, min: 0, sec: 0 }) + (1.0 / 24) }
     articles_url_chiffreaffaire = articles_url_chiffreaffaire.reject(&:nil?)
-    last_dates = last_dates.uniq
-    last_articles = Article.where(medium_id: @media.id).where(date_published: last_dates)
-    list_articles_url = []
-    last_articles.map do |article|
-      list_articles_url << article.url_article
+
+    articles_url_chiffreaffaire_after_check = []
+    articles_url_chiffreaffaire.map do |link|
+      articles_url_chiffreaffaire_after_check << link unless Article.where(medium_id: @media.id,url_article: link).present?
     end
-    articles_url_chiffreaffaire_after_check = articles_url_chiffreaffaire - list_articles_url
+
     articles_url_chiffreaffaire_after_check.map do |link|
       begin
         article = Nokogiri::HTML(URI.open(link))
@@ -3918,7 +3911,8 @@ article.css('div.post-header div.single-featured > a').map do |link|
 
       new_article.body = article.css('div.content p').inner_html
       new_article.body = new_article.body.gsub(/<img[^>]*>/, '')
-      date = article.at('div.content span.field.field--name-created.field--type-created.field--label-inline').text
+      check_date = article.at('div.content span.field.field--name-created.field--type-created.field--label-inline')
+      date = check_date.present? ? article.at('div.content span.field.field--name-created.field--type-created.field--label-inline').text : Date.today
       new_article.date_published = date.to_datetime.change({ hour: 0, min: 0, sec: 0 })
       url_pic = "https://news.radioalgerie.dz#{article.at('div.col-lg-8 picture img').attr('data-src')}"
       new_article.url_image = url_pic
@@ -4018,7 +4012,8 @@ article.css('div.post-header div.single-featured > a').map do |link|
 
       new_article.body = article.css('div.content p').inner_html
       new_article.body = new_article.body.gsub(/<img[^>]*>/, '')
-      date = article.at('div.content span.field.field--name-created.field--type-created.field--label-inline').text
+      check_date = article.at('div.content span.field.field--name-created.field--type-created.field--label-inline')
+      date = check_date.present? ? article.at('div.content span.field.field--name-created.field--type-created.field--label-inline').text : Date.today
       new_article.date_published = date.to_datetime.change({ hour: 0, min: 0, sec: 0 })
       url_pic = "https://news.radioalgerie.dz#{article.at('div.col-lg-8 picture img').attr('data-src')}"
       new_article.url_image = url_pic
