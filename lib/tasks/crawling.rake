@@ -4114,12 +4114,17 @@ article.css('div.post-header div.single-featured > a').map do |link|
 
       new_article.body = article.css('div.articles-holder p').inner_html
       new_article.body = new_article.body.gsub(/<img[^>]*>/, '')
-      date_published_treat = article.at('div.articles-holder span.date-ttl').text{|audate|}.split('le')
-      puts article.at('div.articles-holder span.date-ttl')
+      date_published_treat = article.at('div.articles-holder span.date-ttl').text.split('le')
       date =  date_published_treat[1]
-      puts date
-      # date_checked = change_translate_date(date)
-      new_article.date_published = date.to_datetime.change({ hour: 0, min: 0, sec: 0 })
+
+      begin
+        new_article.date_published = date.to_datetime.change({ hour: 0, min: 0, sec: 0 })
+      rescue ArgumentError
+        puts "Error date here : #{date}"
+        next
+      end
+
+      
       url_array =  article.css('div.full-item div.holder img').map{ |link| link['src'] }
       new_article.url_image = url_array[0]
       begin
