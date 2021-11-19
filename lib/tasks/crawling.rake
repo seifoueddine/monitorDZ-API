@@ -4011,9 +4011,14 @@ article.css('div.post-header div.single-featured > a').map do |link|
       new_article.body = article.css('div.content p').inner_html
       new_article.body = new_article.body.gsub(/<img[^>]*>/, '')
       check_date = article.at('div.content span.field.field--name-created.field--type-created.field--label-inline')
+      puts 'date'
+      puts check_date
       date = check_date.present? ? article.at('div.content span.field.field--name-created.field--type-created.field--label-inline').text : Date.today
+      puts date
       new_article.date_published = date.to_datetime.change({ hour: 0, min: 0, sec: 0 })
       url_pic = "https://news.radioalgerie.dz#{article.at('div.col-lg-8 picture img').attr('data-src')}"
+      puts 'url_pic'
+      puts url_pic
       new_article.url_image = url_pic
       begin
         new_article.image = Down.download(url_pic) if url_pic.present?
