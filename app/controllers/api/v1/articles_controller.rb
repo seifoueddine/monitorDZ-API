@@ -839,7 +839,6 @@ div.nobreak { page-break-inside: avoid; }
   # start method to get elcherouk articles
   def get_articles_elcherouk(url_media_array)
     articles_url_cherouk = []
-    last_dates = []
     count = 0
     url_media_array.map do |url|
       # doc = Nokogiri::HTML(URI.open(url))
@@ -857,18 +856,13 @@ div.nobreak { page-break-inside: avoid; }
       doc.css('section h3 a').map do |link|
         articles_url_cherouk << link['href']
       end
-      doc.css('div.ech-card__mtil').map do |date|
-        last_dates << DateTime.parse(date.text)
-      end
+
     end
     articles_url_cherouk = articles_url_cherouk.reject(&:nil?)
-    last_dates = last_dates.uniq
-    last_articles = Article.where(medium_id: @media.id).where(date_published: last_dates)
-    list_articles_url = []
-    last_articles.map do |article|
-      list_articles_url << article.url_article
+    articles_url_cherouk_after_check = []
+    articles_url_cherouk.map do |link|
+      articles_url_cherouk_after_check << link unless Article.where(medium_id: @media.id,url_article: link).present?
     end
-    articles_url_cherouk_after_check = articles_url_cherouk - list_articles_url
     articles_url_cherouk_after_check.map do |link|
       begin
         article = Nokogiri::HTML(URI.open(link))
@@ -4199,7 +4193,8 @@ div.nobreak { page-break-inside: avoid; }
       new_article.body = new_article.body.gsub(/<img[^>]*>/, '')
       date = article.at('div.content span.field.field--name-created.field--type-created.field--label-inline').text
       new_article.date_published = date.to_datetime.change({ hour: 0, min: 0, sec: 0 })
-      url_pic = "https://news.radioalgerie.dz#{article.at('div.col-lg-8 picture img').attr('data-src')}"
+      check_url_pic = "https://news.radioalgerie.dz#{article.at('div.col-lg-8 picture img')}"
+      url_pic = check_url_pic.present? ? "https://news.radioalgerie.dz#{article.at('div.col-lg-8 picture img').attr('data-src')}" : nil
       new_article.url_image =  url_pic
       begin
         new_article.image = Down.download(url_pic) if url_pic.present?
@@ -4285,7 +4280,8 @@ div.nobreak { page-break-inside: avoid; }
       new_article.body = new_article.body.gsub(/<img[^>]*>/, '')
       date = article.at('div.content span.field.field--name-created.field--type-created.field--label-inline').text
       new_article.date_published = date.to_datetime.change({ hour: 0, min: 0, sec: 0 })
-      url_pic = "https://news.radioalgerie.dz#{article.at('div.col-lg-8 picture img').attr('data-src')}"
+      check_url_pic = "https://news.radioalgerie.dz#{article.at('div.col-lg-8 picture img')}"
+      url_pic = check_url_pic.present? ? "https://news.radioalgerie.dz#{article.at('div.col-lg-8 picture img').attr('data-src')}" : nil
       new_article.url_image = url_pic
       begin
         new_article.image = Down.download(url_pic) if url_pic.present?
