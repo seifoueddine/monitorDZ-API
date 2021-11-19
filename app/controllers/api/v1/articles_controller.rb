@@ -4193,7 +4193,7 @@ div.nobreak { page-break-inside: avoid; }
       new_article.body = new_article.body.gsub(/<img[^>]*>/, '')
       date = article.at('div.content span.field.field--name-created.field--type-created.field--label-inline').text
       new_article.date_published = date.to_datetime.change({ hour: 0, min: 0, sec: 0 })
-      check_url_pic = "https://news.radioalgerie.dz#{article.at('div.col-lg-8 picture img')}"
+      check_url_pic = article.at('div.col-lg-8 picture img')
       url_pic = check_url_pic.present? ? "https://news.radioalgerie.dz#{article.at('div.col-lg-8 picture img').attr('data-src')}" : nil
       new_article.url_image =  url_pic
       begin
