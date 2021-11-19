@@ -3977,7 +3977,9 @@ article.css('div.post-header div.single-featured > a').map do |link|
     end
 
     articles_url_radioalgerie_fr_after_check.map do |link|
-
+      puts '******'
+      puts link
+      puts '******'
       begin
         article = Nokogiri::HTML(open(link, 'User-Agent' => 'ruby'))
       rescue OpenURI::HTTPError => e
