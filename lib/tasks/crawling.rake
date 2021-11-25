@@ -559,7 +559,12 @@ namespace :crawling do
         puts
         next
       rescue Net::OpenTimeout => e
-        puts "TRY #{url}/n ERROR: timed out while trying to connect #{e}"
+        puts "TRY #{url}/n ERROR: timed out while trying to connect #{url}"
+        puts e.message
+        puts
+        next
+      rescue Errno::ECONNRESET => e
+        puts "TRY #{url}/n ERROR: timed out while trying to connect #{url}"
         puts e.message
         puts
         next
@@ -673,7 +678,12 @@ namespace :crawling do
         puts
         next
       rescue Net::OpenTimeout => e
-        puts "TRY #{url}/n ERROR: timed out while trying to connect #{e}"
+        puts "TRY #{url}/n ERROR: timed out while trying to connect #{url}"
+        puts e.message
+        puts
+        next
+      rescue Errno::ECONNRESET => e
+        puts "TRY #{url}/n ERROR: timed out while trying to connect #{url}"
         puts e.message
         puts
         next
