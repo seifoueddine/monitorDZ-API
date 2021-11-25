@@ -595,6 +595,16 @@ namespace :crawling do
         puts e.message
         puts
         next
+      rescue Net::OpenTimeout => e
+        puts "TRY #{link}/n ERROR: timed out while trying to connect #{link}"
+        puts e.message
+        puts
+        next
+      rescue Errno::ECONNRESET => e
+        puts "TRY #{link}/n ERROR: timed out while trying to connect #{link}"
+        puts e.message
+        puts
+        next
       end
       new_article = Article.new
       new_article.url_article = link
@@ -709,6 +719,16 @@ namespace :crawling do
         article = Nokogiri::HTML(open(link, 'User-Agent' => 'ruby'))
       rescue OpenURI::HTTPError => e
         puts "Can't access #{link}"
+        puts e.message
+        puts
+        next
+      rescue Net::OpenTimeout => e
+        puts "TRY #{link}/n ERROR: timed out while trying to connect #{link}"
+        puts e.message
+        puts
+        next
+      rescue Errno::ECONNRESET => e
+        puts "TRY #{link}/n ERROR: timed out while trying to connect #{link}"
         puts e.message
         puts
         next
@@ -3386,6 +3406,11 @@ article.css('div.post-header div.single-featured > a').map do |link|
         doc = Nokogiri::HTML(URI.open(url,'User-Agent' => 'ruby/2.6.5', 'From' => 'foo@bar.invalid'), nil, "UTF-8")
       rescue OpenURI::HTTPError => e
         puts "Can't access #{url}"
+        puts e.message
+        puts
+        next
+      rescue Net::OpenTimeout => e
+        puts "TRY #{url}/n ERROR: timed out while trying to connect #{url}"
         puts e.message
         puts
         next
