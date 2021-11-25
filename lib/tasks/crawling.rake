@@ -558,6 +558,11 @@ namespace :crawling do
         puts e.message
         puts
         next
+      rescue Net::OpenTimeout => e
+        puts "TRY #{url}/n ERROR: timed out while trying to connect #{e}"
+        puts e.message
+        puts
+        next
       end
       doc.css('#itemListLeading h3 a').map do |link|
         articles_url_aps << 'http://www.aps.dz' + link['href']# if link['class'] == 'main_article'
@@ -664,6 +669,11 @@ namespace :crawling do
         doc = Nokogiri::HTML(URI.open(url,'User-Agent' => 'ruby/2.6.5', 'From' => 'foo@bar.invalid'), nil, "UTF-8")
       rescue OpenURI::HTTPError => e
         puts "Can't access #{url}"
+        puts e.message
+        puts
+        next
+      rescue Net::OpenTimeout => e
+        puts "TRY #{url}/n ERROR: timed out while trying to connect #{e}"
         puts e.message
         puts
         next
@@ -4124,7 +4134,7 @@ article.css('div.post-header div.single-featured > a').map do |link|
         next
       end
 
-      
+
       url_array =  article.css('div.full-item div.holder img').map{ |link| link['src'] }
       new_article.url_image = url_array[0]
       begin
