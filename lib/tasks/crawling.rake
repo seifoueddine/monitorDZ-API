@@ -200,14 +200,14 @@ namespace :crawling do
         tags_array = article.css('a.post-tag').map(&:text)
       # new_article.media_tags = tags_array.join(',')
         new_article.status = 'pending'
-        puts "URLBefoooooooooooooor:" + link
+        
         if Article.where(url_article: link).present?
           puts 'article present'
         else
           articlesTagsUrl = link
         end
 
-        puts "URLURLURLURLURLURLURLURLURLURLURLURLURLURLURL: #{articlesTagsUrl}"
+        puts "This Url : #{articlesTagsUrl} will be add to the tag articles list"
 
         new_article.save!
         if articlesTagsUrl.present?
@@ -312,13 +312,13 @@ namespace :crawling do
       tags_array = article.css('ul.ech-sgmn__tgls.d-f.fxw-w.jc-fe a').map(&:text)
       # new_article.media_tags = tags_array.join(',')
       new_article.status = 'pending'
-      puts "URLBefoooooooooooooor:" + link
+      
       if Article.where(url_article: link).present?
         puts 'article present'
       else
         articlesTagsUrl = link
       end
-      puts "URLURLURLURLURLURLURLURLURLURLURLURLURLURLURL: #{articlesTagsUrl}"
+      puts "This Url : #{articlesTagsUrl} will be add to the tag articles list"
 
       new_article.save!
       if articlesTagsUrl.present?
@@ -423,7 +423,7 @@ namespace :crawling do
       # tags_array = article.css('div.article-core__tags a').map(&:text)
       # new_article.media_tags = tags_array.join(',')
       new_article.status = 'pending'
-      puts "URLBefoooooooooooooor:" + link
+      
 
       if Article.where(url_article: link).present?
         puts 'article present'
@@ -524,13 +524,13 @@ namespace :crawling do
       # tags_array = article.css('div.article-core__tags a').map(&:text)
       # new_article.media_tags = tags_array.join(',')
       new_article.status = 'pending'
-      puts "URLBefoooooooooooooor:" + link
+      
       if Article.where(url_article: link).present?
         puts 'article present'
       else
         articlesTagsUrl = link
       end
-      puts "URLURLURLURLURLURLURLURLURLURLURLURLURLURLURL: #{articlesTagsUrl}"
+      puts "This Url : #{articlesTagsUrl} will be add to the tag articles list"
 
       new_article.save!
       if articlesTagsUrl.present?
@@ -652,13 +652,13 @@ namespace :crawling do
       tags_array = article.css('ul.itemTags li').map(&:text)
       # new_article.media_tags = tags_array.join(',')
       new_article.status = 'pending'
-      puts "URLBefoooooooooooooor:" + link
+      
       if Article.where(url_article: link).present?
         puts 'article present'
       else
         articlesTagsUrl = link
       end
-      puts "URLURLURLURLURLURLURLURLURLURLURLURLURLURLURL: #{articlesTagsUrl}"
+      puts "This Url : #{articlesTagsUrl} will be add to the tag articles list"
 
       new_article.save!
       if articlesTagsUrl.present?
@@ -779,13 +779,13 @@ namespace :crawling do
         new_article.image = nil
       end
       new_article.status = 'pending'
-      puts "URLBefoooooooooooooor:" + link
+      
       if Article.where(url_article: link).present?
         puts 'article present'
       else
         articlesTagsUrl = link
       end
-      puts "URLURLURLURLURLURLURLURLURLURLURLURLURLURLURL: #{articlesTagsUrl}"
+      puts "This Url : #{articlesTagsUrl} will be add to the tag articles list"
 
       new_article.save!
       if articlesTagsUrl.present?
@@ -888,13 +888,13 @@ namespace :crawling do
       #tags_array = article.css('ul.itemTags li').map(&:text)
       # new_article.media_tags = tags_array.join(',')
       new_article.status = 'pending'
-      puts "URLBefoooooooooooooor:" + link
+      
       if Article.where(url_article: link).present?
         puts 'article present'
       else
         articlesTagsUrl = link
       end
-      puts "URLURLURLURLURLURLURLURLURLURLURLURLURLURLURL: #{articlesTagsUrl}"
+      puts "This Url : #{articlesTagsUrl} will be add to the tag articles list"
 
       new_article.save!
       if articlesTagsUrl.present?
@@ -994,13 +994,13 @@ namespace :crawling do
       #tags_array = article.css('ul.itemTags li').map(&:text)
       # new_article.media_tags = tags_array.join(',')
       new_article.status = 'pending'
-      puts "URLBefoooooooooooooor:" + link
+      
       if Article.where(url_article: link).present?
         puts 'article present'
       else
         articlesTagsUrl = link
       end
-      puts "URLURLURLURLURLURLURLURLURLURLURLURLURLURLURL: #{articlesTagsUrl}"
+      puts "This Url : #{articlesTagsUrl} will be add to the tag articles list"
 
       new_article.save!
       if articlesTagsUrl.present?
@@ -1100,13 +1100,13 @@ namespace :crawling do
       #tags_array = article.css('ul.itemTags li').map(&:text)
       # new_article.media_tags = tags_array.join(',')
       new_article.status = 'pending'
-      puts "URLBefoooooooooooooor:" + link
+      
       if Article.where(url_article: link).present?
         puts 'article present'
       else
         articlesTagsUrl = link
       end
-      puts "URLURLURLURLURLURLURLURLURLURLURLURLURLURLURL: #{articlesTagsUrl}"
+      puts "This Url : #{articlesTagsUrl} will be add to the tag articles list"
 
       new_article.save!
       if articlesTagsUrl.present?
@@ -1202,13 +1202,13 @@ namespace :crawling do
       #tags_array = article.css('ul.itemTags li').map(&:text)
       # new_article.media_tags = tags_array.join(',')
       new_article.status = 'pending'
-      puts "URLBefoooooooooooooor:" + link
+      
       if Article.where(url_article: link).present?
         puts 'article present'
       else
         articlesTagsUrl = link
       end
-      puts "URLURLURLURLURLURLURLURLURLURLURLURLURLURLURL: #{articlesTagsUrl}"
+      puts "This Url : #{articlesTagsUrl} will be add to the tag articles list"
 
       new_article.save!
       if articlesTagsUrl.present?
@@ -1305,13 +1305,13 @@ namespace :crawling do
       #tags_array = article.css('ul.itemTags li').map(&:text)
       # new_article.media_tags = tags_array.join(',')
       new_article.status = 'pending'
-      puts "URLBefoooooooooooooor:" + link
+      
       if Article.where(url_article: link).present?
         puts 'article present'
       else
         articlesTagsUrl = link
       end
-      puts "URLURLURLURLURLURLURLURLURLURLURLURLURLURLURL: #{articlesTagsUrl}"
+      puts "This Url : #{articlesTagsUrl} will be add to the tag articles list"
 
       new_article.save!
       if articlesTagsUrl.present?
@@ -1417,13 +1417,13 @@ namespace :crawling do
       #tags_array = article.css('ul.itemTags li').map(&:text)
       # new_article.media_tags = tags_array.join(',')
       new_article.status = 'pending'
-      puts "URLBefoooooooooooooor:" + link
+      
       if Article.where(url_article: link).present?
         puts 'article present'
       else
         articlesTagsUrl = link
       end
-      puts "URLURLURLURLURLURLURLURLURLURLURLURLURLURLURL: #{articlesTagsUrl}"
+      puts "This Url : #{articlesTagsUrl} will be add to the tag articles list"
 
       new_article.save!
       if articlesTagsUrl.present?
@@ -1508,13 +1508,13 @@ namespace :crawling do
       new_article.date_published = d.to_datetime.change({ hour: 0, min: 0, sec: 0 })
       new_article.url_image = nil
       new_article.status = 'pending'
-      puts "URLBefoooooooooooooor:" + link
+      
       if Article.where(url_article: link).present?
         puts 'article present'
       else
         articlesTagsUrl = link
       end
-      puts "URLURLURLURLURLURLURLURLURLURLURLURLURLURLURL: #{articlesTagsUrl}"
+      puts "This Url : #{articlesTagsUrl} will be add to the tag articles list"
 
       new_article.save!
       if articlesTagsUrl.present?
@@ -1613,13 +1613,13 @@ namespace :crawling do
         new_article.image = nil
       end
       new_article.status = 'pending'
-      puts "URLBefoooooooooooooor:" + link
+      
       if Article.where(url_article: link).present?
         puts 'article present'
       else
         articlesTagsUrl = link
       end
-      puts "URLURLURLURLURLURLURLURLURLURLURLURLURLURLURL: #{articlesTagsUrl}"
+      puts "This Url : #{articlesTagsUrl} will be add to the tag articles list"
 
       new_article.save!
       if articlesTagsUrl.present?
@@ -1719,13 +1719,13 @@ namespace :crawling do
     # tags_array = article.css('ul.itemTags li').map(&:text)
     # new_article.media_tags = tags_array.join(',')
     new_article.status = 'pending'
-    puts "URLBefoooooooooooooor:" + link
+    
     if Article.where(url_article: link).present?
       puts 'article present'
     else
       articlesTagsUrl = link
     end
-    puts "URLURLURLURLURLURLURLURLURLURLURLURLURLURLURL: #{articlesTagsUrl}"
+    puts "This Url : #{articlesTagsUrl} will be add to the tag articles list"
 
     new_article.save!
     if articlesTagsUrl.present?
@@ -1805,13 +1805,13 @@ namespace :crawling do
       new_article.url_image = url_array[0]
       new_article.image = Down.download(url_array[0]) if url_array[0].present?
       new_article.status = 'pending'
-      puts "URLBefoooooooooooooor:" + link
+      
       if Article.where(url_article: link).present?
         puts 'article present'
       else
         articlesTagsUrl = link
       end
-      puts "URLURLURLURLURLURLURLURLURLURLURLURLURLURLURL: #{articlesTagsUrl}"
+      puts "This Url : #{articlesTagsUrl} will be add to the tag articles list"
 
       new_article.save!
       if articlesTagsUrl.present?
@@ -1929,13 +1929,13 @@ hour: 0, min: 0, sec: 0 })
            new_article.image = nil
          end
       new_article.status = 'pending'
-      puts "URLBefoooooooooooooor:" + link
+      
       if Article.where(url_article: link).present?
         puts 'article present'
       else
         articlesTagsUrl = link
       end
-      puts "URLURLURLURLURLURLURLURLURLURLURLURLURLURLURL: #{articlesTagsUrl}"
+      puts "This Url : #{articlesTagsUrl} will be add to the tag articles list"
 
       new_article.save!
       if articlesTagsUrl.present?
@@ -2045,13 +2045,13 @@ hour: 0, min: 0, sec: 0 })
       tags_array = article.css('div#article_tags_title').map(&:text) if article.css('div#article_tags_title').present?
       # new_article.media_tags = tags_array.join(',')
       new_article.status = 'pending'
-      puts "URLBefoooooooooooooor:" + link
+      
       if Article.where(url_article: link).present?
         puts 'article present'
       else
         articlesTagsUrl = link
       end
-      puts "URLURLURLURLURLURLURLURLURLURLURLURLURLURLURL: #{articlesTagsUrl}"
+      puts "This Url : #{articlesTagsUrl} will be add to the tag articles list"
 
       new_article.save!
       if articlesTagsUrl.present?
@@ -2162,13 +2162,13 @@ hour: 0, min: 0, sec: 0 })
       #tags_array = article.css('div#article_tags_title').map(&:text) if article.css('div#article_tags_title').present?
       # new_article.media_tags = tags_array.join(',')
       new_article.status = 'pending'
-      puts "URLBefoooooooooooooor:" + link
+      
       if Article.where(url_article: link).present?
         puts 'article present'
       else
         articlesTagsUrl = link
       end
-      puts "URLURLURLURLURLURLURLURLURLURLURLURLURLURLURL: #{articlesTagsUrl}"
+      puts "This Url : #{articlesTagsUrl} will be add to the tag articles list"
 
       new_article.save!
       if articlesTagsUrl.present?
@@ -2282,13 +2282,13 @@ article.css('div.post-header div.single-featured > a').map do |link|
       tags_array = article.css('div.entry-terms a').map(&:text)
       # new_article.media_tags = tags_array.join(',')
       new_article.status = 'pending'
-      puts "URLBefoooooooooooooor:" + link
+      
       if Article.where(url_article: link).present?
         puts 'article present'
       else
         articlesTagsUrl = link
       end
-      puts "URLURLURLURLURLURLURLURLURLURLURLURLURLURLURL: #{articlesTagsUrl}"
+      puts "This Url : #{articlesTagsUrl} will be add to the tag articles list"
 
       new_article.save!
       if articlesTagsUrl.present?
@@ -2397,13 +2397,13 @@ article.css('div.post-header div.single-featured > a').map do |link|
       #tags_array = article.css('div#article_tags_title').map(&:text)
       # new_article.media_tags = tags_array.join(',')
       new_article.status = 'pending'
-      puts "URLBefoooooooooooooor:" + link
+      
       if Article.where(url_article: link).present?
         puts 'article present'
       else
         articlesTagsUrl = link
       end
-      puts "URLURLURLURLURLURLURLURLURLURLURLURLURLURLURL: #{articlesTagsUrl}"
+      puts "This Url : #{articlesTagsUrl} will be add to the tag articles list"
 
       new_article.save!
       if articlesTagsUrl.present?
@@ -2506,13 +2506,13 @@ article.css('div.post-header div.single-featured > a').map do |link|
       tags_array = article.css('div.entry-terms a').map(&:text)
       # new_article.media_tags = tags_array.join(',')
       new_article.status = 'pending'
-      puts "URLBefoooooooooooooor:" + link
+      
       if Article.where(url_article: link).present?
         puts 'article present'
       else
         articlesTagsUrl = link
       end
-      puts "URLURLURLURLURLURLURLURLURLURLURLURLURLURLURL: #{articlesTagsUrl}"
+      puts "This Url : #{articlesTagsUrl} will be add to the tag articles list"
 
       new_article.save!
       if articlesTagsUrl.present?
@@ -2627,13 +2627,13 @@ article.css('div.post-header div.single-featured > a').map do |link|
       # tags_array = article.css('div.entry-terms a').map(&:text)
       # new_article.media_tags = tags_array.join(',')
       new_article.status = 'pending'
-      puts "URLBefoooooooooooooor:" + link
+      
       if Article.where(url_article: link).present?
         puts 'article present'
       else
         articlesTagsUrl = link
       end
-      puts "URLURLURLURLURLURLURLURLURLURLURLURLURLURLURL: #{articlesTagsUrl}"
+      puts "This Url : #{articlesTagsUrl} will be add to the tag articles list"
 
       new_article.save!
       if articlesTagsUrl.present?
@@ -2736,13 +2736,13 @@ article.css('div.post-header div.single-featured > a').map do |link|
       # new_article.media_tags = tags_array.join(',')
       new_article.status = 'pending'
 
-      puts "URLBefoooooooooooooor:" + link
+      
       if Article.where(url_article: link).present?
         puts 'article present'
       else
         articlesTagsUrl = link
       end
-      puts "URLURLURLURLURLURLURLURLURLURLURLURLURLURLURL: #{articlesTagsUrl}"
+      puts "This Url : #{articlesTagsUrl} will be add to the tag articles list"
 
       new_article.save!
       if articlesTagsUrl.present?
@@ -2846,13 +2846,13 @@ article.css('div.post-header div.single-featured > a').map do |link|
       # tags_array = article.css('div.entry-terms a').map(&:text)
       # new_article.media_tags = tags_array.join(',')
       new_article.status = 'pending'
-      puts "URLBefoooooooooooooor:" + link
+      
       if Article.where(url_article: link).present?
         puts 'article present'
       else
         articlesTagsUrl = link
       end
-      puts "URLURLURLURLURLURLURLURLURLURLURLURLURLURLURL: #{articlesTagsUrl}"
+      puts "This Url : #{articlesTagsUrl} will be add to the tag articles list"
 
       new_article.save!
       if articlesTagsUrl.present?
@@ -2962,13 +2962,13 @@ article.css('div.post-header div.single-featured > a').map do |link|
       count += 1 if new_article.save
       # tag_check_and_save(tags_array)if @media.tag_status == true
 
-      puts "URLBefoooooooooooooor:" + link
+      
       if Article.where(url_article: link).present?
         puts 'article present'
       else
         articlesTagsUrl = link
       end
-      puts "URLURLURLURLURLURLURLURLURLURLURLURLURLURLURL: #{articlesTagsUrl}"
+      puts "This Url : #{articlesTagsUrl} will be add to the tag articles list"
 
       new_article.save!
       if articlesTagsUrl.present?
@@ -3067,13 +3067,13 @@ article.css('div.post-header div.single-featured > a').map do |link|
       # tags_array = article.css('#tags a').map(&:text)
       # new_article.media_tags = tags_array.join(',')
       new_article.status = 'pending'
-      puts "URLBefoooooooooooooor:" + link
+      
       if Article.where(url_article: link).present?
         puts 'article present'
       else
         articlesTagsUrl = link
       end
-      puts "URLURLURLURLURLURLURLURLURLURLURLURLURLURLURL: #{articlesTagsUrl}"
+      puts "This Url : #{articlesTagsUrl} will be add to the tag articles list"
 
       new_article.save!
       if articlesTagsUrl.present?
@@ -3175,13 +3175,13 @@ article.css('div.post-header div.single-featured > a').map do |link|
       # tags_array = article.css('#tags a').map(&:text)
       # new_article.media_tags = tags_array.join(',')
       new_article.status = 'pending'
-      puts "URLBefoooooooooooooor:" + link
+      
       if Article.where(url_article: link).present?
         puts 'article present'
       else
         articlesTagsUrl = link
       end
-      puts "URLURLURLURLURLURLURLURLURLURLURLURLURLURLURL: #{articlesTagsUrl}"
+      puts "This Url : #{articlesTagsUrl} will be add to the tag articles list"
 
       new_article.save!
       if articlesTagsUrl.present?
@@ -3277,13 +3277,13 @@ article.css('div.post-header div.single-featured > a').map do |link|
         new_article.image = nil
       end
       new_article.status = 'pending'
-      puts "URLBefoooooooooooooor:" + link
+      
       if Article.where(url_article: link).present?
         puts 'article present'
       else
         articlesTagsUrl = link
       end
-      puts "URLURLURLURLURLURLURLURLURLURLURLURLURLURLURL: #{articlesTagsUrl}"
+      puts "This Url : #{articlesTagsUrl} will be add to the tag articles list"
 
       new_article.save!
       if articlesTagsUrl.present?
@@ -3376,13 +3376,13 @@ article.css('div.post-header div.single-featured > a').map do |link|
         new_article.image = nil
       end
       new_article.status = 'pending'
-      puts "URLBefoooooooooooooor:" + link
+      
       if Article.where(url_article: link).present?
         puts 'article present'
       else
         articlesTagsUrl = link
       end
-      puts "URLURLURLURLURLURLURLURLURLURLURLURLURLURLURL: #{articlesTagsUrl}"
+      puts "This Url : #{articlesTagsUrl} will be add to the tag articles list"
 
       new_article.save!
       if articlesTagsUrl.present?
@@ -3485,13 +3485,13 @@ article.css('div.post-header div.single-featured > a').map do |link|
         new_article.image = nil
       end
       new_article.status = 'pending'
-      puts "URLBefoooooooooooooor:" + link
+      
       if Article.where(url_article: link).present?
         puts 'article present'
       else
         articlesTagsUrl = link
       end
-      puts "URLURLURLURLURLURLURLURLURLURLURLURLURLURLURL: #{articlesTagsUrl}"
+      puts "This Url : #{articlesTagsUrl} will be add to the tag articles list"
 
       new_article.save!
       if articlesTagsUrl.present?
@@ -3582,13 +3582,13 @@ article.css('div.post-header div.single-featured > a').map do |link|
         new_article.image = nil
       end
       new_article.status = 'pending'
-      puts "URLBefoooooooooooooor:" + link
+      
       if Article.where(url_article: link).present?
         puts 'article present'
       else
         articlesTagsUrl = link
       end
-      puts "URLURLURLURLURLURLURLURLURLURLURLURLURLURLURL: #{articlesTagsUrl}"
+      puts "This Url : #{articlesTagsUrl} will be add to the tag articles list"
 
       new_article.save!
       if articlesTagsUrl.present?
@@ -3679,13 +3679,13 @@ article.css('div.post-header div.single-featured > a').map do |link|
         new_article.image = nil
       end
       new_article.status = 'pending'
-      puts "URLBefoooooooooooooor:" + link
+      
       if Article.where(url_article: link).present?
         puts 'article present'
       else
         articlesTagsUrl = link
       end
-      puts "URLURLURLURLURLURLURLURLURLURLURLURLURLURLURL: #{articlesTagsUrl}"
+      puts "This Url : #{articlesTagsUrl} will be add to the tag articles list"
 
       new_article.save!
       if articlesTagsUrl.present?
@@ -3777,13 +3777,13 @@ article.css('div.post-header div.single-featured > a').map do |link|
         new_article.image = nil
       end
       new_article.status = 'pending'
-      puts "URLBefoooooooooooooor:" + link
+      
       if Article.where(url_article: link).present?
         puts 'article present'
       else
         articlesTagsUrl = link
       end
-      puts "URLURLURLURLURLURLURLURLURLURLURLURLURLURLURL: #{articlesTagsUrl}"
+      puts "This Url : #{articlesTagsUrl} will be add to the tag articles list"
 
       new_article.save!
       if articlesTagsUrl.present?
@@ -3865,13 +3865,13 @@ article.css('div.post-header div.single-featured > a').map do |link|
       new_article.date_published = date.split('à')[0].to_datetime.change({ hour: 0, min: 0, sec: 0 })
       new_article.url_image = nil
       new_article.status = 'pending'
-      puts "URLBefoooooooooooooor:" + link
+      
       if Article.where(url_article: link).present?
         puts 'article present'
       else
         articlesTagsUrl = link
       end
-      puts "URLURLURLURLURLURLURLURLURLURLURLURLURLURLURL: #{articlesTagsUrl}"
+      puts "This Url : #{articlesTagsUrl} will be add to the tag articles list"
 
       new_article.save!
       if articlesTagsUrl.present?
@@ -3966,13 +3966,13 @@ article.css('div.post-header div.single-featured > a').map do |link|
         new_article.image = nil
       end
       new_article.status = 'pending'
-      puts "URLBefoooooooooooooor:" + link
+      
       if Article.where(url_article: link).present?
         puts 'article present'
       else
         articlesTagsUrl = link
       end
-      puts "URLURLURLURLURLURLURLURLURLURLURLURLURLURLURL: #{articlesTagsUrl}"
+      puts "This Url : #{articlesTagsUrl} will be add to the tag articles list"
 
       new_article.save!
       if articlesTagsUrl.present?
@@ -4069,13 +4069,13 @@ article.css('div.post-header div.single-featured > a').map do |link|
         new_article.image = nil
       end
       new_article.status = 'pending'
-      puts "URLBefoooooooooooooor:" + link
+      
       if Article.where(url_article: link).present?
         puts 'article present'
       else
         articlesTagsUrl = link
       end
-      puts "URLURLURLURLURLURLURLURLURLURLURLURLURLURLURL: #{articlesTagsUrl}"
+      puts "This Url : #{articlesTagsUrl} will be add to the tag articles list"
 
       new_article.save!
       if articlesTagsUrl.present?
@@ -4181,13 +4181,13 @@ article.css('div.post-header div.single-featured > a').map do |link|
         new_article.image = nil
       end
       new_article.status = 'pending'
-      puts "URLBefoooooooooooooor:" + link
+      
       if Article.where(url_article: link).present?
         puts 'article present'
       else
         articlesTagsUrl = link
       end
-      puts "URLURLURLURLURLURLURLURLURLURLURLURLURLURLURL: #{articlesTagsUrl}"
+      puts "This Url : #{articlesTagsUrl} will be add to the tag articles list"
 
       new_article.save!
       if articlesTagsUrl.present?
