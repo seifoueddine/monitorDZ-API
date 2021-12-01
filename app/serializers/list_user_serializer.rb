@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class ListUserSerializer
   include JSONAPI::Serializer
   attributes :name, :articles, :created_at, :image

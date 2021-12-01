@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class CreateMediaSectors < ActiveRecord::Migration[6.0]
   def change
     create_table :media_sectors do |t|

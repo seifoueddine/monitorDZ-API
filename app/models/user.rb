@@ -3,14 +3,14 @@
 class User < ActiveRecord::Base
   # Include default devise modules. Others available are:
   # :confirmable, :lockable, :timeoutable and :omniauthable
-  extend Devise::Models #added this line to extend devise model
+  extend Devise::Models # added this line to extend devise model
   devise :database_authenticatable, :registerable,
          :recoverable, :rememberable, :trackable, :validatable
   include DeviseTokenAuth::Concerns::User
   mount_uploader :avatar, AvatarUploader
   belongs_to :slug
-  has_many :list_users , dependent: :delete_all
-  
+  has_many :list_users, dependent: :delete_all
+
   def token_validation_response
     as_json(include: :slug)
   end

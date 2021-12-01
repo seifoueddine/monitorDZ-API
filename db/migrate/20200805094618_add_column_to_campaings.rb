@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class AddColumnToCampaings < ActiveRecord::Migration[6.0]
   def change
     add_reference :campaigns, :slug, null: false, foreign_key: true

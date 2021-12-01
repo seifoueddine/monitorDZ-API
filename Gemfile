@@ -1,10 +1,12 @@
+# frozen_string_literal: true
+
 source 'https://rubygems.org'
 git_source(:github) { |repo| "https://github.com/#{repo}.git" }
 
-
-if ENV["RAILS_ENV"] == "development"
+case ENV['RAILS_ENV']
+when 'development'
   ruby '2.7.0'
-elsif ENV["RAILS_ENV"] == "production"
+when 'production'
   ruby '2.6.5'
 end
 # Bundle edge Rails instead: gem 'rails', github: 'rails/rails'
@@ -25,50 +27,50 @@ gem 'devise_token_auth'
 # Use Active Storage variant
 # gem 'image_processing', '~> 1.2'
 gem 'carrierwave', '>= 2.1.1'
-#gem 'fast_jsonapi'
+# gem 'fast_jsonapi'
 gem 'jsonapi-serializer'
 gem 'kaminari'
 gem 'rmagick'
+gem 'rubocop', require: false
 # Reduces boot times through caching; required in config/boot.rb
 gem 'bootsnap', '>= 1.4.2', require: false
-gem 'searchkick'
 gem 'down', '~> 5.0'
+gem 'searchkick'
 # Use Rack CORS for handling Cross-Origin Resource Sharing (CORS), making cross-origin AJAX possible
+gem 'actionpack', '>= 6.0.3.5'
+gem 'activerecord', '>= 6.0.3.5'
+gem 'capistrano'
+gem 'capistrano-passenger'
+gem 'capistrano-rails'
+gem 'capistrano-rbenv'
+gem 'open_uri_redirections'
 gem 'rack-cors'
 gem 'whenever', require: false
-gem 'capistrano'
-gem 'capistrano-rails'
-gem 'capistrano-passenger'
-gem 'capistrano-rbenv'
 gem 'wicked_pdf'
-gem 'open_uri_redirections'
 gem 'wkhtmltopdf-binary'
-gem 'activerecord', '>= 6.0.3.5'
-gem 'actionpack', '>= 6.0.3.5'
 group :development, :test do
   # Call 'byebug' anywhere in the code to stop execution and get a debugger console
   # gem 'byebug', platforms: [:mri, :mingw, :x64_mingw]
   gem 'pry-rails'
   %w[rspec-core rspec-rails rspec-expectations rspec-mocks rspec-support].each do |lib|
-    gem lib, :git => "https://github.com/rspec/#{lib}.git", :branch => 'master'
+    gem lib, git: "https://github.com/rspec/#{lib}.git", branch: 'master'
   end
 end
 
 group :development do
 end
 
-
-group :production do 
-gem 'pg', '>= 0.18', '< 2.0'
-gem 'rails_12factor'
-gem 'lograge'
+group :production do
+  gem 'lograge'
+  gem 'pg', '>= 0.18', '< 2.0'
+  gem 'rails_12factor'
 end
 
 group :test do
   gem 'database_cleaner'
   gem 'factory_bot_rails'
-  gem 'faker', :git => 'https://github.com/faker-ruby/faker.git', :branch => 'master'
+  gem 'faker', git: 'https://github.com/faker-ruby/faker.git', branch: 'master'
 end
 
 # Windows does not include zoneinfo files, so bundle the tzinfo-data gem
-gem 'tzinfo-data', platforms: [:mingw, :mswin, :x64_mingw, :jruby]
+gem 'tzinfo-data', platforms: %i[mingw mswin x64_mingw jruby]

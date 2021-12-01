@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class Campaign < ApplicationRecord
   belongs_to :slug
   has_many :campaign_sectors

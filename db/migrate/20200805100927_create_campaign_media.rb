@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class CreateCampaignMedia < ActiveRecord::Migration[6.0]
   def change
     create_table :campaign_media do |t|

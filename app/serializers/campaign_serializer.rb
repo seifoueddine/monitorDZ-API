@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class CampaignSerializer
   include JSONAPI::Serializer
   attributes :name, :start_date, :end_date, :slug_id, :media, :slug, :tags

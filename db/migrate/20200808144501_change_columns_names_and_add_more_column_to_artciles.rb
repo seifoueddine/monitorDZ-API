@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class ChangeColumnsNamesAndAddMoreColumnToArtciles < ActiveRecord::Migration[6.0]
   def change
     rename_column :articles, :name, :title

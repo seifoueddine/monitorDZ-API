@@ -1,5 +1,7 @@
+# frozen_string_literal: true
+
 class ArticleSerializer
-  #include JSONAPI::Serializer
+  # include JSONAPI::Serializer
   include JSONAPI::Serializer
   attributes :title, :date_published, :author, :body, :medium,
              :media_tags, :language, :url_image, :url_article, :tags,

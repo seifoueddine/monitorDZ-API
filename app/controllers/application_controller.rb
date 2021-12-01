@@ -1,14 +1,15 @@
+# frozen_string_literal: true
+
 class ApplicationController < ActionController::API
   include DeviseTokenAuth::Concerns::SetUserByToken
   include ActionController::MimeResponds
   def order_and_direction
-    @order ||= (params[:order] + ' ' + params[:direction]) || 'created_at asc'
+    @order ||= "#{params[:order]} #{params[:direction]}" || 'created_at asc'
   end
 
   def get_slug_id
     @slug_id = request.headers['slug-id']
   end
-
 
   def page
     @page ||= params[:page] || 1
@@ -36,7 +37,4 @@ class ApplicationController < ActionController::API
     base_uri = request.url.split('?').first
     "<#{base_uri}?#{request.query_parameters.merge(page: page).to_param}>; rel='#{rel}'"
   end
-
-
-
 end

@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class Article < ApplicationRecord
   searchkick match: :word,
              suggest: %i[title body media_area medium_type author_name tag_name],
@@ -27,7 +29,6 @@ class Article < ApplicationRecord
   #     medium.reindex
   #   end
 
-
   # after_commit :indexing
   # acts_as_authorable
   scope :search_import, -> { includes(:author, :medium, :tags) }
@@ -55,14 +56,10 @@ class Article < ApplicationRecord
     }
   end
 
-
-
   # protected
 
   # def indexing
   # Article.reindex
   #  Medium.reindex
   # end
-
-
 end

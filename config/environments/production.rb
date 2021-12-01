@@ -1,9 +1,11 @@
+# frozen_string_literal: true
+
 Rails.application.configure do
   # Settings specified here will take precedence over those in config/application.rb.
 
   # Code is not reloaded between requests.
   config.cache_classes = true
-  #config.force_ssl = true
+  # config.force_ssl = true
   # Eager load code on boot. This eager loads most of Rails and
   # your application in memory, allowing both threaded web servers
   # and those relying on copy on write to perform better.
@@ -11,7 +13,7 @@ Rails.application.configure do
   config.eager_load = true
 
   # Full error reports are disabled and caching is turned on.
-  config.consider_all_requests_local       = false
+  config.consider_all_requests_local = false
   # Ensures that a master key has been made available in either ENV["RAILS_MASTER_KEY"]
   # or in config/master.key. This key is used to decrypt credentials (and other encrypted files).
   config.require_master_key = true
@@ -43,7 +45,7 @@ Rails.application.configure do
   config.log_level = :debug
 
   # Prepend all log lines with the following tags.
-  config.log_tags = [ :request_id ]
+  config.log_tags = [:request_id]
 
   # Use a different cache store in production.
   # config.cache_store = :mem_cache_store
@@ -72,8 +74,8 @@ Rails.application.configure do
   # require 'syslog/logger'
   # config.logger = ActiveSupport::TaggedLogging.new(Syslog::Logger.new 'app-name')
 
-  if ENV["RAILS_LOG_TO_STDOUT"].present?
-    logger           = ActiveSupport::Logger.new(STDOUT)
+  if ENV['RAILS_LOG_TO_STDOUT'].present?
+    logger           = ActiveSupport::Logger.new($stdout)
     logger.formatter = config.log_formatter
     config.logger    = ActiveSupport::TaggedLogging.new(logger)
   end
@@ -102,31 +104,27 @@ Rails.application.configure do
   # config.active_record.database_resolver = ActiveRecord::Middleware::DatabaseSelector::Resolver
   # config.active_record.database_resolver_context = ActiveRecord::Middleware::DatabaseSelector::Resolver::Session
 
-  #vhsalgerie@gmail.com
-  #Gaastrapoison@AHD79
+  # vhsalgerie@gmail.com
+  # Gaastrapoison@AHD79
 
   config.action_mailer.delivery_method = :smtp
   config.action_mailer.smtp_settings = {
-      address: 'smtp.gmail.com',
-      domain: 'gmail.com',
-      port: 587,
-      user_name: 'vhsalgerie@gmail.com',
-      password: 'Gaastrapoison@092015',
-      authentication: 'plain',
-      enable_starttls_auto: true
+    address: 'smtp.gmail.com',
+    domain: 'gmail.com',
+    port: 587,
+    user_name: 'vhsalgerie@gmail.com',
+    password: 'Gaastrapoison@092015',
+    authentication: 'plain',
+    enable_starttls_auto: true
   }
   config.action_mailer.default_url_options = { host: 'localhost:3000' }
 
-
-
-
-
-  #elasticsearch
+  # elasticsearch
   #
   config.lograge.enabled = true
   config.lograge.custom_options = lambda do |event|
     options = {}
-    options[:search] = event.payload[:searchkick_runtime] if event.payload[:searchkick_runtime].to_f > 0
+    options[:search] = event.payload[:searchkick_runtime] if event.payload[:searchkick_runtime].to_f.positive?
     options
   end
 end

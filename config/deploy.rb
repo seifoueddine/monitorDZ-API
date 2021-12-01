@@ -1,16 +1,19 @@
-# config valid for current version and patch releases of Capistrano
-lock "~> 3.16.0"
-require "whenever/capistrano"
+# frozen_string_literal: true
 
-set :application, "monitordz"
-set :repo_url, "https://github.com/seifoueddine/monitorDZ-API.git"
+# config valid for current version and patch releases of Capistrano
+lock '~> 3.16.0'
+require 'whenever/capistrano'
+
+set :application, 'monitordz'
+set :repo_url, 'https://github.com/seifoueddine/monitorDZ-API.git'
 set :stage, :production
 # Deploy to the user's home directory
 set :deploy_to, "/var/www/html/#{fetch :application}"
-set :whenever_environment, ->{ fetch(:stage) }
+set :whenever_environment, -> { fetch(:stage) }
 set :linked_files, %w[config/master.key]
-#set :whenever_identifier, ->{ "/var/www/html/#{fetch(:application)}_#{fetch(:stage)}" }
-append :linked_dirs, 'log', 'tmp/pids', 'tmp/cache', 'tmp/sockets', 'vendor/bundle', '.bundle', 'public/system', 'public/uploads'
+# set :whenever_identifier, ->{ "/var/www/html/#{fetch(:application)}_#{fetch(:stage)}" }
+append :linked_dirs, 'log', 'tmp/pids', 'tmp/cache', 'tmp/sockets', 'vendor/bundle', '.bundle', 'public/system',
+       'public/uploads'
 
 # Only keep the last 5 releases to save disk space
 set :keep_releases, 5
@@ -18,7 +21,6 @@ set :keep_releases, 5
 # Optionally, you can symlink your database.yml and/or secrets.yml file from the shared directory during deploy
 # This is useful if you don't want to use ENV variables
 # append :linked_files, 'config/database.yml', 'config/secrets.yml'
-
 
 # append :linked_files, "config/master.key"
 
@@ -33,11 +35,6 @@ set :keep_releases, 5
 #     end
 #   end
 # end
-
-
-
-
-
 
 # Default branch is :master
 # ask :branch, `git rev-parse --abbrev-ref HEAD`.chomp
