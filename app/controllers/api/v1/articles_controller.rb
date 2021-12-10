@@ -4459,6 +4459,8 @@ div.nobreak { page-break-inside: avoid; }
 
         if string.include?('ثانية') == true
           Date.today.to_datetime.change({ hour: 0, min: 0, sec: 0 })
+        elsif string.include?('ثوان') == true
+          Date.today.to_datetime.change({ hour: 0, min: 0, sec: 0 })
         elsif string.include?('ساعتين') == true
           Date.today.to_datetime.change({ hour: 0, min: 0, sec: 0 })
         elsif string.include?('دقيقة') == true
