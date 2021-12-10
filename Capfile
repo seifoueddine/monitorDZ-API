@@ -13,6 +13,7 @@ require 'capistrano/setup'
 # require "capistrano/scm/svn"
 # install_plugin Capistrano::SCM::Svn
 # or
+require "capistrano/deploy"
 require 'capistrano/scm/git'
 require 'capistrano/bundler'
 require 'capistrano/rails/migrations'
