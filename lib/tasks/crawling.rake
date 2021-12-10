@@ -1246,7 +1246,7 @@ namespace :crawling do
 
       # d = change_date_autobip_aps(date)
       new_article.date_published = article.at('time[datetime]')['datetime'].to_datetime.change({ hour: 0, min: 0,
-                                                                                                 sec: 0 })
+                                                                                                 sec: 0 }) + (1.0 / 24)
       # new_article.date_published =
       url_array = article.css('div.td-post-featured-image img').map { |link| link['src'] }
       new_article.url_image = url_array[0]

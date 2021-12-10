@@ -20,8 +20,8 @@ module Api
         media = campaign[0].media
         all_tags = campaign[0].tags
         media_ids = []
-        media.map do |media|
-          media_ids << media['id']
+        media.map do |med|
+          media_ids << med['id']
         end
 
         conditions = {}
@@ -129,8 +129,8 @@ module Api
         campaign = Campaign.where(slug_id: slug_id)
         media = campaign[0].media
         media_ids = []
-        media.map do |media|
-          media_ids << media['id']
+        media.map do |med|
+          media_ids << med['id']
         end
         start_date = params[:start_date]
         end_date = params[:end_date]
@@ -151,8 +151,8 @@ module Api
         campaign = Campaign.where(slug_id: slug_id)
         media = campaign[0].media
         media_ids = []
-        media.map do |media|
-          media_ids << media['id']
+        media.map do |med|
+          media_ids << med['id']
         end
         @article_auth_for_client_dash = Article.joins(:author).where(medium_id: media_ids,
                                                                      date_published: start_date.to_datetime.beginning_of_day..end_date.to_datetime.end_of_day)
@@ -167,8 +167,8 @@ module Api
         campaign = Campaign.where(slug_id: slug_id)
         media = campaign[0].media
         media_ids = []
-        media.map do |media|
-          media_ids << media['id']
+        media.map do |med|
+          media_ids << med['id']
         end
         @article_tag_for_client_dash = Article.where(medium_id: media_ids,
                                                      date_published: start_date.to_datetime.beginning_of_day..end_date.to_datetime.end_of_day).joins(:tags)
@@ -182,8 +182,8 @@ module Api
         campaign = Campaign.where(slug_id: slug_id)
         media = campaign[0].media
         media_ids = []
-        media.map do |media|
-          media_ids << media['id']
+        media.map do |med|
+          media_ids << med['id']
         end
         days = params[:number_days] || 7
         @article_date_for_client_dash = Article.where(medium_id: media_ids).group('date_published').order('date_published desc').limit(days).count
@@ -511,8 +511,8 @@ div.nobreak { page-break-inside: avoid; }
         media = campaign[0].media
         all_tags = campaign[0].tags
         media_ids = []
-        media.map do |media|
-          media_ids << media['id']
+        media.map do |med|
+          media_ids << med['id']
         end
 
         conditions = {}
@@ -1709,7 +1709,7 @@ div.nobreak { page-break-inside: avoid; }
 
           # d = change_date_autobip_aps(date)
           new_article.date_published = article.at('time[datetime]')['datetime'].to_datetime.change({ hour: 0, min: 0,
-                                                                                                     sec: 0 })
+                                                                                                     sec: 0 }) + (1.0 / 24)
           # new_article.date_published =
           url_array = article.css('div.td-post-featured-image img').map { |link| link['src'] }
           new_article.url_image = url_array[0]
@@ -4155,10 +4155,8 @@ div.nobreak { page-break-inside: avoid; }
 
       # start method to get maroco360 articles
       def get_articles_maroco360(url_media_array)
-        puts '111111111111111'
         articles_url_maroco360 = []
         url_media_array.map do |url|
-          puts '22222222222222'
           puts url
           begin
             doc = Nokogiri::HTML(URI.open(url, 'User-Agent' => 'ruby/2.6.5', 'From' => 'foo@bar.invalid'), nil, 'UTF-8')
@@ -4170,7 +4168,6 @@ div.nobreak { page-break-inside: avoid; }
           end
 
           doc.css('div.text h3 a').map do |link|
-            puts '33333333333333'
             puts link
             articles_url_maroco360 << "https://fr.le360.ma#{link['href']}"
           end
