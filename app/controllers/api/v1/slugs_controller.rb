@@ -2,20 +2,14 @@
 
 module Api
   module V1
+    # CRUD for authors
     class SlugsController < ::ApplicationController
       before_action :authenticate_user!
       before_action :set_slug, only: %i[show update destroy]
 
       # GET /slugs
       def index
-        @slugs =
-          if params[:search].blank?
-            Slug.order(order_and_direction).page(page).per(per_page)
-          else
-            Slug.order(order_and_direction).page(page).per(per_page)
-                .where(['lower(name) like ? ',
-                        "%#{params[:search].downcase}%"])
-          end
+        @slugs = fetch_slugs
         set_pagination_headers :slugs
         json_string = SlugSerializer.new(@slugs).serializable_hash.to_json
         render json: json_string
@@ -66,6 +60,22 @@ module Api
       # Only allow a trusted parameter "white list" through.
       def slug_params
         params.permit(:name)
+      end
+
+      # fet slugs
+      def fetch_slugs
+        if params[:search].blank?
+          Slug.order(order_and_direction).page(page).per(per_page)
+        else
+          search_slugs
+        end
+      end
+
+      # search slugs
+      def search_slugs
+        Slug.order(order_and_direction).page(page).per(per_page)
+            .where(['lower(name) like ? ',
+                    "%#{params[:search].downcase}%"])
       end
     end
   end
