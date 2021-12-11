@@ -1,8 +1,6 @@
 # frozen_string_literal: true
 
-module Api
-  module V1
-    class AuthorsController < ApplicationController
+    class Api::V1::AuthorsController < ApplicationController
       before_action :authenticate_user!
       before_action :set_author, only: %i[show update destroy]
 
@@ -92,5 +90,5 @@ module Api
         params.permit(:name, :medium_id, :articles_count)
       end
     end
-  end
-end
+#   end
+# end
