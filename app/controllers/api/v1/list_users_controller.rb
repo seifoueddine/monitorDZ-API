@@ -2,7 +2,7 @@
 
 module Api
   module V1
-    class ListUsersController < ApplicationController
+    class ListUsersController < ::ApplicationController
       before_action :set_list_user, only: %i[show update destroy]
       before_action :authenticate_user!
       # GET /list_users

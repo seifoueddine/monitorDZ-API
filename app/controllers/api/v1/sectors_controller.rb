@@ -2,7 +2,7 @@
 
 module Api
   module V1
-    class SectorsController < ApplicationController
+    class SectorsController < ::ApplicationController
       before_action :set_sector, only: %i[show update destroy]
 
       # GET /sectors

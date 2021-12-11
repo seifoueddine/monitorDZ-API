@@ -2,28 +2,15 @@
 
 module Api
   module V1
+    # CRUD for authors
     class AuthorsController < ::ApplicationController
       before_action :authenticate_user!
       before_action :set_author, only: %i[show update destroy]
 
       # GET /authors
       def index
-        @authors =
-          if params[:search].present?
-            Author.order(order_and_direction).page(page).per(per_page)
-                  .where(['lower(name) like ? ',
-                          "%#{params[:search].downcase}%"])
-
-          elsif params[:medium_id].present?
-            Author.order(order_and_direction).page(page).per(per_page).where(medium_id: params[:medium_id])
-
-          else
-            Author.order(order_and_direction).page(page).per(per_page)
-          end
-
-        @authors.each do |author|
-          author.update articles_count: author.articles.count
-        end
+        @authors = get_authors
+        add_count
         set_pagination_headers :authors
         json_string = AuthorSerializer.new(@authors).serializable_hash.to_json
         render json: json_string
@@ -34,8 +21,8 @@ module Api
         campaign = Campaign.where(slug_id: slug_id)
         media = campaign[0].media
         media_ids = []
-        media.map do |media|
-          media_ids << media['id']
+        media.map do |med|
+          media_ids << med['id']
         end
         @authors = Author.where(medium_id: media_ids).uniq
         json_string = AuthorSerializer.new(@authors).serializable_hash.to_json
@@ -90,6 +77,28 @@ module Api
       # Only allow a trusted parameter "white list" through.
       def author_params
         params.permit(:name, :medium_id, :articles_count)
+      end
+
+      # add article count to author
+      def add_count
+        @authors.each do |author|
+          author.update articles_count: author.articles.count
+        end
+      end
+
+      # get authors
+      def get_authors
+        if params[:search].present?
+          Author.order(order_and_direction).page(page).per(per_page)
+                .where(['lower(name) like ? ',
+                        "%#{params[:search].downcase}%"])
+
+        elsif params[:medium_id].present?
+          Author.order(order_and_direction).page(page).per(per_page).where(medium_id: params[:medium_id])
+
+        else
+          Author.order(order_and_direction).page(page).per(per_page)
+        end
       end
     end
   end

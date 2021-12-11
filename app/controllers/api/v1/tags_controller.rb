@@ -2,7 +2,7 @@
 
 module Api
   module V1
-    class TagsController < ApplicationController
+    class TagsController < ::ApplicationController
       before_action :authenticate_user!
       before_action :set_tag, only: %i[show update destroy]
 

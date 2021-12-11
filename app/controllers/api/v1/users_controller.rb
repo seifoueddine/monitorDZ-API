@@ -2,7 +2,7 @@
 
 module Api
   module V1
-    class UsersController < ApplicationController
+    class UsersController < ::ApplicationController
       before_action :authenticate_user!
       before_action :set_user, only: %i[show update change_password]
 

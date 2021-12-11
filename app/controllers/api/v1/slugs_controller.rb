@@ -2,7 +2,7 @@
 
 module Api
   module V1
-    class SlugsController < ApplicationController
+    class SlugsController < ::ApplicationController
       before_action :authenticate_user!
       before_action :set_slug, only: %i[show update destroy]
 

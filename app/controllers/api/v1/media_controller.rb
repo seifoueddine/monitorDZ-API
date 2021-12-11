@@ -2,7 +2,7 @@
 
 module Api
   module V1
-    class MediaController < ApplicationController
+    class MediaController < ::ApplicationController
       before_action :authenticate_user!
       before_action :set_medium, only: %i[show update destroy]
 
