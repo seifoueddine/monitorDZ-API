@@ -9,7 +9,7 @@ module Api
 
       # GET /authors
       def index
-        @authors = get_authors
+        @authors = fetch_authors
         add_count
         set_pagination_headers :authors
         json_string = AuthorSerializer.new(@authors).serializable_hash.to_json
@@ -79,6 +79,18 @@ module Api
         params.permit(:name, :medium_id, :articles_count)
       end
 
+      # get_authors
+
+      def fetch_authors
+        if params[:search].present?
+          search_authors
+        elsif params[:medium_id].present?
+          authors_by_media
+        else
+          Author.order(order_and_direction).page(page).per(per_page)
+        end
+      end
+
       # add article count to author
       def add_count
         @authors.each do |author|
@@ -86,19 +98,16 @@ module Api
         end
       end
 
-      # get authors
-      def get_authors
-        if params[:search].present?
-          Author.order(order_and_direction).page(page).per(per_page)
-                .where(['lower(name) like ? ',
-                        "%#{params[:search].downcase}%"])
+      # search authors
+      def search_authors
+        Author.order(order_and_direction).page(page).per(per_page)
+              .where(['lower(name) like ? ',
+                      "%#{params[:search].downcase}%"])
+      end
 
-        elsif params[:medium_id].present?
-          Author.order(order_and_direction).page(page).per(per_page).where(medium_id: params[:medium_id])
-
-        else
-          Author.order(order_and_direction).page(page).per(per_page)
-        end
+      # search authors
+      def authors_by_media
+        Author.order(order_and_direction).page(page).per(per_page).where(medium_id: params[:medium_id])
       end
     end
   end
