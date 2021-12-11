@@ -2,7 +2,7 @@
 
 module Api
   module V1
-    class CampaignsController < ApplicationController
+    class CampaignsController < ::ApplicationController
       before_action :authenticate_user!
       before_action :set_campaign, only: %i[show update destroy]
 
