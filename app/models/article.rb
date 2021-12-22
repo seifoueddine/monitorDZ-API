@@ -20,7 +20,7 @@ class Article < ApplicationRecord
                    }
                  }
                }
-             }
+             },
              settings: {
               index: {
                 blocks: {
