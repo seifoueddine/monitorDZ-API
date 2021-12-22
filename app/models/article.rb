@@ -24,7 +24,7 @@ class Article < ApplicationRecord
              settings: {
               index: {
                 blocks: {
-                  read_only_allow_delete: null
+                  read_only_allow_delete: 'null'
                 },
               }
             }
