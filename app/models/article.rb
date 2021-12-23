@@ -20,14 +20,7 @@ class Article < ApplicationRecord
                    }
                  }
                }
-             },
-             settings: {
-              index: {
-                blocks: {
-                  read_only_allow_delete: 'false'
-                },
-              }
-            }
+             }
   #   after_commit :reindex_data
   #
   #   def reindex_data
