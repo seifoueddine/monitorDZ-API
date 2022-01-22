@@ -39,7 +39,9 @@ gem 'searchkick'
 # Use Rack CORS for handling Cross-Origin Resource Sharing (CORS), making cross-origin AJAX possible
 gem 'actionpack', '>= 6.0.3.5'
 gem 'activerecord', '>= 6.0.3.5'
+gem 'annotate'
 gem 'capistrano'
+gem 'capistrano3-puma', github: 'seuros/capistrano-puma'
 gem 'capistrano-passenger'
 gem 'capistrano-rails'
 gem 'capistrano-rbenv'
@@ -48,7 +50,6 @@ gem 'rack-cors'
 gem 'whenever', require: false
 gem 'wicked_pdf'
 gem 'wkhtmltopdf-binary'
-gem 'capistrano3-puma', github: "seuros/capistrano-puma"
 group :development, :test do
   # Call 'byebug' anywhere in the code to stop execution and get a debugger console
   # gem 'byebug', platforms: [:mri, :mingw, :x64_mingw]

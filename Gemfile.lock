@@ -128,6 +128,9 @@ GEM
       public_suffix (>= 2.0.2, < 5.0)
     airbrussh (1.4.0)
       sshkit (>= 1.6.1, != 1.7.0)
+    annotate (3.1.1)
+      activerecord (>= 3.2, < 7.0)
+      rake (>= 10.4, < 14.0)
     ast (2.4.2)
     bcrypt (3.1.16)
     bootsnap (1.9.1)
@@ -379,6 +382,7 @@ PLATFORMS
 DEPENDENCIES
   actionpack (>= 6.0.3.5)
   activerecord (>= 6.0.3.5)
+  annotate
   bootsnap (>= 1.4.2)
   capistrano
   capistrano-passenger

@@ -13,19 +13,19 @@ require 'capistrano/setup'
 # require "capistrano/scm/svn"
 # install_plugin Capistrano::SCM::Svn
 # or
-require "capistrano/deploy"
+require 'capistrano/deploy'
 require 'capistrano/scm/git'
 require 'capistrano/bundler'
 require 'capistrano/rails/migrations'
 require 'capistrano/passenger'
 require 'capistrano/rbenv'
 require 'whenever/capistrano'
-#require 'capistrano/puma'
+# require 'capistrano/puma'
 set :rbenv_type, :user
 set :rbenv_ruby, '2.6.5'
 install_plugin Capistrano::SCM::Git
-#install_plugin Capistrano::Puma
-#install_plugin Capistrano::Puma::Systemd
+# install_plugin Capistrano::Puma
+# install_plugin Capistrano::Puma::Systemd
 set :whenever_command, 'bundle exec whenever'
 
 # Include tasks from other gems included in your Gemfile
