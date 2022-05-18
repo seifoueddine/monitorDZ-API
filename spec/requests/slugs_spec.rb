@@ -54,13 +54,13 @@ RSpec.describe '/slugs', type: :request do
     context 'with valid parameters' do
       it 'creates a new Slug' do
         expect do
-          post slugs_url,
+          post 'http://127.0.0.1:3000/api/v1/slugs',
                params: { slug: valid_attributes }, headers: valid_headers, as: :json
         end.to change(Slug, :count).by(1)
       end
 
       it 'renders a JSON response with the new slug' do
-        post slugs_url,
+        post 'http://127.0.0.1:3000/api/v1/slugs',
              params: { slug: valid_attributes }, headers: valid_headers, as: :json
         expect(response).to have_http_status(:created)
         expect(response.content_type).to match(a_string_including('application/json'))
@@ -70,13 +70,13 @@ RSpec.describe '/slugs', type: :request do
     context 'with invalid parameters' do
       it 'does not create a new Slug' do
         expect do
-          post slugs_url,
+          post 'http://127.0.0.1:3000/api/v1/slugs',
                params: { slug: invalid_attributes }, as: :json
         end.to change(Slug, :count).by(0)
       end
 
       it 'renders a JSON response with errors for the new slug' do
-        post slugs_url,
+        post 'http://127.0.0.1:3000/api/v1/slugs',
              params: { slug: invalid_attributes }, headers: valid_headers, as: :json
         expect(response).to have_http_status(:unprocessable_entity)
         expect(response.content_type).to eq('application/json')
