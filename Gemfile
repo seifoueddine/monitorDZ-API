@@ -5,7 +5,7 @@ git_source(:github) { |repo| "https://github.com/#{repo}.git" }
 
 case ENV['RAILS_ENV']
 when 'development'
-  ruby '2.7.0'
+  ruby '3.1.2'
 when 'production'
   ruby '2.6.5'
 end
@@ -15,7 +15,7 @@ gem 'rails', '~> 6.1.4'
 gem 'pg', '>= 0.18', '< 2.0'
 # Use Puma as the app server
 gem 'nokogiri', '~> 1.10.10'
-
+gem 'net-smtp', require: false
 gem 'puma', '~> 5.5.2'
 # Build JSON APIs with ease. Read more: https://github.com/rails/jbuilder
 # gem 'jbuilder', '~> 2.7'
