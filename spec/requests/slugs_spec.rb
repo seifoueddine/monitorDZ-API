@@ -19,11 +19,15 @@ RSpec.describe '/slugs', type: :request do
   # Slug. As you add validations to Slug, be sure to
   # adjust the attributes here as well.
   let(:valid_attributes) do
-    skip('Add a hash of attributes valid for your model')
+    {
+      name:         'Corporate name'
+    }
   end
 
   let(:invalid_attributes) do
-    skip('Add a hash of attributes invalid for your model')
+  {
+    name: 123
+  }
   end
 
   # This should return the minimal set of values that should be in the headers
@@ -37,15 +41,15 @@ RSpec.describe '/slugs', type: :request do
   describe 'GET /index' do
     it 'renders a successful response' do
       Slug.create! valid_attributes
-      get slugs_url, headers: valid_headers, as: :json
+      get '/api/v1/slugs', headers: valid_headers, as: :json
       expect(response).to be_successful
     end
   end
 
-  describe 'GET /show' do
+  describe 'GET Slug by ID' do
     it 'renders a successful response' do
       slug = Slug.create! valid_attributes
-      get slug_url(slug), as: :json
+      get "/api/v1/slugs/#{slug.id}", as: :json
       expect(response).to be_successful
     end
   end
@@ -54,13 +58,13 @@ RSpec.describe '/slugs', type: :request do
     context 'with valid parameters' do
       it 'creates a new Slug' do
         expect do
-          post 'http://127.0.0.1:3000/api/v1/slugs',
+          post '/api/v1/slugs',
                params: { slug: valid_attributes }, headers: valid_headers, as: :json
         end.to change(Slug, :count).by(1)
       end
 
       it 'renders a JSON response with the new slug' do
-        post 'http://127.0.0.1:3000/api/v1/slugs',
+        post '/api/v1/slugs',
              params: { slug: valid_attributes }, headers: valid_headers, as: :json
         expect(response).to have_http_status(:created)
         expect(response.content_type).to match(a_string_including('application/json'))
@@ -70,37 +74,39 @@ RSpec.describe '/slugs', type: :request do
     context 'with invalid parameters' do
       it 'does not create a new Slug' do
         expect do
-          post 'http://127.0.0.1:3000/api/v1/slugs',
+          post '/api/v1/slugs',
                params: { slug: invalid_attributes }, as: :json
         end.to change(Slug, :count).by(0)
       end
 
       it 'renders a JSON response with errors for the new slug' do
-        post 'http://127.0.0.1:3000/api/v1/slugs',
+        post '/api/v1/slugs',
              params: { slug: invalid_attributes }, headers: valid_headers, as: :json
         expect(response).to have_http_status(:unprocessable_entity)
-        expect(response.content_type).to eq('application/json')
+        expect(response.content_type).to eq('application/json; charset=utf-8')
       end
     end
-  end
+   end
 
   describe 'PATCH /update' do
     context 'with valid parameters' do
       let(:new_attributes) do
-        skip('Add a hash of attributes valid for your model')
+        {
+          name:         'New corporate name'
+        }
       end
 
       it 'updates the requested slug' do
         slug = Slug.create! valid_attributes
-        patch slug_url(slug),
+        patch "/api/v1/slugs/#{slug.id}",
               params: { slug: new_attributes }, headers: valid_headers, as: :json
         slug.reload
-        skip('Add assertions for updated state')
+       # skip('Add assertions for updated state')
       end
 
       it 'renders a JSON response with the slug' do
         slug = Slug.create! valid_attributes
-        patch slug_url(slug),
+        put "/api/v1/slugs/#{slug.id}",
               params: { slug: new_attributes }, headers: valid_headers, as: :json
         expect(response).to have_http_status(:ok)
         expect(response.content_type).to match(a_string_including('application/json'))
@@ -110,10 +116,10 @@ RSpec.describe '/slugs', type: :request do
     context 'with invalid parameters' do
       it 'renders a JSON response with errors for the slug' do
         slug = Slug.create! valid_attributes
-        patch slug_url(slug),
+        patch "/api/v1/slugs/#{slug.id}",
               params: { slug: invalid_attributes }, headers: valid_headers, as: :json
         expect(response).to have_http_status(:unprocessable_entity)
-        expect(response.content_type).to eq('application/json')
+        expect(response.content_type).to eq('application/json; charset=utf-8')
       end
     end
   end
@@ -122,7 +128,7 @@ RSpec.describe '/slugs', type: :request do
     it 'destroys the requested slug' do
       slug = Slug.create! valid_attributes
       expect do
-        delete slug_url(slug), headers: valid_headers, as: :json
+        delete "/api/v1/slugs/#{slug.id}", headers: valid_headers, as: :json
       end.to change(Slug, :count).by(-1)
     end
   end

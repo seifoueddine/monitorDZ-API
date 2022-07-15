@@ -4,7 +4,7 @@ module Api
   module V1
     # CRUD for authors
     class SlugsController < ::ApplicationController
-      before_action :authenticate_user!
+      #before_action :authenticate_user!
       before_action :set_slug, only: %i[show update destroy]
 
       # GET /slugs
@@ -59,7 +59,7 @@ module Api
 
       # Only allow a trusted parameter "white list" through.
       def slug_params
-        params.permit(:name)
+        params.require(:slug).permit(:name)
       end
 
       # fet slugs
