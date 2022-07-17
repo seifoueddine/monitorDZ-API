@@ -4,7 +4,7 @@ module Api
   module V1
     # CRUD for authors
     class SlugsController < ::ApplicationController
-      #before_action :authenticate_user!
+      before_action :authenticate_user!
       before_action :set_slug, only: %i[show update destroy]
 
       # GET /slugs
@@ -69,6 +69,7 @@ module Api
         else
           search_slugs
         end
+        Slug.order(order_and_direction).page(page).per(per_page)
       end
 
       # search slugs

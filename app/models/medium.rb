@@ -18,6 +18,8 @@
 #  tag_status   :boolean
 #
 class Medium < ApplicationRecord
+  validates :name, format: {with: /[a-zA-Z]/}
+  validates :url_crawling, format: {with: /[a-zA-Z]/}
   has_many :media_sectors
   has_many :sectors, through: :media_sectors
   has_many :campaign_media

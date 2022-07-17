@@ -18,16 +18,23 @@ RSpec.describe '/slugs', type: :request do
   # This should return the minimal set of attributes required to create a valid
   # Slug. As you add validations to Slug, be sure to
   # adjust the attributes here as well.
+
+  before(:all) do
+    @user = FactoryBot.create(:user)
+    sign_in @user
+  end
+
+  let(:auth_headers) { @user.create_new_auth_token }
   let(:valid_attributes) do
     {
-      name:         'Corporate name'
+      name: 'Corporate name'
     }
   end
 
   let(:invalid_attributes) do
-  {
-    name: 123
-  }
+    {
+      name: 123
+    }
   end
 
   # This should return the minimal set of values that should be in the headers
@@ -35,21 +42,37 @@ RSpec.describe '/slugs', type: :request do
   # SlugsController, or in your router and rack
   # middleware. Be sure to keep this updated too.
   let(:valid_headers) do
-    {}
+    {
+      'Uid' => auth_headers['uid'],
+      'Access-Token' => auth_headers['access-token'],
+      'Client' => auth_headers['client']
+    }
+  end
+
+  let(:invalid_headers) do
+    {
+      'Uid' => auth_headers['uid']
+    }
   end
 
   describe 'GET /index' do
     it 'renders a successful response' do
-      Slug.create! valid_attributes
+      FactoryBot.create(:slug)
       get '/api/v1/slugs', headers: valid_headers, as: :json
       expect(response).to be_successful
+    end
+
+    it 'renders a unauthorized status' do
+      FactoryBot.create(:slug) 
+      get '/api/v1/slugs', headers: invalid_headers, as: :json
+      expect(response).to have_http_status(:unauthorized)
     end
   end
 
   describe 'GET Slug by ID' do
     it 'renders a successful response' do
-      slug = Slug.create! valid_attributes
-      get "/api/v1/slugs/#{slug.id}", as: :json
+      slug = FactoryBot.create(:slug) 
+      get "/api/v1/slugs/#{slug.id}", headers: valid_headers, as: :json
       expect(response).to be_successful
     end
   end
@@ -86,28 +109,28 @@ RSpec.describe '/slugs', type: :request do
         expect(response.content_type).to eq('application/json; charset=utf-8')
       end
     end
-   end
+  end
 
   describe 'PATCH /update' do
     context 'with valid parameters' do
       let(:new_attributes) do
         {
-          name:         'New corporate name'
+          name: 'New corporate name'
         }
       end
 
       it 'updates the requested slug' do
-        slug = Slug.create! valid_attributes
+        slug = FactoryBot.create(:slug) 
         patch "/api/v1/slugs/#{slug.id}",
               params: { slug: new_attributes }, headers: valid_headers, as: :json
         slug.reload
-       # skip('Add assertions for updated state')
+        # skip('Add assertions for updated state')
       end
 
       it 'renders a JSON response with the slug' do
-        slug = Slug.create! valid_attributes
+        slug = FactoryBot.create(:slug) 
         put "/api/v1/slugs/#{slug.id}",
-              params: { slug: new_attributes }, headers: valid_headers, as: :json
+            params: { slug: new_attributes }, headers: valid_headers, as: :json
         expect(response).to have_http_status(:ok)
         expect(response.content_type).to match(a_string_including('application/json'))
       end
@@ -115,7 +138,7 @@ RSpec.describe '/slugs', type: :request do
 
     context 'with invalid parameters' do
       it 'renders a JSON response with errors for the slug' do
-        slug = Slug.create! valid_attributes
+        slug = FactoryBot.create(:slug) 
         patch "/api/v1/slugs/#{slug.id}",
               params: { slug: invalid_attributes }, headers: valid_headers, as: :json
         expect(response).to have_http_status(:unprocessable_entity)
@@ -126,7 +149,7 @@ RSpec.describe '/slugs', type: :request do
 
   describe 'DELETE /destroy' do
     it 'destroys the requested slug' do
-      slug = Slug.create! valid_attributes
+      slug = FactoryBot.create(:slug) 
       expect do
         delete "/api/v1/slugs/#{slug.id}", headers: valid_headers, as: :json
       end.to change(Slug, :count).by(-1)
