@@ -43,7 +43,8 @@ RSpec.describe '/authors', type: :request do
     {
       'Uid' => auth_headers['uid'],
       'Access-Token' => auth_headers['access-token'],
-      'Client' => auth_headers['client']
+      'Client' => auth_headers['client'],
+      'slug-id' => @user.slug_id
     }
   end
   let(:invalid_headers) do
@@ -64,6 +65,33 @@ RSpec.describe '/authors', type: :request do
       get '/api/v1/authors', headers: invalid_headers, as: :json
       expect(response).to have_http_status(:unauthorized)
     end
+
+
+
+    it 'renders a successful response with search ' do
+      Author.create! valid_attributes
+      get '/api/v1/authors?search=Salim',  headers: valid_headers, as: :json
+      value =  JSON.parse(response.body) 
+      expect(value['data'].count).to eq(1)
+    end
+
+    let(:author_valid_attributes) do
+      {
+        name: 'Mohamed Salim',
+        medium_id: 25
+      }
+    end
+
+
+    it 'renders a successful response with filter medium ' do
+      Author.create! author_valid_attributes
+      get '/api/v1/authors?medium_id=25',  headers: valid_headers, as: :json
+      value =  JSON.parse(response.body) 
+      expect(value['data'].count).to eq(1)
+    end
+
+
+
   end
 
   describe 'GET /show' do
@@ -181,4 +209,52 @@ RSpec.describe '/authors', type: :request do
       end.to change(Author, :count).by(-1)
     end
   end
+
+  describe 'GET authors_client' do
+    context 'get authors for each client' do 
+      let(:medium_valid_attributes) do
+        {
+          name: 'Elkhabar',
+          url_crawling: 'www.elkhabar.com'
+        }
+      end
+
+      let(:article_valid_attributes) do
+        {
+          title: 'Campaign Name',
+          medium_id: @medium.id,
+          author_id: @author.id,
+        }
+      end
+      let(:slug_valid_attributes) do
+        {
+          name: 'Corporate name'
+        }
+      end
+
+      let(:campaign_valid_attributes) do
+        {
+          name: 'Campaign Name',
+          slug_id: @user.slug_id
+        }
+      end
+      it 'render authros list' do
+          #@slug = Slug.create! slug_valid_attributes
+          campaign = Campaign.create! campaign_valid_attributes
+          @medium = Medium.create! medium_valid_attributes
+          campaign.media = Medium.where(id: @medium.id)
+
+        
+          @author = Author.create! valid_attributes
+          article = Article.create! article_valid_attributes
+
+          get '/api/v1/authors_client', headers: valid_headers, as: :json
+          expect(response).to be_successful
+       
+      end
+    end
+
+
+  end
+
 end
