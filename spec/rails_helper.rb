@@ -3,6 +3,26 @@
 # This file is copied to spec/ when you run 'rails generate rspec:install'
 require 'spec_helper'
 ENV['RAILS_ENV'] ||= 'test'
+
+
+require 'simplecov'
+
+SimpleCov.start :rails  do 
+  add_filter 'app/serializers/'
+  add_filter 'app/controllers/api/v1/articles_controller.rb'
+  add_filter 'app/controllers/api/v1/list_users_controller.rb'
+  # add_filter '/config/'
+  # add_filter '/vendor/'
+  
+  add_group 'Controllers', 'app/controllers/api/v1/'
+  # add_group 'Models', 'app/models'
+  # add_group 'Helpers', 'app/helpers'
+  # add_group 'Mailers', 'app/mailers'
+end
+SimpleCov.minimum_coverage 90
+SimpleCov.coverage_dir('reports/coverage')
+
+
 require File.expand_path('../config/environment', __dir__)
 # Prevent database truncation if the environment is production
 abort('The Rails environment is running in production mode!') if Rails.env.production?
