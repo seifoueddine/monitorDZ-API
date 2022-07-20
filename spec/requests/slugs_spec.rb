@@ -71,8 +71,8 @@ RSpec.describe '/slugs', type: :request do
     it 'renders a successful response with search ' do
       Slug.create! valid_attributes
       get '/api/v1/slugs?search=Corporate',  headers: valid_headers, as: :json
-      value =  JSON.parse(response.body) 
-      expect(value['data'].count).to eq(1)
+      result =  JSON.parse(response.body)
+      expect(result['data'].count).to eq(1)
     end
 
   end

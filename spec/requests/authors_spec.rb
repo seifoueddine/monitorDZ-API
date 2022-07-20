@@ -71,8 +71,8 @@ RSpec.describe '/authors', type: :request do
     it 'renders a successful response with search ' do
       Author.create! valid_attributes
       get '/api/v1/authors?search=Salim',  headers: valid_headers, as: :json
-      value =  JSON.parse(response.body) 
-      expect(value['data'].count).to eq(1)
+      result =  JSON.parse(response.body)
+      expect(result['data'].count).to eq(1)
     end
 
     let(:author_valid_attributes) do
@@ -86,8 +86,8 @@ RSpec.describe '/authors', type: :request do
     it 'renders a successful response with filter medium ' do
       Author.create! author_valid_attributes
       get '/api/v1/authors?medium_id=25',  headers: valid_headers, as: :json
-      value =  JSON.parse(response.body) 
-      expect(value['data'].count).to eq(1)
+      result =  JSON.parse(response.body)
+      expect(result['data'].count).to eq(1)
     end
 
 

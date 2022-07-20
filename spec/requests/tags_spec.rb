@@ -18,12 +18,22 @@ RSpec.describe '/tags', type: :request do
   # This should return the minimal set of attributes required to create a valid
   # Tag. As you add validations to Tag, be sure to
   # adjust the attributes here as well.
+  before(:all) do
+    @user_sign_in = FactoryBot.create(:user)
+    sign_in @user_sign_in
+  end
+
+  let(:auth_headers) { @user_sign_in.create_new_auth_token }
   let(:valid_attributes) do
-    skip('Add a hash of attributes valid for your model')
+    {
+      name: 'tag 1'
+    }
   end
 
   let(:invalid_attributes) do
-    skip('Add a hash of attributes invalid for your model')
+    {
+      name: nil
+    }
   end
 
   # This should return the minimal set of values that should be in the headers
@@ -31,21 +41,38 @@ RSpec.describe '/tags', type: :request do
   # TagsController, or in your router and rack
   # middleware. Be sure to keep this updated too.
   let(:valid_headers) do
-    {}
+    {
+      'Uid' => auth_headers['uid'],
+      'Access-Token' => auth_headers['access-token'],
+      'Client' => auth_headers['client']
+    }
+  end
+
+  let(:invalid_headers) do
+    {
+      'Uid' => auth_headers['uid']
+    }
   end
 
   describe 'GET /index' do
     it 'renders a successful response' do
       Tag.create! valid_attributes
-      get tags_url, headers: valid_headers, as: :json
+      get '/api/v1/tags', headers: valid_headers, as: :json
       expect(response).to be_successful
+    end
+
+    it 'renders a successful response with search ' do
+      Tag.create! valid_attributes
+      get '/api/v1/tags?search=tag 1',  headers: valid_headers, as: :json
+      result =  JSON.parse(response.body)
+      expect(result['data'].count).to eq(1)
     end
   end
 
   describe 'GET /show' do
     it 'renders a successful response' do
       tag = Tag.create! valid_attributes
-      get tag_url(tag), as: :json
+      get  "/api/v1/tags/#{tag.id}", headers: valid_headers, as: :json
       expect(response).to be_successful
     end
   end
@@ -54,13 +81,13 @@ RSpec.describe '/tags', type: :request do
     context 'with valid parameters' do
       it 'creates a new Tag' do
         expect do
-          post tags_url,
+          post '/api/v1/tags',
                params: { tag: valid_attributes }, headers: valid_headers, as: :json
         end.to change(Tag, :count).by(1)
       end
 
       it 'renders a JSON response with the new tag' do
-        post tags_url,
+        post '/api/v1/tags',
              params: { tag: valid_attributes }, headers: valid_headers, as: :json
         expect(response).to have_http_status(:created)
         expect(response.content_type).to match(a_string_including('application/json'))
@@ -70,16 +97,25 @@ RSpec.describe '/tags', type: :request do
     context 'with invalid parameters' do
       it 'does not create a new Tag' do
         expect do
-          post tags_url,
+          post '/api/v1/tags',
                params: { tag: invalid_attributes }, as: :json
         end.to change(Tag, :count).by(0)
       end
 
+      it 'does not create a new Tag with same name' do
+        expect do
+          Tag.create! valid_attributes
+          post '/api/v1/tags',
+               params: { tag: valid_attributes },  headers: valid_headers, as: :json
+               expect(response).to have_http_status(:unprocessable_entity)
+        end.to change(Tag, :count).by(1)
+      end
+
       it 'renders a JSON response with errors for the new tag' do
-        post tags_url,
+        post '/api/v1/tags',
              params: { tag: invalid_attributes }, headers: valid_headers, as: :json
         expect(response).to have_http_status(:unprocessable_entity)
-        expect(response.content_type).to eq('application/json')
+        expect(response.content_type).to eq('application/json; charset=utf-8')
       end
     end
   end
@@ -87,20 +123,21 @@ RSpec.describe '/tags', type: :request do
   describe 'PATCH /update' do
     context 'with valid parameters' do
       let(:new_attributes) do
-        skip('Add a hash of attributes valid for your model')
+        {
+          name: 'tag 2'
+        }
       end
 
       it 'updates the requested tag' do
         tag = Tag.create! valid_attributes
-        patch tag_url(tag),
+        patch  "/api/v1/tags/#{tag.id}",
               params: { tag: new_attributes }, headers: valid_headers, as: :json
         tag.reload
-        skip('Add assertions for updated state')
       end
 
       it 'renders a JSON response with the tag' do
         tag = Tag.create! valid_attributes
-        patch tag_url(tag),
+        patch  "/api/v1/tags/#{tag.id}",
               params: { tag: new_attributes }, headers: valid_headers, as: :json
         expect(response).to have_http_status(:ok)
         expect(response.content_type).to match(a_string_including('application/json'))
@@ -110,10 +147,10 @@ RSpec.describe '/tags', type: :request do
     context 'with invalid parameters' do
       it 'renders a JSON response with errors for the tag' do
         tag = Tag.create! valid_attributes
-        patch tag_url(tag),
+        patch  "/api/v1/tags/#{tag.id}",
               params: { tag: invalid_attributes }, headers: valid_headers, as: :json
         expect(response).to have_http_status(:unprocessable_entity)
-        expect(response.content_type).to eq('application/json')
+        expect(response.content_type).to eq('application/json; charset=utf-8')
       end
     end
   end
@@ -122,7 +159,7 @@ RSpec.describe '/tags', type: :request do
     it 'destroys the requested tag' do
       tag = Tag.create! valid_attributes
       expect do
-        delete tag_url(tag), headers: valid_headers, as: :json
+        delete  "/api/v1/tags/#{tag.id}", headers: valid_headers, as: :json
       end.to change(Tag, :count).by(-1)
     end
   end
