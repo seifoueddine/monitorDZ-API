@@ -9,12 +9,12 @@ module Api
       # GET /media
       def index
         @media =
-          if params[:search].blank?
-            Medium.order(order_and_direction).page(page).per(per_page)
-          else
+          if params[:search].present?
             Medium.order(order_and_direction).page(page).per(per_page)
                   .where(['lower(name) like ? ',
                           "%#{params[:search].downcase}%"])
+          else
+            Medium.order(order_and_direction).page(page).per(per_page)
           end
         set_pagination_headers :media
         json_string = MediumSerializer.new(@media, include: [:sectors]).serializable_hash.to_json

@@ -64,12 +64,12 @@ module Api
 
       # fet slugs
       def fetch_slugs
-        if params[:search].blank?
-          Slug.order(order_and_direction).page(page).per(per_page)
-        else
+        if params[:search].present?
           search_slugs
+        else
+          Slug.order(order_and_direction).page(page).per(per_page)
         end
-        Slug.order(order_and_direction).page(page).per(per_page)
+       
       end
 
       # search slugs

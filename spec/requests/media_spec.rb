@@ -67,6 +67,15 @@ RSpec.describe '/media', type: :request do
       get '/api/v1/media', headers: invalid_headers, as: :json
       expect(response).to have_http_status(:unauthorized)
     end
+
+
+    it 'renders a successful response with search ' do
+      Medium.create! valid_attributes
+      get '/api/v1/media?search=elkhabar',  headers: valid_headers, as: :json
+      value =  JSON.parse(response.body) 
+      expect(value['data'].count).to eq(1)
+    end
+
   end
 
   describe 'GET /show' do
