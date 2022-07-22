@@ -135,6 +135,7 @@ RSpec.describe '/media', type: :request do
         patch "/api/v1/media/#{medium.id}",
               params: { medium: new_attributes }, headers: valid_headers, as: :json
         medium.reload
+        expect(medium.attributes).to include( { "name" => "cherouk" } )
       end
 
       it 'renders a JSON response with the medium' do

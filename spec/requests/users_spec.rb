@@ -115,7 +115,7 @@ RSpec.describe '/users', type: :request do
       context 'with valid parameters' do
         let(:new_attributes) do
           {
-            name: 'New corporate name'
+            name: 'New user name'
           }
         end
 
@@ -130,6 +130,7 @@ RSpec.describe '/users', type: :request do
           patch "/api/v1/users/#{user.id}",
                 params: { user: new_attributes }, headers: valid_headers, as: :json
           user.reload
+          expect(user.attributes).to include( { "name" => 'New user name' } )
         end
   
         it 'renders a JSON response with the user' do

@@ -149,6 +149,7 @@ RSpec.describe '/authors', type: :request do
         patch "/api/v1/authors/#{author.id}",
               params: { author: new_attributes }, headers: valid_headers, as: :json
         author.reload
+        expect(author.attributes).to include( { "name" => 'Omar' } )
       end
 
       it 'renders a JSON response with the author' do

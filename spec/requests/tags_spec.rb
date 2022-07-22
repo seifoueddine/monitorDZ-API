@@ -133,6 +133,7 @@ RSpec.describe '/tags', type: :request do
         patch  "/api/v1/tags/#{tag.id}",
               params: { tag: new_attributes }, headers: valid_headers, as: :json
         tag.reload
+        expect(tag.attributes).to include( { "name" => "tag 2" } )
       end
 
       it 'renders a JSON response with the tag' do

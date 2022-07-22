@@ -132,7 +132,7 @@ RSpec.describe '/slugs', type: :request do
         patch "/api/v1/slugs/#{slug.id}",
               params: { slug: new_attributes }, headers: valid_headers, as: :json
         slug.reload
-        # skip('Add assertions for updated state')
+        expect(slug.attributes).to include( { "name" => "New corporate name" } )
       end
 
       it 'renders a JSON response with the slug' do
