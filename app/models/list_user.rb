@@ -12,6 +12,7 @@
 #  image      :string
 #
 class ListUser < ApplicationRecord
+  validates :name, format: {with: /[a-zA-Z]/}
   belongs_to :user
   has_many :list_articles
   has_many :articles, through: :list_articles

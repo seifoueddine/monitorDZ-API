@@ -9,12 +9,13 @@ module Api
       def index
         @user = current_user
         @list_users =
-          if params[:search].blank?
+          if params[:search].present?
             ListUser.where(user_id: @user.id).order(order_and_direction).page(page).per(per_page)
+            .where(['lower(name) like ? ',
+                    "%#{params[:search].downcase}%"])
           else
             ListUser.where(user_id: @user.id).order(order_and_direction).page(page).per(per_page)
-                    .where(['lower(name) like ? ',
-                            "%#{params[:search].downcase}%"])
+
           end
         set_pagination_headers :list_users
         json_string = ListUserSerializer.new(@list_users).serializable_hash.to_json
@@ -49,10 +50,14 @@ module Api
 
             oldIds = @list_user.articles.map(&:id)
             newIds = []
-            old_id_mod = oldIds.delete_if { |v| v == params[:delete_article_id].to_i }
+            old_id_mod = oldIds.delete_if { |v| v.to_i == params[:delete_article_id].to_i }
             @list_user.articles.clear
-            @article = Article.where(id: old_id_mod)
-            @list_user.articles << @article
+            @articles = Article.where(id: old_id_mod)
+            @list_user.articles << @articles
+            # @list_user.list_articles.where(article_id: params[:delete_article_id]).destroy_all
+             # article = @list_user.articles.find(params[:delete_article_id])
+             # @list_user.articles.delete(article)
+
           elsif params[:article_id].present?
             oldIds = @list_user.articles.map(&:id)
             @list_user.articles.clear
@@ -83,7 +88,7 @@ module Api
 
       # Only allow a trusted parameter "white list" through.
       def list_user_params
-        params.permit(:name, :user_id, :image)
+        params.require(:list_user).permit(:name, :user_id, :image, :delete_article_id)
       end
     end
   end
