@@ -80,9 +80,9 @@ module Api
         end
       end
 
-      def destroy_all
-        Medium.where(id: params[:ids]).destroy_all
-      end
+      # def destroy_all
+      #   Medium.where(id: params[:ids]).destroy_all
+      # end
 
       private
 

@@ -9,12 +9,13 @@ module Api
       # GET /campaigns
       def index
         @campaigns =
-          if params[:search].blank?
+          if params[:search].present?
             Campaign.order(order_and_direction).page(page).per(per_page)
+            .where(['lower(name) like ? ',
+                    "%#{params[:search].downcase}%"])
           else
             Campaign.order(order_and_direction).page(page).per(per_page)
-                    .where(['lower(name) like ? ',
-                            "%#{params[:search].downcase}%"])
+
           end
         set_pagination_headers :campaigns
         json_string = CampaignSerializer.new(@campaigns, include: %i[media slug]).serializable_hash.to_json
@@ -32,29 +33,38 @@ module Api
       def create
         @campaign = Campaign.new(campaign_params)
 
-        sector_ids = params[:sector_id].split(',')
-        @sector = if sector_ids.length != 1
-                    Sector.where(id: sector_ids)
-                  else
-                    Sector.where(id: params[:sector_id])
-                  end
+        # sector_ids = params[:sector_id].split(',')
+        # @sector = if sector_ids.length != 1
+        #             Sector.where(id: sector_ids)
+        #           else
+        #             Sector.where(id: params[:sector_id])
+        #           end
+        if campaign_params[:media_id].present?
+          madia_ids = campaign_params[:media_id].split(',')
+          # @media = if madia_ids.length != 1
+          #            Medium.where(id: madia_ids)
+          #          else
+          #            Medium.where(id: campaign_params[:media_id])
+          #          end
+          @media =   Medium.where(id: madia_ids)
+          @campaign.media = @media
+          
+        end
 
-        madia_ids = params[:media_id].split(',')
-        @media = if sector_ids.length != 1
-                   Medium.where(id: madia_ids)
-                 else
-                   Medium.where(id: params[:media_id])
-                 end
+        if campaign_params[:tag_id].present?
 
-        tag_ids = params[:tag_id].split(',')
-        @tag = if tag_ids.length != 1
-                 Tag.where(id: tag_ids)
-               else
-                 Tag.where(id: params[:tag_id])
-               end
+         tag_ids = campaign_params[:tag_id].split(',')
+        #  @tag = if tag_ids.length != 1
+        #          Tag.where(id: tag_ids)
+        #        else
+        #          Tag.where(id: params[:tag_id])
+        #        end
+        pp tag_ids
+        @tag =  Tag.where(id: tag_ids)
+        pp @tag
         @campaign.tags = @tag
-        @campaign.media = @media
-        @campaign.sectors = @sector
+        end
+       # @campaign.sectors = @sector
         if @campaign.save
           render json: @campaign, status: :created
         else
@@ -66,34 +76,43 @@ module Api
       def update
         if @campaign.update(campaign_params)
 
-          @campaign.media.clear
-          @campaign.sectors.clear
+         # @campaign.media.clear
+        #  @campaign.sectors.clear
+         
+          # sector_ids = params[:sector_id].split(',')
+          # @sector = if sector_ids.length != 1
+          #             Sector.where(id: sector_ids)
+          #           else
+          #             Sector.where(id: params[:sector_id])
+          #           end
+          if campaign_params[:media_id].present?
+            @campaign.media.clear
+            madia_ids = campaign_params[:media_id].split(',')
+            # @media = if madia_ids.length != 1
+            #          Medium.where(id: madia_ids)
+            #        else
+            #          Medium.where(id: campaign_params[:media_id])
+            #        end
+                   @media = Medium.where(id: madia_ids)
+            @campaign.media = @media
+          end
+
+          if campaign_params[:tag_id].present?
           @campaign.tags.clear
-          sector_ids = params[:sector_id].split(',')
-          @sector = if sector_ids.length != 1
-                      Sector.where(id: sector_ids)
-                    else
-                      Sector.where(id: params[:sector_id])
-                    end
-
-          madia_ids = params[:media_id].split(',')
-          @media = if madia_ids.length != 1
-                     Medium.where(id: madia_ids)
-                   else
-                     Medium.where(id: params[:media_id])
-                   end
-
-          tag_ids = params[:tag_id].split(',')
-          @tag = if tag_ids.length != 1
-                   Tag.where(id: tag_ids)
-                 else
-                   Tag.where(id: params[:tag_id])
-                 end
+          tag_ids = campaign_params[:tag_id].split(',')
+          # @tag = if tag_ids.length != 1
+          #          Tag.where(id: tag_ids)
+          #        else
+          #          Tag.where(id: campaign_params[:tag_id])
+          #        end
+          @tag = Tag.where(id: tag_ids)
           @campaign.tags = @tag
-          @campaign.media = @media
-          @campaign.sectors = @sector
+          end       
+         
+       
+          #@campaign.sectors = @sector
 
-          json_string = CampaignSerializer.new(@campaign, include: %i[sectors media]).serializable_hash.to_json
+          json_string = CampaignSerializer.new(@campaign, include: %i[media]).serializable_hash.to_json
           render json: json_string
 
         else
@@ -115,7 +134,7 @@ module Api
 
       # Only allow a trusted parameter "white list" through.
       def campaign_params
-        params.permit(:name, :start_date, :end_date, :slug_id)
+        params.require(:campaign).permit(:name, :start_date, :end_date, :slug_id, :media_id, :tag_id)
       end
     end
   end

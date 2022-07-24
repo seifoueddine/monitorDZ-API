@@ -13,6 +13,9 @@
 #  end_date   :datetime
 #
 class Campaign < ApplicationRecord
+  attr_accessor :media_id
+  attr_accessor :tag_id
+  validates :name, format: {with: /[a-zA-Z]/}
   belongs_to :slug
   has_many :campaign_sectors
   has_many :sectors, through: :campaign_sectors

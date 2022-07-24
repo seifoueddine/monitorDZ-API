@@ -46,9 +46,9 @@ module Api
         @slug.destroy
       end
 
-      def destroy_all
-        Slug.where(id: params[:ids]).destroy_all
-      end
+      # def destroy_all
+      #   Slug.where(id: params[:ids]).destroy_all
+      # end
 
       private
 

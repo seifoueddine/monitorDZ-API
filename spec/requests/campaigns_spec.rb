@@ -18,12 +18,23 @@ RSpec.describe '/campaigns', type: :request do
   # This should return the minimal set of attributes required to create a valid
   # Campaign. As you add validations to Campaign, be sure to
   # adjust the attributes here as well.
+  before(:all) do
+    @user = FactoryBot.create(:user)
+    sign_in @user
+  end
+  let(:auth_headers) { @user.create_new_auth_token }
+
   let(:valid_attributes) do
-    skip('Add a hash of attributes valid for your model')
+      {
+        name: 'Campaign one',
+        slug_id: @user.slug_id
+      }
   end
 
   let(:invalid_attributes) do
-    skip('Add a hash of attributes invalid for your model')
+    {
+      name: 321
+    }
   end
 
   # This should return the minimal set of values that should be in the headers
@@ -31,21 +42,47 @@ RSpec.describe '/campaigns', type: :request do
   # CampaignsController, or in your router and rack
   # middleware. Be sure to keep this updated too.
   let(:valid_headers) do
-    {}
+    {
+      'Uid' => auth_headers['uid'],
+      'Access-Token' => auth_headers['access-token'],
+      'Client' => auth_headers['client'],
+      'slug-id' => @user.slug_id
+    }
+  end
+  let(:invalid_headers) do
+    {
+      'Uid' => auth_headers['uid']
+    }
   end
 
   describe 'GET /index' do
     it 'renders a successful response' do
       Campaign.create! valid_attributes
-      get campaigns_url, headers: valid_headers, as: :json
+      get '/api/v1/campaigns', headers: valid_headers, as: :json
       expect(response).to be_successful
     end
+
+    it 'renders a unauthorized status' do
+      Campaign.create! valid_attributes
+      get '/api/v1/campaigns', headers: invalid_headers, as: :json
+      expect(response).to have_http_status(:unauthorized)
+    end
+
+
+
+    it 'renders a successful response with search ' do
+      Campaign.create! valid_attributes
+      get '/api/v1/campaigns?search=Campaign one',  headers: valid_headers, as: :json
+      result =  JSON.parse(response.body)
+      expect(result['data'].count).to eq(1)
+    end
+
   end
 
   describe 'GET /show' do
     it 'renders a successful response' do
       campaign = Campaign.create! valid_attributes
-      get campaign_url(campaign), as: :json
+      get "/api/v1/campaigns/#{campaign.id}", headers: valid_headers, as: :json
       expect(response).to be_successful
     end
   end
@@ -54,13 +91,71 @@ RSpec.describe '/campaigns', type: :request do
     context 'with valid parameters' do
       it 'creates a new Campaign' do
         expect do
-          post campaigns_url,
+          post '/api/v1/campaigns',
                params: { campaign: valid_attributes }, headers: valid_headers, as: :json
         end.to change(Campaign, :count).by(1)
       end
 
+
+      let(:medium_valid_attributes) do
+        {
+          name: 'Elkhabar',
+          url_crawling: 'www.elkhabar.com'
+        }
+      end
+
+      let(:medium_valid_attributes2) do
+        {
+          name: 'Elkhabar2',
+          url_crawling: 'www.elkhabar.com'
+        }
+      end
+
+      let(:valid_attributes_with_medium) do
+        {
+          name: 'Campaign one',
+          slug_id: @user.slug_id,
+          media_id: "#{@medium.id.to_s},#{@medium2.id.to_s}",
+        }
+      end
+
+      let(:tag_valid_attributes) do
+        {
+          name: 'tag 1'
+        }
+      end
+
+      let(:valid_attributes_with_tag) do
+        {
+          name: 'Campaign one',
+          slug_id: @user.slug_id,
+          tag_id: @tag.id.to_s,
+        }
+      end
+
+      it 'creates a new Campaign with medium params' do
+        @medium = Medium.create! medium_valid_attributes
+        @medium2 = Medium.create! medium_valid_attributes2
+          post '/api/v1/campaigns',
+               params: { campaign: valid_attributes_with_medium }, headers: valid_headers, as: :json
+        expect(Campaign.first.media.count).to eq(2)
+      end
+
+
+      it 'creates a new Campaign with tags params' do
+        @tag = Tag.create! tag_valid_attributes
+   
+        #binding.pry
+          post '/api/v1/campaigns',
+               params: { campaign: valid_attributes_with_tag }, headers: valid_headers, as: :json
+          expect(Campaign.first.tags.count).to eq(1)
+        # result =  JSON.parse(response.body)
+      end
+
+
+
       it 'renders a JSON response with the new campaign' do
-        post campaigns_url,
+        post '/api/v1/campaigns',
              params: { campaign: valid_attributes }, headers: valid_headers, as: :json
         expect(response).to have_http_status(:created)
         expect(response.content_type).to match(a_string_including('application/json'))
@@ -70,16 +165,16 @@ RSpec.describe '/campaigns', type: :request do
     context 'with invalid parameters' do
       it 'does not create a new Campaign' do
         expect do
-          post campaigns_url,
+          post '/api/v1/campaigns',
                params: { campaign: invalid_attributes }, as: :json
         end.to change(Campaign, :count).by(0)
       end
 
       it 'renders a JSON response with errors for the new campaign' do
-        post campaigns_url,
+        post '/api/v1/campaigns',
              params: { campaign: invalid_attributes }, headers: valid_headers, as: :json
         expect(response).to have_http_status(:unprocessable_entity)
-        expect(response.content_type).to eq('application/json')
+        expect(response.content_type).to eq('application/json; charset=utf-8')
       end
     end
   end
@@ -87,20 +182,71 @@ RSpec.describe '/campaigns', type: :request do
   describe 'PATCH /update' do
     context 'with valid parameters' do
       let(:new_attributes) do
-        skip('Add a hash of attributes valid for your model')
+        {
+          name: 'Campaign edit name'
+        }
       end
 
       it 'updates the requested campaign' do
         campaign = Campaign.create! valid_attributes
-        patch campaign_url(campaign),
+        patch "/api/v1/campaigns/#{campaign.id}",
               params: { campaign: new_attributes }, headers: valid_headers, as: :json
         campaign.reload
-        skip('Add assertions for updated state')
+        expect(campaign.attributes).to include( { "name" => 'Campaign edit name' } )
+      end
+
+      let(:medium_valid_attributes) do
+        {
+          name: 'Elkhabar',
+          url_crawling: 'www.elkhabar.com'
+        }
+      end
+
+      let(:valid_attributes_with_medium) do
+        {
+          name: 'Campaign one',
+          slug_id: @user.slug_id,
+          media_id: @medium.id.to_s,
+        }
+      end
+
+      let(:tag_valid_attributes) do
+        {
+          name: 'tag 1'
+        }
+      end
+
+      let(:valid_attributes_with_tag) do
+        {
+          name: 'Campaign one',
+          slug_id: @user.slug_id,
+          tag_id: @tag.id.to_s,
+        }
+      end
+
+
+      it 'updates the requested campaign with new medium' do
+        @medium = Medium.create! medium_valid_attributes
+        campaign = Campaign.create! valid_attributes
+        patch "/api/v1/campaigns/#{campaign.id}",
+              params: { campaign: valid_attributes_with_medium }, headers: valid_headers, as: :json
+        campaign.reload
+        expect(Campaign.first.media.count).to eq(1)
+      end
+
+
+      it 'updates the requested campaign with new tag' do
+        @tag = Tag.create! tag_valid_attributes
+        campaign = Campaign.create! valid_attributes
+        patch "/api/v1/campaigns/#{campaign.id}",
+              params: { campaign: valid_attributes_with_tag }, headers: valid_headers, as: :json
+        campaign.reload
+        expect(Campaign.first.tags.count).to eq(1)
       end
 
       it 'renders a JSON response with the campaign' do
         campaign = Campaign.create! valid_attributes
-        patch campaign_url(campaign),
+        patch "/api/v1/campaigns/#{campaign.id}",
               params: { campaign: new_attributes }, headers: valid_headers, as: :json
         expect(response).to have_http_status(:ok)
         expect(response.content_type).to match(a_string_including('application/json'))
@@ -110,10 +256,10 @@ RSpec.describe '/campaigns', type: :request do
     context 'with invalid parameters' do
       it 'renders a JSON response with errors for the campaign' do
         campaign = Campaign.create! valid_attributes
-        patch campaign_url(campaign),
+        patch "/api/v1/campaigns/#{campaign.id}",
               params: { campaign: invalid_attributes }, headers: valid_headers, as: :json
         expect(response).to have_http_status(:unprocessable_entity)
-        expect(response.content_type).to eq('application/json')
+        expect(response.content_type).to eq('application/json; charset=utf-8')
       end
     end
   end
@@ -122,7 +268,7 @@ RSpec.describe '/campaigns', type: :request do
     it 'destroys the requested campaign' do
       campaign = Campaign.create! valid_attributes
       expect do
-        delete campaign_url(campaign), headers: valid_headers, as: :json
+        delete "/api/v1/campaigns/#{campaign.id}", headers: valid_headers, as: :json
       end.to change(Campaign, :count).by(-1)
     end
   end
