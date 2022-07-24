@@ -144,68 +144,69 @@ RSpec.describe '/list_users', type: :request do
         expect(response.content_type).to match(a_string_including('application/json'))
       end
 
-    # context 'Update list user articles ' do
-    #   let(:medium_valid_attributes) do
-    #     {
-    #       name: 'Elkhabar',
-    #       url_crawling: 'www.elkhabar.com'
-    #     }
-    #   end
+    context 'Update list user articles ' do
+      let(:medium_valid_attributes) do
+        {
+          name: 'Elkhabar',
+          url_crawling: 'www.elkhabar.com'
+        }
+      end
 
-    #   let(:author_valid_attributes) do
-    #     {
-    #       name: 'Mohamed Salim',
-    #     }
-    #   end
+      let(:author_valid_attributes) do
+        {
+          name: 'Mohamed Salim',
+        }
+      end
 
-    #   let(:article_valid_attributes) do
-    #     {
-    #       title: 'Campaign Name',
-    #       medium_id: @medium.id,
-    #       author_id: @author.id,
-    #     }
-    #   end
-    #   let(:delete_article)do
-    #   { delete_article_id: @article.id }
-    #   end
-    #   it 'delete article from list user articles' do
+      let(:article_valid_attributes) do
+        {
+          title: 'Campaign Name',
+          medium_id: @medium.id,
+          author_id: @author.id,
+        }
+      end
+      let(:delete_article)do
+      { delete_article_id: @article.id }
+      end
+      let(:add_article)do
+      { article_id: @article.id.to_s }
+      end
+      it 'delete article from list user articles' do
       
-    #     @medium = Medium.create! medium_valid_attributes
-    #     @author = Author.create! author_valid_attributes
-    #     @article = Article.create! article_valid_attributes
-    #     @list_user = ListUser.create! valid_attributes
-    #     @list_user.articles = Article.where(id: @article.id)
+        @medium = Medium.create! medium_valid_attributes
+        @author = Author.create! author_valid_attributes
+        @article = Article.create! article_valid_attributes
+        @list_user = ListUser.create! valid_attributes
+        @list_user.articles = Article.where(id: @article.id)
     
+        expect do 
+        put "/api/v1/list_users/#{@list_user.id}", params: {list_user: delete_article}, headers: valid_headers, as: :json
         
-    #     put "/api/v1/list_users/#{@list_user.id}", params: {list_user: delete_article}, headers: valid_headers, as: :json
         
-        
-    #    # @list_user.list_articles.reload
-    #    # result = @list_user.list_articles.where(article_id: @article.id).count
-    #    # binding.pry
-    #    result =  JSON.parse(response.body)
-    #    expect(result).to eq(0)
-    #   end
+       # @list_user.list_articles.reload
+       # result = @list_user.list_articles.where(article_id: @article.id).count
+       # binding.pry
+     
+      end.to change(ListUser.first.articles, :count).by(-1)
+      end
 
 
      
-    #   # it 'delete article from list user articles' do
+      it 'delete article from list user articles' do
         
-    #   #   @medium = Medium.create! medium_valid_attributes
-    #   #   @author = Author.create! author_valid_attributes
-    #   #   @article = Article.create! article_valid_attributes
-    #   #   list_user = ListUser.create! valid_attributes
-    #   #   list_user.articles = Article.where(id: @article.id)
+        @medium = Medium.create! medium_valid_attributes
+        @author = Author.create! author_valid_attributes
+        @article = Article.create! article_valid_attributes
+        list_user = ListUser.create! valid_attributes
+        # list_user.articles = Article.where(id: @article.id)
    
          
-    #   #   expect do
-    #   #     put "/api/v1/list_users/#{list_user.id}", params: {list_user: ad_article}, headers: valid_headers, as: :json
-    #   #   end
-    #   #   result =  list_user.articles.count
-    #   #   expect(result).to eq(1)
-    #   # end
+        expect do
+          put "/api/v1/list_users/#{list_user.id}", params: {list_user: add_article}, headers: valid_headers, as: :json
+        end.to  change(ListUser.first.articles, :count).by(1)
+      end
 
-    # end
+    end
 
     end
 

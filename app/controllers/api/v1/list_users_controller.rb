@@ -46,25 +46,25 @@ module Api
       def update
         if @list_user.update(list_user_params)
 
-          if params[:delete_article_id].present?
+          if list_user_params[:delete_article_id].present?
 
             oldIds = @list_user.articles.map(&:id)
             newIds = []
-            old_id_mod = oldIds.delete_if { |v| v.to_i == params[:delete_article_id].to_i }
+            old_id_mod = oldIds.delete_if { |v| v.to_i == list_user_params[:delete_article_id].to_i }
             @list_user.articles.clear
             @articles = Article.where(id: old_id_mod)
-            @list_user.articles << @articles
+            @list_user.articles = @articles
             # @list_user.list_articles.where(article_id: params[:delete_article_id]).destroy_all
              # article = @list_user.articles.find(params[:delete_article_id])
              # @list_user.articles.delete(article)
 
-          elsif params[:article_id].present?
+          elsif list_user_params[:article_id].present?
             oldIds = @list_user.articles.map(&:id)
             @list_user.articles.clear
-            ids = params[:article_id].split(',')
-            @article = if ids.length != 1
-                       end
-            Article.where(id: ids + oldIds)
+            ids = list_user_params[:article_id].split(',')
+            # @article = if ids.length != 1
+            #            end
+            @article = Article.where(id: ids + oldIds)
             @list_user.articles = @article
           end
 
@@ -88,7 +88,7 @@ module Api
 
       # Only allow a trusted parameter "white list" through.
       def list_user_params
-        params.require(:list_user).permit(:name, :user_id, :image, :delete_article_id)
+        params.require(:list_user).permit(:name, :user_id, :image, :delete_article_id,:article_id)
       end
     end
   end
