@@ -8,11 +8,11 @@ module Api
 
       # GET /users
       def index
-        @users = if params[:search].blank?
+        @users = if params[:search].present?
                    User.order(order_and_direction).page(page).per(per_page)
+                   .where(['lower(name) like ?', "%#{params[:search].downcase}%"])
                  else
-                   User.order(order_and_direction).page(page).per(per_page)
-                       .where(['lower(name) like ?', "%#{params[:search].downcase}%"])
+                  User.order(order_and_direction).page(page).per(per_page)
                  end
         set_pagination_headers :users
         json_string = UserSerializer.new(@users, include: [:slug]).serializable_hash.to_json
@@ -71,7 +71,7 @@ module Api
 
       # Only allow a trusted parameter "white list" through.
       def user_params
-        params.permit(:email, :password, :name, :created_at, :updated_at, :role,
+        params.require(:user).permit(:email, :password, :name, :created_at, :updated_at, :role,
                       :avatar, :slug_id)
       end
     end

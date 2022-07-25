@@ -18,34 +18,70 @@ RSpec.describe '/list_users', type: :request do
   # This should return the minimal set of attributes required to create a valid
   # ListUser. As you add validations to ListUser, be sure to
   # adjust the attributes here as well.
+  before(:all) do
+    @user = FactoryBot.create(:user)
+    sign_in @user
+  end
+
+  let(:auth_headers) { @user.create_new_auth_token }
   let(:valid_attributes) do
-    skip('Add a hash of attributes valid for your model')
+    {
+      name: "Salim's list",
+      user_id: @user.id
+    }
   end
 
   let(:invalid_attributes) do
-    skip('Add a hash of attributes invalid for your model')
+    {
+      name: 12345,
+      slug_id: nil
+    }
   end
 
   # This should return the minimal set of values that should be in the headers
   # in order to pass any filters (e.g. authentication) defined in
-  # ListUsersController, or in your router and rack
+  # UsersController, or in your router and rack
   # middleware. Be sure to keep this updated too.
   let(:valid_headers) do
-    {}
+    {
+      'Uid' => auth_headers['uid'],
+      'Access-Token' => auth_headers['access-token'],
+      'Client' => auth_headers['client']
+    }
+  end
+
+  let(:invalid_headers) do
+    {
+      'Uid' => auth_headers['uid']
+    }
   end
 
   describe 'GET /index' do
     it 'renders a successful response' do
       ListUser.create! valid_attributes
-      get list_users_url, headers: valid_headers, as: :json
+      get '/api/v1/list_users', headers: valid_headers, as: :json
       expect(response).to be_successful
     end
+
+    it 'renders a unauthorized status' do
+      ListUser.create! valid_attributes
+      get '/api/v1/list_users', headers: invalid_headers, as: :json
+      expect(response).to have_http_status(:unauthorized)
+    end
+
+    it 'renders a successful response with search ' do
+      ListUser.create! valid_attributes
+      get "/api/v1/list_users?search=Salim's list",  headers: valid_headers, as: :json
+      result =  JSON.parse(response.body)
+      expect(result['data'].count).to eq(1)
+    end
+
   end
 
   describe 'GET /show' do
     it 'renders a successful response' do
       list_user = ListUser.create! valid_attributes
-      get list_user_url(list_user), as: :json
+      get "/api/v1/list_users/#{list_user.id}", headers: valid_headers, as: :json
       expect(response).to be_successful
     end
   end
@@ -54,13 +90,13 @@ RSpec.describe '/list_users', type: :request do
     context 'with valid parameters' do
       it 'creates a new ListUser' do
         expect do
-          post list_users_url,
+          post '/api/v1/list_users',
                params: { list_user: valid_attributes }, headers: valid_headers, as: :json
         end.to change(ListUser, :count).by(1)
       end
 
       it 'renders a JSON response with the new list_user' do
-        post list_users_url,
+        post '/api/v1/list_users',
              params: { list_user: valid_attributes }, headers: valid_headers, as: :json
         expect(response).to have_http_status(:created)
         expect(response.content_type).to match(a_string_including('application/json'))
@@ -70,16 +106,16 @@ RSpec.describe '/list_users', type: :request do
     context 'with invalid parameters' do
       it 'does not create a new ListUser' do
         expect do
-          post list_users_url,
+          post '/api/v1/list_users',
                params: { list_user: invalid_attributes }, as: :json
         end.to change(ListUser, :count).by(0)
       end
 
       it 'renders a JSON response with errors for the new list_user' do
-        post list_users_url,
+        post '/api/v1/list_users',
              params: { list_user: invalid_attributes }, headers: valid_headers, as: :json
         expect(response).to have_http_status(:unprocessable_entity)
-        expect(response.content_type).to eq('application/json')
+        expect(response.content_type).to eq('application/json; charset=utf-8')
       end
     end
   end
@@ -87,33 +123,100 @@ RSpec.describe '/list_users', type: :request do
   describe 'PATCH /update' do
     context 'with valid parameters' do
       let(:new_attributes) do
-        skip('Add a hash of attributes valid for your model')
+        {
+          name: "Omar's list"
+        }
       end
 
       it 'updates the requested list_user' do
         list_user = ListUser.create! valid_attributes
-        patch list_user_url(list_user),
+        patch "/api/v1/list_users/#{list_user.id}",
               params: { list_user: new_attributes }, headers: valid_headers, as: :json
         list_user.reload
-        skip('Add assertions for updated state')
+        expect(list_user.attributes).to include( { "name" => "Omar's list" } )
       end
 
       it 'renders a JSON response with the list_user' do
         list_user = ListUser.create! valid_attributes
-        patch list_user_url(list_user),
+        patch "/api/v1/list_users/#{list_user.id}",
               params: { list_user: new_attributes }, headers: valid_headers, as: :json
         expect(response).to have_http_status(:ok)
         expect(response.content_type).to match(a_string_including('application/json'))
       end
+
+    context 'Update list user articles ' do
+      let(:medium_valid_attributes) do
+        {
+          name: 'Elkhabar',
+          url_crawling: 'www.elkhabar.com'
+        }
+      end
+
+      let(:author_valid_attributes) do
+        {
+          name: 'Mohamed Salim',
+        }
+      end
+
+      let(:article_valid_attributes) do
+        {
+          title: 'Campaign Name',
+          medium_id: @medium.id,
+          author_id: @author.id,
+        }
+      end
+      let(:delete_article)do
+      { delete_article_id: @article.id }
+      end
+      let(:add_article)do
+      { article_id: @article.id.to_s }
+      end
+      it 'delete article from list user articles' do
+      
+        @medium = Medium.create! medium_valid_attributes
+        @author = Author.create! author_valid_attributes
+        @article = Article.create! article_valid_attributes
+        @list_user = ListUser.create! valid_attributes
+        @list_user.articles = Article.where(id: @article.id)
+    
+        expect do 
+        put "/api/v1/list_users/#{@list_user.id}", params: {list_user: delete_article}, headers: valid_headers, as: :json
+        
+        
+       # @list_user.list_articles.reload
+       # result = @list_user.list_articles.where(article_id: @article.id).count
+       # binding.pry
+     
+      end.to change(ListUser.first.articles, :count).by(-1)
+      end
+
+
+     
+      it 'delete article from list user articles' do
+        
+        @medium = Medium.create! medium_valid_attributes
+        @author = Author.create! author_valid_attributes
+        @article = Article.create! article_valid_attributes
+        list_user = ListUser.create! valid_attributes
+        # list_user.articles = Article.where(id: @article.id)
+   
+         
+        expect do
+          put "/api/v1/list_users/#{list_user.id}", params: {list_user: add_article}, headers: valid_headers, as: :json
+        end.to  change(ListUser.first.articles, :count).by(1)
+      end
+
+    end
+
     end
 
     context 'with invalid parameters' do
       it 'renders a JSON response with errors for the list_user' do
         list_user = ListUser.create! valid_attributes
-        patch list_user_url(list_user),
+        patch "/api/v1/list_users/#{list_user.id}",
               params: { list_user: invalid_attributes }, headers: valid_headers, as: :json
         expect(response).to have_http_status(:unprocessable_entity)
-        expect(response.content_type).to eq('application/json')
+        expect(response.content_type).to eq('application/json; charset=utf-8')
       end
     end
   end
@@ -122,7 +225,7 @@ RSpec.describe '/list_users', type: :request do
     it 'destroys the requested list_user' do
       list_user = ListUser.create! valid_attributes
       expect do
-        delete list_user_url(list_user), headers: valid_headers, as: :json
+        delete "/api/v1/list_users/#{list_user.id}", headers: valid_headers, as: :json
       end.to change(ListUser, :count).by(-1)
     end
   end

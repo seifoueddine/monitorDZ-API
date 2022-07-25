@@ -11,6 +11,7 @@
 #
 class Slug < ApplicationRecord
   validates_uniqueness_of :name
+  validates :name, format: {with: /[a-zA-Z]/}
   has_many :users
   has_many :campaigns
 end

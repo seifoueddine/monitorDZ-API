@@ -35,6 +35,9 @@
 class User < ActiveRecord::Base
   # Include default devise modules. Others available are:
   # :confirmable, :lockable, :timeoutable and :omniauthable
+  REGEX_PATTERN = /(.+)@(.+)/
+  validates :name, format: {with: /[a-zA-Z]/}
+  validates :email, format: {with: REGEX_PATTERN}
   extend Devise::Models # added this line to extend devise model
   devise :database_authenticatable, :registerable,
          :recoverable, :rememberable, :trackable, :validatable

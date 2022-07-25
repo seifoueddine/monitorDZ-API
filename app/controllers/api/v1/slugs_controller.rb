@@ -46,9 +46,9 @@ module Api
         @slug.destroy
       end
 
-      def destroy_all
-        Slug.where(id: params[:ids]).destroy_all
-      end
+      # def destroy_all
+      #   Slug.where(id: params[:ids]).destroy_all
+      # end
 
       private
 
@@ -59,16 +59,17 @@ module Api
 
       # Only allow a trusted parameter "white list" through.
       def slug_params
-        params.permit(:name)
+        params.require(:slug).permit(:name)
       end
 
       # fet slugs
       def fetch_slugs
-        if params[:search].blank?
-          Slug.order(order_and_direction).page(page).per(per_page)
-        else
+        if params[:search].present?
           search_slugs
+        else
+          Slug.order(order_and_direction).page(page).per(per_page)
         end
+       
       end
 
       # search slugs

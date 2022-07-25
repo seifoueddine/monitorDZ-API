@@ -9,12 +9,12 @@ module Api
       # GET /media
       def index
         @media =
-          if params[:search].blank?
-            Medium.order(order_and_direction).page(page).per(per_page)
-          else
+          if params[:search].present?
             Medium.order(order_and_direction).page(page).per(per_page)
                   .where(['lower(name) like ? ',
                           "%#{params[:search].downcase}%"])
+          else
+            Medium.order(order_and_direction).page(page).per(per_page)
           end
         set_pagination_headers :media
         json_string = MediumSerializer.new(@media, include: [:sectors]).serializable_hash.to_json
@@ -80,9 +80,9 @@ module Api
         end
       end
 
-      def destroy_all
-        Medium.where(id: params[:ids]).destroy_all
-      end
+      # def destroy_all
+      #   Medium.where(id: params[:ids]).destroy_all
+      # end
 
       private
 
@@ -93,7 +93,7 @@ module Api
 
       # Only allow a trusted parameter "white list" through.
       def medium_params
-        params.permit(:name, :media_type, :orientation, :last_article,
+        params.require(:medium).permit(:name, :media_type, :orientation, :last_article,
                       :url_crawling, :avatar, :language, :zone, :tag_status)
       end
     end

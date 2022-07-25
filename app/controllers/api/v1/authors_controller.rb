@@ -76,7 +76,7 @@ module Api
 
       # Only allow a trusted parameter "white list" through.
       def author_params
-        params.permit(:name, :medium_id, :articles_count)
+        params.require(:author).permit(:name, :medium_id, :articles_count)
       end
 
       # get_authors

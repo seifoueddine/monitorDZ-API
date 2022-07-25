@@ -12,6 +12,9 @@
 #  image      :string
 #
 class ListUser < ApplicationRecord
+  attr_accessor :delete_article_id
+  attr_accessor :article_id
+  validates :name, format: {with: /[a-zA-Z]/}
   belongs_to :user
   has_many :list_articles
   has_many :articles, through: :list_articles
