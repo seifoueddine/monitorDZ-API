@@ -47,7 +47,7 @@ module Api
           #            Medium.where(id: campaign_params[:media_id])
           #          end
           @media =   Medium.where(id: madia_ids)
-          @campaign.media = @media
+          @campaign.media << @media
           
         end
 
@@ -62,7 +62,7 @@ module Api
         pp tag_ids
         @tag =  Tag.where(id: tag_ids)
         pp @tag
-        @campaign.tags = @tag
+        @campaign.tags << @tag
         end
        # @campaign.sectors = @sector
         if @campaign.save
