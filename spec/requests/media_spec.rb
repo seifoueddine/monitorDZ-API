@@ -91,13 +91,13 @@ RSpec.describe '/media', type: :request do
       it 'creates a new Medium' do
         expect do
           post '/api/v1/media',
-               params: { medium: valid_attributes }, headers: valid_headers, as: :json
+               params:  valid_attributes , headers: valid_headers, as: :json
         end.to change(Medium, :count).by(1)
       end
 
       it 'renders a JSON response with the new medium' do
         post '/api/v1/media',
-             params: { medium: valid_attributes }, headers: valid_headers, as: :json
+             params:  valid_attributes , headers: valid_headers, as: :json
         expect(response).to have_http_status(:created)
         expect(response.content_type).to match(a_string_including('application/json'))
       end
@@ -107,13 +107,13 @@ RSpec.describe '/media', type: :request do
       it 'does not create a new Medium' do
         expect do
           post '/api/v1/media',
-               params: { medium: invalid_attributes }, as: :json
+               params: invalid_attributes , as: :json
         end.to change(Medium, :count).by(0)
       end
 
       it 'renders a JSON response with errors for the new medium' do
         post '/api/v1/media',
-             params: { medium: invalid_attributes }, headers: valid_headers, as: :json
+             params:  invalid_attributes , headers: valid_headers, as: :json
         expect(response).to have_http_status(:unprocessable_entity)
         expect(response.content_type).to eq('application/json; charset=utf-8')
       end
