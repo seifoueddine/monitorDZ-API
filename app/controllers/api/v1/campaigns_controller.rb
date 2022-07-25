@@ -46,9 +46,11 @@ module Api
           #          else
           #            Medium.where(id: campaign_params[:media_id])
           #          end
-          @media =   Medium.where(id: madia_ids)
+          @media = Medium.where(id: madia_ids)
+          pp @media
           @campaign.media << @media
-          
+          pp '**************'
+          pp @campaign.media
         end
 
         if campaign_params[:tag_id].present?
@@ -59,9 +61,7 @@ module Api
         #        else
         #          Tag.where(id: params[:tag_id])
         #        end
-        pp tag_ids
         @tag =  Tag.where(id: tag_ids)
-        pp @tag
         @campaign.tags << @tag
         end
        # @campaign.sectors = @sector
