@@ -11,6 +11,9 @@ SimpleCov.start :rails  do
   #add_filter 'app/serializers/'
   add_filter 'app/controllers/api/v1/articles_controller.rb'
   add_filter 'app/controllers/api/v1/sectors_controller.rb'
+  add_filter 'app/channels/application_cable'
+  add_filter 'app/controllers/api/v1/application_controller.rb'
+  add_filter 'app/jobs/application_job.rb'
   # add_filter '/config/'
   # add_filter '/vendor/'
   
