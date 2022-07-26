@@ -46,11 +46,11 @@ module Api
       def update
         if @list_user.update(list_user_params)
 
-          if list_user_params[:delete_article_id].present?
+          if params[:delete_article_id].present?
 
             oldIds = @list_user.articles.map(&:id)
             newIds = []
-            old_id_mod = oldIds.delete_if { |v| v.to_i == list_user_params[:delete_article_id].to_i }
+            old_id_mod = oldIds.delete_if { |v| v.to_i == params[:delete_article_id].to_i }
             @list_user.articles.clear
             @articles = Article.where(id: old_id_mod)
             @list_user.articles = @articles
@@ -58,10 +58,10 @@ module Api
              # article = @list_user.articles.find(params[:delete_article_id])
              # @list_user.articles.delete(article)
 
-          elsif list_user_params[:article_id].present?
+          elsif params[:article_id].present?
             oldIds = @list_user.articles.map(&:id)
             @list_user.articles.clear
-            ids = list_user_params[:article_id].split(',')
+            ids = params[:article_id].split(',')
             # @article = if ids.length != 1
             #            end
             @article = Article.where(id: ids + oldIds)

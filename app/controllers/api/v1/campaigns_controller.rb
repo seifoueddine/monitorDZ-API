@@ -75,7 +75,12 @@ module Api
       # PATCH/PUT /campaigns/1
       def update
         if @campaign.update(campaign_params)
-
+          pp "----------------"
+          pp campaign_params
+          pp "----------------"
+          pp "++++++++++++++++"
+          pp params
+          pp "++++++++++++++++"
          # @campaign.media.clear
         #  @campaign.sectors.clear
          
