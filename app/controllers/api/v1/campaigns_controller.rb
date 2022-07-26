@@ -39,10 +39,10 @@ module Api
         #           else
         #             Sector.where(id: params[:sector_id])
         #           end
-        campaign_params[:media_id] ||= params[:media_id]
-        campaign_params[:tag_id] ||= params[:tag_id]
-        if campaign_params[:media_id].present?
-          madia_ids = campaign_params[:media_id].split(',')
+        # campaign_params[:media_id] ||= params[:media_id]
+        # campaign_params[:tag_id] ||= params[:tag_id]
+        if params[:media_id].present?
+          madia_ids = params[:media_id].split(',')
           # @media = if madia_ids.length != 1
           #            Medium.where(id: madia_ids)
           #          else
@@ -50,21 +50,19 @@ module Api
           #          end
           @media = Medium.where(id: madia_ids)
           pp @media
-          @campaign.media << @media
-          pp '**************'
-          pp @campaign.media
+          @campaign.media = @media
         end
 
-        if campaign_params[:tag_id].present?
+        if params[:tag_id].present?
 
-         tag_ids = campaign_params[:tag_id].split(',')
-        #  @tag = if tag_ids.length != 1
-        #          Tag.where(id: tag_ids)
-        #        else
-        #          Tag.where(id: params[:tag_id])
-        #        end
-        @tag =  Tag.where(id: tag_ids)
-        @campaign.tags << @tag
+         tag_ids = params[:tag_id].split(',')
+         #  @tag = if tag_ids.length != 1
+         #          Tag.where(id: tag_ids)
+         #        else
+          #          Tag.where(id: params[:tag_id])
+         #        end
+         @tag =  Tag.where(id: tag_ids)
+         @campaign.tags = @tag
         end
        # @campaign.sectors = @sector
         if @campaign.save
@@ -87,11 +85,11 @@ module Api
           #           else
           #             Sector.where(id: params[:sector_id])
           #           end
-          campaign_params[:media_id] ||= params[:media_id]
-          campaign_params[:tag_id] ||= params[:tag_id]
-          if campaign_params[:media_id].present?
+          # campaign_params[:media_id] ||= params[:media_id]
+          # campaign_params[:tag_id] ||= params[:tag_id]
+          if params[:media_id].present?
             @campaign.media.clear
-            madia_ids = campaign_params[:media_id].split(',')
+            madia_ids = params[:media_id].split(',')
             # @media = if madia_ids.length != 1
             #          Medium.where(id: madia_ids)
             #        else
@@ -101,9 +99,9 @@ module Api
             @campaign.media = @media
           end
         
-          if campaign_params[:tag_id].present?
+          if params[:tag_id].present?
           @campaign.tags.clear
-          tag_ids = campaign_params[:tag_id].split(',')
+          tag_ids = params[:tag_id].split(',')
           # @tag = if tag_ids.length != 1
           #          Tag.where(id: tag_ids)
           #        else
