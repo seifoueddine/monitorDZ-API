@@ -39,6 +39,8 @@ module Api
         #           else
         #             Sector.where(id: params[:sector_id])
         #           end
+        campaign_params[:media_id] ||= params[:media_id]
+        campaign_params[:tag_id] ||= params[:tag_id]
         if campaign_params[:media_id].present?
           madia_ids = campaign_params[:media_id].split(',')
           # @media = if madia_ids.length != 1
@@ -85,7 +87,9 @@ module Api
           #           else
           #             Sector.where(id: params[:sector_id])
           #           end
-          if campaign_params[:media_id].present? || params[:media_id].present?
+          campaign_params[:media_id] ||= params[:media_id]
+          campaign_params[:tag_id] ||= params[:tag_id]
+          if campaign_params[:media_id].present?
             @campaign.media.clear
             madia_ids = campaign_params[:media_id].split(',')
             # @media = if madia_ids.length != 1
@@ -96,8 +100,8 @@ module Api
                    @media = Medium.where(id: madia_ids)
             @campaign.media = @media
           end
-
-          if campaign_params[:tag_id].present? || params[:tag_id].present?
+        
+          if campaign_params[:tag_id].present?
           @campaign.tags.clear
           tag_ids = campaign_params[:tag_id].split(',')
           # @tag = if tag_ids.length != 1
