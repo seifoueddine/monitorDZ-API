@@ -2,7 +2,7 @@ module Articles
   module Crawling
     class Ennahar
         class << self 
-            def get_articles_ennahar(url_media_array)
+            def get_articles_ennahar(url_media_array, media)
                 articles_url_ennahar = []
                 last_dates = []
                 url_media_array.map do |url|
@@ -27,7 +27,7 @@ module Articles
                 last_dates = last_dates.map { |d| d.to_datetime.change({ hour: 0, min: 0, sec: 0 }) + (1.0 / 24) }
                 articles_url_ennahar = articles_url_ennahar.reject(&:nil?)
                 last_dates = last_dates.uniq
-                last_articles = Article.where(medium_id: @media.id).where(date_published: last_dates)
+                last_articles = Article.where(medium_id: media.id).where(date_published: last_dates)
                 list_articles_url = []
                 last_articles.map do |article|
                   list_articles_url << article.url_article
@@ -45,8 +45,8 @@ module Articles
         
                   new_article = Article.new
                   new_article.url_article = link
-                  new_article.medium_id = @media.id
-                  new_article.language = @media.language
+                  new_article.medium_id = media.id
+                  new_article.language = media.language
                   new_article.category_article = article.css('div.sgb1__acat a').text
                   new_article.title = article.css('h1.sgb1__attl').text
                   # new_article.author = article.css('div.article-head__author div em a').text
@@ -58,7 +58,7 @@ module Articles
                   if author_exist.count.zero?
         
                     new_author.name = article.at('div.sgb1__aath a').text
-                    new_author.medium_id = @media.id
+                    new_author.medium_id = media.id
                     new_author.save!
                     new_article.author_id = new_author.id
                   else

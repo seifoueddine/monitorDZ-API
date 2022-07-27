@@ -516,7 +516,7 @@ module Api
         when 'ELCHEROUK'
           get_articles_elcherouk(url_media_array)
         when 'ENNAHAR'
-          Articles::Crawling::Ennahar.get_articles_ennahar(url_media_array)
+          Articles::Crawling::Ennahar.get_articles_ennahar(url_media_array, @media)
         when 'TSA'
           get_articles_tsa(url_media_array)
         when 'APS'
