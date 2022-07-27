@@ -1,5 +1,5 @@
 # frozen_string_literal: true
-require_relative 'paginated'
+require_relative 'export'
 module Api
   module V1
     # crawling articles
