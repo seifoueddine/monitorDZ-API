@@ -1,5 +1,5 @@
 # frozen_string_literal: true
-require_relative 'app/controllers/articles/export.rb'
+require_relative 'articles/export'
 module Api
   module V1
     # crawling articles
