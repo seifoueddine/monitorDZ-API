@@ -1,4 +1,5 @@
 module Articles
+  module Crawling
     class Ennahar
         class << self 
             def get_articles_ennahar(url_media_array)
@@ -88,4 +89,5 @@ module Articles
               end
         end    
     end
+  end  
 end
