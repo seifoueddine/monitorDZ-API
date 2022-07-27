@@ -64,7 +64,7 @@ module Articles
                     </div>
                   </body>
                 </html>'
-              end
+            end
         
             def get_html_ar(article)
                 '<!DOCTYPE html>
