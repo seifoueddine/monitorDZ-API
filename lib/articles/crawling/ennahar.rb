@@ -1,7 +1,8 @@
 module Articles
   module Crawling
     class Ennahar
-        class << self 
+        class << self
+          include AbstractController::Rendering 
             def get_articles_ennahar(url_media_array, media)
                 articles_url_ennahar = []
                 last_dates = []
