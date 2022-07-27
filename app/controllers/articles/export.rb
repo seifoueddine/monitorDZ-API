@@ -1,8 +1,5 @@
 module Articles
-    
-      class Export
-        class << self
-
+    class Export < ActionController::API
             def get_html_fr(article)
                 '<!DOCTYPE html>
                 <html>
@@ -69,7 +66,7 @@ module Articles
                 </html>'
               end
         
-              def get_html_ar(article)
+            def get_html_ar(article)
                 '<!DOCTYPE html>
                 <html>
                   <head>
@@ -133,9 +130,6 @@ module Articles
                     </div>
                   </body>
                 </html>'
-              end
-
-        end
-      end
-    
-  end
+            end
+    end
+end

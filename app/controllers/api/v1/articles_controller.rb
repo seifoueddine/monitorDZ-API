@@ -5,7 +5,6 @@ module Api
     class ArticlesController < ::ApplicationController
       # before_action :authenticate_user! , except: :pdf_export
       before_action :set_article, only: %i[show update destroy]
-      require 'lib/articles/export'
       require 'nokogiri'
       require 'open-uri'
       require 'openssl'
@@ -337,7 +336,7 @@ module Api
       def pdf_export
         id = params[:id]
         @article = Article.find(id)
-        @html = @article.language == 'ar' ? Articles::Export.get_html_ar(@article) : Articles::Export.get_html_fr(@article)
+        @html = @article.language == 'ar' ? get_html_ar @article : get_html_fr @article
         pdf = WickedPdf.new.pdf_from_string(@html)
         send_data pdf, filename: "Article_#{@article.id}.pdf", type: 'application/pdf'
       end
