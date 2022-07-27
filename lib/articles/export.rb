@@ -1,8 +1,5 @@
 module Articles
     
-      ##
-      # ApiCore::HttpClient::Paginated define all possible errors that come from the NP6 api
-      ##
       class Export
         class << self
 
