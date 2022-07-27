@@ -75,12 +75,6 @@ module Api
       # PATCH/PUT /campaigns/1
       def update
         if @campaign.update(campaign_params)
-          pp "----------------"
-          pp campaign_params
-          pp "----------------"
-          pp "++++++++++++++++"
-          pp params
-          pp "++++++++++++++++"
          # @campaign.media.clear
         #  @campaign.sectors.clear
          
@@ -100,8 +94,10 @@ module Api
             #        else
             #          Medium.where(id: campaign_params[:media_id])
             #        end
-                   @media = Medium.where(id: madia_ids)
+            @media = Medium.where(id: madia_ids)
             @campaign.media = @media
+          else
+            render json: @campaign.errors, status: :unprocessable_entity
           end
         
           if params[:tag_id].present?
@@ -114,6 +110,8 @@ module Api
           #        end
           @tag = Tag.where(id: tag_ids)
           @campaign.tags = @tag
+          else
+            @campaign.tags.clear
           end       
          
        
