@@ -1,5 +1,5 @@
 # frozen_string_literal: true
-require 'lib/articles/export'
+require 'lib/articles/export.rb'
 module Api
   module V1
     # crawling articles
