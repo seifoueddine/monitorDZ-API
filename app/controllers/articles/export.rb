@@ -1,5 +1,6 @@
 module Articles
-    class Export < ActionController::API
+    class Export
+        class << self 
             def get_html_fr(article)
                 '<!DOCTYPE html>
                 <html>
@@ -131,5 +132,6 @@ module Articles
                   </body>
                 </html>'
             end
+          end    
     end
 end
