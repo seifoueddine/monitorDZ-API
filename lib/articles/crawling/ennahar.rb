@@ -86,7 +86,7 @@ module Articles
                   new_article.save!
                   # tag_check_and_save(tags_array)
                 end
-                return json: { crawling_status_ennahar: 'ok' }
+                return { crawling_status_ennahar: 'ok' }
               end
         end    
     end
