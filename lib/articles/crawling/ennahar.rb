@@ -1,7 +1,7 @@
 module Articles
   module Crawling
     class Ennahar
-        class << self
+        # class << self
           include AbstractController::Rendering 
             def get_articles_ennahar(url_media_array, media)
                 count = 0
@@ -90,7 +90,7 @@ module Articles
                 end
                 count
              end
-        end    
+        # end    
     end
   end  
 end
