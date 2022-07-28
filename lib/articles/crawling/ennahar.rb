@@ -4,6 +4,7 @@ module Articles
         class << self
           include AbstractController::Rendering 
             def get_articles_ennahar(url_media_array, media)
+                count = 0
                 articles_url_ennahar = []
                 last_dates = []
                 url_media_array.map do |url|
@@ -85,9 +86,10 @@ module Articles
                   new_article.status = 'pending'
                   new_article.save!
                   # tag_check_and_save(tags_array)
+                  count += 1 if new_article.save 
                 end
-                return { crawling_status_ennahar: 'ok' }
-              end
+                count
+             end
         end    
     end
   end  

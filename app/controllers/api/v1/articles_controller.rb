@@ -516,7 +516,7 @@ module Api
         when 'ELCHEROUK'
           get_articles_elcherouk(url_media_array)
         when 'ENNAHAR'
-          call_articles_ennahar_crawler(url_media_array, @media)
+          articles_ennahar_crawler(url_media_array, @media)
         when 'TSA'
           get_articles_tsa(url_media_array)
         when 'APS'
@@ -784,7 +784,8 @@ module Api
       # end method to get elcherouk articles
 
       def call_articles_ennahar_crawler(url_media_array, media)
-        render Articles::Crawling::Ennahar.get_articles_ennahar(url_media_array, media)
+        count = Articles::Crawling::Ennahar.get_articles_ennahar(url_media_array, media)
+        render json: { crawling_ennahar: count }
       end  
 
       # start method to get ennahar articles
