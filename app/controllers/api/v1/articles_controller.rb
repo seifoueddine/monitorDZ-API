@@ -783,7 +783,7 @@ module Api
       end
       # end method to get elcherouk articles
 
-      def call_articles_ennahar_crawler(url_media_array, media)
+      def articles_ennahar_crawler(url_media_array, media)
         count = Articles::Crawling::Ennahar.get_articles_ennahar(url_media_array, media)
         render json: { crawling_ennahar: count }
       end  
