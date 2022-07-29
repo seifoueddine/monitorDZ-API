@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 require_relative '../../../../lib/articles/export'
 require_relative '../../../../lib/articles/crawling/ennahar'
+require_relative '../../../../lib/articles/crawling/elcherouk'
 module Api
   module V1
     # crawling articles
