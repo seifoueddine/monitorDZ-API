@@ -2,6 +2,7 @@
 require_relative '../../../../lib/articles/export'
 require_relative '../../../../lib/articles/crawling/ennahar'
 require_relative '../../../../lib/articles/crawling/elcherouk'
+require_relative '../../../../lib/articles/crawling/tsa'
 module Api
   module V1
     # crawling articles
@@ -519,7 +520,7 @@ module Api
         when 'ENNAHAR'
           articles_ennahar_crawler(url_media_array, @media)
         when 'TSA'
-          get_articles_tsa(url_media_array)
+          articles_tsa_crawler(url_media_array, @media)
         when 'APS'
           get_articles_aps(url_media_array)
         when 'APS-AR'
@@ -690,98 +691,6 @@ module Api
       # end method to get autobip articles
 
       # start method to get elcherouk articles
-      # def get_articles_elcherouk(url_media_array)
-      #   articles_url_cherouk = []
-      #   count = 0
-      #   url_media_array.map do |url|
-      #     # doc = Nokogiri::HTML(URI.open(url))
-
-      #     begin
-      #       doc = Nokogiri::HTML(URI.open(url))
-      #     rescue OpenURI::HTTPError => e
-      #       puts "Can't access #{url}"
-      #       puts e.message
-      #       puts
-      #       next
-      #     end
-
-      #     doc.css('section h3 a').map do |link|
-      #       articles_url_cherouk << link['href']
-      #     end
-      #   end
-      #   articles_url_cherouk = articles_url_cherouk.reject(&:nil?)
-      #   articles_url_cherouk_after_check = []
-      #   articles_url_cherouk.map do |link|
-      #     articles_url_cherouk_after_check << link unless Article.where(medium_id: @media.id,
-      #                                                                   url_article: link).present?
-      #   end
-      #   articles_url_cherouk_after_check.map do |link|
-      #     begin
-      #       article = Nokogiri::HTML(URI.open(link))
-      #     rescue OpenURI::HTTPError => e
-      #       puts "Can't access #{link}"
-      #       puts e.message
-      #       puts
-      #       next
-      #     rescue RuntimeError => e
-      #       puts "Can't access #{link}"
-      #       puts e.message
-      #       puts
-      #       next
-      #     end
-      #     new_article = Article.new
-      #     new_article.url_article = link
-      #     new_article.medium_id = @media.id
-      #     new_article.language = @media.language
-      #     new_article.category_article = article.css('article a.ech-bkbt._albk').text
-      #     new_article.title = article.css('article h1.ech-sgmn__title.ech-sgmn__sdpd').text
-      #     # new_article.author = article.css('div.article-head__author div em a').text
-
-      #     author_exist = Author.where(['lower(name) like ? ',
-      #                                  article.css('article div.d-f.fxd-c.ai-fs a').text.downcase])
-
-      #     new_author = Author.new
-      #     if author_exist.count.zero?
-
-      #       new_author.name = article.css('article div.d-f.fxd-c.ai-fs a').text
-      #       new_author.medium_id = @media.id
-      #       new_author.save!
-      #       new_article.author_id = new_author.id
-      #     else
-      #       new_article.author_id = author_exist.first.id
-
-      #     end
-      #     new_article.body = article.css('article div.ech-artx').inner_html
-      #     new_article.body = new_article.body.gsub(/<img[^>]*>/, '')
-
-      #     date = DateTime.parse article.css('article.ech-sgmn__article time').text
-      #     new_article.date_published = date.to_datetime.change({ hour: 0, min: 0, sec: 0 })
-
-      #     unless article.at_css('article.ech-sgmn__article figure img').nil?
-      #       url_array = article.at_css('article.ech-sgmn__article figure img').attr('data-src')
-      #     end
-      #     new_article.url_image = url_array
-
-      #     # new_article.image = Down.download(url_array[0]) if url_array[0].present?
-
-      #     begin
-      #       new_article.image = Down.download(url_array) if url_array.present?
-      #     rescue Down::ResponseError => e
-      #       puts "Can't download this image #{url_array}"
-      #       puts e.message
-      #       puts
-      #       new_article.image = nil
-      #     end
-
-      #     tags_array = article.css('ul.ech-sgmn__tgls.d-f.fxw-w.jc-fe a').map(&:text)
-      #     # new_article.media_tags = tags_array.join(',')
-      #     new_article.status = 'pending'
-      #     new_article.save!
-      #     count += 1 if new_article.save
-      #     # tag_check_and_save(tags_array)if @media.tag_status == true
-      #   end
-      #   render json: { crawling_count_elcherouk: count }
-      # end
       def articles_elcherouk_crawler(url_media_array, media)
         count = Articles::Crawling::Elcherouk.get_articles_elcherouk(url_media_array, media)
         render json: { crawling_elcherouk: count }
@@ -794,91 +703,95 @@ module Api
       end  
 
       # start method to get TSA articles
-      def get_articles_tsa(url_media_array)
-        articles_url_tsafr = []
-        last_dates = []
-        url_media_array.map do |url|
-          begin
-            doc = Nokogiri::HTML(URI.open(url))
-          rescue OpenURI::HTTPError => e
-            puts "Can't access #{url}"
-            puts e.message
-            puts
-            next
-          end
-          doc.css('h1.article-preview__title.title-middle.transition a').map do |link|
-            articles_url_tsafr << link['href'] # if link['class'] == 'main_article'
-          end
-          # doc.css('ul.article-horiz__meta li time').map do |date|
-          # last_dates << date.text
-          #   end
-        end
-        articles_url_tsafr = articles_url_tsafr.reject(&:nil?)
-        # last_dates = last_dates.uniq
-        last_articles = Article.where(medium_id: @media.id)
-        list_articles_url = []
-        last_articles.map do |article|
-          list_articles_url << article.url_article
-        end
-        articles_url_tsa_after_check = articles_url_tsafr - list_articles_url
-        articles_url_tsa_after_check.map do |link|
-          begin
-            article = Nokogiri::HTML(URI.open(link))
-          rescue OpenURI::HTTPError => e
-            puts "Can't access #{link}"
-            puts e.message
-            puts
-            next
-          end
-          new_article = Article.new
-          new_article.url_article = link
-          new_article.medium_id = @media.id
-          new_article.language = @media.language
-          new_article.category_article = article.css('div.article__meta a.article__meta-category').nil? ? article.css('div.anarticle__meta div a.article-meta__category').text : article.css('div.article__meta a.article__meta-category').text
-          new_article.title = article.css('div.article__title').nil? ? article.css('h2.anarticle__title span').text : article.css('div.article__title').text
-          # new_article.author = article.css('div.article-head__author div em a').text
+      # def get_articles_tsa(url_media_array)
+      #   articles_url_tsafr = []
+      #   last_dates = []
+      #   url_media_array.map do |url|
+      #     begin
+      #       doc = Nokogiri::HTML(URI.open(url))
+      #     rescue OpenURI::HTTPError => e
+      #       puts "Can't access #{url}"
+      #       puts e.message
+      #       puts
+      #       next
+      #     end
+      #     doc.css('h1.article-preview__title.title-middle.transition a').map do |link|
+      #       articles_url_tsafr << link['href'] # if link['class'] == 'main_article'
+      #     end
+      #     # doc.css('ul.article-horiz__meta li time').map do |date|
+      #     # last_dates << date.text
+      #     #   end
+      #   end
+      #   articles_url_tsafr = articles_url_tsafr.reject(&:nil?)
+      #   # last_dates = last_dates.uniq
+      #   last_articles = Article.where(medium_id: @media.id)
+      #   list_articles_url = []
+      #   last_articles.map do |article|
+      #     list_articles_url << article.url_article
+      #   end
+      #   articles_url_tsa_after_check = articles_url_tsafr - list_articles_url
+      #   articles_url_tsa_after_check.map do |link|
+      #     begin
+      #       article = Nokogiri::HTML(URI.open(link))
+      #     rescue OpenURI::HTTPError => e
+      #       puts "Can't access #{link}"
+      #       puts e.message
+      #       puts
+      #       next
+      #     end
+      #     new_article = Article.new
+      #     new_article.url_article = link
+      #     new_article.medium_id = @media.id
+      #     new_article.language = @media.language
+      #     new_article.category_article = article.css('div.article__meta a.article__meta-category').nil? ? article.css('div.anarticle__meta div a.article-meta__category').text : article.css('div.article__meta a.article__meta-category').text
+      #     new_article.title = article.css('div.article__title').nil? ? article.css('h2.anarticle__title span').text : article.css('div.article__title').text
+      #     # new_article.author = article.css('div.article-head__author div em a').text
 
-          author_exist = if article.at('span.article__meta-author').nil?
-                           Author.where(['lower(name) like ? ', 'TSA auteur'.downcase])
-                         else
-                           Author.where(['lower(name) like ? ',
-                                         article.at('span.article__meta-author').text.downcase])
-                         end
+      #     author_exist = if article.at('span.article__meta-author').nil?
+      #                      Author.where(['lower(name) like ? ', 'TSA auteur'.downcase])
+      #                    else
+      #                      Author.where(['lower(name) like ? ',
+      #                                    article.at('span.article__meta-author').text.downcase])
+      #                    end
 
-          new_author = Author.new
-          if author_exist.count.zero?
+      #     new_author = Author.new
+      #     if author_exist.count.zero?
 
-            new_author.name = article.at('span.article__meta-author').nil? ? 'TSA auteur' : article.at('span.article__meta-author').text
-            new_author.medium_id = @media.id
-            new_author.save!
-            new_article.author_id = new_author.id
-          else
-            new_article.author_id = author_exist.first.id
+      #       new_author.name = article.at('span.article__meta-author').nil? ? 'TSA auteur' : article.at('span.article__meta-author').text
+      #       new_author.medium_id = @media.id
+      #       new_author.save!
+      #       new_article.author_id = new_author.id
+      #     else
+      #       new_article.author_id = author_exist.first.id
 
-          end
-          new_article.body = article.css('div.article__content').nil? ? article.css('div.anarticle__content').inner_html : article.css('div.article__content').inner_html
-          new_article.body = new_article.body.gsub(/<img[^>]*>/, '')
-          date = article.at('time[datetime]').nil? ? Date.today : article.at('time[datetime]')['datetime']
-          new_article.date_published = date.to_datetime.change({ hour: 0, min: 0, sec: 0 }) + (1.0 / 24)
-          url_array = article.css('body > div.article-section > div > div.article-section__main.wrap__main > article > div.full-article__featured-image > img').map do |link|
-            link['src']
-          end
-          new_article.url_image = url_array[0]
-          begin
-            new_article.image = Down.download(url_array[0]) if url_array[0].present?
-          rescue Down::Error => e
-            puts "Can't download this image #{url_array[0]}"
-            puts e.message
-            puts
-            new_article.image = nil
-          end
-          # tags_array = article.css('div.article-core__tags a').map(&:text)
-          # new_article.media_tags = tags_array.join(',')
-          new_article.status = 'pending'
-          new_article.save!
-          # tag_check_and_save(tags_array)
-        end
-        render json: { crawling_status_tsa: 'ok' }
+      #     end
+      #     new_article.body = article.css('div.article__content').nil? ? article.css('div.anarticle__content').inner_html : article.css('div.article__content').inner_html
+      #     new_article.body = new_article.body.gsub(/<img[^>]*>/, '')
+      #     date = article.at('time[datetime]').nil? ? Date.today : article.at('time[datetime]')['datetime']
+      #     new_article.date_published = date.to_datetime.change({ hour: 0, min: 0, sec: 0 }) + (1.0 / 24)
+      #     url_array = article.css('body > div.article-section > div > div.article-section__main.wrap__main > article > div.full-article__featured-image > img').map do |link|
+      #       link['src']
+      #     end
+      #     new_article.url_image = url_array[0]
+      #     begin
+      #       new_article.image = Down.download(url_array[0]) if url_array[0].present?
+      #     rescue Down::Error => e
+      #       puts "Can't download this image #{url_array[0]}"
+      #       puts e.message
+      #       puts
+      #       new_article.image = nil
+      #     end
+      #     # tags_array = article.css('div.article-core__tags a').map(&:text)
+      #     # new_article.media_tags = tags_array.join(',')
+      #     new_article.status = 'pending'
+      #     new_article.save!
+      #     # tag_check_and_save(tags_array)
+      #   end
+      #   render json: { crawling_status_tsa: 'ok' }
+      # end
+      def articles_tsa_crawler(url_media_array, media)
+       count = Articles::Crawling::Tsa.get_articles_tsa(url_media_array, media)
+       render json: { crawling_tsa: count }
       end
       # end method to get TSA articles
 
