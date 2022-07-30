@@ -29,4 +29,4 @@ jobs:
       with:
         target: production # Defines the environment that will be used for the deployment
         deploy_key: ${{ secrets.MONITOR }} # Name of the variable configured in Settings/Secrets of your github project
-    - run: sudo chown -R ${{ secrets.USER }}:${{ secrets.USER }} /var/www/html/monitordz/releases/   
+    #- run: sudo chown -R ${{ secrets.USER }}:${{ secrets.USER }} /var/www/html/monitordz/releases/
