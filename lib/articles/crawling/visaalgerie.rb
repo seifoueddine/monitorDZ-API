@@ -8,7 +8,7 @@ module Articles
         class << self
           include AbstractController::Rendering
   
-          def get_articles_visadz(url_media_array, media)
+          def get_articles_visaalgerie(url_media_array, media)
             articles_url_visadz = []
             count = 0
             last_dates = []
