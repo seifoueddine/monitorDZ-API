@@ -11,7 +11,7 @@ module Api
         @tags =
           if params[:search].present?
             Tag.order(order_and_direction).page(page).per(per_page)
-            .name_like(params[:search]))
+               .name_like(params[:search])
           else
             Tag.order(order_and_direction).page(page).per(per_page)
           end
