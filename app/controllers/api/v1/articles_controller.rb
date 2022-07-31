@@ -4,6 +4,7 @@ require_relative '../../../../lib/articles/export'
 require_relative '../../../../lib/articles/crawling/ennahar'
 require_relative '../../../../lib/articles/crawling/elcherouk'
 require_relative '../../../../lib/articles/crawling/tsa'
+require_relative '../../../../lib/articles/crawling/elkhabar'
 module Api
   module V1
     # crawling articles
