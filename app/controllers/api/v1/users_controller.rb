@@ -10,9 +10,9 @@ module Api
       def index
         @users = if params[:search].present?
                    User.order(order_and_direction).page(page).per(per_page)
-                   .name_like(params[:search])
+                       .name_like(params[:search])
                  else
-                  User.order(order_and_direction).page(page).per(per_page)
+                   User.order(order_and_direction).page(page).per(per_page)
                  end
         set_pagination_headers :users
         json_string = UserSerializer.new(@users, include: [:slug]).serializable_hash.to_json
