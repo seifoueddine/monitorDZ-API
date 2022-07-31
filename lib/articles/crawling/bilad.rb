@@ -3,7 +3,7 @@
 module Articles
   # crawling files
   module Crawling
-    # methode to get tsa articles
+    # methode to get Bilad articles
     class Bilad
       class << self
         include AbstractController::Rendering

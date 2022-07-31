@@ -3,7 +3,7 @@
 module Articles
   # crawling files
   module Crawling
-    # methode to get tsa articles
+    # methode to get Lexpressiondz articles
     class Lexpressiondz
       class << self
         include AbstractController::Rendering

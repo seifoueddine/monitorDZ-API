@@ -1,5 +1,9 @@
+# frozen_string_literal: true
+
 module Articles
+  # crawling files
   module Crawling
+    # methode to get Ennahar articles
     class Ennahar
       class << self
         include AbstractController::Rendering

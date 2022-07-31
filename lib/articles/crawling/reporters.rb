@@ -3,7 +3,7 @@
 module Articles
   # crawling files
   module Crawling
-    # methode to get tsa articles
+    # methode to get Reporters articles
     class Reporters
       class << self
         include AbstractController::Rendering

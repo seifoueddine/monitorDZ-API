@@ -3,7 +3,7 @@
 module Articles
   # crawling files
   module Crawling
-    # methode to get tsa articles
+    # methode to get Elkhabar articles
     class Elkhabar
       class << self
         include AbstractController::Rendering
