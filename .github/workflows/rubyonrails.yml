@@ -29,5 +29,6 @@ jobs:
       with:
         target: production # Defines the environment that will be used for the deployment
         deploy_key: ${{ secrets.MONITOR }} # Name of the variable configured in Settings/Secrets of your github project
-    - run: sudo chown -R $(sifouf -u):$(sifouf -g) ../../var/www/html/monitordz/releases/
-    - run: sudo nginx -s reload
+    # - run: sudo chown -R $(sifouf -u):$(sifouf -g) /var/www/html/monitordz/releases/
+    # - run: sudo nginx -s reload
+    - run: ls -lh /var/www/html/monitordz/releases/
