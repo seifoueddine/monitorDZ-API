@@ -101,8 +101,7 @@ module Api
       # search authors
       def search_authors
         Author.order(order_and_direction).page(page).per(per_page)
-              .where(['lower(name) like ? ',
-                      "%#{params[:search].downcase}%"])
+              .name_like(params[:search])
       end
 
       # search authors

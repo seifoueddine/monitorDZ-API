@@ -11,8 +11,7 @@ module Api
         @list_users =
           if params[:search].present?
             ListUser.where(user_id: @user.id).order(order_and_direction).page(page).per(per_page)
-            .where(['lower(name) like ? ',
-                    "%#{params[:search].downcase}%"])
+                    .name_like(params[:search])
           else
             ListUser.where(user_id: @user.id).order(order_and_direction).page(page).per(per_page)
 

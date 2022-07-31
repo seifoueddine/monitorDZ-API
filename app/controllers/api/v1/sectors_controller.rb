@@ -12,8 +12,7 @@ module Api
             Sector.order(order_and_direction).page(page).per(per_page)
           else
             Sector.order(order_and_direction).page(page).per(per_page)
-                  .where(['lower(name) like ? ',
-                          "%#{params[:search].downcase}%"])
+                  .name_like(params[:search])
           end
         set_pagination_headers :sectors
         json_string = SectorSerializer.new(@sectors).serializable_hash.to_json

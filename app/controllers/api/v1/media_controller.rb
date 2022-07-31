@@ -11,8 +11,7 @@ module Api
         @media =
           if params[:search].present?
             Medium.order(order_and_direction).page(page).per(per_page)
-                  .where(['lower(name) like ? ',
-                          "%#{params[:search].downcase}%"])
+                  .name_like(params[:search])
           else
             Medium.order(order_and_direction).page(page).per(per_page)
           end
