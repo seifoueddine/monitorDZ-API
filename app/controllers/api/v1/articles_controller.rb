@@ -9,7 +9,7 @@ require_relative '../../../../lib/articles/crawling/bilad'
 require_relative '../../../../lib/articles/crawling/reporters'
 require_relative '../../../../lib/articles/crawling/lexpressiondz'
 require_relative '../../../../lib/articles/crawling/algerie360'
-require_relative '../../../../lib/articles/crawling/visalagerie'
+require_relative '../../../../lib/articles/crawling/visaalgerie'
 module Api
   module V1
     # crawling articles
@@ -559,7 +559,7 @@ module Api
         when 'LIBERTE-AR'
           get_articles_liberte_ar(url_media_array)
         when 'VISAALGERIE'
-          articles_visalagerie_crawler(url_media_array, @media)
+          articles_visaalgerie_crawler(url_media_array, @media)
         when 'SANTENEWS'
           get_articles_santenews(url_media_array)
         when 'ALGERIE360'
@@ -2120,8 +2120,8 @@ module Api
       #   end
       #   render json: { crawling_status_visadz: 'ok' }
       # end
-      def articles_visalagerie_crawler(url_media_array, media)
-        count = Articles::Crawling::Visalagerie.get_articles_visalagerie(url_media_array, media)
+      def articles_visaalgerie_crawler(url_media_array, media)
+        count = Articles::Crawling::Visaalgerie.get_articles_visaalgerie(url_media_array, media)
         render json: { crawling_algerie360: count }
       end
       # end method to get elhiwar articles
