@@ -571,7 +571,7 @@ module Api
         when 'SHIHABPRESSE'
           get_articles_shihabpresse(url_media_array)
         when 'LEXPRESSIONDZ'
-          get_articles_lexpressiondz(url_media_array)
+          articles_lexpressiondz_crawler(url_media_array, @media)
         when 'LEMATIN-MA'
           get_articles_lematin(url_media_array)
         when 'ALMAGHREB24'
