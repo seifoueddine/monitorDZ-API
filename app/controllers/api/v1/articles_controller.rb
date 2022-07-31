@@ -1,4 +1,5 @@
 # frozen_string_literal: true
+
 require_relative '../../../../lib/articles/export'
 require_relative '../../../../lib/articles/crawling/ennahar'
 require_relative '../../../../lib/articles/crawling/elcherouk'
@@ -534,7 +535,7 @@ module Api
         when 'ELMOUDJAHID-FR'
           get_articles_elmoudjahid_fr(url_media_array)
         when 'ELKHABAR'
-          get_articles_elkhabar(url_media_array)
+          articles_elkhabar_crawler(url_media_array, @media)
         when 'ELKHABAR-FR'
           get_articles_elkhabar_fr(url_media_array)
         when 'ELIKHABARIA'
@@ -694,104 +695,17 @@ module Api
       def articles_elcherouk_crawler(url_media_array, media)
         count = Articles::Crawling::Elcherouk.get_articles_elcherouk(url_media_array, media)
         render json: { crawling_elcherouk: count }
-      end 
+      end
       # end method to get elcherouk articles
 
       def articles_ennahar_crawler(url_media_array, media)
         count = Articles::Crawling::Ennahar.get_articles_ennahar(url_media_array, media)
         render json: { crawling_ennahar: count }
-      end  
+      end
 
-      # start method to get TSA articles
-      # def get_articles_tsa(url_media_array)
-      #   articles_url_tsafr = []
-      #   last_dates = []
-      #   url_media_array.map do |url|
-      #     begin
-      #       doc = Nokogiri::HTML(URI.open(url))
-      #     rescue OpenURI::HTTPError => e
-      #       puts "Can't access #{url}"
-      #       puts e.message
-      #       puts
-      #       next
-      #     end
-      #     doc.css('h1.article-preview__title.title-middle.transition a').map do |link|
-      #       articles_url_tsafr << link['href'] # if link['class'] == 'main_article'
-      #     end
-      #     # doc.css('ul.article-horiz__meta li time').map do |date|
-      #     # last_dates << date.text
-      #     #   end
-      #   end
-      #   articles_url_tsafr = articles_url_tsafr.reject(&:nil?)
-      #   # last_dates = last_dates.uniq
-      #   last_articles = Article.where(medium_id: @media.id)
-      #   list_articles_url = []
-      #   last_articles.map do |article|
-      #     list_articles_url << article.url_article
-      #   end
-      #   articles_url_tsa_after_check = articles_url_tsafr - list_articles_url
-      #   articles_url_tsa_after_check.map do |link|
-      #     begin
-      #       article = Nokogiri::HTML(URI.open(link))
-      #     rescue OpenURI::HTTPError => e
-      #       puts "Can't access #{link}"
-      #       puts e.message
-      #       puts
-      #       next
-      #     end
-      #     new_article = Article.new
-      #     new_article.url_article = link
-      #     new_article.medium_id = @media.id
-      #     new_article.language = @media.language
-      #     new_article.category_article = article.css('div.article__meta a.article__meta-category').nil? ? article.css('div.anarticle__meta div a.article-meta__category').text : article.css('div.article__meta a.article__meta-category').text
-      #     new_article.title = article.css('div.article__title').nil? ? article.css('h2.anarticle__title span').text : article.css('div.article__title').text
-      #     # new_article.author = article.css('div.article-head__author div em a').text
-
-      #     author_exist = if article.at('span.article__meta-author').nil?
-      #                      Author.where(['lower(name) like ? ', 'TSA auteur'.downcase])
-      #                    else
-      #                      Author.where(['lower(name) like ? ',
-      #                                    article.at('span.article__meta-author').text.downcase])
-      #                    end
-
-      #     new_author = Author.new
-      #     if author_exist.count.zero?
-
-      #       new_author.name = article.at('span.article__meta-author').nil? ? 'TSA auteur' : article.at('span.article__meta-author').text
-      #       new_author.medium_id = @media.id
-      #       new_author.save!
-      #       new_article.author_id = new_author.id
-      #     else
-      #       new_article.author_id = author_exist.first.id
-
-      #     end
-      #     new_article.body = article.css('div.article__content').nil? ? article.css('div.anarticle__content').inner_html : article.css('div.article__content').inner_html
-      #     new_article.body = new_article.body.gsub(/<img[^>]*>/, '')
-      #     date = article.at('time[datetime]').nil? ? Date.today : article.at('time[datetime]')['datetime']
-      #     new_article.date_published = date.to_datetime.change({ hour: 0, min: 0, sec: 0 }) + (1.0 / 24)
-      #     url_array = article.css('body > div.article-section > div > div.article-section__main.wrap__main > article > div.full-article__featured-image > img').map do |link|
-      #       link['src']
-      #     end
-      #     new_article.url_image = url_array[0]
-      #     begin
-      #       new_article.image = Down.download(url_array[0]) if url_array[0].present?
-      #     rescue Down::Error => e
-      #       puts "Can't download this image #{url_array[0]}"
-      #       puts e.message
-      #       puts
-      #       new_article.image = nil
-      #     end
-      #     # tags_array = article.css('div.article-core__tags a').map(&:text)
-      #     # new_article.media_tags = tags_array.join(',')
-      #     new_article.status = 'pending'
-      #     new_article.save!
-      #     # tag_check_and_save(tags_array)
-      #   end
-      #   render json: { crawling_status_tsa: 'ok' }
-      # end
       def articles_tsa_crawler(url_media_array, media)
-       count = Articles::Crawling::Tsa.get_articles_tsa(url_media_array, media)
-       render json: { crawling_tsa: count }
+        count = Articles::Crawling::Tsa.get_articles_tsa(url_media_array, media)
+        render json: { crawling_tsa: count }
       end
       # end method to get TSA articles
 
@@ -1809,104 +1723,9 @@ module Api
       # end method to get elmoudjahid_fr articles
 
       # start method to get elkhabar articles
-      def get_articles_elkhabar(url_media_array)
-        count = 0
-        articles_url_elkhabar = []
-        last_dates = []
-        url_media_array.map do |url|
-          begin
-            doc = Nokogiri::HTML(URI.open(url))
-          rescue OpenURI::HTTPError => e
-            puts "Can't access #{url}"
-            puts e.message
-            puts
-            next
-          end
-          doc.css('h3.panel-title a').map do |link|
-            articles_url_elkhabar << "https://www.elkhabar.com#{link['href']}" unless link.css('i').present?
-          end
-          doc.css('time').map do |date|
-            last_dates << date['datetime']
-          end
-        end
-
-        last_dates = last_dates.map { |d| change_translate_date(d) }
-        last_dates = last_dates.map { |d| d.to_datetime.change({ hour: 0, min: 0, sec: 0 }) }
-        articles_url_elkhabar = articles_url_elkhabar.reject(&:nil?)
-        articles_url_elkhabar = articles_url_elkhabar.uniq
-        last_dates = last_dates.uniq
-        last_articles = Article.where(medium_id: @media.id).where(date_published: last_dates)
-        list_articles_url = []
-        last_articles.map do |article|
-          list_articles_url << article.url_article
-        end
-        articles_url_elkhabar_after_check = articles_url_elkhabar - list_articles_url
-        articles_url_elkhabar_after_check.map do |link|
-          begin
-            article = Nokogiri::HTML(URI.open(link))
-          rescue OpenURI::HTTPError => e
-            puts "Can't access #{link}"
-            puts e.message
-            puts
-            next
-          end
-          new_article = Article.new
-          new_article.url_article = link
-          new_article.medium_id = @media.id
-          new_article.language = @media.language
-          if article.css('span.category-blog').present?
-            new_article.category_article = article.css('span.category-blog').text
-          end
-          new_article.title = article.css('h2.title').text if article.css('h2.title').present?
-          # new_article.author = article.css('div.article-head__author div em a').text
-
-          author_exist = if article.at('span.time-blog b').present?
-                           Author.where(['lower(name) like ? ',
-                                         article.at('span.time-blog b').text.downcase])
-                         else
-                           Author.where(['lower(name) like ? ', 'Elkhabar auteur'.downcase])
-
-                         end
-
-          new_author = Author.new
-          if author_exist.count.zero?
-
-            new_author.name = article.at('span.time-blog b').present? ? article.at('span.time-blog b').text : 'Elkhabar auteur'
-            new_author.medium_id = @media.id
-            new_author.save!
-            new_article.author_id = new_author.id
-          else
-            new_article.author_id = author_exist.first.id
-
-          end
-          new_article.body = article.css('div#article_body_content').inner_html
-          new_article.body = new_article.body.gsub(/<img[^>]*>/, '')
-          # date = article.at('p.text-capitalize span').text
-          # date[','] = ''
-          date = article.at('time[datetime]')['datetime']
-          new_article.date_published = date.to_datetime.change({ hour: 0, min: 0, sec: 0 })
-          if article.css('div#article_img img').present?
-            url_array = article.css('div#article_img img').map { |link| "https://www.elkhabar.com#{link['src']}" }
-          end
-          # url_image = url_array[0]
-          begin
-            new_article.image = Down.download(url_array[0]) if url_array.present?
-          rescue Down::Error => e
-            puts "Can't download this image #{url_array[0]}"
-            puts e.message
-            puts
-            new_article.image = nil
-          end
-          if article.css('div#article_tags_title').present?
-            tags_array = article.css('div#article_tags_title').map(&:text)
-          end
-          # new_article.media_tags = tags_array.join(',')
-          new_article.status = 'pending'
-          new_article.save!
-          count += 1 if new_article.save
-          # tag_check_and_save(tags_array) if @media.tag_status == true
-        end
-        render json: { crawling_status_elkhabar: count }
+      def articles_elkhabar_crawler(url_media_array, media)
+        count = Articles::Crawling::Elkhabar.get_articles_elkhabar(url_media_array, media)
+        render json: { crawling_elkhabar: count }
       end
       # end method to get elkhabar articles
       #
@@ -3965,7 +3784,7 @@ module Api
                       :media_tags, :language, :url_image, :author_id)
       end
 
-      # tag_check_and_savetag_check_and_save not used yet 
+      # tag_check_and_savetag_check_and_save not used yet
       def tag_check_and_save(tags_array)
         tags_array.map do |t|
           # tag_exist = Tag.where(['lower(name) like ? ',
