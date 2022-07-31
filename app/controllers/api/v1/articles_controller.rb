@@ -7,7 +7,7 @@ require_relative '../../../../lib/articles/crawling/tsa'
 require_relative '../../../../lib/articles/crawling/elkhabar'
 require_relative '../../../../lib/articles/crawling/bilad'
 require_relative '../../../../lib/articles/crawling/reporters'
-require_relative '../../../../lib/articles/crawling/lexpressiondz'
+#require_relative '../../../../lib/articles/crawling/lexpressiondz'
 module Api
   module V1
     # crawling articles

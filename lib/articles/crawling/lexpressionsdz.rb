@@ -67,7 +67,6 @@ module Articles
               new_article.author_id = new_author.id
             else
               new_article.author_id = author_exist.first.id
-
             end
 
             new_article.body = article.css('div.module-article p').inner_html
