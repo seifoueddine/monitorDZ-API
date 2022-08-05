@@ -31,9 +31,9 @@ jobs:
         deploy_key: ${{ secrets.MONITOR }} # Name of the variable configured in Settings/Secrets of your github project
     # - run: sudo chown -R $(sifouf -u):$(sifouf -g) "/var/www/html/monitordz/releases/"
     # - run: sudo nginx -s reload
-    - run: sudo -u seifou -i
+    # - run: sudo -u seifou -i
     - run: whoami
     - run: ls -alrth /var/www
     - run: ls -alrth /var/www/html
-    - run: ls -alrth /var/www/html/monitordz
-    - run: ls -alrth /var/www/html/monitordz/releases
+    # - run: ls -alrth /var/www/html/monitordz
+    # - run: ls -alrth /var/www/html/monitordz/releases
