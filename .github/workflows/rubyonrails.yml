@@ -40,7 +40,7 @@ jobs:
           ls -alrth /var/www
           ls -alrth /var/www/html
           ls -alrth /var/www/html/monitordz
-          run: ls -alrth /var/www/html/monitordz/releases
+          ls -alrth /var/www/html/monitordz/releases
     #     - run: whoami
     # - run: ls -alrth /var/www
     # - run: ls -alrth /var/www/html
