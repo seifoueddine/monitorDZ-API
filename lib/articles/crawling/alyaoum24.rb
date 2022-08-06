@@ -62,13 +62,6 @@ module Articles
             if author_exist.count.zero?
               new_author = Author.new
               new_author.name = author_exist_final.nil? || author_exist_final == '' ? 'Alyaoum24 auteur' : author_exist_final
-              pp "--------------"
-              pp author_exist_final.nil?
-              pp author_exist_final
-              pp "--------------"
-              pp "+++++++++++++"
-              pp new_author.name
-              pp "+++++++++++++"
               new_author.medium_id = media.id
               new_author.save!
               new_article.author_id = new_author.id
