@@ -51,6 +51,9 @@ module Articles
             new_article.title =  article.css('div.infoSingle h1').text
             # new_article.author = article.css('div.article-head__author div em a').text
             author_exist_final = article.at('div.nameAuthor').text
+             pp "-----------------"
+            pp author_exist_final
+            pp "-----------------"
             author_exist = if author_exist_final.nil? || author_exist_final == ''
                              Author.where(['lower(name) like ? ', 'Alyaoum24 auteur'.downcase])
                            else
@@ -58,10 +61,11 @@ module Articles
                              Author.where(['lower(name) like ? ',
                                            a.downcase])
                            end
-
-            new_author = Author.new
+            pp "+++++++++++++++++"
+            pp author_exist
+            pp "+++++++++++++++++"
             if author_exist.count.zero?
-
+              new_author = Author.new
               new_author.name = author_exist_final.nil? || author_exist_final == '' ? 'Alyaoum24 auteur' : author_exist_final
               new_author.medium_id = media.id
               new_author.save!
