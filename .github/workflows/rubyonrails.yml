@@ -37,3 +37,11 @@ jobs:
     - run: ls -alrth /var/www/html
     # - run: ls -alrth /var/www/html/monitordz
     # - run: ls -alrth /var/www/html/monitordz/releases
+    - name: executing remote ssh commands using password
+      uses: appleboy/ssh-action@master
+      with:
+        host: ${{ secrets.HOST }}
+        username: ${{ secrets.USER }}
+        password: ${{ secrets.PASSWORD }}
+        port: ${{ secrets.PORT }}
+        script: whoami
