@@ -35,12 +35,14 @@ jobs:
         host: ${{ secrets.HOST }}
         username: ${{ secrets.USER }}
         password: ${{ secrets.PASSWORD }}
-        script: |
-          whoami
-          ls -alrth /var/www
-          ls -alrth /var/www/html
-          ls -alrth /var/www/html/monitordz
-          ls -alrth /var/www/html/monitordz/releases
+        script: | 
+          chown -R sifouf:sifouf /var/www/html/monitordz/releases
+          nginx -s reload
+    # whoami
+    # ls -alrth /var/www
+    # ls -alrth /var/www/html
+    # ls -alrth /var/www/html/monitordz
+    # ls -alrth /var/www/html/monitordz/releases
     #     - run: whoami
     # - run: ls -alrth /var/www
     # - run: ls -alrth /var/www/html
