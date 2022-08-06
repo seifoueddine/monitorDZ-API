@@ -149,6 +149,8 @@ module Articles
               'August'
             when 'août,'.downcase
               'August'
+            when 'août'.downcase
+              'August'
             else
               month
             end
