@@ -190,7 +190,8 @@ module Articles
               'September'
             when 'اوت'.downcase
               'August'
-
+             when 'أوت'.downcase
+              'August'
             when 'جانفي،'.downcase
               'January'
             when 'فيفري،'.downcase

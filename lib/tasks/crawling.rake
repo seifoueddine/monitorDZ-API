@@ -4178,6 +4178,8 @@ namespace :crawling do
         'September'
       when 'اوت'.downcase
         'August'
+      when 'أوت'.downcase
+        'August'
 
       when 'يناير'.downcase
         'January'
