@@ -37,10 +37,9 @@ jobs:
     - run: ls -alrth /var/www/html
     # - run: ls -alrth /var/www/html/monitordz
     # - run: ls -alrth /var/www/html/monitordz/releases
-    
+    - uses: actions/checkout@v2
 
     - name: executing remote ssh commands using password
-    - uses: actions/checkout@v2
       with:
         host: ${{ secrets.HOST }}
         username: ${{ secrets.USER }}
