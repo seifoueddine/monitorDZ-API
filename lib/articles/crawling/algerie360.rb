@@ -30,6 +30,9 @@ module Articles
             end
           end
           last_dates = last_dates.map { |d| change_date(d) }
+          pp "--------------"
+          last_dates.map { |d| pp d }
+          pp "--------------"
           last_dates = last_dates.map { |d| d.to_datetime.change({ hour: 0, min: 0, sec: 0 }) }
           # last_dates = last_dates.map(&:to_datetime.change({ hour: 0, min: 0, sec: 0 }))
           articles_url_algerie360 = articles_url_algerie360.reject(&:nil?)
