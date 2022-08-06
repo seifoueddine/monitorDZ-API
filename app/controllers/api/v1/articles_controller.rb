@@ -1,7 +1,16 @@
 # frozen_string_literal: true
 
 require_relative '../../../../lib/articles/export'
-require_relative '../../../../lib/articles/require_files'
+require_relative '../../../../lib/articles/crawling/ennahar'
+require_relative '../../../../lib/articles/crawling/elcherouk'
+require_relative '../../../../lib/articles/crawling/tsa'
+require_relative '../../../../lib/articles/crawling/elkhabar'
+require_relative '../../../../lib/articles/crawling/bilad'
+require_relative '../../../../lib/articles/crawling/reporters'
+require_relative '../../../../lib/articles/crawling/lexpressiondz'
+require_relative '../../../../lib/articles/crawling/algerie360'
+require_relative '../../../../lib/articles/crawling/visaalgerie'
+require_relative '../../../../lib/articles/crawling/alyaoum24'
 
 
 module Api
