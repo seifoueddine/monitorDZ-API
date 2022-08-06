@@ -30,6 +30,10 @@ module Articles
             end
           end
           pp "--------------"
+          last_dates.map { |d| pp d }
+          pp "--------------"
+
+          pp "--------------"
           last_dates.map { |d| pp change_date(d) }
           pp "--------------"
           last_dates = last_dates.map { |d| change_date(d) }
