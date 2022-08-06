@@ -13,6 +13,6 @@
 #
 class Author < ApplicationRecord
  # validates_uniqueness_of :name
-  validates :name, format: {with: /[a-zA-Z]/}
+  #validates :name, format: {with: /[a-zA-Z]/}
   has_many :articles, dependent: :delete_all
 end
