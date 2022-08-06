@@ -53,23 +53,22 @@ module Articles
             
             auth = article.at('div.nameAuthor').text
             author_exist_final = auth.sub! 'بقلم/', ''
-             pp "-----------------"
-            pp author_exist_final
-            pp "-----------------"
             author_exist = if author_exist_final.nil? || author_exist_final == ''
                              Author.where(['lower(name) like ? ', 'Alyaoum24 auteur'.downcase])
                            else
                              a = author_exist_final
-                             Author.where(['lower(name) like ? ',
-                                           a.downcase])
+                             Author.where(['lower(name) like ? ',a.downcase])
                            end
-            pp "+++++++++++++++++"
-            pp author_exist
-            pp author_exist.count.zero?
-            pp "+++++++++++++++++"
             if author_exist.count.zero?
               new_author = Author.new
               new_author.name = author_exist_final.nil? || author_exist_final == '' ? 'Alyaoum24 auteur' : author_exist_final
+              pp "--------------"
+              pp author_exist_final.nil?
+              pp author_exist_final
+              pp "--------------"
+              pp "+++++++++++++"
+              pp new_author.name
+              pp "+++++++++++++"
               new_author.medium_id = media.id
               new_author.save!
               new_article.author_id = new_author.id
