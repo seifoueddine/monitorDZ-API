@@ -50,7 +50,9 @@ module Articles
             new_article.category_article = article.css('ul.breadcrumb li:nth(2)').text
             new_article.title =  article.css('div.infoSingle h1').text
             # new_article.author = article.css('div.article-head__author div em a').text
-            author_exist_final = article.at('div.nameAuthor').text
+            
+            auth = article.at('div.nameAuthor').text
+            author_exist_final = auth.sub! 'بقلم/', ''
              pp "-----------------"
             pp author_exist_final
             pp "-----------------"
@@ -63,6 +65,7 @@ module Articles
                            end
             pp "+++++++++++++++++"
             pp author_exist
+            pp author_exist.count.zero?
             pp "+++++++++++++++++"
             if author_exist.count.zero?
               new_author = Author.new
