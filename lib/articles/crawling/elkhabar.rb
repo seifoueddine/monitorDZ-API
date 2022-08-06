@@ -29,6 +29,9 @@ module Articles
           end
 
           last_dates = last_dates.map { |d| change_translate_date(d) }
+          pp "--------------"
+          last_dates.map { |d| pp d }
+          pp "--------------"
           last_dates = last_dates.map { |d| d.to_datetime.change({ hour: 0, min: 0, sec: 0 }) }
           articles_url_elkhabar = articles_url_elkhabar.reject(&:nil?)
           articles_url_elkhabar = articles_url_elkhabar.uniq

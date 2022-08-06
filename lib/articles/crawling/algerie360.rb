@@ -29,13 +29,6 @@ module Articles
               last_dates << date_with_time
             end
           end
-          pp "--------------"
-          last_dates.map { |d| pp d }
-          pp "--------------"
-
-          pp "--------------"
-          last_dates.map { |d| pp change_date(d) }
-          pp "--------------"
           last_dates = last_dates.map { |d| change_date(d) }
           last_dates = last_dates.map { |d| d.to_datetime.change({ hour: 0, min: 0, sec: 0 }) }
           # last_dates = last_dates.map(&:to_datetime.change({ hour: 0, min: 0, sec: 0 }))
