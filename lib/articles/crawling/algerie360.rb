@@ -30,7 +30,7 @@ module Articles
             end
           end
           pp "--------------"
-          last_dates.map { |d| pp d }
+          last_dates.map { |d| pp change_date(d) }
           pp "--------------"
           last_dates = last_dates.map { |d| change_date(d) }
           last_dates = last_dates.map { |d| d.to_datetime.change({ hour: 0, min: 0, sec: 0 }) }
@@ -130,6 +130,8 @@ module Articles
             when 'Juin'.downcase
               'June'
             when 'Juillet'.downcase
+              'July'
+            when 'juillet'.downcase
               'July'
             when 'Octobre'.downcase
               'October'

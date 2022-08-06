@@ -4076,6 +4076,8 @@ namespace :crawling do
         'June'
       when 'Juillet'.downcase
         'July'
+      when 'juillet'.downcase
+        'July'
       when 'Octobre'.downcase
         'October'
       when 'Novembre'.downcase
