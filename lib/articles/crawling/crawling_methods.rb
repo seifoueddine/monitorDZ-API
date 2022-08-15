@@ -3,7 +3,7 @@
 module Articles
     # crawling files
     module Crawling
-      # global methodes
+      # Crawling Methods
       module CrawlingMethods
        
         # change_translate_date
