@@ -7,7 +7,7 @@ module Articles
     class Maghrebemergent
       class << self
         include AbstractController::Rendering
-        include Articles::Crawling::GlobalMethods
+        include Articles::Crawling::CrawlingMethods
         def get_articles_maghrebemergent(url_media_array, media)
           articles_url_maghrebemergent = []
           count = 0
