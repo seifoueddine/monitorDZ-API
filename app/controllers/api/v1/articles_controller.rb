@@ -599,9 +599,9 @@ module Api
         when 'ALYAOUM24'
           articles_alyaoum24_crawler(url_media_array, @media)
         when 'RADIOALGERIE-AR'
-          get_articles_radioalgerie_ar(url_media_array)
+          articles_radioalgerie_ar_crawler(url_media_array, @media)
         when 'RADIOALGERIE-FR'
-          get_articles_radioalgerie_fr(url_media_array)
+          articles_radioalgerie_fr_crawler(url_media_array, @media)
         when 'MAROCO360'
           articles_maroco360_crawler(url_media_array, @media)
         else
