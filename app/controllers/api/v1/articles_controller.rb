@@ -12,6 +12,8 @@ require_relative '../../../../lib/articles/crawling/algerie360'
 require_relative '../../../../lib/articles/crawling/visaalgerie'
 require_relative '../../../../lib/articles/crawling/alyaoum24'
 require_relative '../../../../lib/articles/crawling/maroco360'
+require_relative '../../../../lib/articles/crawling/radioalgerie_ar'
+require_relative '../../../../lib/articles/crawling/radioalgerie_fr'
 
 
 module Api
@@ -3014,170 +3016,16 @@ module Api
       # end method to get alyaoum24 articles
 
       # start method to get radioalgerie-ar articles
-      def get_articles_radioalgerie_ar(url_media_array)
-        articles_url_radioalgerie_ar = []
-        url_media_array.map do |url|
-          begin
-            doc = Nokogiri::HTML(URI.open(url, 'User-Agent' => 'ruby/2.6.5', 'From' => 'foo@bar.invalid'), nil, 'UTF-8')
-          rescue OpenURI::HTTPError => e
-            puts "Can't access #{url}"
-            puts e.message
-            puts
-            next
-          end
-
-          doc.css('h3 a').map do |link|
-            articles_url_radioalgerie_ar << "https://news.radioalgerie.dz#{link['href']}"
-          end
-        end
-        articles_url_radioalgerie_ar = articles_url_radioalgerie_ar.reject(&:nil?)
-
-        articles_url_radioalgerie_ar_after_check = []
-        articles_url_radioalgerie_ar.map do |link|
-          articles_url_radioalgerie_ar_after_check << link unless Article.where(medium_id: @media.id,
-                                                                                url_article: link).present?
-        end
-
-        articles_url_radioalgerie_ar_after_check.map do |link|
-          begin
-            article = Nokogiri::HTML(open(link, 'User-Agent' => 'ruby'))
-          rescue OpenURI::HTTPError => e
-            puts "Can't access #{link}"
-            puts e.message
-            puts
-            next
-          end
-          new_article = Article.new
-          new_article.url_article = link
-          new_article.medium_id = @media.id
-          new_article.language = @media.language
-          new_article.category_article = article.css('div.content div.field.field--name-field-categories.field--type-entity-reference.field--label-hidden.field__item a').text
-          new_article.title = article.css('h1.title').text
-          # new_article.author = article.css('div.article-head__author div em a').text
-          author_exist_final = 'Radioalgerie-AR auteur'
-          author_exist = if author_exist_final.nil? || author_exist_final == ''
-                           Author.where(['lower(name) like ? ', 'Radioalgerie-AR auteur'.downcase])
-                         else
-                           a = author_exist_final
-                           Author.where(['lower(name) like ? ',
-                                         a.downcase])
-                         end
-
-          new_author = Author.new
-          if author_exist.count.zero?
-
-            new_author.name = author_exist_final.nil? || author_exist_final == '' ? 'Radioalgerie-AR auteur' : author_exist_final
-            new_author.medium_id = @media.id
-            new_author.save!
-            new_article.author_id = new_author.id
-          else
-            new_article.author_id = author_exist.first.id
-
-          end
-
-          new_article.body = article.css('div.content p').inner_html
-          new_article.body = new_article.body.gsub(/<img[^>]*>/, '')
-          date = article.at('div.content span.field.field--name-created.field--type-created.field--label-inline').text
-          new_article.date_published = date.to_datetime.change({ hour: 0, min: 0, sec: 0 })
-          check_url_pic = article.at('div.col-lg-8 picture img')
-          url_pic = check_url_pic.present? ? "https://news.radioalgerie.dz#{article.at('div.col-lg-8 picture img').attr('data-src')}" : nil
-          new_article.url_image = url_pic
-          begin
-            new_article.image = Down.download(url_pic) if url_pic.present?
-          rescue Down::Error => e
-            puts "Can't download this image #{url_pic}"
-            puts e.message
-            puts
-            new_article.image = nil
-          end
-          new_article.status = 'pending'
-          new_article.save!
-        end
-        render json: { crawling_status_radioalgerie_ar: 'ok' }
+      def articles_radioalgerie_ar_crawler(url_media_array, media)
+        count = Articles::Crawling::RadioalgerieAr.get_articles_radioalgerie(url_media_array, media)
+        render json: { crawling_radioalgerie_ar: count }
       end
       # end method to get radioalgerie-ar articles
 
       # start method to get radioalgerie-fr articles
-      def get_articles_radioalgerie_fr(url_media_array)
-        articles_url_radioalgerie_fr = []
-        url_media_array.map do |url|
-          begin
-            doc = Nokogiri::HTML(URI.open(url, 'User-Agent' => 'ruby/2.6.5', 'From' => 'foo@bar.invalid'), nil, 'UTF-8')
-          rescue OpenURI::HTTPError => e
-            puts "Can't access #{url}"
-            puts e.message
-            puts
-            next
-          end
-
-          doc.css('h3 a').map do |link|
-            articles_url_radioalgerie_fr << "https://news.radioalgerie.dz#{link['href']}"
-          end
-        end
-        articles_url_radioalgerie_fr = articles_url_radioalgerie_fr.reject(&:nil?)
-
-        articles_url_radioalgerie_fr_after_check = []
-        articles_url_radioalgerie_fr.map do |link|
-          articles_url_radioalgerie_fr_after_check << link unless Article.where(medium_id: @media.id,
-                                                                                url_article: link).present?
-        end
-
-        articles_url_radioalgerie_fr_after_check.map do |link|
-          begin
-            article = Nokogiri::HTML(open(link, 'User-Agent' => 'ruby'))
-          rescue OpenURI::HTTPError => e
-            puts "Can't access #{link}"
-            puts e.message
-            puts
-            next
-          end
-          new_article = Article.new
-          new_article.url_article = link
-          new_article.medium_id = @media.id
-          new_article.language = @media.language
-          new_article.category_article = article.css('div.content div.field.field--name-field-categories.field--type-entity-reference.field--label-hidden.field__item a').text
-          new_article.title = article.css('h1.title').text
-          # new_article.author = article.css('div.article-head__author div em a').text
-          author_exist_final = 'Radioalgerie-FR auteur'
-          author_exist = if author_exist_final.nil? || author_exist_final == ''
-                           Author.where(['lower(name) like ? ', 'Radioalgerie-FR auteur'.downcase])
-                         else
-                           a = author_exist_final
-                           Author.where(['lower(name) like ? ',
-                                         a.downcase])
-                         end
-
-          new_author = Author.new
-          if author_exist.count.zero?
-
-            new_author.name = author_exist_final.nil? || author_exist_final == '' ? 'Radioalgerie-AR auteur' : author_exist_final
-            new_author.medium_id = @media.id
-            new_author.save!
-            new_article.author_id = new_author.id
-          else
-            new_article.author_id = author_exist.first.id
-
-          end
-
-          new_article.body = article.css('div.content p').inner_html
-          new_article.body = new_article.body.gsub(/<img[^>]*>/, '')
-          date = article.at('div.content span.field.field--name-created.field--type-created.field--label-inline').text
-          new_article.date_published = date.to_datetime.change({ hour: 0, min: 0, sec: 0 })
-          check_url_pic = "https://news.radioalgerie.dz#{article.at('div.col-lg-8 picture img')}"
-          url_pic = check_url_pic.present? ? "https://news.radioalgerie.dz#{article.at('div.col-lg-8 picture img').attr('data-src')}" : nil
-          new_article.url_image = url_pic
-          begin
-            new_article.image = Down.download(url_pic) if url_pic.present?
-          rescue Down::Error => e
-            puts "Can't download this image #{url_pic}"
-            puts e.message
-            puts
-            new_article.image = nil
-          end
-          new_article.status = 'pending'
-          new_article.save!
-        end
-        render json: { crawling_status_radioalgerie_ar: 'ok' }
+      def articles_radioalgerie_fr_crawler(url_media_array, media)
+        count = Articles::Crawling::RadioalgerieFr.get_articles_radioalgerie(url_media_array, media)
+        render json: { crawling_radioalgerie_fr: count }
       end
       # end method to get radioalgerie-fr articles
 
