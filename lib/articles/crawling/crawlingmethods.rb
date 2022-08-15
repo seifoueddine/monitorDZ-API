@@ -4,7 +4,7 @@ module Articles
     # crawling files
     module Crawling
       # Crawling Methods
-      module CrawlingMethods
+      module Crawlingmethods
        
         # change_translate_date
         def change_translate_date(d)
