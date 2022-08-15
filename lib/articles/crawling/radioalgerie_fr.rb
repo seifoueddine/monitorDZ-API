@@ -7,7 +7,7 @@ module Articles
     class RadioalgerieFr
       class << self
         include AbstractController::Rendering
-        def get_articles_radioalgerie(url_media_array)
+        def get_articles_radioalgerie(url_media_array, media)
           articles_url_radioalgerie_fr = []
           count = 0
           url_media_array.map do |url|
