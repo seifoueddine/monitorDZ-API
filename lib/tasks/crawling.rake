@@ -49,16 +49,16 @@ namespace :crawling do
       get_articles_maghrebemergent(url_media_array)
     when 'ELBILAD'
       get_articles_bilad(url_media_array)
-    when 'ELMOUDJAHID'
-      get_articles_elmoudjahid(url_media_array)
-    when 'ELMOUDJAHID-FR'
-      get_articles_elmoudjahid_fr(url_media_array)
+    # when 'ELMOUDJAHID'
+    #   get_articles_elmoudjahid(url_media_array)
+    # when 'ELMOUDJAHID-FR'
+    #   get_articles_elmoudjahid_fr(url_media_array)
     when 'ELKHABAR'
       get_articles_elkhabar(url_media_array)
     when 'ELKHABAR-FR'
       get_articles_elkhabar_fr(url_media_array)
-    when 'ELIKHABARIA'
-      get_articles_elikhbaria(url_media_array)
+    # when 'ELIKHABARIA'
+    #   get_articles_elikhbaria(url_media_array)
     when 'ALGERIECO'
       get_articles_algerieco(url_media_array)
     when 'CHIFFREAFFAIRE'
@@ -83,8 +83,8 @@ namespace :crawling do
       get_articles_24hdz(url_media_array)
     when 'REPORTERS'
       get_articles_reporters(url_media_array)
-    when 'SHIHABPRESSE'
-      get_articles_shihabpresse(url_media_array)
+    # when 'SHIHABPRESSE'
+    #   get_articles_shihabpresse(url_media_array)
     when 'LEXPRESSIONDZ'
       get_articles_lexpressiondz(url_media_array)
     when 'LEMATIN-MA'
@@ -97,8 +97,8 @@ namespace :crawling do
       get_articles_eldjazaireldjadida(url_media_array)
     when 'ALGERIE-PATRIOTIQUE'
       get_articles_algeriepatriotique(url_media_array)
-    when 'ELMAOUID'
-      get_articles_elmaouid(url_media_array)
+    # when 'ELMAOUID'
+    #   get_articles_elmaouid(url_media_array)
     when 'ALYAOUM24'
       get_articles_alyaoum24(url_media_array)
     when 'MAROCO360'
