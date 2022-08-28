@@ -23,7 +23,6 @@ set :keep_releases, 5
 # append :linked_files, 'config/database.yml', 'config/secrets.yml'
 
 append :linked_files, "config/master.key"
-append :linked_files, "onfig/credentials.yml.enc"
 namespace :deploy do
   namespace :check do
     before :linked_files, :set_master_key do
