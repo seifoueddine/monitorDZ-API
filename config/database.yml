@@ -94,5 +94,5 @@ test:
 production:
   <<: *default
   database: newmm
-  username: Rails.application.credentials.database[:secrect_username]
-  password: Rails.application.credentials.database[:secrect_password]
+  username: <%= Rails.application.credentials.database[:secrect_username] %>
+  password: <%= Rails.application.credentials.database[:secrect_password] %>
