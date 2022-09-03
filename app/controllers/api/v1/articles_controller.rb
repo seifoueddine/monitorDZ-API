@@ -884,11 +884,12 @@ module Api
           new_article.body = new_article.body.gsub(/<img[^>]*>/, '')
           date_published_treat = article.at('div.itemToolbar span.itemDateCreated').text.split(',')
           date = date_published_treat[1]
+
+          date_checked = change_translate_date(date)
           pp "========================="
           pp date
           pp "========================="
-          # date_checked = change_translate_date(date)
-          new_article.date_published = date.to_datetime.change({ hour: 0, min: 0, sec: 0 })
+          new_article.date_published = date_checked.to_datetime.change({ hour: 0, min: 0, sec: 0 })
           url_array =  article.css('span.itemImage img').map { |link| "https://www.aps.dz#{link['src']}" }
           # tags_array = article.css('ul.itemTags li a').map(&:text)
           new_article.url_image = url_array[0]
@@ -2910,7 +2911,8 @@ module Api
             'September'
           when 'اوت'.downcase
             'August'
-
+          when 'أوت'.downcase
+            'August'
           when 'جانفي،'.downcase
             'January'
           when 'فيفري،'.downcase
