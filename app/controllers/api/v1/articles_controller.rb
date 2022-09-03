@@ -353,10 +353,10 @@ module Api
       # export PDF
       def pdf_export
         id = params[:id]
-        @article = Article.find(id)
-        @html = @article.language == 'ar' ? Articles::Export.get_html_ar(@article) : Articles::Export.get_html_fr(@article)
-        pdf = WickedPdf.new.pdf_from_string(@html)
-        send_data pdf, filename: "Article_#{@article.id}.pdf", type: 'application/pdf'
+        article = Article.find(id)
+        html = article.language == 'ar' ? Articles::Export.get_html_ar(article) : Articles::Export.get_html_fr(article)
+        pdf = WickedPdf.new.pdf_from_string(html)
+        send_data pdf, filename: "Article_#{article.id}.pdf", type: 'application/pdf'
       end
       # export PDF
 

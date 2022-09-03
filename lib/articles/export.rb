@@ -1,8 +1,10 @@
+# frozen_string_literal: true
+
 module Articles
-    class Export
-        class << self 
-            def get_html_fr(article)
-                '<!DOCTYPE html>
+  class Export
+    class << self
+      def get_html_fr(article)
+        '<!DOCTYPE html>
                 <html>
                   <head>
                     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
@@ -13,7 +15,7 @@ module Articles
                     </style>
                   </head>
                   <body>
-        
+
                 <div leftmargin="0" marginwidth="0" topmargin="0" marginheight="0" offset="0"
                       style="height:auto !important;width:100% !important; margin-bottom: 40px;">
                       <div class="justify-content-center d-flex">
@@ -32,7 +34,7 @@ module Articles
                               </td>
                 <td align="center" valign="center"
                                 style="padding-bottom:40px;border-top:0;height:100% !important;width:auto !important;">
-        
+
                               </td>
                             </tr>
                             <tr>
@@ -44,14 +46,14 @@ module Articles
                           </tbody>
                         </table>
                       </div>
-                      <div class="justify-content-center d-flex">
+                      <div align="center">
                         <table style="margin-top:30px; padding-bottom:20px;; margin-bottom: 40px;">
                           <tbody>
                             <tr>
                               <td align="center" valign="center">
                                 <p
                                   style="font-size: 12px;line-height: 1; color:#909090; margin-top:0px; margin-bottom:5px; ">
-                                  PDF généré par MediaDZ app le ' + Date.today.strftime('%d - %m - %Y') + '
+                                  PDF généré par MediasMonitoring app le ' + Date.today.strftime('%d - %m - %Y') + '
                                 </p>
                                 <p style="font-size: 12px; line-height:1; color:#909090;  margin-top:5px; margin-bottom:5px;">
                                   <a href="#" style="color: #00365a;text-decoration:none;">Alger</a> , <a href="#"
@@ -65,10 +67,10 @@ module Articles
                     </div>
                   </body>
                 </html>'
-            end
-        
-            def get_html_ar(article)
-                '<!DOCTYPE html>
+      end
+
+      def get_html_ar(article)
+        '<!DOCTYPE html>
                 <html>
                   <head>
                     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
@@ -79,7 +81,7 @@ module Articles
                     </style>
                   </head>
                   <body>
-        
+
                 <div leftmargin="0" marginwidth="0" topmargin="0" marginheight="0" offset="0"
                       style="height:auto !important;width:100% !important; margin-bottom: 40px;">
                       <div class="justify-content-center d-flex">
@@ -98,7 +100,7 @@ module Articles
                               </td>
                             <td align="center" valign="center"
                                 style="padding-bottom:40px;border-top:0;height:100% !important;width:auto !important;">
-        
+
                               </td>
                             </tr>
                             <tr>
@@ -110,14 +112,14 @@ module Articles
                           </tbody>
                         </table>
                       </div>
-                      <div class="justify-content-center d-flex">
+                      <div align="center">
                         <table style="margin-top:30px; padding-bottom:20px;; margin-bottom: 40px;">
                           <tbody>
                             <tr>
                               <td align="center" valign="center">
                                 <p
                                   style="font-size: 12px;line-height: 1; color:#909090; margin-top:0px; margin-bottom:5px; ">
-                                  PDF généré par MediaDZ app le ' + Date.today.strftime('%d - %m - %Y') + '
+                                  PDF généré par MediasMonitoring app le ' + Date.today.strftime('%d - %m - %Y') + '
                                 </p>
                                 <p style="font-size: 12px; line-height:1; color:#909090;  margin-top:5px; margin-bottom:5px;">
                                   <a href="#" style="color: #00365a;text-decoration:none;">Alger</a> , <a href="#"
@@ -131,7 +133,7 @@ module Articles
                     </div>
                   </body>
                 </html>'
-            end
-          end    
+      end
     end
+  end
 end
