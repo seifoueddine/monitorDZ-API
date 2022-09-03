@@ -21,7 +21,7 @@ module Api
   module V1
     # crawling articles
     class ArticlesController < ::ApplicationController
-      # before_action :authenticate_user! , except: :pdf_export
+      before_action :authenticate_user! , except: :pdf_export
       before_action :set_article, only: %i[show update destroy]
       require 'nokogiri'
       require 'open-uri'
