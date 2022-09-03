@@ -361,10 +361,10 @@ module Api
       # export PDF
 
       def send_email
-        @article_for_email = Article.find(params[:article_id])
-        @current_user = current_user
+        article_for_email = Article.find(params[:article_id])
+        # @current_user = current_user
         email = params[:email]
-        UserMailer.articleMail(@article_for_email, email, @current_user).deliver!
+        UserMailer.articleMail(article_for_email, email, current_user).deliver!
       end
 
       def crawling
