@@ -742,6 +742,9 @@ namespace :crawling do
       new_article.body = new_article.body.gsub(/<img[^>]*>/, '')
       date_published_treat = article.at('div.itemToolbar span.itemDateCreated').text.split(',')
       date = date_published_treat[1]
+      pp "========================="
+      pp date
+      pp "========================="
       # date_checked = change_translate_date(date)
       new_article.date_published = date.to_datetime.change({ hour: 0, min: 0, sec: 0 })
       url_array =  article.css('span.itemImage img').map { |link| "https://www.aps.dz#{link['src']}" }
