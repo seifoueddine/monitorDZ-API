@@ -36,7 +36,7 @@ jobs:
         username: ${{ secrets.USER }}
         password: ${{ secrets.PASSWORD }}
         script: | 
-          chown -R sifouf:sifouf /var/www/html/monitordz/releases
+          chown -R sifouf:sifouf /var/www/html/monitordz/releases/*
           nginx -s reload
     # whoami
     # ls -alrth /var/www

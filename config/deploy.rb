@@ -15,14 +15,14 @@ set :linked_files, %w[config/master.key]
 append :linked_dirs, 'log', 'tmp/pids', 'tmp/cache', 'tmp/sockets', 'vendor/bundle', '.bundle', 'public/system',
        'public/uploads'
 
-# Only keep the last 5 releases to save disk space
-set :keep_releases, 5
+# Only keep the last 2 releases to save disk space
+set :keep_releases, 2
 
 # Optionally, you can symlink your database.yml and/or secrets.yml file from the shared directory during deploy
 # This is useful if you don't want to use ENV variables
 # append :linked_files, 'config/database.yml', 'config/secrets.yml'
 
-append :linked_files, "config/master.key"
+append :linked_files, 'config/master.key'
 namespace :deploy do
   namespace :check do
     before :linked_files, :set_master_key do
