@@ -2452,7 +2452,7 @@ namespace :crawling do
     url_media_array.map do |url|
       # doc = Nokogiri::HTML(URI.open(url))
       begin
-        doc = Nokogiri::HTML(URI.open(url))
+        doc = Nokogiri::HTML(URI.open(url, 'User-Agent' => 'ruby'))
       rescue OpenURI::HTTPError => e
         puts "Can't access #{url}"
         puts e.message
