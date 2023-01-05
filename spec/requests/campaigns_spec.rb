@@ -25,10 +25,10 @@ RSpec.describe '/campaigns', type: :request do
   let(:auth_headers) { @user.create_new_auth_token }
 
   let(:valid_attributes) do
-      {
-        name: 'Campaign one',
-        slug_id: @user.slug_id
-      }
+    {
+      name: 'Campaign one',
+      slug_id: @user.slug_id
+    }
   end
 
   let(:invalid_attributes) do
@@ -68,15 +68,12 @@ RSpec.describe '/campaigns', type: :request do
       expect(response).to have_http_status(:unauthorized)
     end
 
-
-
     it 'renders a successful response with search ' do
       Campaign.create! valid_attributes
-      get '/api/v1/campaigns?search=Campaign one',  headers: valid_headers, as: :json
-      result =  JSON.parse(response.body)
+      get '/api/v1/campaigns?search=Campaign one', headers: valid_headers, as: :json
+      result = JSON.parse(response.body)
       expect(result['data'].count).to eq(1)
     end
-
   end
 
   describe 'GET /show' do
@@ -96,7 +93,6 @@ RSpec.describe '/campaigns', type: :request do
         end.to change(Campaign, :count).by(1)
       end
 
-
       let(:medium_valid_attributes) do
         {
           name: 'Elkhabar',
@@ -115,7 +111,7 @@ RSpec.describe '/campaigns', type: :request do
         {
           name: 'Campaign one',
           slug_id: @user.slug_id,
-          media_id: "#{@medium.id.to_s},#{@medium2.id.to_s}",
+          media_id: "#{@medium.id},#{@medium2.id}"
         }
       end
 
@@ -129,30 +125,27 @@ RSpec.describe '/campaigns', type: :request do
         {
           name: 'Campaign one',
           slug_id: @user.slug_id,
-          tag_id: @tag.id.to_s,
+          tag_id: @tag.id.to_s
         }
       end
 
       it 'creates a new Campaign with medium params' do
         @medium = Medium.create! medium_valid_attributes
         @medium2 = Medium.create! medium_valid_attributes2
-          post '/api/v1/campaigns',
-               params: { campaign: valid_attributes_with_medium }, headers: valid_headers, as: :json
+        post '/api/v1/campaigns',
+             params: { campaign: valid_attributes_with_medium }, headers: valid_headers, as: :json
         expect(Campaign.first.media.count).to eq(2)
       end
 
-
       it 'creates a new Campaign with tags params' do
         @tag = Tag.create! tag_valid_attributes
-   
-        #binding.pry
-          post '/api/v1/campaigns',
-               params: { campaign: valid_attributes_with_tag }, headers: valid_headers, as: :json
-          expect(Campaign.first.tags.count).to eq(1)
+
+        # binding.pry
+        post '/api/v1/campaigns',
+             params: { campaign: valid_attributes_with_tag }, headers: valid_headers, as: :json
+        expect(Campaign.first.tags.count).to eq(1)
         # result =  JSON.parse(response.body)
       end
-
-
 
       it 'renders a JSON response with the new campaign' do
         post '/api/v1/campaigns',
@@ -192,7 +185,7 @@ RSpec.describe '/campaigns', type: :request do
         patch "/api/v1/campaigns/#{campaign.id}",
               params: { campaign: new_attributes }, headers: valid_headers, as: :json
         campaign.reload
-        expect(campaign.attributes).to include( { "name" => 'Campaign edit name' } )
+        expect(campaign.attributes).to include({ 'name' => 'Campaign edit name' })
       end
 
       let(:medium_valid_attributes) do
@@ -206,7 +199,7 @@ RSpec.describe '/campaigns', type: :request do
         {
           name: 'Campaign one',
           slug_id: @user.slug_id,
-          media_id: @medium.id.to_s,
+          media_id: @medium.id.to_s
         }
       end
 
@@ -220,10 +213,9 @@ RSpec.describe '/campaigns', type: :request do
         {
           name: 'Campaign one',
           slug_id: @user.slug_id,
-          tag_id: @tag.id.to_s,
+          tag_id: @tag.id.to_s
         }
       end
-
 
       it 'updates the requested campaign with new medium' do
         @medium = Medium.create! medium_valid_attributes
@@ -233,7 +225,6 @@ RSpec.describe '/campaigns', type: :request do
         campaign.reload
         expect(Campaign.first.media.count).to eq(1)
       end
-
 
       it 'updates the requested campaign with new tag' do
         @tag = Tag.create! tag_valid_attributes

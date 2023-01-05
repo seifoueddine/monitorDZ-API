@@ -8,36 +8,22 @@ module Api
 
       # GET /media
       def index
-        @media =
-          if params[:search].present?
-            Medium.order(order_and_direction).page(page).per(per_page)
-                  .name_like(params[:search])
-          else
-            Medium.order(order_and_direction).page(page).per(per_page)
-          end
+        @media = Medium.order(order_and_direction).page(page).per(per_page)
+        if params[:search].present?
+          @media = @media.name_like(params[:search])
+        end
         set_pagination_headers :media
-        json_string = MediumSerializer.new(@media, include: [:sectors]).serializable_hash.to_json
-        render json: json_string
+        render json: MediumSerializer.new(@media).serializable_hash.to_json
       end
 
       # GET /media/1
       def show
-        json_string = MediumSerializer.new(@medium, include: [:sectors]).serializable_hash.to_json
-        render  json: json_string
+        render  json: MediumSerializer.new(@medium).serializable_hash.to_json
       end
 
       # POST /media
       def create
         @medium = Medium.new(medium_params)
-
-        #     ids = params[:sector_id].split(',')
-        #     @sector = if ids.length != 1
-        #                 Sector.where(id: ids)
-        #               else
-        #                 Sector.where(id: params[:sector_id])
-        #               end
-        #
-        #     @medium.sectors = @sector
         if @medium.save
           render json: @medium, status: :created
         else
@@ -48,16 +34,6 @@ module Api
       # PATCH/PUT /media/1
       def update
         if @medium.update(medium_params)
-
-          #  @medium.sectors.clear
-          #       ids = params[:sector_id].split(',')
-          #       @sector = if ids.length != 1
-          #                   Sector.where(id: ids)
-          #                 else
-          #                   Sector.where(id: params[:sector_id])
-          #                 end
-          #
-          #       @medium.sectors = @sector
           render json: @medium
         else
           render json: @medium.errors, status: :unprocessable_entity
@@ -66,14 +42,9 @@ module Api
 
       # DELETE /media/1
       def destroy
-        check_campaign = @medium.campaigns.count.positive?
-        if check_campaign == true
-          render json: {
-            code: 'E003',
-            message: 'This media belongs to campaign'
-          },
-                 status: 406
-
+        check_campaign = @medium.campaigns.exists?
+        if check_campaign
+          render json: { code: 'E003', message: 'This media belongs to campaign' }, status: 406
         else
           @medium.destroy
         end
@@ -92,7 +63,7 @@ module Api
 
       # Only allow a trusted parameter "white list" through.
       def medium_params
-        params.permit(:name, :media_type, :orientation, :last_article,
+        params.require(:medium).permit(:name, :media_type, :orientation, :last_article,
                       :url_crawling, :avatar, :language, :zone, :tag_status)
       end
     end

@@ -33,7 +33,7 @@ RSpec.describe '/list_users', type: :request do
 
   let(:invalid_attributes) do
     {
-      name: 12345,
+      name: 12_345,
       slug_id: nil
     }
   end
@@ -71,11 +71,10 @@ RSpec.describe '/list_users', type: :request do
 
     it 'renders a successful response with search ' do
       ListUser.create! valid_attributes
-      get "/api/v1/list_users?search=Salim's list",  headers: valid_headers, as: :json
-      result =  JSON.parse(response.body)
+      get "/api/v1/list_users?search=Salim's list", headers: valid_headers, as: :json
+      result = JSON.parse(response.body)
       expect(result['data'].count).to eq(1)
     end
-
   end
 
   describe 'GET /show' do
@@ -133,7 +132,7 @@ RSpec.describe '/list_users', type: :request do
         patch "/api/v1/list_users/#{list_user.id}",
               params: { list_user: new_attributes }, headers: valid_headers, as: :json
         list_user.reload
-        expect(list_user.attributes).to include( { "name" => "Omar's list" } )
+        expect(list_user.attributes).to include({ 'name' => "Omar's list" })
       end
 
       it 'renders a JSON response with the list_user' do
@@ -144,70 +143,63 @@ RSpec.describe '/list_users', type: :request do
         expect(response.content_type).to match(a_string_including('application/json'))
       end
 
-    context 'Update list user articles ' do
-      let(:medium_valid_attributes) do
-        {
-          name: 'Elkhabar',
-          url_crawling: 'www.elkhabar.com'
-        }
-      end
+      context 'Update list user articles ' do
+        let(:medium_valid_attributes) do
+          {
+            name: 'Elkhabar',
+            url_crawling: 'www.elkhabar.com'
+          }
+        end
 
-      let(:author_valid_attributes) do
-        {
-          name: 'Mohamed Salim',
-        }
-      end
+        let(:author_valid_attributes) do
+          {
+            name: 'Mohamed Salim'
+          }
+        end
 
-      let(:article_valid_attributes) do
-        {
-          title: 'Campaign Name',
-          medium_id: @medium.id,
-          author_id: @author.id,
-        }
-      end
-      let(:delete_article)do
-      { delete_article_id: @article.id }
-      end
-      let(:add_article)do
-      { article_id: @article.id.to_s }
-      end
-      it 'delete article from list user articles' do
-      
-        @medium = Medium.create! medium_valid_attributes
-        @author = Author.create! author_valid_attributes
-        @article = Article.create! article_valid_attributes
-        @list_user = ListUser.create! valid_attributes
-        @list_user.articles = Article.where(id: @article.id)
-    
-        expect do 
-        put "/api/v1/list_users/#{@list_user.id}", params: {list_user: delete_article}, headers: valid_headers, as: :json
-        
-        
-       # @list_user.list_articles.reload
-       # result = @list_user.list_articles.where(article_id: @article.id).count
-       # binding.pry
-     
-      end.to change(ListUser.first.articles, :count).by(-1)
-      end
+        let(:article_valid_attributes) do
+          {
+            title: 'Campaign Name',
+            medium_id: @medium.id,
+            author_id: @author.id
+          }
+        end
+        let(:delete_article) do
+          { delete_article_id: @article.id }
+        end
+        let(:add_article) do
+          { article_id: @article.id.to_s }
+        end
+        it 'delete article from list user articles' do
+          @medium = Medium.create! medium_valid_attributes
+          @author = Author.create! author_valid_attributes
+          @article = Article.create! article_valid_attributes
+          @list_user = ListUser.create! valid_attributes
+          @list_user.articles = Article.where(id: @article.id)
 
+          expect do
+            put "/api/v1/list_users/#{@list_user.id}", params: { list_user: delete_article }, headers: valid_headers,
+                                                       as: :json
 
-     
-      it 'delete article from list user articles' do
-        
-        @medium = Medium.create! medium_valid_attributes
-        @author = Author.create! author_valid_attributes
-        @article = Article.create! article_valid_attributes
-        list_user = ListUser.create! valid_attributes
-        # list_user.articles = Article.where(id: @article.id)
-   
-         
-        expect do
-          put "/api/v1/list_users/#{list_user.id}", params: {list_user: add_article}, headers: valid_headers, as: :json
-        end.to  change(ListUser.first.articles, :count).by(1)
+            # @list_user.list_articles.reload
+            # result = @list_user.list_articles.where(article_id: @article.id).count
+            # binding.pry
+          end.to change(ListUser.first.articles, :count).by(-1)
+        end
+
+        it 'delete article from list user articles' do
+          @medium = Medium.create! medium_valid_attributes
+          @author = Author.create! author_valid_attributes
+          @article = Article.create! article_valid_attributes
+          list_user = ListUser.create! valid_attributes
+          # list_user.articles = Article.where(id: @article.id)
+
+          expect do
+            put "/api/v1/list_users/#{list_user.id}", params: { list_user: add_article }, headers: valid_headers,
+                                                      as: :json
+          end.to change(ListUser.first.articles, :count).by(1)
+        end
       end
-
-    end
-
     end
 
     context 'with invalid parameters' do
