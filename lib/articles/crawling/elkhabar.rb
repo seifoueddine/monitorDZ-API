@@ -1,13 +1,11 @@
 # frozen_string_literal: true
-
+require_relative 'crawlingmethods'
 module Articles
   # crawling files
   module Crawling
     # methode to get Elkhabar articles
-    require_relative 'crawlingmethods'
     class Elkhabar
       class << self
-        include CrawlingMethods
         include AbstractController::Rendering
         def get_articles_elkhabar(url_media_array, media)
           count = 0
