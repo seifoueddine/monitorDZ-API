@@ -4,8 +4,9 @@ module Articles
   # crawling files
   module Crawling
     # methode to get Elkhabar articles
-    require_relative 'crawlingmethods'
+   
     class Elkhabar
+      require_relative 'crawlingmethods'
       class << self
         include AbstractController::Rendering
         def get_articles_elkhabar(url_media_array, media)
