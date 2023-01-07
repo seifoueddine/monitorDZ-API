@@ -1,11 +1,13 @@
 # frozen_string_literal: true
-require_relative 'crawlingmethods'
+
 module Articles
   # crawling files
   module Crawling
     # methode to get Elkhabar articles
     class Elkhabar
       class << self
+        require_relative 'crawlingmethods'
+        include Crawlingmethods
         include AbstractController::Rendering
         def get_articles_elkhabar(url_media_array, media)
           count = 0
@@ -29,9 +31,6 @@ module Articles
           end
 
           last_dates = last_dates.map { |d| change_translate_date(d) }
-          pp "--------------"
-          last_dates.map { |d| pp d }
-          pp "--------------"
           last_dates = last_dates.map { |d| d.to_datetime.change({ hour: 0, min: 0, sec: 0 }) }
           articles_url_elkhabar = articles_url_elkhabar.reject(&:nil?)
           articles_url_elkhabar = articles_url_elkhabar.uniq
@@ -58,7 +57,7 @@ module Articles
             if article.css('span.category-blog').present?
               new_article.category_article = article.css('span.category-blog').text
             end
-            new_article.title = article.css('section div div div div div div h2.title').text if article.css('section div div div div div div h2.title').present?
+            new_article.title = article.css('section div div div div div div h1.title').text if article.css('section div div div div div div h1.title').present?
             # new_article.author = article.css('div.article-head__author div em a').text
 
             author_exist = if article.at('span.time-blog b').present?
@@ -110,7 +109,7 @@ module Articles
           count
         end
 
-        private
+        # private
 
         # def change_translate_date(d)
         #   d.split.map do |m|
