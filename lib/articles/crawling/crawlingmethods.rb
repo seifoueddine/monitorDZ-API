@@ -2,10 +2,10 @@
 
 module Articles
     # crawling files
-    module Crawling
+  module Crawling
       # Crawling Methods
       module Crawlingmethods
-       
+
         # change_translate_date
         def change_translate_date(d)
           d.split.map do |m|
