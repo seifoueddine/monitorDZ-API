@@ -6,7 +6,7 @@ class UserMailer < ApplicationMailer
     @user = user
     @tags = camp_tags
 
-    mail to: user.email, subject: 'Alerte TAG', from: 'Medias Monitoring <support@mediasmonitoring.com>'
+    mail to: user.email, subject: 'Alerte TAG', from: 'Medias Echo <support@mediasecho.com>'
   end
 
   def articleMail(article, receiver, current_user)
@@ -14,6 +14,6 @@ class UserMailer < ApplicationMailer
     @receiver = receiver
     @current_user = current_user
     mail to: @receiver, subject: "Article de la part de #{@current_user.name}",
-         from: 'Medias Monitoring <support@mediasmonitoring.com>'
+         from: 'Medias Echo <support@mediasecho.com>'
   end
 end
