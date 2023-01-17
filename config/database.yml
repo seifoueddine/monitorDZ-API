@@ -32,7 +32,7 @@ development:
   username: postgres
 
   # The password associated with the postgres role (username).
-  password: root
+  password: 'root'
 
   # Connect on a TCP socket. Omitted by default since the client uses a
   # domain socket that doesn't need configuration. Windows does not have
@@ -61,7 +61,7 @@ test:
   username: postgres
 
   # The password associated with the postgres role (username).
-  password: root
+  password: 'root'
 
   # Connect on a TCP socket. Omitted by default since the client uses a
   # domain socket that doesn't need configuration. Windows does not have
@@ -91,8 +91,4 @@ test:
 #   production:
 #     url: <%= ENV['DATABASE_URL'] %>
 #
-production:
-  <<: *default
-  database: newmm
-  username: <%= Rails.application.credentials.database[:secrect_username] %>
-  password: <%= Rails.application.credentials.database[:secrect_password] %>
+
