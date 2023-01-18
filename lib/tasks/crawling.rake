@@ -1,9 +1,9 @@
 # frozen_string_literal: true
-
+include Crawlingmethods
 require 'nokogiri'
 require 'open-uri'
 require 'openssl'
-require_relative '../articles/crawling/crawlingmethods'
+require 'lib/articles/crawling/crawlingmethods'
 # require 'resolv-replace'
 OpenSSL::SSL::VERIFY_PEER = OpenSSL::SSL::VERIFY_NONE
 namespace :crawling do
