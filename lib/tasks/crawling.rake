@@ -1,5 +1,4 @@
 # frozen_string_literal: true
-extend Crawlingmethods
 require 'nokogiri'
 require 'open-uri'
 require 'openssl'
