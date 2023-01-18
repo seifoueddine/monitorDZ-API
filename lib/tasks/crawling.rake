@@ -3,6 +3,8 @@
 require 'nokogiri'
 require 'open-uri'
 require 'openssl'
+require_relative '../articles/crawlingmethods'
+include Crawlingmethods
 # require 'resolv-replace'
 OpenSSL::SSL::VERIFY_PEER = OpenSSL::SSL::VERIFY_NONE
 namespace :crawling do
@@ -136,7 +138,7 @@ namespace :crawling do
       end
     end
 
-    last_dates = last_dates.map { |d| change_date_autobip_aps(d) }
+    last_dates = last_dates.map { |d| change_translate_date(d) }
     last_dates = last_dates.map(&:to_datetime)
     articles_url_autobip = articles_url_autobip.reject(&:nil?)
     last_dates = last_dates.uniq
@@ -181,7 +183,7 @@ namespace :crawling do
       new_article.body = article.css('div.pt-4.bp-2.entry-content.typography-copy').inner_html
       new_article.body = new_article.body.gsub(/<img[^>]*>/, '')
 
-      d = change_date_autobip_aps(article.at("//span[@itemprop = 'datePublished']").text)
+      d = change_translate_date(article.at("//span[@itemprop = 'datePublished']").text)
       new_article.date_published = d.to_datetime
       url_array = article.css('.fotorama.mnmd-gallery-slider.mnmd-post-media-wide img').map { |link| link['src'] }
       new_article.url_image = url_array[0]
@@ -559,7 +561,7 @@ namespace :crawling do
         last_dates << date.text
       end
     end
-    last_dates = last_dates.map { |d| change_date_autobip_aps(d) }
+    last_dates = last_dates.map { |d| change_translate_date(d) }
     last_dates = last_dates.map { |d| d.to_datetime.change({ hour: 0, min: 0, sec: 0 }) }
     # last_dates = last_dates.map(&:to_datetime.change({ hour: 0, min: 0, sec: 0 }))
     articles_url_aps = articles_url_aps.reject(&:nil?)
@@ -619,7 +621,7 @@ namespace :crawling do
       new_article.body = new_article.body.gsub(/<img[^>]*>/, '')
       date = article.css('span.itemDateCreated').text
       date['Publié le : '] = ''
-      d = change_date_autobip_aps(date)
+      d = change_translate_date(date)
       new_article.date_published = d.to_datetime.change({ hour: 0, min: 0, sec: 0 })
       # new_article.date_published =
       url_array = article.css('div.itemImageBlock span.itemImage img').map { |link| "http://www.aps.dz#{link['src']}" }
@@ -743,7 +745,7 @@ namespace :crawling do
       date_published_treat = article.at('div.itemToolbar span.itemDateCreated').text.split(',')
       date = date_published_treat[1]
 
-      date_checked = change_date_maghrebemergen(date)
+      date_checked = change_translate_date(date)
       new_article.date_published = date_checked.to_datetime.change({ hour: 0, min: 0, sec: 0 })
       url_array =  article.css('span.itemImage img').map { |link| "https://www.aps.dz#{link['src']}" }
       # tags_array = article.css('ul.itemTags li a').map(&:text)
@@ -897,7 +899,7 @@ namespace :crawling do
         last_dates << date.text
       end
     end
-    last_dates = last_dates.map { |d| change_date_autobip_aps(d) }
+    last_dates = last_dates.map { |d| change_translate_date(d) }
     last_dates = last_dates.map { |d| d.to_datetime.change({ hour: 0, min: 0, sec: 0 }) }
     # last_dates = last_dates.map(&:to_datetime.change({ hour: 0, min: 0, sec: 0 }))
     articles_url_liberte = articles_url_liberte.reject(&:nil?)
@@ -945,10 +947,7 @@ namespace :crawling do
       new_article.body = article.css('div#text_core').inner_html
       new_article.body = new_article.body.gsub(/<img[^>]*>/, '')
       date = article.css('div#side-post div div.date-heure span')[0].text.delete(' ')
-
-      # d = change_date_autobip_aps(date)
       new_article.date_published = date.to_datetime.change({ hour: 0, min: 0, sec: 0 })
-      # new_article.date_published =
       url_array = article.css('div.media img.post-image').map { |link| link['src'] }
       new_article.url_image = url_array[0]
       begin
@@ -1001,7 +1000,7 @@ namespace :crawling do
         last_dates << date.text
       end
     end
-    last_dates = last_dates.map { |d| change_date_autobip_aps(d) }
+    last_dates = last_dates.map { |d| change_translate_date(d) }
     last_dates = last_dates.map { |d| d.to_datetime.change({ hour: 0, min: 0, sec: 0 }) }
     # last_dates = last_dates.map(&:to_datetime.change({ hour: 0, min: 0, sec: 0 }))
     articles_url_liberte_ar = articles_url_liberte_ar.reject(&:nil?)
@@ -1050,7 +1049,7 @@ namespace :crawling do
       new_article.body = new_article.body.gsub(/<img[^>]*>/, '')
       date = article.css('div#side-post div div.date-heure span')[0].text.delete(' ')
 
-      # d = change_date_autobip_aps(date)
+      # d = change_translate_date(date)
       new_article.date_published = date.to_datetime.change({ hour: 0, min: 0, sec: 0 })
       # new_article.date_published =
       url_array = article.css('div.media img.post-image').map { |link| link['src'] }
@@ -1147,7 +1146,7 @@ namespace :crawling do
       new_article.body = article.css('div.td-post-content').inner_html
       new_article.body = new_article.body.gsub(/<img[^>]*>/, '')
 
-      # d = change_date_autobip_aps(date)
+      # d = change_translate_date(date)
       new_article.date_published = article.at('time[datetime]')['datetime'].to_datetime.change({ hour: 0, min: 0,
                                                                                                  sec: 0 }) + (1.0 / 24)
       # new_article.date_published =
@@ -1245,7 +1244,7 @@ namespace :crawling do
       new_article.body = article.css('div.td-post-content').inner_html
       new_article.body = new_article.body.gsub(/<img[^>]*>/, '')
 
-      # d = change_date_autobip_aps(date)
+      # d = change_translate_date(date)
       new_article.date_published = article.at('time[datetime]')['datetime'].to_datetime.change({ hour: 0, min: 0,
                                                                                                  sec: 0 }) + (1.0 / 24)
       # new_article.date_published =
@@ -1302,7 +1301,7 @@ namespace :crawling do
         last_dates << date_with_time
       end
     end
-    last_dates = last_dates.map { |d| change_date_autobip_aps(d) }
+    last_dates = last_dates.map { |d| change_translate_date(d) }
     last_dates = last_dates.map { |d| d.to_datetime.change({ hour: 0, min: 0, sec: 0 }) }
     # last_dates = last_dates.map(&:to_datetime.change({ hour: 0, min: 0, sec: 0 }))
     articles_url_algerie360 = articles_url_algerie360.reject(&:nil?)
@@ -1352,7 +1351,7 @@ namespace :crawling do
       date_with_time = article.css('li.entry__meta-date.pt-xl-1').text
       date_with_a = date_with_time.split('à')[0]
       date = date_with_a
-      d = change_date_maghrebemergen(date)
+      d = change_translate_date(date)
       new_article.date_published = d.to_datetime.change({ hour: 0, min: 0, sec: 0 })
       # new_article.date_published =
       url_array = article.css('div.entry__img-holder.px-2.px-md-0 img').map { |link| link['data-src'] }
@@ -1411,7 +1410,7 @@ namespace :crawling do
         last_dates << date['datetime']
       end
     end
-    last_dates = last_dates.map { |d| change_date_autobip_aps(d) }
+    last_dates = last_dates.map { |d| change_translate_date(d) }
     last_dates = last_dates.map { |d| d.to_datetime.change({ hour: 0, min: 0, sec: 0 }) }
     # last_dates = last_dates.map(&:to_datetime.change({ hour: 0, min: 0, sec: 0 }))
     articles_url_algeriepart = articles_url_algeriepart.reject(&:nil?)
@@ -1456,7 +1455,7 @@ namespace :crawling do
 
       new_article.body = article.css('div.tdb-block-inner.td-fix-index').inner_html
       date = article.css('div.vc_column-inner div div div.tdb-block-inner.td-fix-index time').text
-      d = change_date_autobip_aps(date)
+      d = change_translate_date(date)
       new_article.date_published = d.to_datetime.change({ hour: 0, min: 0, sec: 0 })
       new_article.url_image = nil
       new_article.status = 'pending'
@@ -1605,7 +1604,7 @@ namespace :crawling do
         last_dates << date.text
       end
     end
-    last_dates = last_dates.map { |d| change_date_maghrebemergen(d) }
+    last_dates = last_dates.map { |d| change_translate_date(d) }
     last_dates = last_dates.map { |d| d.to_datetime.change({ hour: 0, min: 0, sec: 0 }) }
     articles_url_maghrebemergent = articles_url_maghrebemergent.reject(&:nil?)
     last_dates = last_dates.uniq
@@ -1655,7 +1654,7 @@ namespace :crawling do
       # date = article.at('p.text-capitalize span').text
       # date[','] = ''
       date = article.at('div.elementor-widget-container ul li a span.elementor-icon-list-text.elementor-post-info__item.elementor-post-info__item--type-date').text
-      d = change_date_maghrebemergen(date)
+      d = change_translate_date(date)
       new_article.date_published = d.to_datetime.change({ hour: 0, min: 0, sec: 0 })
       url_array = article.css('section div div div div div div.elementor-widget-wrap div.elementor-widget-container div.elementor-image img').map do |link|
         link['src']
@@ -1806,7 +1805,7 @@ namespace :crawling do
         last_dates << date.text.split(':')[0].to_datetime
       end
     end
-    # last_dates = last_dates.map { |d| change_date_maghrebemergen(d) }
+    # last_dates = last_dates.map { |d| change_translate_date(d) }
     # last_dates = last_dates.map { |d| d.to_datetime.change({ hour: 0, min: 0, sec: 0 })}
     articles_url_elmoudjahid = articles_url_elmoudjahid.reject(&:nil?)
     last_dates = last_dates.uniq
@@ -1916,7 +1915,7 @@ namespace :crawling do
       end
     end
 
-    last_dates = last_dates.map { |d| change_date_maghrebemergen(d) }
+    last_dates = last_dates.map { |d| change_translate_date(d) }
     last_dates = last_dates.map { |d| d.to_datetime.change({ hour: 0, min: 0, sec: 0 }) }
     articles_url_elkhabar = articles_url_elkhabar.reject(&:nil?)
     articles_url_elkhabar = articles_url_elkhabar.uniq
@@ -1970,7 +1969,7 @@ namespace :crawling do
       # date = article.at('p.text-capitalize span').text
       # date[','] = ''
       date = article.at('time[datetime]')['datetime']
-      # d = change_date_maghrebemergen(date)
+      # d = change_translate_date(date)
       new_article.date_published = date.to_datetime.change({ hour: 0, min: 0, sec: 0 })
       if article.css('div#article_img img').present?
         url_array = article.css('div#article_img img').map { |link| "https://www.elkhabar.com#{link['src']}" }
@@ -2032,7 +2031,7 @@ namespace :crawling do
       end
     end
 
-    last_dates = last_dates.map { |d| change_date_maghrebemergen(d) }
+    last_dates = last_dates.map { |d| change_translate_date(d) }
     last_dates = last_dates.map { |d| d.to_datetime.change({ hour: 0, min: 0, sec: 0 }) }
     articles_url_elkhabar_fr = articles_url_elkhabar_fr.reject(&:nil?)
     articles_url_elkhabar_fr = articles_url_elkhabar_fr.uniq
@@ -2142,7 +2141,7 @@ namespace :crawling do
         last_dates << date['datetime']
       end
     end
-    # last_dates = last_dates.map { |d| change_date_maghrebemergen(d) }
+    # last_dates = last_dates.map { |d| change_translate_date(d) }
     last_dates = last_dates.map { |d| d.to_datetime.change({ hour: 0, min: 0, sec: 0 }) + (1.0 / 24) }
     articles_url_elikhbaria = articles_url_elikhbaria.reject(&:nil?)
     last_dates = last_dates.uniq
@@ -2194,7 +2193,7 @@ namespace :crawling do
       # date = article.at('p.text-capitalize span').text
       # date[','] = ''
       date = article.at('time[datetime]')['datetime']
-      # d = change_date_maghrebemergen(date)
+      # d = change_translate_date(date)
       new_article.date_published = date.to_datetime.change({ hour: 0, min: 0, sec: 0 }) + (1.0 / 24)
       url_array = # and link['class'] == 'b-loaded'
         article.css('div.post-header div.single-featured > a').map do |link|
@@ -2252,7 +2251,7 @@ namespace :crawling do
         last_dates << date['datetime']
       end
     end
-    # last_dates = last_dates.map { |d| change_date_maghrebemergen(d) }
+    # last_dates = last_dates.map { |d| change_translate_date(d) }
     last_dates = last_dates.map { |d| d.to_datetime.change({ hour: 0, min: 0, sec: 0 }) }
     articles_url_algerieco = articles_url_algerieco.reject(&:nil?)
     last_dates = last_dates.uniq
@@ -2305,7 +2304,7 @@ namespace :crawling do
       # date = article.at('p.text-capitalize span').text
       # date[','] = ''
       date = article.at('time[datetime]')['datetime']
-      # d = change_date_maghrebemergen(date)
+      # d = change_translate_date(date)
       new_article.date_published = date.to_datetime.change({ hour: 0, min: 0, sec: 0 })
       url_array = article.css('div.td-post-featured-image img').map { |link| link['src'] }
       url_image = url_array[0]
@@ -2407,7 +2406,7 @@ namespace :crawling do
       # date = article.at('p.text-capitalize span').text
       # date[','] = ''
       date = article.at('time[datetime]')['datetime']
-      # d = change_date_maghrebemergen(date)
+      # d = change_translate_date(date)
       new_article.date_published = date.to_datetime.change({ hour: 0, min: 0, sec: 0 }) + (1.0 / 24)
       url_array = article.css('div.single-featured a').map { |link| link['href'] }
       url_image = url_array[0]
@@ -2466,7 +2465,7 @@ namespace :crawling do
         last_dates << date['datetime']
       end
     end
-    # last_dates = last_dates.map { |d| change_date_maghrebemergen(d) }
+    # last_dates = last_dates.map { |d| change_translate_date(d) }
     last_dates = last_dates.map { |d| d.to_datetime.change({ hour: 0, min: 0, sec: 0 }) + (1.0 / 24) }
     articles_url_elhiwar = articles_url_elhiwar.reject(&:nil?)
     last_dates = last_dates.uniq
@@ -2518,7 +2517,7 @@ namespace :crawling do
       # date = article.at('p.text-capitalize span').text
       # date[','] = ''
       date = article.at('time[datetime]')['datetime']
-      # d = change_date_maghrebemergen(date)
+      # d = change_translate_date(date)
       new_article.date_published = date.to_datetime.change({ hour: 0, min: 0, sec: 0 }) + (1.0 / 24)
       url_array = article.css('div.entry-media img').map { |link| link['src'] }
 
@@ -2580,7 +2579,7 @@ namespace :crawling do
         last_dates << date['datetime']
       end
     end
-    # last_dates = last_dates.map { |d| change_date_maghrebemergen(d) }
+    # last_dates = last_dates.map { |d| change_translate_date(d) }
     last_dates = last_dates.map { |d| d.to_datetime.change({ hour: 0, min: 0, sec: 0 }) + (1.0 / 24) }
     articles_url_visadz = articles_url_visadz.reject(&:nil?)
     last_dates = last_dates.uniq
@@ -2631,7 +2630,7 @@ namespace :crawling do
       # date = article.at('p.text-capitalize span').text
       # date[','] = ''
       date = article.at('time[datetime]')['datetime']
-      # d = change_date_maghrebemergen(date)
+      # d = change_translate_date(date)
       new_article.date_published = date.to_datetime.change({ hour: 0, min: 0, sec: 0 }) + (1.0 / 24)
       # url_array = article.css('div.entry-media img').map {  |link| link['src'] }
       # url_image = url_array[0]
@@ -2680,7 +2679,7 @@ namespace :crawling do
         last_dates << date.text
       end
     end
-    last_dates = last_dates.map { |d| change_date_autobip_aps(d) }
+    last_dates = last_dates.map { |d| change_translate_date(d) }
     last_dates = last_dates.map { |d| d.to_datetime.change({ hour: 0, min: 0, sec: 0 }) }
     articles_url_santenews = articles_url_santenews.reject(&:nil?)
     last_dates = last_dates.uniq
@@ -2727,7 +2726,7 @@ namespace :crawling do
       # date = article.at('p.text-capitalize span').text
       # date[','] = ''
       date = article.at('span.tie-date').text
-      date = change_date_autobip_aps(date)
+      date = change_translate_date(date)
       new_article.date_published = date.to_datetime.change({ hour: 0, min: 0, sec: 0 })
       url_array = article.css('div.single-post-thumb  img').map { |link| link['src'] }
       url_image = url_array[0]
@@ -3333,7 +3332,7 @@ namespace :crawling do
       new_article.body = article.css('div.entry-content.entry.clearfix p').inner_html
       new_article.body = new_article.body.gsub(/<img[^>]*>/, '')
       date_arabe = article.at('span.date.meta-item.tie-icon').text
-      date = change_date_maghrebemergen(date_arabe)
+      date = change_translate_date(date_arabe)
       new_article.date_published = date.to_datetime.change({ hour: 0, min: 0, sec: 0 })
       url_array = article.css('figure.single-featured-image img').map do |link|
         link['src'] if link['src'].include? 'https'
@@ -3432,7 +3431,7 @@ namespace :crawling do
       new_article.body = article.css('div.the-content  p').inner_html
       new_article.body = new_article.body.gsub(/<img[^>]*>/, '')
       date_arabe = article.at('div.entry-info span.posted-date').text
-      date = change_date_maghrebemergen(date_arabe.split('-')[0])
+      date = change_translate_date(date_arabe.split('-')[0])
       new_article.date_published = date.to_datetime.change({ hour: 0, min: 0, sec: 0 })
       url_array = article.css('div.post-formats-wrapper a.post-image img').map { |link| link['src'] }
       new_article.url_image = url_array[0]
@@ -3621,7 +3620,7 @@ namespace :crawling do
       new_article.body = article.css('div.post_content p').inner_html
       new_article.body = new_article.body.gsub(/<img[^>]*>/, '')
       date = article.at('span.timePost').text
-      date_checked = change_date_maghrebemergen(date)
+      date_checked = change_translate_date(date)
       new_article.date_published = date_checked.to_datetime.change({ hour: 0, min: 0, sec: 0 })
       url_array =  article.css('div.article-image img.attachment-full.size-full.wp-post-image').map do |link|
         link['src']
@@ -4059,151 +4058,182 @@ namespace :crawling do
     end
   end
 
-  # change_date_autobip_aps
-  def change_date_autobip_aps(d)
-    d.split.map do |m|
-      case m.downcase
-      when 'Janvier'.downcase
-        'January'
-      when 'Février'.downcase
-        'February'
-      when 'Mars'.downcase
-        'March'
-      when 'Avril'.downcase
-        'April'
-      when 'Mai'.downcase
-        'May'
-      when 'Juin'.downcase
-        'June'
-      when 'Juillet'.downcase
-        'July'
-      when 'juillet'.downcase
-        'July'
-      when 'Octobre'.downcase
-        'October'
-      when 'Novembre'.downcase
-        'November'
-      when 'Décembre'.downcase
-        'December'
-      when 'Septembre'.downcase
-        'September'
-      when 'Aout'.downcase
-        'August'
-      when 'août,'.downcase
-        'August'
-      when 'août'.downcase
-        'August'
-      else
-        m
-      end
-    end.join(' ')
-  end
-  # change_date_autobip_aps
-  #
+  # # change_date_autobip_aps
+  # def change_date_autobip_aps(d)
+  #   d.split.map do |m|
+  #     case m.downcase
+  #     when 'Janvier'.downcase
+  #       'January'
+  #     when 'Février'.downcase
+  #       'February'
+  #     when 'Mars'.downcase
+  #       'March'
+  #     when 'Avril'.downcase
+  #       'April'
+  #     when 'Mai'.downcase
+  #       'May'
+  #     when 'Juin'.downcase
+  #       'June'
+  #     when 'Juillet'.downcase
+  #       'July'
+  #     when 'juillet'.downcase
+  #       'July'
+  #     when 'Octobre'.downcase
+  #       'October'
+  #     when 'Novembre'.downcase
+  #       'November'
+  #     when 'Décembre'.downcase
+  #       'December'
+  #     when 'Septembre'.downcase
+  #       'September'
+  #     when 'Aout'.downcase
+  #       'August'
+  #     when 'août,'.downcase
+  #       'August'
+  #     when 'août'.downcase
+  #       'August'
+  #     else
+  #       m
+  #     end
+  #   end.join(' ')
+  # end
+  # # change_date_autobip_aps
+  # #
 
-  # change_date_maghrebemergent
-  def change_date_maghrebemergen(d)
-    d.split.map do |m|
-      case m.downcase
-      when 'Janvier,'.downcase
-        'January'
-      when 'Février,'.downcase
-        'February'
-      when 'Mars,'.downcase
-        'March'
-      when 'Avril,'.downcase
-        'April'
-      when 'Mai,'.downcase
-        'May'
-      when 'Juin,'.downcase
-        'June'
-      when 'Juillet,'.downcase
-        'July'
-      when 'Octobre,'.downcase
-        'October'
-      when 'Novembre,'.downcase
-        'November'
-      when 'Décembre,'.downcase
-        'December'
-      when 'Septembre,'.downcase
-        'September'
-      when 'août,'.downcase
-        'August'
-      when 'Janvier'.downcase
-        'January'
-      when 'Février'.downcase
-        'February'
-      when 'Mars'.downcase
-        'March'
-      when 'Avril'.downcase
-        'April'
-      when 'Mai'.downcase
-        'May'
-      when 'Juin'.downcase
-        'June'
-      when 'Juillet'.downcase
-        'July'
-      when 'Octobre'.downcase
-        'October'
-      when 'Novembre'.downcase
-        'November'
-      when 'Décembre'.downcase
-        'December'
-      when 'Septembre'.downcase
-        'September'
-      when 'août'.downcase
-        'August'
-      when 'جانفي'.downcase
-        'January'
-      when 'فيفري'.downcase
-        'February'
-      when 'مارس'.downcase
-        'March'
-      when 'افريل'.downcase
-        'April'
-      when 'ماي'.downcase
-        'May'
-      when 'جوان'.downcase
-        'June'
-      when 'جويلية'.downcase
-        'July'
-      when 'جولية'.downcase
-        'July'
-      when 'أكتوبر'.downcase
-        'October'
-      when 'نوفمبر'.downcase
-        'November'
-      when 'ديسمبر'.downcase
-        'December'
-      when 'سبتمبر'.downcase
-        'September'
-      when 'اوت'.downcase
-        'August'
-      when 'أوت'.downcase
-        'August'
+  # # change_date_maghrebemergent
+  # def change_date_maghrebemergen(d)
+  #   d.split.map do |m|
+  #     case m.downcase
+  #     when 'Janvier'.downcase
+  #       'January'
+  #     when 'Février'.downcase
+  #       'February'
+  #     when 'Mars'.downcase
+  #       'March'
+  #     when 'Avril'.downcase
+  #       'April'
+  #     when 'Mai'.downcase
+  #       'May'
+  #     when 'Juin'.downcase
+  #       'June'
+  #     when 'Juillet'.downcase
+  #       'July'
+  #     when 'juillet'.downcase
+  #       'July'
+  #     when 'Octobre'.downcase
+  #       'October'
+  #     when 'Novembre'.downcase
+  #       'November'
+  #     when 'Décembre'.downcase
+  #       'December'
+  #     when 'Septembre'.downcase
+  #       'September'
+  #     when 'Aout'.downcase
+  #       'August'
+  #     when 'août,'.downcase
+  #       'August'
+  #     when 'août'.downcase
+  #       'August'
+        
+  #     when 'Janvier,'.downcase
+  #       'January'
+  #     when 'Février,'.downcase
+  #       'February'
+  #     when 'Mars,'.downcase
+  #       'March'
+  #     when 'Avril,'.downcase
+  #       'April'
+  #     when 'Mai,'.downcase
+  #       'May'
+  #     when 'Juin,'.downcase
+  #       'June'
+  #     when 'Juillet,'.downcase
+  #       'July'
+  #     when 'Octobre,'.downcase
+  #       'October'
+  #     when 'Novembre,'.downcase
+  #       'November'
+  #     when 'Décembre,'.downcase
+  #       'December'
+  #     when 'Septembre,'.downcase
+  #       'September'
+  #     when 'août,'.downcase
+  #       'August'
+  #     when 'Janvier'.downcase
+  #       'January'
+  #     when 'Février'.downcase
+  #       'February'
+  #     when 'Mars'.downcase
+  #       'March'
+  #     when 'Avril'.downcase
+  #       'April'
+  #     when 'Mai'.downcase
+  #       'May'
+  #     when 'Juin'.downcase
+  #       'June'
+  #     when 'Juillet'.downcase
+  #       'July'
+  #     when 'Octobre'.downcase
+  #       'October'
+  #     when 'Novembre'.downcase
+  #       'November'
+  #     when 'Décembre'.downcase
+  #       'December'
+  #     when 'Septembre'.downcase
+  #       'September'
+  #     when 'août'.downcase
+  #       'August'
+  #     when 'جانفي'.downcase
+  #       'January'
+  #     when 'فيفري'.downcase
+  #       'February'
+  #     when 'مارس'.downcase
+  #       'March'
+  #     when 'افريل'.downcase
+  #       'April'
+  #     when 'ماي'.downcase
+  #       'May'
+  #     when 'جوان'.downcase
+  #       'June'
+  #     when 'جويلية'.downcase
+  #       'July'
+  #     when 'جولية'.downcase
+  #       'July'
+  #     when 'أكتوبر'.downcase
+  #       'October'
+  #     when 'نوفمبر'.downcase
+  #       'November'
+  #     when 'ديسمبر'.downcase
+  #       'December'
+  #     when 'سبتمبر'.downcase
+  #       'September'
+  #     when 'اوت'.downcase
+  #       'August'
+  #     when 'أوت'.downcase
+  #       'August'
 
-      when 'يناير'.downcase
-        'January'
-      when 'فبراير'.downcase
-        'February'
-      when 'ابريل'.downcase
-        'April'
-      when 'أبريل'.downcase
-        'April'
-      when 'مايو'.downcase
-        'May'
-      when 'يونيو'.downcase
-        'June'
-      when 'يوليو'.downcase
-        'July'
-      when 'أغسطس'.downcase
-        'August'
-      else
-        m
-      end
-    end.join(' ')
-  end
-  # change_date_maghrebemergents
+  #     when 'يناير'.downcase
+  #       'January'
+  #     when 'فبراير'.downcase
+  #       'February'
+  #     when 'ابريل'.downcase
+  #       'April'
+  #     when 'أبريل'.downcase
+  #       'April'
+  #     when 'مايو'.downcase
+  #       'May'
+  #     when 'يونيو'.downcase
+  #       'June'
+  #     when 'يوليو'.downcase
+  #       'July'
+  #     when 'أغسطس'.downcase
+  #       'August'
+  #     else
+  #       m
+  #     end
+  #   end.join(' ')
+  # end
+  # # change_date_maghrebemergents
 
   # auto_tag
 
