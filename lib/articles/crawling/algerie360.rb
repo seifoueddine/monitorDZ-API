@@ -6,6 +6,8 @@ module Articles
     # methode to get Algerie360 articles
     class Algerie360
       class << self
+        require_relative 'crawlingmethods'
+        include Crawlingmethods
         include AbstractController::Rendering
 
         def get_articles_algerie360(url_media_array, media)
@@ -29,7 +31,7 @@ module Articles
               last_dates << date_with_time
             end
           end
-          last_dates = last_dates.map { |d| change_date(d) }
+          last_dates = last_dates.map { |d| change_translate_date(d) }
           last_dates = last_dates.map { |d| d.to_datetime.change({ hour: 0, min: 0, sec: 0 }) }
           # last_dates = last_dates.map(&:to_datetime.change({ hour: 0, min: 0, sec: 0 }))
           articles_url_algerie360 = articles_url_algerie360.reject(&:nil?)
@@ -107,139 +109,6 @@ module Articles
             # #tag_check_and_save(tags_array)if media.tag_status == true
           end
           count
-        end
-
-        private
-
-        def change_translate_date(d)
-          d.split.map do |m|
-            case m.downcase
-            when 'Janvier,'.downcase
-              'January'
-            when 'Février,'.downcase
-              'February'
-            when 'Mars,'.downcase
-              'March'
-            when 'Avril,'.downcase
-              'April'
-            when 'Mai,'.downcase
-              'May'
-            when 'Juin,'.downcase
-              'June'
-            when 'Juillet,'.downcase
-              'July'
-            when 'Octobre,'.downcase
-              'October'
-            when 'Novembre,'.downcase
-              'November'
-            when 'Décembre,'.downcase
-              'December'
-            when 'Septembre,'.downcase
-              'September'
-            when 'août,'.downcase
-              'August'
-            when 'Janvier'.downcase
-              'January'
-            when 'Février'.downcase
-              'February'
-            when 'Mars'.downcase
-              'March'
-            when 'Avril'.downcase
-              'April'
-            when 'Mai'.downcase
-              'May'
-            when 'Juin'.downcase
-              'June'
-            when 'Juillet'.downcase
-              'July'
-            when 'Octobre'.downcase
-              'October'
-            when 'Novembre'.downcase
-              'November'
-            when 'Décembre'.downcase
-              'December'
-            when 'Septembre'.downcase
-              'September'
-            when 'août'.downcase
-              'August'
-
-            when 'جانفي'.downcase
-              'January'
-            when 'فيفري'.downcase
-              'February'
-            when 'مارس'.downcase
-              'March'
-            when 'افريل'.downcase
-              'April'
-            when 'ماي'.downcase
-              'May'
-            when 'جوان'.downcase
-              'June'
-            when 'جويلية'.downcase
-              'July'
-            when 'جولية'.downcase
-              'July'
-            when 'أكتوبر'.downcase
-              'October'
-            when 'نوفمبر'.downcase
-              'November'
-            when 'ديسمبر'.downcase
-              'December'
-            when 'سبتمبر'.downcase
-              'September'
-            when 'اوت'.downcase
-              'August'
-
-            when 'جانفي،'.downcase
-              'January'
-            when 'فيفري،'.downcase
-              'February'
-            when 'مارس،'.downcase
-              'March'
-            when 'افريل،'.downcase
-              'April'
-            when 'ماي،'.downcase
-              'May'
-            when 'جوان،'.downcase
-              'June'
-            when 'جويلية،'.downcase
-              'July'
-            when 'جولية،'.downcase
-              'July'
-            when 'أكتوبر،'.downcase
-              'October'
-            when 'نوفمبر،'.downcase
-              'November'
-            when 'نونمبر،'.downcase
-              'November'
-            when 'ديسمبر،'.downcase
-              'December'
-            when 'سبتمبر،'.downcase
-              'September'
-            when 'اوت،'.downcase
-              'August'
-
-            when 'يناير'.downcase
-              'January'
-            when 'فبراير'.downcase
-              'February'
-            when 'ابريل'.downcase
-              'April'
-            when 'أبريل'.downcase
-              'April'
-            when 'مايو'.downcase
-              'May'
-            when 'يونيو'.downcase
-              'June'
-            when 'يوليو'.downcase
-              'July'
-            when 'أغسطس'.downcase
-              'August'
-
-            else
-              m
-            end
-          end.join(' ')
         end
       end
     end
