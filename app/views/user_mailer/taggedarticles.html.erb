@@ -52,7 +52,7 @@
           <% if article.language == 'fr' %>
             <tr>
               <td style="padding-top:0px; padding-bottom:20px; width:140px; ">
-                <%= image_tag article.image.url  != nil ? "https://api.mediasmonitoring.com/" + article.image.url : 'https://www.nicomatic.com/themes/custom/jango_sub/img/no-image.png' , style:"width: 113px; height: 85px; object-fit: cover; border-radius: 3px;" %>
+                <%= image_tag article.image.url  != nil ? "https://api.mediasecho.com/" + article.image.url : 'https://www.nicomatic.com/themes/custom/jango_sub/img/no-image.png' , style:"width: 113px; height: 85px; object-fit: cover; border-radius: 3px;" %>
               </td>
               <td style="padding-top:0px; padding-bottom:20px;">
                 <h4 style="font-size: 16px; line-height: 1; margin-bottom:20px;">
@@ -67,7 +67,7 @@
               <td style="padding-top:0px; padding-bottom:20px; text-align: right;">
                 <p
                   style="font-size: 13px; line-height: 1; color:#00365a;  margin-top:5px; vertical-align:top; white-space:nowrap;">
-                  <%= link_to "Lire l'article", 'https://www.mediasmonitoring.com//app/articles/details?id=' + article.id.to_s %>
+                  <%= link_to "Lire l'article", 'https://www.mediasecho.com//app/articles/details?id=' + article.id.to_s %>
 
                 </p>
               </td>
@@ -88,7 +88,7 @@
                   <td style="padding-top:0px; padding-bottom:20px; text-align: left;">
                     <p
                       style="font-size: 13px; line-height: 1; color:#00365a;  margin-top:5px; vertical-align:top; white-space:nowrap;">
-                      <%= link_to "اقرأ المقال", 'https://www.mediasmonitoring.com//app/articles/details?id=' + article.id.to_s %>
+                      <%= link_to "اقرأ المقال", 'https://www.mediasecho.com//app/articles/details?id=' + article.id.to_s %>
 
                     </p>
                   </td>
@@ -107,7 +107,7 @@
                   </td>
 
                   <td style="padding-top:0px; padding-bottom:20px; padding-left: 28px;">
-                    <%= image_tag article.image.url != nil ? "https://api.mediasmonitoring.com/" + article.image.url  : 'https://www.nicomatic.com/themes/custom/jango_sub/img/no-image.png', style:"width: 113px; height: 85px; object-fit: cover; border-radius: 3px;" %>
+                    <%= image_tag article.image.url != nil ? "https://api.mediasecho.com/" + article.image.url  : 'https://www.nicomatic.com/themes/custom/jango_sub/img/no-image.png', style:"width: 113px; height: 85px; object-fit: cover; border-radius: 3px;" %>
                   </td>
 
 

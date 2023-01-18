@@ -26,7 +26,7 @@ module Articles
                             <tr>
                               <td align="left" valign="center"
                               style="padding-bottom:40px;border-top:0;height:100% !important;width:150px !important;">
-                                <img style="height:100px" src="' + 'https://api.mediasmonitoring.com' + article.medium.avatar.url + ' " />
+                                <img style="height:100px" src="' + 'https://api.mediasecho.com' + article.medium.avatar.url + ' " />
                               </td>
                               <td align="right" valign="center"
                                 style="padding-bottom:40px;border-top:0;height:100% !important;width:auto !important;">
@@ -53,7 +53,7 @@ module Articles
                               <td align="center" valign="center">
                                 <p
                                   style="font-size: 12px;line-height: 1; color:#909090; margin-top:0px; margin-bottom:5px; ">
-                                  PDF généré par MediasMonitoring app le ' + Date.today.strftime('%d - %m - %Y') + '
+                                  PDF généré par MediasEcho app le ' + Date.today.strftime('%d - %m - %Y') + '
                                 </p>
                                 <p style="font-size: 12px; line-height:1; color:#909090;  margin-top:5px; margin-bottom:5px;">
                                   <a href="#" style="color: #00365a;text-decoration:none;">Alger</a> , <a href="#"
@@ -92,7 +92,7 @@ module Articles
                             <tr>
                               <td align="left" valign="center"
                               style="padding-bottom:40px;border-top:0;height:100% !important;width:30% !important;">
-                                <img style="height:100px" src="' + 'https://api.mediasmonitoring.com' + article.medium.avatar.url + ' " />
+                                <img style="height:100px" src="' + 'https://api.mediasecho.com' + article.medium.avatar.url + ' " />
                               </td>
                               <td align="right" valign="center"
                                 style="padding-bottom:40px;border-top:0;height:100% !important;width:auto  !important;">
@@ -119,7 +119,7 @@ module Articles
                               <td align="center" valign="center">
                                 <p
                                   style="font-size: 12px;line-height: 1; color:#909090; margin-top:0px; margin-bottom:5px; ">
-                                  PDF généré par MediasMonitoring app le ' + Date.today.strftime('%d - %m - %Y') + '
+                                  PDF généré par MediasEcho app le ' + Date.today.strftime('%d - %m - %Y') + '
                                 </p>
                                 <p style="font-size: 12px; line-height:1; color:#909090;  margin-top:5px; margin-bottom:5px;">
                                   <a href="#" style="color: #00365a;text-decoration:none;">Alger</a> , <a href="#"
