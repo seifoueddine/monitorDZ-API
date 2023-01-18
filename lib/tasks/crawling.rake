@@ -4233,8 +4233,7 @@ namespace :crawling do
   end
   # change_translate_date
 
-  auto_tag
-
+  #auto_tag
   def auto_tag(articles_for_autoTag)
     # slug_id = params[:slug_id]
     # start_date = params[:start_date]
