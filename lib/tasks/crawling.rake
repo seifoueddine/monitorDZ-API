@@ -4,7 +4,6 @@ require 'nokogiri'
 require 'open-uri'
 require 'openssl'
 require_relative '../articles/crawling/crawlingmethods'
-include Crawlingmethods
 # require 'resolv-replace'
 OpenSSL::SSL::VERIFY_PEER = OpenSSL::SSL::VERIFY_NONE
 namespace :crawling do
