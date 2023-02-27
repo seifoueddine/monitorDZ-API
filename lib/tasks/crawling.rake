@@ -1594,6 +1594,11 @@ namespace :crawling do
         puts e.message
         puts
         next
+      rescue SocketError => se
+        puts "Error: #{se.message}"
+        puts "Skipping #{url}"
+        puts
+        next
       end
       doc.css('article a.elementor-post__thumbnail__link').map do |link|
         articles_url_maghrebemergent << link['href']

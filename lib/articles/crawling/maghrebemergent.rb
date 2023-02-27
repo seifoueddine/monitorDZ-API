@@ -48,6 +48,11 @@ module Articles
               puts e.message
               puts
               next
+            rescue SocketError => se
+              puts "Error: #{se.message}"
+              puts "Skipping #{url}"
+              puts
+              next  
             end
             new_article = Article.new
             new_article.url_article = link
