@@ -1594,8 +1594,8 @@ namespace :crawling do
         puts e.message
         puts
         next
-      rescue SocketError => se
-        puts "Error: #{se.message}"
+      rescue SocketError => e
+        puts "Error: #{e.message}"
         puts "Skipping #{url}"
         puts
         next
@@ -2461,7 +2461,7 @@ namespace :crawling do
         puts
         next
       rescue SocketError => e
-        puts "Error: #{se.message}"
+        puts "Error: #{e.message}"
         puts "Skipping #{url}"
         puts
         next  

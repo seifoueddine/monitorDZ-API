@@ -49,7 +49,7 @@ module Articles
               puts
               next
             rescue SocketError => e
-              puts "Error: #{se.message}"
+              puts "Error: #{e.message}"
               puts "Skipping #{url}"
               puts
               next
