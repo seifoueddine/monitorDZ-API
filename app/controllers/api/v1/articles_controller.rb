@@ -1695,6 +1695,11 @@ module Api
             puts e.message
             puts
             next
+          rescue SocketError => e
+            puts "Error: #{se.message}"
+            puts "Skipping #{url}"
+            puts
+            next  
           end
           doc.css('header.entry-header h2.entry-title a').map do |link|
             articles_url_elhiwar << link['href']
