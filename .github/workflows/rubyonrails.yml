@@ -38,8 +38,6 @@ jobs:
         script: | 
           chown -R sifouf:sifouf /var/www/html/monitordz/releases/*
           nginx -s reload
-          cap production sidekiq:stop
-          cap production sidekiq:start
     # whoami
     # ls -alrth /var/www
     # ls -alrth /var/www/html
