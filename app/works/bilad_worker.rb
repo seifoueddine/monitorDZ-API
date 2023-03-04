@@ -4,8 +4,13 @@ class BiladWorker
   require 'nokogiri'
   require 'open-uri'
   require 'openssl'
+  require 'logger'
+
 
   def perform
+    logger = Logger.new
+  
+    logger.info "Starting job with arguments: #{args.inspect}"
     # media = Medium.find_by_name('ELBILAD')
     # url_media_array = media.url_crawling.split(',')
     # get_articles_bilad(url_media_array, media)
@@ -21,6 +26,7 @@ class BiladWorker
     puts"***********************************************************"
     puts"***********************************************************"
     puts"***********************************************************"
+    logger.info "Job finished"
  end
 
  private 
