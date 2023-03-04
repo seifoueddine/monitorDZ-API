@@ -8,9 +8,9 @@ class BiladWorker
 
 
   def perform
-    logger = Logger.new
+    logger = Logger.new(STDOUT)
   
-    logger.info "Starting job with arguments: #{args.inspect}"
+    logger.info "Starting job with arguments:"
     # media = Medium.find_by_name('ELBILAD')
     # url_media_array = media.url_crawling.split(',')
     # get_articles_bilad(url_media_array, media)
