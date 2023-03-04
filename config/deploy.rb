@@ -2,8 +2,10 @@
 
 # config valid for current version and patch releases of Capistrano
 lock '~> 3.16.0'
-require 'whenever/capistrano'
-
+# require 'whenever/capistrano'
+require 'capistrano/sidekiq'
+set :sidekiq_require, './app/workers'
+set :sidekiq_processes, 2
 set :application, 'monitordz'
 set :repo_url, 'https://github.com/seifoueddine/monitorDZ-API.git'
 set :stage, :production
