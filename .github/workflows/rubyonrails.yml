@@ -25,6 +25,7 @@ jobs:
       with:
         # ruby-version: 3.0.1 # Not needed with a .ruby-version file
         bundler-cache: true # runs 'bundle install' and caches installed gems automatically
+    - run: bundle config unset deployment
     - uses: miloserdow/capistrano-deploy@master
       with:
         target: production # Defines the environment that will be used for the deployment
@@ -40,6 +41,7 @@ jobs:
           nginx -s reload
           cap production sidekiq:stop
           cap production sidekiq:start
+    - run: bundle install --jobs 4
     # whoami
     # ls -alrth /var/www
     # ls -alrth /var/www/html
