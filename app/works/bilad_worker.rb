@@ -8,8 +8,7 @@ class BiladWorker
 
 
   def perform
-    logger = Logger.new(STDOUT)
-  
+    logger = Logger.new(Rails.root.join('log', 'worker.log'))
     logger.info "Starting job with arguments:"
     # media = Medium.find_by_name('ELBILAD')
     # url_media_array = media.url_crawling.split(',')
