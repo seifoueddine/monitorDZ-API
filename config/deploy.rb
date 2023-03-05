@@ -37,6 +37,13 @@ namespace :deploy do
   end
 end
 
+namespace :sidekiq do
+  task :start do
+    run "cd /var/www/html/#{fetch :application} && bundle exec sidekiq -d -L /var/www/html/#{fetch :application}/log/sidekiq.log -e production"
+    p capture("ps aux | grep sidekiq | awk '{print $2}' | sed -n 1p").strip!
+  end
+end
+
 # Default branch is :master
 # ask :branch, `git rev-parse --abbrev-ref HEAD`.chomp
 
