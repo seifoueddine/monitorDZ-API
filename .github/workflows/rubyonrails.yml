@@ -38,6 +38,8 @@ jobs:
         script: | 
           chown -R sifouf:sifouf /var/www/html/monitordz/releases/*
           nginx -s reload
+          cd /var/www/html/monitordz/current
+          bundle exec sidekiq -d -L log/sidekiq.log -e production
     # whoami
     # ls -alrth /var/www
     # ls -alrth /var/www/html
