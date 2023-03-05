@@ -8,24 +8,13 @@ class BiladWorker
 
 
   def perform
-    logger = Logger.new(Rails.root.join('log', 'worker.log'))
-    logger.info "Starting job with arguments:"
-    # media = Medium.find_by_name('ELBILAD')
-    # url_media_array = media.url_crawling.split(',')
-    # get_articles_bilad(url_media_array, media)
-    puts"***********************************************************"
-    puts"***********************************************************"
-    puts"***********************************************************"
-    puts"***********************************************************"
-    puts"***********************************************************"
-    puts"***********************************************************"
-    puts"***********************************************************"
-    puts"***********************************************************"
-    puts"***********************************************************"
-    puts"***********************************************************"
-    puts"***********************************************************"
-    puts"***********************************************************"
-    logger.info "Job finished"
+    @logger = Logger.new(Rails.root.join('log', 'elbilad.log'))
+    @logger.info 'Starting scraping elbilad:'
+    media = Medium.find_by_name('ELBILAD')
+    url_media_array = media.url_crawling.split(',')
+    count = get_articles_bilad(url_media_array, media)
+    @logger.info "we get :" + count.to_s + 'article'
+    @logger.info "Job finished"
  end
 
  private 
@@ -72,7 +61,6 @@ class BiladWorker
       new_article.language = media.language
       new_article.category_article = article.css('#content > header > ul.list-breadcrumbs > li:nth-child(2)').text
       new_article.title = article.css('#content > header > h1').text
-      # new_article.author = article.css('div.article-head__author div em a').text
       author_exist = if article.at('ul.list-share li a span.strong').text == '0'
                        Author.where(['lower(name) like ? ', 'Bilad auteur'.downcase])
                      else
@@ -114,11 +102,8 @@ class BiladWorker
         puts
         new_article.image = nil
       end
-      # tags_array = article.css('#tags a').map(&:text)
-      # new_article.media_tags = tags_array.join(',')
       new_article.status = 'pending'
       new_article.save!
-      #  tag_check_and_save(tags_array)if media.tag_status == true
       count += 1 if new_article.save
     end
     count
