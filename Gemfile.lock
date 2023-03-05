@@ -86,6 +86,8 @@ GEM
       rake (>= 10.4, < 14.0)
     ast (2.4.2)
     bcrypt (3.1.16)
+    bcrypt_pbkdf (1.1.0)
+    bcrypt_pbkdf (1.1.0-x64-mingw32)
     bootsnap (1.9.1)
       msgpack (~> 1.0)
     builder (3.2.4)
@@ -142,6 +144,7 @@ GEM
     docile (1.4.0)
     down (5.2.4)
       addressable (~> 2.8)
+    ed25519 (1.3.0)
     elasticsearch (7.13.3)
       elasticsearch-api (= 7.13.3)
       elasticsearch-transport (= 7.13.3)
@@ -384,6 +387,7 @@ DEPENDENCIES
   actionpack (>= 6.0.3.5)
   activerecord (>= 6.0.3.5)
   annotate
+  bcrypt_pbkdf (~> 1)
   bootsnap (>= 1.4.2)
   capistrano
   capistrano-passenger
@@ -395,6 +399,7 @@ DEPENDENCIES
   database_cleaner
   devise_token_auth
   down (~> 5.0)
+  ed25519 (~> 1.2)
   factory_bot_rails
   faker!
   jsonapi-serializer
