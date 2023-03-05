@@ -1,9 +1,8 @@
 class ElkhabarWorker
   include Sidekiq::Worker
   include AbstractController::Rendering
-  require_relative 'crawlingmethods'
-  include Crawlingmethods
-  include AbstractController::Rendering
+  require_relative '../../lib/articles/crawling/crawlingmethods'
+  # include Crawlingmethods
   require 'nokogiri'
   require 'open-uri'
   require 'openssl'

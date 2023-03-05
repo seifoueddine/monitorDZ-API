@@ -6,19 +6,19 @@ class BiladWorker
   require 'openssl'
   require 'logger'
 
-
   def perform
     @logger = Logger.new(Rails.root.join('log', 'elbilad.log'))
     @logger.info 'Starting Job & scraping ELBILAD:'
     media = Medium.find_by_name('ELBILAD')
     url_media_array = media.url_crawling.split(',')
     count = get_articles_bilad(url_media_array, media)
-    @logger.info "Job find :" + count.to_s + ' articles'
-    @logger.info "Job finished"
- end
+    @logger.info 'Job find :' + count.to_s + ' articles'
+    @logger.info 'Job finished'
+  end
 
- private 
- def get_articles_bilad(url_media_array, media)
+  private
+
+  def get_articles_bilad(url_media_array, media)
     articles_url_bilad = []
     count = 0
     url_media_array.map do |url|
