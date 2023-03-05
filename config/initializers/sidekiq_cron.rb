@@ -1,7 +1,7 @@
 require 'sidekiq-cron'
 
 Sidekiq::Cron::Job.create(
-  name: 'BiladWorker',
+  name: 'ElkhabarWorker',
   cron: '*/5 * * * *', # Run every 5 minutes
-  class: 'BiladWorker'
+  class: 'ElkhabarWorker'
 )

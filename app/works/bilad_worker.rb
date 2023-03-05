@@ -9,11 +9,11 @@ class BiladWorker
 
   def perform
     @logger = Logger.new(Rails.root.join('log', 'elbilad.log'))
-    @logger.info 'Starting scraping elbilad:'
+    @logger.info 'Starting Job & scraping ELBILAD:'
     media = Medium.find_by_name('ELBILAD')
     url_media_array = media.url_crawling.split(',')
     count = get_articles_bilad(url_media_array, media)
-    @logger.info "we get :" + count.to_s + 'article'
+    @logger.info "Job find :" + count.to_s + ' articles'
     @logger.info "Job finished"
  end
 
