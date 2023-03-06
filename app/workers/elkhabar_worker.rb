@@ -1,20 +1,22 @@
+# frozen_string_literal: true
+
 class ElkhabarWorker
   include Sidekiq::Worker
   include AbstractController::Rendering
-  require_relative '../../lib/articles/crawling/crawlingmethods'
-  # include Crawlingmethods
+
   require 'nokogiri'
   require 'open-uri'
   require 'openssl'
   require 'logger'
-
+  require_relative '../../lib/articles/crawling/crawlingmethods'
+  include Articles::Crawling::Crawlingmethods
   def perform
     @logger = Logger.new(Rails.root.join('log', 'elkhabar.log'))
     @logger.info 'Starting Job & scraping ELKHABAR:'
     media = Medium.find_by_name('ELKHABAR')
     url_media_array = media.url_crawling.split(',')
     count = get_articles_elkhabar(url_media_array, media)
-    @logger.info 'Job find :' + count.to_s + ' articles'
+    @logger.info "Job find :#{count} articles"
     @logger.info 'Job finished'
   end
 
@@ -99,7 +101,7 @@ class ElkhabarWorker
       date = article.at('time[datetime]')['datetime']
       new_article.date_published = date.to_datetime.change({ hour: 0, min: 0, sec: 0 })
       if article.css('div#article_img img').present?
-        url_array = article.css('div#article_img img').map { |link| "https://www.elkhabar.com#{link['src']}" }
+        url_array = article.css('div#article_img img').map { |li| "https://www.elkhabar.com#{li['src']}" }
       end
       # url_image = url_array[0]
       begin

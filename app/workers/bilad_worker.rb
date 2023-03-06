@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class BiladWorker
   include Sidekiq::Worker
   include AbstractController::Rendering
@@ -12,7 +14,7 @@ class BiladWorker
     media = Medium.find_by_name('ELBILAD')
     url_media_array = media.url_crawling.split(',')
     count = get_articles_bilad(url_media_array, media)
-    @logger.info 'Job find :' + count.to_s + ' articles'
+    @logger.info "Job find :#{count} articles"
     @logger.info 'Job finished'
   end
 
@@ -92,7 +94,7 @@ class BiladWorker
                                                                                                 hour: 0, min: 0, sec: 0
                                                                                               })
                                    end
-      url_array = article.css('article.module-detail img').map { |link| link['data-src'] }
+      url_array = article.css('article.module-detail img').map { |lin| lin['data-src'] }
       new_article.url_image = url_array[0]
       begin
         new_article.image = Down.download(url_array[0]) if url_array[0].present?
