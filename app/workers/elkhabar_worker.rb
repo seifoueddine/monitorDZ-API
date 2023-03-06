@@ -35,14 +35,13 @@ class ElkhabarWorker
         puts
         next
       end
-      doc.css('h3.panel-title a').map do |link|
+      doc.css('h2.panel-title a').map do |link|
         articles_url_elkhabar << "https://www.elkhabar.com#{link['href']}" unless link.css('i').present?
       end
       doc.css('time').map do |date|
         last_dates << date['datetime']
       end
     end
-
     last_dates = last_dates.map { |d| change_translate_date(d) }
     last_dates = last_dates.map { |d| d.to_datetime.change({ hour: 0, min: 0, sec: 0 }) }
     articles_url_elkhabar = articles_url_elkhabar.reject(&:nil?)

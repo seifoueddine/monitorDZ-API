@@ -1910,7 +1910,7 @@ namespace :crawling do
         puts
         next
       end
-      doc.css('h3.panel-title a').map do |link|
+      doc.css('h2.panel-title a').map do |link|
         articles_url_elkhabar << "https://www.elkhabar.com#{link['href']}" unless link.css('i').present?
       end
       doc.css('time').map do |date|
@@ -2026,7 +2026,7 @@ namespace :crawling do
         puts
         next
       end
-      doc.css('h3.panel-title a').map do |link|
+      doc.css('h2.panel-title a').map do |link|
         articles_url_elkhabar_fr << "https://www.elkhabar.com#{link['href']}" unless link.css('i').present?
       end
       doc.css('time').map do |date|
