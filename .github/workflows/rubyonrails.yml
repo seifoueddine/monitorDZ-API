@@ -39,7 +39,6 @@ jobs:
           chown -R sifouf:sifouf /var/www/html/monitordz/releases/*
           nginx -s reload
           cd /var/www/html/monitordz/current
-          nohup bundle exec sidekiq -d -L log/sidekiq.log -e production > /dev/null 2>&1 &
 
     # whoami
     # ls -alrth /var/www
