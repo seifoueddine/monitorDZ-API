@@ -221,7 +221,7 @@ GEM
     method_source (1.0.0)
     mini_magick (4.11.0)
     mini_mime (1.1.2)
-    mini_portile2 (2.4.0)
+    mini_portile2 (2.8.1)
     minitest (5.17.0)
     msgpack (1.4.2)
     multi_json (1.15.0)
@@ -236,8 +236,9 @@ GEM
       timeout
     net-ssh (7.0.0.beta1)
     nio4r (2.5.8)
-    nokogiri (1.10.10)
-      mini_portile2 (~> 2.4.0)
+    nokogiri (1.14.3)
+      mini_portile2 (~> 2.8.0)
+      racc (~> 1.4)
     open_uri_redirections (0.2.1)
     orm_adapter (0.5.0)
     parallel (1.21.0)
@@ -253,6 +254,7 @@ GEM
     puma (5.6.4)
       nio4r (~> 2.0)
     raabro (1.4.0)
+    racc (1.6.2)
     rack (2.2.3.1)
     rack-cors (1.1.1)
       rack (>= 2.0.0)
@@ -407,7 +409,7 @@ DEPENDENCIES
   lograge
   net-smtp
   net-ssh (= 7.0.0.beta1)
-  nokogiri (~> 1.10.10)
+  nokogiri (~> 1.14.3)
   open_uri_redirections
   pg (>= 0.18, < 2.0)
   pry-rails
