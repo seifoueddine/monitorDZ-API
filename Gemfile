@@ -16,7 +16,7 @@ gem 'pg', '>= 0.18', '< 2.0'
 # Use Puma as the app server
 gem 'net-smtp', require: false
 gem 'net-ssh', '7.0.0.beta1'
-gem 'nokogiri', '~> 1.10.10'
+gem 'nokogiri', '~> 1.14.3'
 gem 'puma', '~> 5.6.4'
 # Build JSON APIs with ease. Read more: https://github.com/rails/jbuilder
 # gem 'jbuilder', '~> 2.7'
