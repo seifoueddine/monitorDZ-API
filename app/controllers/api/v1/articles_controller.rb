@@ -628,6 +628,18 @@ module Api
             puts
             next
           end
+
+          pp "************************************"
+          pp doc.at('div.post__text a')
+          pp doc.at('div.post__text a').nil?
+          pp "*************************************"
+
+
+          pp "/////////////////////////////////////"
+          pp doc.css('div.post__text a')
+          pp doc.css('div.post__text a').nil?
+          pp "//////////////////////////////////////"
+
           doc.css('div.post__text a').map do |link|
             articles_url_autobip << link['href'] if link['itemprop'] == 'url'
           end
@@ -1278,9 +1290,6 @@ module Api
           new_article.date_published = get_date.to_datetime.change({ hour: 0, min: 0, sec: 0 })
           url_array = article.css('article.module-article figure img').map { |link| link['data-src'] }
           new_article.url_image = url_array[0]
-          pp "****************************"
-          pp url_array[0]
-          pp "****************************"
           new_article.image = Down.download(url_array[0]) if url_array[0].present?
           new_article.status = 'pending'
           new_article.save!
