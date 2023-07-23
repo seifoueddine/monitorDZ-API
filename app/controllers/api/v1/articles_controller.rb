@@ -2681,6 +2681,9 @@ module Api
       def get_articles_elwatan(url_media_array)
         articles_url_elwatan = []
         url_media_array.map do |url|
+          puts "****************************"
+          puts url 
+          puts "****************************"
           begin
             doc = Nokogiri::HTML(URI.open(url, 'User-Agent' => 'ruby/2.6.5', 'From' => 'foo@bar.invalid'), nil, 'UTF-8')
           rescue OpenURI::HTTPError => e
