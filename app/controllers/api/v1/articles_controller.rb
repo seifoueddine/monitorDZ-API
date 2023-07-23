@@ -1278,6 +1278,9 @@ module Api
           new_article.date_published = get_date.to_datetime.change({ hour: 0, min: 0, sec: 0 })
           url_array = article.css('article.module-article figure img').map { |link| link['data-src'] }
           new_article.url_image = url_array[0]
+          pp "****************************"
+          pp url_array[0]
+          pp "****************************"
           new_article.image = Down.download(url_array[0]) if url_array[0].present?
           new_article.status = 'pending'
           new_article.save!
@@ -2681,9 +2684,6 @@ module Api
       def get_articles_elwatan(url_media_array)
         articles_url_elwatan = []
         url_media_array.map do |url|
-          puts "****************************"
-          puts url 
-          puts "****************************"
           begin
             doc = Nokogiri::HTML(URI.open(url, 'User-Agent' => 'ruby/2.6.5', 'From' => 'foo@bar.invalid'), nil, 'UTF-8')
           rescue OpenURI::HTTPError => e
@@ -2693,7 +2693,7 @@ module Api
             next
           end
 
-          doc.css('h3.title-14 a').map do |link|
+          doc.css('h3.text-xl a').map do |link|
             articles_url_elwatan << link['href']
           end
         end
