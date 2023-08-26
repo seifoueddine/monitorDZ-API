@@ -75,7 +75,8 @@ class Article < ApplicationRecord
       date_published: date_published,
       is_tagged: is_tagged,
       author_id: author_id,
-      language: language
+      language: language,
+      ave: ave
     }
   end
 
