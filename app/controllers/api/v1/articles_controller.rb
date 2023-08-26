@@ -21,7 +21,7 @@ module Api
   module V1
     # crawling articles
     class ArticlesController < ::ApplicationController
-      before_action :authenticate_user! , except: :pdf_export
+      before_action :authenticate_user!, except: :pdf_export
       before_action :set_article, only: %i[show update destroy]
       require 'nokogiri'
       require 'open-uri'
@@ -447,14 +447,23 @@ module Api
       end
 
       def change_status
-        ids = params[:ids].split(',')
-        Article.where(id: [ids]).update_all(status: params[:status])
+        return render json: { error: 'Missing parameters' }, status: :bad_request unless params[:ids] && params[:status]
 
-        #  if a.positive?
-        #   render json: {message: 'Change status succeed'}
-        #  else
-        #   render json: 'Change status failed', status: :unprocessable_entity
-        #  end
+        ids = params[:ids].split(',').map(&:to_i)
+
+        updated_count = Article.where(id: ids).update_all(status: params[:status])
+
+        render json: { message: "#{updated_count} articles updated successfully." }, status: :ok
+      end
+
+      def change_ave
+        return render json: { error: 'Missing parameters' }, status: :bad_request unless params[:ids] && params[:ave]
+
+        ids = params[:ids].split(',').map(&:to_i)
+
+        updated_count = Article.where(id: ids).update_all(ave: params[:ave])
+
+        render json: { message: "#{updated_count} articles updated successfully." }, status: :ok
       end
 
       # GET /articles_for_sorting
@@ -629,16 +638,15 @@ module Api
             next
           end
 
-          pp "************************************"
+          pp '************************************'
           pp doc.at('div.post__text a')
           pp doc.at('div.post__text a').nil?
-          pp "*************************************"
+          pp '*************************************'
 
-
-          pp "/////////////////////////////////////"
+          pp '/////////////////////////////////////'
           pp doc.css('div.post__text a')
           pp doc.css('div.post__text a').nil?
-          pp "//////////////////////////////////////"
+          pp '//////////////////////////////////////'
 
           doc.css('div.post__text a').map do |link|
             articles_url_autobip << link['href'] if link['itemprop'] == 'url'
@@ -898,9 +906,9 @@ module Api
           date = date_published_treat[1]
 
           date_checked = change_translate_date(date)
-          pp "========================="
+          pp '========================='
           pp date
-          pp "========================="
+          pp '========================='
           new_article.date_published = date_checked.to_datetime.change({ hour: 0, min: 0, sec: 0 })
           url_array =  article.css('span.itemImage img').map { |link| "https://www.aps.dz#{link['src']}" }
           # tags_array = article.css('ul.itemTags li a').map(&:text)
@@ -1224,7 +1232,6 @@ module Api
         render json: { crawling_maghrebemergent: count }
       end
       # end method to get maghrebemergent articles
-      
 
       # start method to get elmoudjahid articles
       def get_articles_elmoudjahid_fr(url_media_array)
@@ -1300,7 +1307,6 @@ module Api
       end
       # end method to get elmoudjahid articles
       # start method to get elmoudjahid_fr articles
-      
 
       def get_articles_elmoudjahid(url_media_array)
         articles_url_elmoudjahid = []
@@ -1711,7 +1717,7 @@ module Api
             puts "Error: #{e.message}"
             puts "Skipping #{url}"
             puts
-            next  
+            next
           end
           doc.css('header.entry-header h2.entry-title a').map do |link|
             articles_url_elhiwar << link['href']
@@ -2789,7 +2795,7 @@ module Api
         count = Articles::Crawling::Maroco360.get_articles_maroco360(url_media_array, media)
         render json: { crawling_maroco360: count }
       end
-   
+
       # end method to get maroco360 articles
 
       # Only allow a trusted parameter "white list" through.
