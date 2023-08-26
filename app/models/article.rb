@@ -23,6 +23,7 @@
 #  image            :string
 #
 class Article < ApplicationRecord
+  validates :ave, inclusion: { in: %w[NEGATIVE POSITIVE NEUTRAL] }
   searchkick match: :word,
              suggest: %i[title body media_area medium_type author_name tag_name],
              merge_mappings: true,

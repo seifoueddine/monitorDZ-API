@@ -2795,7 +2795,7 @@ module Api
       # Only allow a trusted parameter "white list" through.
       def article_params
         params.permit(:title, :date_published, :author, :body,
-                      :media_tags, :language, :url_image, :author_id)
+                      :media_tags, :language, :url_image, :author_id, :ave)
       end
 
       # tag_check_and_savetag_check_and_save not used yet
