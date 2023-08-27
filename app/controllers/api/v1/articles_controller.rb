@@ -23,8 +23,6 @@ module Api
     class ArticlesController < ::ApplicationController
       before_action :authenticate_user!, except: :pdf_export
       before_action :set_article, only: %i[show update destroy]
-      before_action :set_date_range, only: %i[articles_by_author articles_by_tag]
-
       require 'nokogiri'
       require 'open-uri'
       require 'openssl'
@@ -35,19 +33,44 @@ module Api
       # GET / client articles
       def articles_client
         slug_id = get_slug_id
-        campaign = Campaign.find_by(slug_id: slug_id)
 
-        # Exit early if the campaign doesn't exist.
-        return render(json: { error: 'Campaign not found' }, status: :not_found) unless campaign
+        campaign = Campaign.where(slug_id: slug_id)
+        media = campaign[0].media
+        all_tags = campaign[0].tags
+        media_ids = []
+        media.map do |med|
+          media_ids << med['id']
+        end
 
-        media = campaign.media
-        all_tags = campaign.tags
+        conditions = {}
+        # conditions[:status] = 'confirmed'
+        conditions[:medium_id] = if params[:media_id].blank?
+                                   media_ids
+                                 else
+                                   params[:media_id].split(',')
+                                 end
 
-        # Extract media IDs.
-        media_ids = media.map { |med| med['id'] }
+        conditions[:medium_type] = params[:medium_type].split(',') unless params[:medium_type].blank?
 
-        # Set conditions based on the provided parameters.
-        conditions = build_conditions(media_ids)
+        conditions[:media_area] = params[:media_area].split(',') unless params[:media_area].blank?
+
+        conditions[:author_id] = params[:authors_ids].split(',') unless params[:authors_ids].blank?
+
+        conditions[:language] = params[:language].split(',') unless params[:language].blank?
+
+        if params[:start_date].blank?
+          conditions[:date_published] = { gte: Date.today.to_datetime
+                                                   .change({ hour: 0, min: 0, sec: 0 }), lte: Date.today.to_datetime
+                                                                                                  .change({ hour: 0, min: 0, sec: 0 }) }
+
+        else
+          conditions[:date_published] = { gte: params[:start_date].to_datetime
+                                                                  .change({ hour: 0, min: 0, sec: 0 }), lte: params[:end_date].to_datetime
+                                                                                                                              .change({ hour: 0, min: 0, sec: 0 }) }
+        end
+
+        conditions[:tag_name] = params[:tag_name] unless params[:tag_name].blank?
+        # conditions[:tags] = params[:tag] unless params[:tag].blank?
 
         @articles_client = Article.search '*',
                                           where: conditions,
@@ -62,30 +85,31 @@ module Api
       end
 
       def articles_by_medium
-        @articles_for_dash = Article.where(date_published: @start_date..@end_date)
+        start_date = params[:start_date]
+        end_date = params[:end_date]
+
+        @articles_for_dash = Article.where('date_published >= :start AND date_published <= :end',
+                                           start: start_date.to_datetime.change({ hour: 0, min: 0, sec: 0 }), end: end_date.to_datetime.change({ hour: 0, min: 0, sec: 0 }))
                                     .joins(:medium)
                                     .group('media.name').count
+        sort = @articles_for_dash.sort_by { |_key, value| value }.reverse.to_h
 
-        # Sort articles by count in descending order.
-        sorted_articles = @articles_for_dash.sort_by { |_key, value| -value }.to_h
-
-        render json: sorted_articles
+        render json: sort
       end
 
       def articles_by_author
-        @articles_by_author = Article.joins(:author)
-                                     .where(date_published: @start_date..@end_date)
-                                     .group('authors.name')
-                                     .order('count(authors.id) desc')
-                                     .limit(5).count
-        render json: @articles_by_author
+        start_date = params[:start_dat] || Date.today.change({ hour: 0, min: 0, sec: 0 })
+        end_date = params[:end_dat] || Date.today.change({ hour: 0, min: 0, sec: 0 })
+        @article_auth_for_dash = Article.joins(:author).where(date_published: start_date.to_datetime.beginning_of_day..end_date.to_datetime.end_of_day)
+                                        .group('authors.name').order('count(authors.id) desc').limit(5).count
+        render json: @article_auth_for_dash
       end
 
       def articles_by_tag
-        @articles_by_tag = Article.joins(:tags)
-                                  .where(date_published: @start_date..@end_date)
-                                  .group('tags.name').count
-        render json: @articles_by_tag
+        start_date = params[:start_datt] || Date.today.change({ hour: 0, min: 0, sec: 0 })
+        end_date = params[:end_datt] || Date.today.change({ hour: 0, min: 0, sec: 0 })
+        @article_tag_for_dash = Article.where(date_published: start_date.to_datetime.beginning_of_day..end_date.to_datetime.end_of_day).joins(:tags).group('tags.name').count
+        render json: @article_tag_for_dash
       end
 
       #   def articles_client_by_tag
@@ -509,35 +533,6 @@ module Api
       end
 
       private
-
-      def build_conditions(media_ids)
-        conditions = {}
-
-        # Set the medium ID condition based on the provided parameter.
-        conditions[:medium_id] = params[:media_id].blank? ? media_ids : params[:media_id].split(',')
-
-        # Set conditions based on the presence of various parameters.
-        %i[medium_type media_area authors_ids language].each do |param|
-          conditions[param] = params[param].split(',') unless params[param].blank?
-        end
-
-        # Set the date_published condition based on the provided start and end dates.
-        conditions[:date_published] = if params[:start_date].blank?
-                                        { gte: Date.today.beginning_of_day, lte: Date.today.end_of_day }
-                                      else
-                                        { gte: params[:start_date].to_datetime.beginning_of_day, lte: params[:end_date].to_datetime.end_of_day }
-                                      end
-
-        # Set the tag_name condition if the tag_name parameter is provided.
-        conditions[:tag_name] = params[:tag_name] unless params[:tag_name].blank?
-
-        conditions
-      end
-
-      def set_date_range
-        @start_date = (params[:start_date] || Date.today).to_datetime.beginning_of_day
-        @end_date = (params[:end_date] || Date.today).to_datetime.end_of_day
-      end
 
       def get_articles(url_media_array)
         case @media.name
