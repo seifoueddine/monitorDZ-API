@@ -5,34 +5,26 @@ module Api
     class ListUsersController < ::ApplicationController
       before_action :set_list_user, only: %i[show update destroy]
       before_action :authenticate_user!
+      before_action :set_current_user, only: %i[index create]
+
       # GET /list_users
       def index
-        @user = current_user
-        @list_users =
-          if params[:search].present?
-            ListUser.where(user_id: @user.id).order(order_and_direction).page(page).per(per_page)
-                    .name_like(params[:search])
-          else
-            ListUser.where(user_id: @user.id).order(order_and_direction).page(page).per(per_page)
-
-          end
+        @list_users = fetch_list_users
         set_pagination_headers :list_users
-        json_string = ListUserSerializer.new(@list_users).serializable_hash.to_json
-        render json: json_string
+        render json: ListUserSerializer.new(@list_users).serializable_hash.to_json
       end
 
       # GET /list_users/1
       def show
-        json_string = ListUserSerializer.new(@list_user)
-        json_string_article = ArticleSerializer.new(@list_user.articles)
-        render json: { lists: json_string, articles: json_string_article }
+        render json: {
+          lists: ListUserSerializer.new(@list_user),
+          articles: ArticleSerializer.new(@list_user.articles)
+        }
       end
 
       # POST /list_users
       def create
-        @user = current_user
-        params[:user_id] = @user.id
-        @list_user = ListUser.new(list_user_params)
+        @list_user = ListUser.new(list_user_params.merge(user_id: @user.id))
 
         if @list_user.save
           render json: @list_user, status: :created
@@ -44,29 +36,7 @@ module Api
       # PATCH/PUT /list_users/1
       def update
         if @list_user.update(list_user_params)
-
-          if params[:delete_article_id].present?
-
-            oldIds = @list_user.articles.map(&:id)
-            newIds = []
-            old_id_mod = oldIds.delete_if { |v| v.to_i == params[:delete_article_id].to_i }
-            @list_user.articles.clear
-            @articles = Article.where(id: old_id_mod)
-            @list_user.articles = @articles
-            # @list_user.list_articles.where(article_id: params[:delete_article_id]).destroy_all
-             # article = @list_user.articles.find(params[:delete_article_id])
-             # @list_user.articles.delete(article)
-
-          elsif params[:article_id].present?
-            oldIds = @list_user.articles.map(&:id)
-            @list_user.articles.clear
-            ids = params[:article_id].split(',')
-            # @article = if ids.length != 1
-            #            end
-            @article = Article.where(id: ids + oldIds)
-            @list_user.articles = @article
-          end
-
+          handle_articles if article_params_present?
           render json: @list_user
         else
           render json: @list_user.errors, status: :unprocessable_entity
@@ -80,14 +50,35 @@ module Api
 
       private
 
-      # Use callbacks to share common setup or constraints between actions.
+      def set_current_user
+        @user = current_user
+      end
+
+      def fetch_list_users
+        query = ListUser.where(user_id: @user.id).order(order_and_direction).page(page).per(per_page)
+        params[:search].present? ? query.name_like(params[:search]) : query
+      end
+
       def set_list_user
         @list_user = ListUser.find(params[:id])
       end
 
-      # Only allow a trusted parameter "white list" through.
+      def article_params_present?
+        params[:delete_article_id].present? || params[:article_id].present?
+      end
+
+      def handle_articles
+        if params[:delete_article_id].present?
+          article_ids = @list_user.articles.ids - [params[:delete_article_id].to_i]
+          @list_user.articles = Article.where(id: article_ids)
+        elsif params[:article_id].present?
+          article_ids = params[:article_id].split(',').map(&:to_i) + @list_user.articles.ids
+          @list_user.articles = Article.where(id: article_ids)
+        end
+      end
+
       def list_user_params
-        params.require(:list_user).permit(:name, :user_id, :image, :delete_article_id,:article_id)
+        params.require(:list_user).permit(:name, :user_id, :image)
       end
     end
   end
