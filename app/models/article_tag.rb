@@ -11,7 +11,7 @@
 #  updated_at  :datetime         not null
 #  campaign_id :integer
 #  slug_id     :integer
-#
+
 class ArticleTag < ApplicationRecord
   belongs_to :article
   belongs_to :tag
