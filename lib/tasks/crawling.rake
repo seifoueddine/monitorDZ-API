@@ -333,10 +333,10 @@ namespace :crawling do
     articles_url_ennahar = []
     last_dates = []
     url_media_array.map do |url|
-      # doc = Nokogiri::HTML(URI.open(url, 'User-Agent' => 'ruby/2.6.5'))
+      # doc = Nokogiri::HTML(URI.open(url, 'User-Agent' => 'ruby/2.6.1'))
 
       begin
-        doc = Nokogiri::HTML(URI.open(url, 'User-Agent' => 'ruby/2.6.5'))
+        doc = Nokogiri::HTML(URI.open(url, 'User-Agent' => 'ruby/2.6.1'))
       rescue OpenURI::HTTPError => e
         puts "Can't access #{url}"
         puts e.message
@@ -362,7 +362,7 @@ namespace :crawling do
     articles_url_ennahar_after_check = articles_url_ennahar - list_articles_url
     articles_url_ennahar_after_check.map do |link|
       begin
-        article = Nokogiri::HTML(URI.open(link, 'User-Agent' => 'ruby/2.6.5'))
+        article = Nokogiri::HTML(URI.open(link, 'User-Agent' => 'ruby/2.6.1'))
       rescue OpenURI::HTTPError => e
         puts "Can't access #{link}"
         puts e.message
@@ -660,7 +660,7 @@ namespace :crawling do
     articles_url_APSar = []
     url_media_array.map do |url|
       begin
-        doc = Nokogiri::HTML(URI.open(url, 'User-Agent' => 'ruby/2.6.5', 'From' => 'foo@bar.invalid'), nil, 'UTF-8')
+        doc = Nokogiri::HTML(URI.open(url, 'User-Agent' => 'ruby/2.6.1', 'From' => 'foo@bar.invalid'), nil, 'UTF-8')
       rescue OpenURI::HTTPError => e
         puts "Can't access #{url}"
         puts e.message
@@ -1702,7 +1702,7 @@ namespace :crawling do
     count = 0
     url_media_array.map do |url|
       begin
-        doc = Nokogiri::HTML(URI.open(url, 'User-Agent' => 'ruby/2.6.5'))
+        doc = Nokogiri::HTML(URI.open(url, 'User-Agent' => 'ruby/2.6.1'))
       rescue OpenURI::HTTPError => e
         puts "Can't access #{url}"
         puts e.message
@@ -1722,7 +1722,7 @@ namespace :crawling do
     end
     articles_url_elmoudjahid_after_check.map do |link|
       begin
-        article = Nokogiri::HTML(URI.open(link, 'User-Agent' => 'ruby/2.6.5'))
+        article = Nokogiri::HTML(URI.open(link, 'User-Agent' => 'ruby/2.6.1'))
       rescue OpenURI::HTTPError => e
         puts "Can't access #{link}"
         puts e.message
@@ -3275,7 +3275,7 @@ namespace :crawling do
     articles_url_eldjazaireldjadida = []
     url_media_array.map do |url|
       begin
-        doc = Nokogiri::HTML(URI.open(url, 'User-Agent' => 'ruby/2.6.5', 'From' => 'foo@bar.invalid'), nil, 'UTF-8')
+        doc = Nokogiri::HTML(URI.open(url, 'User-Agent' => 'ruby/2.6.1', 'From' => 'foo@bar.invalid'), nil, 'UTF-8')
       rescue OpenURI::HTTPError => e
         puts "Can't access #{url}"
         puts e.message
@@ -3379,7 +3379,7 @@ namespace :crawling do
     articles_url_algeriepatriotique = []
     url_media_array.map do |url|
       begin
-        doc = Nokogiri::HTML(URI.open(url, 'User-Agent' => 'ruby/2.6.5', 'From' => 'foo@bar.invalid'), nil, 'UTF-8')
+        doc = Nokogiri::HTML(URI.open(url, 'User-Agent' => 'ruby/2.6.1', 'From' => 'foo@bar.invalid'), nil, 'UTF-8')
       rescue OpenURI::HTTPError => e
         puts "Can't access #{url}"
         puts e.message
@@ -3475,7 +3475,7 @@ namespace :crawling do
     articles_url_elmaouid = []
     url_media_array.map do |url|
       begin
-        doc = Nokogiri::HTML(URI.open(url, 'User-Agent' => 'ruby/2.6.5', 'From' => 'foo@bar.invalid'), nil, 'UTF-8')
+        doc = Nokogiri::HTML(URI.open(url, 'User-Agent' => 'ruby/2.6.1', 'From' => 'foo@bar.invalid'), nil, 'UTF-8')
       rescue OpenURI::HTTPError => e
         puts "Can't access #{url}"
         puts e.message
@@ -3569,7 +3569,7 @@ namespace :crawling do
     articles_url_alyaoum24 = []
     url_media_array.map do |url|
       begin
-        doc = Nokogiri::HTML(URI.open(url, 'User-Agent' => 'ruby/2.6.5', 'From' => 'foo@bar.invalid'), nil, 'UTF-8')
+        doc = Nokogiri::HTML(URI.open(url, 'User-Agent' => 'ruby/2.6.1', 'From' => 'foo@bar.invalid'), nil, 'UTF-8')
       rescue OpenURI::HTTPError => e
         puts "Can't access #{url}"
         puts e.message
@@ -3666,7 +3666,7 @@ namespace :crawling do
     articles_url_elwatan = []
     url_media_array.map do |url|
       begin
-        doc = Nokogiri::HTML(URI.open(url, 'User-Agent' => 'ruby/2.6.5', 'From' => 'foo@bar.invalid'), nil, 'UTF-8')
+        doc = Nokogiri::HTML(URI.open(url, 'User-Agent' => 'ruby/2.6.1', 'From' => 'foo@bar.invalid'), nil, 'UTF-8')
       rescue OpenURI::HTTPError => e
         puts "Can't access #{url}"
         puts e.message
@@ -3751,7 +3751,7 @@ namespace :crawling do
     articles_url_radioalgerie_ar = []
     url_media_array.map do |url|
       begin
-        doc = Nokogiri::HTML(URI.open(url, 'User-Agent' => 'ruby/2.6.5', 'From' => 'foo@bar.invalid'), nil, 'UTF-8')
+        doc = Nokogiri::HTML(URI.open(url, 'User-Agent' => 'ruby/2.6.1', 'From' => 'foo@bar.invalid'), nil, 'UTF-8')
       rescue OpenURI::HTTPError => e
         puts "Can't access #{url}"
         puts e.message
@@ -3848,7 +3848,7 @@ namespace :crawling do
     articles_url_radioalgerie_fr = []
     url_media_array.map do |url|
       begin
-        doc = Nokogiri::HTML(URI.open(url, 'User-Agent' => 'ruby/2.6.5', 'From' => 'foo@bar.invalid'), nil, 'UTF-8')
+        doc = Nokogiri::HTML(URI.open(url, 'User-Agent' => 'ruby/2.6.1', 'From' => 'foo@bar.invalid'), nil, 'UTF-8')
       rescue OpenURI::HTTPError => e
         puts "Can't access #{url}"
         puts e.message
@@ -3949,7 +3949,7 @@ namespace :crawling do
     articles_url_maroco360 = []
     url_media_array.map do |url|
       begin
-        doc = Nokogiri::HTML(URI.open(url, 'User-Agent' => 'ruby/2.6.5', 'From' => 'foo@bar.invalid'), nil, 'UTF-8')
+        doc = Nokogiri::HTML(URI.open(url, 'User-Agent' => 'ruby/2.6.1', 'From' => 'foo@bar.invalid'), nil, 'UTF-8')
       rescue OpenURI::HTTPError => e
         puts "Can't access #{url}"
         puts e.message

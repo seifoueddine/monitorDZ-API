@@ -7,7 +7,7 @@ case ENV['RAILS_ENV']
 when 'development'
   ruby '3.1.2'
 when 'production'
-  ruby '2.6.5'
+  ruby '2.6.1'
 end
 # Bundle edge Rails instead: gem 'rails', github: 'rails/rails'
 gem 'rails', '~> 6.1.4'

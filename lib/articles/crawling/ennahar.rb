@@ -3,7 +3,7 @@
 module Articles
   module Crawling
     class Ennahar
-      USER_AGENT = 'ruby/2.6.5'
+      USER_AGENT = 'ruby/2.6.1'
 
       class << self
         include AbstractController::Rendering

@@ -16,7 +16,7 @@ Sidekiq::Cron::Job.create(
 
 # Run every 2 hours
 Sidekiq::Cron::Job.create(
-  name: 'EnnharWorkerBiHourly',
+  name: 'EnnaharWorkerBiHourly',
   cron: '0 */2 * * *', # Run every 2 hours
   class: 'EnnaharWorker'
 )

@@ -12,7 +12,7 @@ module Articles
           count = 0
           url_media_array.map do |url|
             begin
-              doc = Nokogiri::HTML(URI.open(url, 'User-Agent' => 'ruby/2.6.5', 'From' => 'foo@bar.invalid'), nil,
+              doc = Nokogiri::HTML(URI.open(url, 'User-Agent' => 'ruby/2.6.1', 'From' => 'foo@bar.invalid'), nil,
                                    'UTF-8')
             rescue OpenURI::HTTPError => e
               puts "Can't access #{url}"
