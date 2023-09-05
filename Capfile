@@ -21,7 +21,7 @@ require 'capistrano/passenger'
 require 'capistrano/rbenv'
 require 'whenever/capistrano'
 # require 'capistrano/puma'
-set :rbenv_type, :user
+set :rbenv_type, 'root'
 set :rbenv_ruby, '2.6.1'
 install_plugin Capistrano::SCM::Git
 # install_plugin Capistrano::Puma
