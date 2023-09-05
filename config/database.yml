@@ -95,6 +95,6 @@ test:
 production:
   <<: *default
   database: newmm
-  username: root
+  username: postgres
   password: N7RvvyVpzcPMtKbx
 
