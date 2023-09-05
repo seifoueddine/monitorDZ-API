@@ -22,7 +22,7 @@ require 'capistrano/rbenv'
 require 'whenever/capistrano'
 # require 'capistrano/puma'
 set :rbenv_type, 'root'
-set :rbenv_ruby, '2.6.1'
+set :rbenv_ruby, '2.6.10'
 install_plugin Capistrano::SCM::Git
 # install_plugin Capistrano::Puma
 # install_plugin Capistrano::Puma::Systemd

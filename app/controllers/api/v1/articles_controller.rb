@@ -842,7 +842,7 @@ module Api
         articles_url_APSar = []
         url_media_array.map do |url|
           begin
-            doc = Nokogiri::HTML(URI.open(url, 'User-Agent' => 'ruby/2.6.1', 'From' => 'foo@bar.invalid'), nil, 'UTF-8')
+            doc = Nokogiri::HTML(URI.open(url, 'User-Agent' => 'ruby/2.6.10', 'From' => 'foo@bar.invalid'), nil, 'UTF-8')
           rescue OpenURI::HTTPError => e
             puts "Can't access #{url}"
             puts e.message
@@ -2362,7 +2362,7 @@ module Api
         articles_url_eldjazaireldjadida = []
         url_media_array.map do |url|
           begin
-            doc = Nokogiri::HTML(URI.open(url, 'User-Agent' => 'ruby/2.6.1', 'From' => 'foo@bar.invalid'), nil, 'UTF-8')
+            doc = Nokogiri::HTML(URI.open(url, 'User-Agent' => 'ruby/2.6.10', 'From' => 'foo@bar.invalid'), nil, 'UTF-8')
           rescue OpenURI::HTTPError => e
             puts "Can't access #{url}"
             puts e.message
@@ -2449,7 +2449,7 @@ module Api
         articles_url_algeriepatriotique = []
         url_media_array.map do |url|
           begin
-            doc = Nokogiri::HTML(URI.open(url, 'User-Agent' => 'ruby/2.6.1', 'From' => 'foo@bar.invalid'), nil, 'UTF-8')
+            doc = Nokogiri::HTML(URI.open(url, 'User-Agent' => 'ruby/2.6.10', 'From' => 'foo@bar.invalid'), nil, 'UTF-8')
           rescue OpenURI::HTTPError => e
             puts "Can't access #{url}"
             puts e.message
@@ -2533,7 +2533,7 @@ module Api
         articles_url_elmaouid = []
         url_media_array.map do |url|
           begin
-            doc = Nokogiri::HTML(URI.open(url, 'User-Agent' => 'ruby/2.6.1', 'From' => 'foo@bar.invalid'), nil, 'UTF-8')
+            doc = Nokogiri::HTML(URI.open(url, 'User-Agent' => 'ruby/2.6.10', 'From' => 'foo@bar.invalid'), nil, 'UTF-8')
           rescue OpenURI::HTTPError => e
             puts "Can't access #{url}"
             puts e.message
@@ -2616,7 +2616,7 @@ module Api
         articles_url_huffingtonpost = []
         url_media_array.map do |url|
           begin
-            doc = Nokogiri::HTML(URI.open(url, 'User-Agent' => 'ruby/2.6.1', 'From' => 'foo@bar.invalid'), nil, 'UTF-8')
+            doc = Nokogiri::HTML(URI.open(url, 'User-Agent' => 'ruby/2.6.10', 'From' => 'foo@bar.invalid'), nil, 'UTF-8')
           rescue OpenURI::HTTPError => e
             puts "Can't access #{url}"
             puts e.message
@@ -2700,7 +2700,7 @@ module Api
         articles_url_elwatan = []
         url_media_array.map do |url|
           begin
-            doc = Nokogiri::HTML(URI.open(url, 'User-Agent' => 'ruby/2.6.1', 'From' => 'foo@bar.invalid'), nil, 'UTF-8')
+            doc = Nokogiri::HTML(URI.open(url, 'User-Agent' => 'ruby/2.6.10', 'From' => 'foo@bar.invalid'), nil, 'UTF-8')
           rescue OpenURI::HTTPError => e
             puts "Can't access #{url}"
             puts e.message

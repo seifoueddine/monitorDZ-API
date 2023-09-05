@@ -28,7 +28,7 @@ class EnnaharWorker
     last_dates = []
     url_media_array.map do |url|
       begin
-        doc = Nokogiri::HTML(URI.open(url, 'User-Agent' => 'ruby/2.6.1'))
+        doc = Nokogiri::HTML(URI.open(url, 'User-Agent' => 'ruby/2.6.10'))
       rescue OpenURI::HTTPError => e
         puts "Can't access #{url}"
         puts e.message
@@ -54,7 +54,7 @@ class EnnaharWorker
     articles_url_ennahar_after_check = articles_url_ennahar - list_articles_url
     articles_url_ennahar_after_check.map do |link|
       begin
-        article = Nokogiri::HTML(URI.open(link, 'User-Agent' => 'ruby/2.6.1'))
+        article = Nokogiri::HTML(URI.open(link, 'User-Agent' => 'ruby/2.6.10'))
       rescue OpenURI::HTTPError => e
         puts "Can't access #{link}"
         puts e.message
