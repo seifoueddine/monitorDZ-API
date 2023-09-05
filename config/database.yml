@@ -92,3 +92,9 @@ test:
 #     url: <%= ENV['DATABASE_URL'] %>
 #
 
+production:
+  <<: *default
+  database: your_production_database_name
+  username: monitordz
+  password: N7RvvyVpzcPMtKbx
+
