@@ -1314,7 +1314,7 @@ module Api
           get_date = article.at('#content > div:nth-child(4) > article > aside > ul > li.text-uppercase > ul > li:nth-child(2)').text
 
           new_article.date_published = get_date.to_datetime.change({ hour: 0, min: 0, sec: 0 })
-          url_array = article.css('article.module-article figure img').map { |link| link['data-src'] }
+          url_array = article.css('article.module-article figure img').map { |link| link['src'] }
           new_article.url_image = url_array[0]
           begin
             new_article.image = Down.download(url_array[0]) if url_array.present?
