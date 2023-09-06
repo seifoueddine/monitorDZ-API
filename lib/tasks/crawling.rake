@@ -1755,11 +1755,13 @@ namespace :crawling do
 
       new_article.date_published = get_date.to_datetime.change({ hour: 0, min: 0, sec: 0 })
       url_array = article.css('article.module-article figure img').map { |link| link['data-src'] }
-      new_article.url_image = url_array[0]
+      substring_to_remove = 'load_'
+      result_string = url_array[0].gsub(substring_to_remove, '')
+      new_article.url_image = result_string
       begin
-        new_article.image = Down.download(url_array[0]) if url_array.present?
+        new_article.image = Down.download(result_string) if url_array.present?
       rescue Down::Error => e
-        puts "Can't download this image #{url_array[0]}"
+        puts "Can't download this image #{result_string}"
         puts e.message
         puts
         new_article.image = nil
