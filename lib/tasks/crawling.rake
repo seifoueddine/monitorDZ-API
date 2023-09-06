@@ -49,10 +49,10 @@ namespace :crawling do
       get_articles_maghrebemergent(url_media_array)
     when 'ELBILAD'
       get_articles_bilad(url_media_array)
-    # when 'ELMOUDJAHID'
-    #   get_articles_elmoudjahid(url_media_array)
-    # when 'ELMOUDJAHID-FR'
-    #   get_articles_elmoudjahid_fr(url_media_array)
+     when 'ELMOUDJAHID'
+       get_articles_elmoudjahid(url_media_array)
+     when 'ELMOUDJAHID-FR'
+       get_articles_elmoudjahid_fr(url_media_array)
     when 'ELKHABAR'
       get_articles_elkhabar(url_media_array)
     when 'ELKHABAR-FR'
@@ -1756,7 +1756,14 @@ namespace :crawling do
       new_article.date_published = get_date.to_datetime.change({ hour: 0, min: 0, sec: 0 })
       url_array = article.css('article.module-article figure img').map { |link| link['data-src'] }
       new_article.url_image = url_array[0]
-      new_article.image = Down.download(url_array[0]) if url_array[0].present?
+      begin
+        new_article.image = Down.download(url_array[0]) if url_array.present?
+      rescue Down::Error => e
+        puts "Can't download this image #{url_array[0]}"
+        puts e.message
+        puts
+        new_article.image = nil
+      end
       new_article.status = 'pending'
 
       if Article.where(url_article: link).present?
@@ -1868,7 +1875,7 @@ namespace :crawling do
       url_array = article.css('#articlecontent > div.TxArtcile > div.ImgCapt > img').map { |link| link['src'] }
       new_article.url_image = url_array[0]
       begin
-        new_article.image = Down.download(url_array[0]) if url_array[0].present?
+        new_article.image = Down.download(url_array[0]) if url_array.present?
       rescue Down::Error => e
         puts "Can't download this image #{url_array[0]}"
         puts e.message
