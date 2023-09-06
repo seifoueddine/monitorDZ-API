@@ -257,11 +257,11 @@ module Api
 
 
       def get_articles_by_tag_and_date
-        if params[:tag_id].present? && params[:start_date].present? && params[:end_date].present?
+        if params[:tag_name].present? && params[:start_date].present? && params[:end_date].present?
           start_date = Date.parse(params[:start_date])
           end_date = Date.parse(params[:end_date])
           @articles = Article.joins(:tags)
-                             .where('tags.id = ? AND articles.date_published BETWEEN ? AND ?', params[:tag_id], start_date, end_date)
+                             .where('tags.name = ? AND articles.date_published BETWEEN ? AND ?', params[:tag_name], start_date, end_date)
                              .distinct
         else
           render json: { error: "Tag ID and date range (start_date and end_date) parameters are required" }, status: :bad_request
@@ -1316,7 +1316,14 @@ module Api
           new_article.date_published = get_date.to_datetime.change({ hour: 0, min: 0, sec: 0 })
           url_array = article.css('article.module-article figure img').map { |link| link['data-src'] }
           new_article.url_image = url_array[0]
-          new_article.image = Down.download(url_array[0]) if url_array[0].present?
+          begin
+            new_article.image = Down.download(url_array[0]) if url_array.present?
+          rescue Down::Error => e
+            puts "Can't download this image #{url_array[0]}"
+            puts e.message
+            puts
+            new_article.image = nil
+          end
           new_article.status = 'pending'
           new_article.save!
           count += 1 if new_article.save
