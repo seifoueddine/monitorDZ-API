@@ -40,6 +40,7 @@ Rails.application.routes.draw do
       get 'articles_by_date', to: 'articles#articles_by_date'
       get 'tags_by_date', to: 'articles#tags_by_date'
       get 'tags_client_by_date', to: 'articles#tags_client_by_date'
+      get 'articles/by_tag_and_date', to: 'articles#get_articles_by_tag_and_date'
     end
   end
 end

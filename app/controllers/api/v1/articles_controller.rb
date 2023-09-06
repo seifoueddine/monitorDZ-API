@@ -255,6 +255,25 @@ module Api
         end
       end
 
+
+      def get_articles_by_tag_and_date
+        if params[:tag_id].present? && params[:start_date].present? && params[:end_date].present?
+          start_date = Date.parse(params[:start_date])
+          end_date = Date.parse(params[:end_date])
+          @articles = Article.joins(:tags)
+                             .where('tags.id = ? AND articles.date_published BETWEEN ? AND ?', params[:tag_id], start_date, end_date)
+                             .distinct
+        else
+          render json: { error: "Tag ID and date range (start_date and end_date) parameters are required" }, status: :bad_request
+          return
+        end
+      
+        render json: ArticleSerializer.new(@articles).serializable_hash.to_json
+      end
+    
+
+
+
       # auto tags@article_for_indexing
       def auto_tag
         slug_id = params[:slug_id]
