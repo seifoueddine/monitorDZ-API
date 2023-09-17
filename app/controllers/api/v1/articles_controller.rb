@@ -258,10 +258,10 @@ module Api
 
       def get_articles_by_tag_and_date
         if params[:tag_name].present? && params[:start_date].present? && params[:end_date].present?
-          start_date = Date.parse(params[:start_date])
-          end_date = Date.parse(params[:end_date])
+          start_date = params[:start_date]
+          end_date = params[:end_date]
           @articles = Article.joins(:tags)
-                             .where('tags.name = ? AND articles.date_published BETWEEN ? AND ?', params[:tag_name], start_date, end_date)
+                             .where('tags.name = ? AND articles.date_published BETWEEN ? AND ?', params[:tag_name], start_date.to_datetime.beginning_of_day, end_date.to_datetime.beginning_of_day)
                              .distinct
         else
           render json: { error: "Tag ID and date range (start_date and end_date) parameters are required" }, status: :bad_request
