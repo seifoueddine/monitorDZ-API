@@ -12,6 +12,7 @@ Rails.application.routes.draw do
   namespace :api do
     namespace :v1 do
       put 'users/change_password/:id', to: 'users#change_password'
+      get 'articles/by_tag_and_date', to: 'articles#get_articles_by_tag_and_date'
       resources :users
       resources :authors
       resources :slugs
@@ -40,7 +41,6 @@ Rails.application.routes.draw do
       get 'articles_by_date', to: 'articles#articles_by_date'
       get 'tags_by_date', to: 'articles#tags_by_date'
       get 'tags_client_by_date', to: 'articles#tags_client_by_date'
-      get 'articles/by_tag_and_date', to: 'articles#get_articles_by_tag_and_date'
     end
   end
 end

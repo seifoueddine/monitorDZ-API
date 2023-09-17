@@ -200,15 +200,15 @@ namespace :crawling do
       if Article.where(url_article: link).present?
         puts 'article present'
       else
-        articlesTagsUrl = link
+        articles_tags_url = link
       end
 
-      puts "This Url : #{articlesTagsUrl} will be add to the tag articles list"
+      puts "This Url : #{articles_tags_url} will be add to the tag articles list"
 
       new_article.save!
-      if articlesTagsUrl.present?
+      if articles_tags_url.present?
         puts 'add article'
-        @articles_for_auto_tag << Article.where(url_article: articlesTagsUrl)[0]
+        @articles_for_auto_tag << Article.where(url_article: articles_tags_url)[0]
       end
       # tag_check_and_save(tags_array) if @media.tag_status == true
     end
@@ -308,14 +308,14 @@ namespace :crawling do
       if Article.where(url_article: link).present?
         puts 'article present'
       else
-        articlesTagsUrl = link
+        articles_tags_url = link
       end
-      puts "This Url : #{articlesTagsUrl} will be add to the tag articles list"
+      puts "This Url : #{articles_tags_url} will be add to the tag articles list"
 
       new_article.save!
-      if articlesTagsUrl.present?
+      if articles_tags_url.present?
         puts 'add article'
-        @articles_for_auto_tag << Article.where(url_article: articlesTagsUrl)[0]
+        @articles_for_auto_tag << Article.where(url_article: articles_tags_url)[0]
       end
       if new_article.save
         count += 1
@@ -413,12 +413,12 @@ namespace :crawling do
       if Article.where(url_article: link).present?
         puts 'article present'
       else
-        articlesTagsUrl = link
+        articles_tags_url = link
       end
       new_article.save!
-      if articlesTagsUrl.present?
+      if articles_tags_url.present?
         puts 'add article'
-        @articles_for_auto_tag << Article.where(url_article: articlesTagsUrl)[0]
+        @articles_for_auto_tag << Article.where(url_article: articles_tags_url)[0]
       end
 
       # @articles_for_auto_tag.push(new_article) if new_article.save
@@ -513,14 +513,14 @@ namespace :crawling do
       if Article.where(url_article: link).present?
         puts 'article present'
       else
-        articlesTagsUrl = link
+        articles_tags_url = link
       end
-      puts "This Url : #{articlesTagsUrl} will be add to the tag articles list"
+      puts "This Url : #{articles_tags_url} will be add to the tag articles list"
 
       new_article.save!
-      if articlesTagsUrl.present?
+      if articles_tags_url.present?
         puts 'add article'
-        @articles_for_auto_tag << Article.where(url_article: articlesTagsUrl)[0]
+        @articles_for_auto_tag << Article.where(url_article: articles_tags_url)[0]
       end
 
       # #tag_check_and_save(tags_array)
@@ -639,14 +639,14 @@ namespace :crawling do
       if Article.where(url_article: link).present?
         puts 'article present'
       else
-        articlesTagsUrl = link
+        articles_tags_url = link
       end
-      puts "This Url : #{articlesTagsUrl} will be add to the tag articles list"
+      puts "This Url : #{articles_tags_url} will be add to the tag articles list"
 
       new_article.save!
-      if articlesTagsUrl.present?
+      if articles_tags_url.present?
         puts 'add article'
-        @articles_for_auto_tag << Article.where(url_article: articlesTagsUrl)[0]
+        @articles_for_auto_tag << Article.where(url_article: articles_tags_url)[0]
       end
 
       # tag_check_and_save(tags_array)if @media.tag_status == true
@@ -761,14 +761,14 @@ namespace :crawling do
       if Article.where(url_article: link).present?
         puts 'article present'
       else
-        articlesTagsUrl = link
+        articles_tags_url = link
       end
-      puts "This Url : #{articlesTagsUrl} will be add to the tag articles list"
+      puts "This Url : #{articles_tags_url} will be add to the tag articles list"
 
       new_article.save!
-      if articlesTagsUrl.present?
+      if articles_tags_url.present?
         puts 'add article'
-        @articles_for_auto_tag << Article.where(url_article: articlesTagsUrl)[0]
+        @articles_for_auto_tag << Article.where(url_article: articles_tags_url)[0]
       end
     end
     puts "json: { crawling_status_APSar: 'ok' }"
@@ -862,14 +862,14 @@ namespace :crawling do
       if Article.where(url_article: link).present?
         puts 'article present'
       else
-        articlesTagsUrl = link
+        articles_tags_url = link
       end
-      puts "This Url : #{articlesTagsUrl} will be add to the tag articles list"
+      puts "This Url : #{articles_tags_url} will be add to the tag articles list"
 
       new_article.save!
-      if articlesTagsUrl.present?
+      if articles_tags_url.present?
         puts 'add article'
-        @articles_for_auto_tag << Article.where(url_article: articlesTagsUrl)[0]
+        @articles_for_auto_tag << Article.where(url_article: articles_tags_url)[0]
       end
       # #tag_check_and_save(tags_array)if @media.tag_status == true
     end
@@ -963,14 +963,14 @@ namespace :crawling do
       if Article.where(url_article: link).present?
         puts 'article present'
       else
-        articlesTagsUrl = link
+        articles_tags_url = link
       end
-      puts "This Url : #{articlesTagsUrl} will be add to the tag articles list"
+      puts "This Url : #{articles_tags_url} will be add to the tag articles list"
 
       new_article.save!
-      if articlesTagsUrl.present?
+      if articles_tags_url.present?
         puts 'add article'
-        @articles_for_auto_tag << Article.where(url_article: articlesTagsUrl)[0]
+        @articles_for_auto_tag << Article.where(url_article: articles_tags_url)[0]
       end
       # #tag_check_and_save(tags_array)if @media.tag_status == true
     end
@@ -1067,14 +1067,14 @@ namespace :crawling do
       if Article.where(url_article: link).present?
         puts 'article present'
       else
-        articlesTagsUrl = link
+        articles_tags_url = link
       end
-      puts "This Url : #{articlesTagsUrl} will be add to the tag articles list"
+      puts "This Url : #{articles_tags_url} will be add to the tag articles list"
 
       new_article.save!
-      if articlesTagsUrl.present?
+      if articles_tags_url.present?
         puts 'add article'
-        @articles_for_auto_tag << Article.where(url_article: articlesTagsUrl)[0]
+        @articles_for_auto_tag << Article.where(url_article: articles_tags_url)[0]
       end
       # tag_check_and_save(tags_array)if @media.tag_status == true
     end
@@ -1165,14 +1165,14 @@ namespace :crawling do
       if Article.where(url_article: link).present?
         puts 'article present'
       else
-        articlesTagsUrl = link
+        articles_tags_url = link
       end
-      puts "This Url : #{articlesTagsUrl} will be add to the tag articles list"
+      puts "This Url : #{articles_tags_url} will be add to the tag articles list"
 
       new_article.save!
-      if articlesTagsUrl.present?
+      if articles_tags_url.present?
         puts 'add article'
-        @articles_for_auto_tag << Article.where(url_article: articlesTagsUrl)[0]
+        @articles_for_auto_tag << Article.where(url_article: articles_tags_url)[0]
       end
       # #tag_check_and_save(tags_array)if @media.tag_status == true
     end
@@ -1263,14 +1263,14 @@ namespace :crawling do
       if Article.where(url_article: link).present?
         puts 'article present'
       else
-        articlesTagsUrl = link
+        articles_tags_url = link
       end
-      puts "This Url : #{articlesTagsUrl} will be add to the tag articles list"
+      puts "This Url : #{articles_tags_url} will be add to the tag articles list"
 
       new_article.save!
-      if articlesTagsUrl.present?
+      if articles_tags_url.present?
         puts 'add article'
-        @articles_for_auto_tag << Article.where(url_article: articlesTagsUrl)[0]
+        @articles_for_auto_tag << Article.where(url_article: articles_tags_url)[0]
       end
       # #tag_check_and_save(tags_array)if @media.tag_status == true
     end
@@ -1372,14 +1372,14 @@ namespace :crawling do
       if Article.where(url_article: link).present?
         puts 'article present'
       else
-        articlesTagsUrl = link
+        articles_tags_url = link
       end
-      puts "This Url : #{articlesTagsUrl} will be add to the tag articles list"
+      puts "This Url : #{articles_tags_url} will be add to the tag articles list"
 
       new_article.save!
-      if articlesTagsUrl.present?
+      if articles_tags_url.present?
         puts 'add article'
-        @articles_for_auto_tag << Article.where(url_article: articlesTagsUrl)[0]
+        @articles_for_auto_tag << Article.where(url_article: articles_tags_url)[0]
       end
 
       # #tag_check_and_save(tags_array)if @media.tag_status == true
@@ -1461,14 +1461,14 @@ namespace :crawling do
       if Article.where(url_article: link).present?
         puts 'article present'
       else
-        articlesTagsUrl = link
+        articles_tags_url = link
       end
-      puts "This Url : #{articlesTagsUrl} will be add to the tag articles list"
+      puts "This Url : #{articles_tags_url} will be add to the tag articles list"
 
       new_article.save!
-      if articlesTagsUrl.present?
+      if articles_tags_url.present?
         puts 'add article'
-        @articles_for_auto_tag << Article.where(url_article: articlesTagsUrl)[0]
+        @articles_for_auto_tag << Article.where(url_article: articles_tags_url)[0]
       end
 
       # #tag_check_and_save(tags_array)if @media.tag_status == true
@@ -1566,14 +1566,14 @@ namespace :crawling do
       if Article.where(url_article: link).present?
         puts 'article present'
       else
-        articlesTagsUrl = link
+        articles_tags_url = link
       end
-      puts "This Url : #{articlesTagsUrl} will be add to the tag articles list"
+      puts "This Url : #{articles_tags_url} will be add to the tag articles list"
 
       new_article.save!
-      if articlesTagsUrl.present?
+      if articles_tags_url.present?
         puts 'add article'
-        @articles_for_auto_tag << Article.where(url_article: articlesTagsUrl)[0]
+        @articles_for_auto_tag << Article.where(url_article: articles_tags_url)[0]
       end
     end
     puts "json: { crawling_status_bilad: 'ok' }"
@@ -1678,14 +1678,14 @@ namespace :crawling do
       if Article.where(url_article: link).present?
         puts 'article present'
       else
-        articlesTagsUrl = link
+        articles_tags_url = link
       end
-      puts "This Url : #{articlesTagsUrl} will be add to the tag articles list"
+      puts "This Url : #{articles_tags_url} will be add to the tag articles list"
 
       new_article.save!
-      if articlesTagsUrl.present?
+      if articles_tags_url.present?
         puts 'add article'
-        @articles_for_auto_tag << Article.where(url_article: articlesTagsUrl)[0]
+        @articles_for_auto_tag << Article.where(url_article: articles_tags_url)[0]
       end
 
       # #tag_check_and_save(tags_array)
@@ -1754,7 +1754,7 @@ namespace :crawling do
       get_date = article.at('#content > div:nth-child(4) > article > aside > ul > li.text-uppercase > ul > li:nth-child(2)').text
 
       new_article.date_published = get_date.to_datetime.change({ hour: 0, min: 0, sec: 0 })
-      url_array = article.css('article.module-article figure img').map { |link| link['data-src'] }
+      url_array = article.css('article.module-article figure img').map { |image_link| image_link['data-src'] }
       substring_to_remove = 'load_'
       result_string = url_array[0].gsub(substring_to_remove, '')
       new_article.url_image = result_string
@@ -1771,14 +1771,14 @@ namespace :crawling do
       if Article.where(url_article: link).present?
         puts 'article present'
       else
-        articlesTagsUrl = link
+        articles_tags_url = link
       end
-      puts "This Url : #{articlesTagsUrl} will be add to the tag articles list"
+      puts "This Url : #{articles_tags_url} will be add to the tag articles list"
 
       new_article.save!
-      if articlesTagsUrl.present?
+      if articles_tags_url.present?
         puts 'add article'
-        @articles_for_auto_tag << Article.where(url_article: articlesTagsUrl)[0]
+        @articles_for_auto_tag << Article.where(url_article: articles_tags_url)[0]
       end
 
       count += 1 if new_article.save
@@ -1889,14 +1889,14 @@ namespace :crawling do
       if Article.where(url_article: link).present?
         puts 'article present'
       else
-        articlesTagsUrl = link
+        articles_tags_url = link
       end
-      puts "This Url : #{articlesTagsUrl} will be add to the tag articles list"
+      puts "This Url : #{articles_tags_url} will be add to the tag articles list"
 
       new_article.save!
-      if articlesTagsUrl.present?
+      if articles_tags_url.present?
         puts 'add article'
-        @articles_for_auto_tag << Article.where(url_article: articlesTagsUrl)[0]
+        @articles_for_auto_tag << Article.where(url_article: articles_tags_url)[0]
       end
 
       # #tag_check_and_save(tags_array)
@@ -1984,7 +1984,7 @@ namespace :crawling do
       # d = change_translate_date(date)
       new_article.date_published = date.to_datetime.change({ hour: 0, min: 0, sec: 0 })
       if article.css('div#article_img img').present?
-        url_array = article.css('div#article_img img').map { |link| "https://www.elkhabar.com#{link['src']}" }
+        url_array = article.css('div#article_img img').map { |link_image| "https://www.elkhabar.com#{link_image['src']}" }
       end
       # url_image = url_array[0]
       begin
@@ -2002,14 +2002,14 @@ namespace :crawling do
       if Article.where(url_article: link).present?
         puts 'article present'
       else
-        articlesTagsUrl = link
+        articles_tags_url = link
       end
-      puts "This Url : #{articlesTagsUrl} will be add to the tag articles list"
+      puts "This Url : #{articles_tags_url} will be add to the tag articles list"
 
       new_article.save!
-      if articlesTagsUrl.present?
+      if articles_tags_url.present?
         puts 'add article'
-        @articles_for_auto_tag << Article.where(url_article: articlesTagsUrl)[0]
+        @articles_for_auto_tag << Article.where(url_article: articles_tags_url)[0]
       end
 
       count += 1 if new_article.save
@@ -2097,7 +2097,7 @@ namespace :crawling do
       date = article.at('time[datetime]')['datetime']
       new_article.date_published = date.to_datetime.change({ hour: 0, min: 0, sec: 0 })
       if article.css('div#article_img img').present?
-        url_array = article.css('div#article_img img').map { |link| "https://www.elkhabar.com#{link['src']}" }
+        url_array = article.css('div#article_img img').map { |link_image| "https://www.elkhabar.com#{link_image['src']}" }
       end
       # url_image = url_array[0]
       begin
@@ -2115,14 +2115,14 @@ namespace :crawling do
       if Article.where(url_article: link).present?
         puts 'article present'
       else
-        articlesTagsUrl = link
+        articles_tags_url = link
       end
-      puts "This Url : #{articlesTagsUrl} will be add to the tag articles list"
+      puts "This Url : #{articles_tags_url} will be add to the tag articles list"
 
       new_article.save!
-      if articlesTagsUrl.present?
+      if articles_tags_url.present?
         puts 'add article'
-        @articles_for_auto_tag << Article.where(url_article: articlesTagsUrl)[0]
+        @articles_for_auto_tag << Article.where(url_article: articles_tags_url)[0]
       end
 
       count += 1 if new_article.save
@@ -2227,14 +2227,14 @@ namespace :crawling do
       if Article.where(url_article: link).present?
         puts 'article present'
       else
-        articlesTagsUrl = link
+        articles_tags_url = link
       end
-      puts "This Url : #{articlesTagsUrl} will be add to the tag articles list"
+      puts "This Url : #{articles_tags_url} will be add to the tag articles list"
 
       new_article.save!
-      if articlesTagsUrl.present?
+      if articles_tags_url.present?
         puts 'add article'
-        @articles_for_auto_tag << Article.where(url_article: articlesTagsUrl)[0]
+        @articles_for_auto_tag << Article.where(url_article: articles_tags_url)[0]
       end
 
       # tag_check_and_save(tags_array) if @media.tag_status == true
@@ -2336,14 +2336,14 @@ namespace :crawling do
       if Article.where(url_article: link).present?
         puts 'article present'
       else
-        articlesTagsUrl = link
+        articles_tags_url = link
       end
-      puts "This Url : #{articlesTagsUrl} will be add to the tag articles list"
+      puts "This Url : #{articles_tags_url} will be add to the tag articles list"
 
       new_article.save!
-      if articlesTagsUrl.present?
+      if articles_tags_url.present?
         puts 'add article'
-        @articles_for_auto_tag << Article.where(url_article: articlesTagsUrl)[0]
+        @articles_for_auto_tag << Article.where(url_article: articles_tags_url)[0]
       end
 
       # #tag_check_and_save(tags_array)
@@ -2440,14 +2440,14 @@ namespace :crawling do
       if Article.where(url_article: link).present?
         puts 'article present'
       else
-        articlesTagsUrl = link
+        articles_tags_url = link
       end
-      puts "This Url : #{articlesTagsUrl} will be add to the tag articles list"
+      puts "This Url : #{articles_tags_url} will be add to the tag articles list"
 
       new_article.save!
-      if articlesTagsUrl.present?
+      if articles_tags_url.present?
         puts 'add article'
-        @articles_for_auto_tag << Article.where(url_article: articlesTagsUrl)[0]
+        @articles_for_auto_tag << Article.where(url_article: articles_tags_url)[0]
       end
 
       # tag_check_and_save(tags_array)
@@ -2557,14 +2557,14 @@ namespace :crawling do
       if Article.where(url_article: link).present?
         puts 'article present'
       else
-        articlesTagsUrl = link
+        articles_tags_url = link
       end
-      puts "This Url : #{articlesTagsUrl} will be add to the tag articles list"
+      puts "This Url : #{articles_tags_url} will be add to the tag articles list"
 
       new_article.save!
-      if articlesTagsUrl.present?
+      if articles_tags_url.present?
         puts 'add article'
-        @articles_for_auto_tag << Article.where(url_article: articlesTagsUrl)[0]
+        @articles_for_auto_tag << Article.where(url_article: articles_tags_url)[0]
       end
 
       # #tag_check_and_save(tags_array)
@@ -2659,14 +2659,14 @@ namespace :crawling do
       if Article.where(url_article: link).present?
         puts 'article present'
       else
-        articlesTagsUrl = link
+        articles_tags_url = link
       end
-      puts "This Url : #{articlesTagsUrl} will be add to the tag articles list"
+      puts "This Url : #{articles_tags_url} will be add to the tag articles list"
 
       new_article.save!
-      if articlesTagsUrl.present?
+      if articles_tags_url.present?
         puts 'add article'
-        @articles_for_auto_tag << Article.where(url_article: articlesTagsUrl)[0]
+        @articles_for_auto_tag << Article.where(url_article: articles_tags_url)[0]
       end
 
       # #tag_check_and_save(tags_array)
@@ -2762,14 +2762,14 @@ namespace :crawling do
       if Article.where(url_article: link).present?
         puts 'article present'
       else
-        articlesTagsUrl = link
+        articles_tags_url = link
       end
-      puts "This Url : #{articlesTagsUrl} will be add to the tag articles list"
+      puts "This Url : #{articles_tags_url} will be add to the tag articles list"
 
       new_article.save!
-      if articlesTagsUrl.present?
+      if articles_tags_url.present?
         puts 'add article'
-        @articles_for_auto_tag << Article.where(url_article: articlesTagsUrl)[0]
+        @articles_for_auto_tag << Article.where(url_article: articles_tags_url)[0]
       end
       # #tag_check_and_save(tags_array)
     end
@@ -2871,14 +2871,14 @@ namespace :crawling do
       if Article.where(url_article: link).present?
         puts 'article present'
       else
-        articlesTagsUrl = link
+        articles_tags_url = link
       end
-      puts "This Url : #{articlesTagsUrl} will be add to the tag articles list"
+      puts "This Url : #{articles_tags_url} will be add to the tag articles list"
 
       new_article.save!
-      if articlesTagsUrl.present?
+      if articles_tags_url.present?
         puts 'add article'
-        @articles_for_auto_tag << Article.where(url_article: articlesTagsUrl)[0]
+        @articles_for_auto_tag << Article.where(url_article: articles_tags_url)[0]
       end
 
       # #tag_check_and_save(tags_array)
@@ -2970,14 +2970,14 @@ namespace :crawling do
       if Article.where(url_article: link).present?
         puts 'article present'
       else
-        articlesTagsUrl = link
+        articles_tags_url = link
       end
-      puts "This Url : #{articlesTagsUrl} will be add to the tag articles list"
+      puts "This Url : #{articles_tags_url} will be add to the tag articles list"
 
       new_article.save!
-      if articlesTagsUrl.present?
+      if articles_tags_url.present?
         puts 'add article'
-        @articles_for_auto_tag << Article.where(url_article: articlesTagsUrl)[0]
+        @articles_for_auto_tag << Article.where(url_article: articles_tags_url)[0]
       end
     end
     puts "json: { crawling_status_expression: 'ok' }"
@@ -3072,14 +3072,14 @@ namespace :crawling do
       if Article.where(url_article: link).present?
         puts 'article present'
       else
-        articlesTagsUrl = link
+        articles_tags_url = link
       end
-      puts "This Url : #{articlesTagsUrl} will be add to the tag articles list"
+      puts "This Url : #{articles_tags_url} will be add to the tag articles list"
 
       new_article.save!
-      if articlesTagsUrl.present?
+      if articles_tags_url.present?
         puts 'add article'
-        @articles_for_auto_tag << Article.where(url_article: articlesTagsUrl)[0]
+        @articles_for_auto_tag << Article.where(url_article: articles_tags_url)[0]
       end
     end
     puts "json: { crawling_status_lematin: 'ok' }"
@@ -3168,14 +3168,14 @@ namespace :crawling do
       if Article.where(url_article: link).present?
         puts 'article present'
       else
-        articlesTagsUrl = link
+        articles_tags_url = link
       end
-      puts "This Url : #{articlesTagsUrl} will be add to the tag articles list"
+      puts "This Url : #{articles_tags_url} will be add to the tag articles list"
 
       new_article.save!
-      if articlesTagsUrl.present?
+      if articles_tags_url.present?
         puts 'add article'
-        @articles_for_auto_tag << Article.where(url_article: articlesTagsUrl)[0]
+        @articles_for_auto_tag << Article.where(url_article: articles_tags_url)[0]
       end
     end
     puts "json: { crawling_status_Almaghreb24: 'ok' }"
@@ -3265,14 +3265,14 @@ namespace :crawling do
       if Article.where(url_article: link).present?
         puts 'article present'
       else
-        articlesTagsUrl = link
+        articles_tags_url = link
       end
-      puts "This Url : #{articlesTagsUrl} will be add to the tag articles list"
+      puts "This Url : #{articles_tags_url} will be add to the tag articles list"
 
       new_article.save!
-      if articlesTagsUrl.present?
+      if articles_tags_url.present?
         puts 'add article'
-        @articles_for_auto_tag << Article.where(url_article: articlesTagsUrl)[0]
+        @articles_for_auto_tag << Article.where(url_article: articles_tags_url)[0]
       end
     end
     puts "json: { crawling_status_aujourdhui: 'ok' }"
@@ -3369,14 +3369,14 @@ namespace :crawling do
       if Article.where(url_article: link).present?
         puts 'article present'
       else
-        articlesTagsUrl = link
+        articles_tags_url = link
       end
-      puts "This Url : #{articlesTagsUrl} will be add to the tag articles list"
+      puts "This Url : #{articles_tags_url} will be add to the tag articles list"
 
       new_article.save!
-      if articlesTagsUrl.present?
+      if articles_tags_url.present?
         puts 'add article'
-        @articles_for_auto_tag << Article.where(url_article: articlesTagsUrl)[0]
+        @articles_for_auto_tag << Article.where(url_article: articles_tags_url)[0]
       end
     end
     puts "json: { crawling_status_eldjazaireldjadida: 'ok' }"
@@ -3465,14 +3465,14 @@ namespace :crawling do
       if Article.where(url_article: link).present?
         puts 'article present'
       else
-        articlesTagsUrl = link
+        articles_tags_url = link
       end
-      puts "This Url : #{articlesTagsUrl} will be add to the tag articles list"
+      puts "This Url : #{articles_tags_url} will be add to the tag articles list"
 
       new_article.save!
-      if articlesTagsUrl.present?
+      if articles_tags_url.present?
         puts 'add article'
-        @articles_for_auto_tag << Article.where(url_article: articlesTagsUrl)[0]
+        @articles_for_auto_tag << Article.where(url_article: articles_tags_url)[0]
       end
     end
     puts "json: { crawling_status_algeriepatriotique: 'ok' }"
@@ -3559,14 +3559,14 @@ namespace :crawling do
       if Article.where(url_article: link).present?
         puts 'article present'
       else
-        articlesTagsUrl = link
+        articles_tags_url = link
       end
-      puts "This Url : #{articlesTagsUrl} will be add to the tag articles list"
+      puts "This Url : #{articles_tags_url} will be add to the tag articles list"
 
       new_article.save!
-      if articlesTagsUrl.present?
+      if articles_tags_url.present?
         puts 'add article'
-        @articles_for_auto_tag << Article.where(url_article: articlesTagsUrl)[0]
+        @articles_for_auto_tag << Article.where(url_article: articles_tags_url)[0]
       end
     end
     puts "json: { crawling_status_elmaouid: 'ok' }"
@@ -3656,14 +3656,14 @@ namespace :crawling do
       if Article.where(url_article: link).present?
         puts 'article present'
       else
-        articlesTagsUrl = link
+        articles_tags_url = link
       end
-      puts "This Url : #{articlesTagsUrl} will be add to the tag articles list"
+      puts "This Url : #{articles_tags_url} will be add to the tag articles list"
 
       new_article.save!
-      if articlesTagsUrl.present?
+      if articles_tags_url.present?
         puts 'add article'
-        @articles_for_auto_tag << Article.where(url_article: articlesTagsUrl)[0]
+        @articles_for_auto_tag << Article.where(url_article: articles_tags_url)[0]
       end
     end
     puts "json: { crawling_status_alyaoum24: 'ok' }"
@@ -3741,14 +3741,14 @@ namespace :crawling do
       if Article.where(url_article: link).present?
         puts 'article present'
       else
-        articlesTagsUrl = link
+        articles_tags_url = link
       end
-      puts "This Url : #{articlesTagsUrl} will be add to the tag articles list"
+      puts "This Url : #{articles_tags_url} will be add to the tag articles list"
 
       new_article.save!
-      if articlesTagsUrl.present?
+      if articles_tags_url.present?
         puts 'add article'
-        @articles_for_auto_tag << Article.where(url_article: articlesTagsUrl)[0]
+        @articles_for_auto_tag << Article.where(url_article: articles_tags_url)[0]
       end
     end
     puts "json: { crawling_status_elwatan: 'ok' }"
@@ -3838,14 +3838,14 @@ namespace :crawling do
       if Article.where(url_article: link).present?
         puts 'article present'
       else
-        articlesTagsUrl = link
+        articles_tags_url = link
       end
-      puts "This Url : #{articlesTagsUrl} will be add to the tag articles list"
+      puts "This Url : #{articles_tags_url} will be add to the tag articles list"
 
       new_article.save!
-      if articlesTagsUrl.present?
+      if articles_tags_url.present?
         puts 'add article'
-        @articles_for_auto_tag << Article.where(url_article: articlesTagsUrl)[0]
+        @articles_for_auto_tag << Article.where(url_article: articles_tags_url)[0]
       end
     end
     puts "json: { crawling_status_radioalgerie_ar: 'ok' }"
@@ -3939,14 +3939,14 @@ namespace :crawling do
       if Article.where(url_article: link).present?
         puts 'article present'
       else
-        articlesTagsUrl = link
+        articles_tags_url = link
       end
-      puts "This Url : #{articlesTagsUrl} will be add to the tag articles list"
+      puts "This Url : #{articles_tags_url} will be add to the tag articles list"
 
       new_article.save!
-      if articlesTagsUrl.present?
+      if articles_tags_url.present?
         puts 'add article'
-        @articles_for_auto_tag << Article.where(url_article: articlesTagsUrl)[0]
+        @articles_for_auto_tag << Article.where(url_article: articles_tags_url)[0]
       end
     end
     puts "json: { crawling_status_radioalgerie_ar: 'ok' }"
@@ -4049,14 +4049,14 @@ namespace :crawling do
       if Article.where(url_article: link).present?
         puts 'article present'
       else
-        articlesTagsUrl = link
+        articles_tags_url = link
       end
-      puts "This Url : #{articlesTagsUrl} will be add to the tag articles list"
+      puts "This Url : #{articles_tags_url} will be add to the tag articles list"
 
       new_article.save!
-      if articlesTagsUrl.present?
+      if articles_tags_url.present?
         puts 'add article'
-        @articles_for_auto_tag << Article.where(url_article: articlesTagsUrl)[0]
+        @articles_for_auto_tag << Article.where(url_article: articles_tags_url)[0]
       end
     end
     puts "json: { crawling_status_maroco360: 'ok' }"
