@@ -3053,9 +3053,9 @@ namespace :crawling do
       date_published_array = article.css('p.author span meta').map do |date|
         date['content'] if date['itemprop'] == 'datePublished'
       end
-      new_article.date_published = date_published_array.reject(&:nil?)[0].to_datetime.change({ hour: 0, min: 0,
+      new_article.date_published = date_published_array.reject(&:nil?)[0].nil? ? Date.today.change({ hour: 0, min: 0, sec: 0 }) : date_published_array.reject(&:nil?)[0].to_datetime.change({ hour: 0, min: 0,
                                                                                                sec: 0 })
-      url_array = article.css('img.d-block.w-100').map { |link| link['src'] }
+      url_array = article.css('img.d-block.w-100').map { |link_image| link_image['src'] }
       new_article.url_image = url_array[0]
       begin
         new_article.image = Down.download(url_array[0]) if url_array[0].present?

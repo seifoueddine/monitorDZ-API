@@ -267,10 +267,10 @@ module Api
           render json: { error: "Tag ID and date range (start_date and end_date) parameters are required" }, status: :bad_request
           return
         end
-      
+
         render json: ArticleSerializer.new(@articles).serializable_hash.to_json
       end
-    
+
 
 
 
