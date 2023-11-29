@@ -4290,10 +4290,12 @@ namespace :crawling do
             @tags << tag.name unless @tags.include? tag.name
             @tags_objects << tag unless @tags_objects.include? tag.name
           end
+        unless article.title.nil?
           if article.title.downcase.include? tag.name.downcase
             @tags << tag.name unless @tags.include? tag.name
             @tags_objects << tag unless @tags_objects.include? tag.name
           end
+        end
         end
         old_tags = article.media_tags.nil? ? [] : article.media_tags.split(',')
         old_tags << @tags
