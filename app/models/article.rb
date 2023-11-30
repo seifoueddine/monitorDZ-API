@@ -55,7 +55,7 @@ class Article < ApplicationRecord
   # after_commit :indexing
   # acts_as_authorable
   scope :search_import, -> { includes(:author, :medium, :tags) }
-  has_many :article_tags
+  has_many :article_tags, dependent: :destroy
   has_many :tags, through: :article_tags
   belongs_to :author
   belongs_to :medium
