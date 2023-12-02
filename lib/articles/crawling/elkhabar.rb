@@ -102,7 +102,7 @@ module Articles
             # end
             # new_article.media_tags = tags_array.join(',')
             new_article.status = 'pending'
-            new_article.save!
+            new_article.save! unless new_article.title.nil?
             count += 1 if new_article.save
             # tag_check_and_save(tags_array) if media.tag_status == true
           end

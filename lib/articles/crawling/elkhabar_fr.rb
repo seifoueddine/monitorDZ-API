@@ -94,7 +94,7 @@ module Articles
               new_article.image = nil
             end
             new_article.status = 'pending'
-            new_article.save!
+            new_article.save! unless new_article.title.nil?
             count += 1 if new_article.save
           end
           count
