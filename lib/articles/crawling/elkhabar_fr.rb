@@ -57,7 +57,11 @@ module Articles
             if article.css('span.category-blog').present?
               new_article.category_article = article.css('span.category-blog').text
             end
-            new_article.title =  article.css('section div div div h1.title').text unless article.css('section div div div h1.title').nil?
+              puts "************---------------******************"
+               puts article.css('section div div div h1.title')
+            puts article.css('section div div div h1.title').text
+            puts "************---------------******************"
+            new_article.title =  article.css('section div div div h1.title').text if article.css('section div div div h1.title').present?
 
             author_exist = if article.at('span.time-blog b').present?
                              Author.where(['lower(name) like ? ',
