@@ -1951,8 +1951,8 @@ namespace :crawling do
       new_article.url_article = link
       new_article.medium_id = @media.id
       new_article.language = @media.language
-      if article.css('span.category-blog').present?
-        new_article.category_article = article.css('span.category-blog').text
+      if article.css('section div div div div a span').present?
+        new_article.category_article = article.css('section div div div div a span').text
       end
     new_article.title = article.css('section div div div h1.title').text if article.css('section div div div h1.title').present?
       # new_article.author = article.css('div.article-head__author div em a').text
@@ -2067,8 +2067,8 @@ namespace :crawling do
       new_article.url_article = link
       new_article.medium_id = @media.id
       new_article.language = @media.language
-      if article.css('span.category-blog').present?
-        new_article.category_article = article.css('span.category-blog').text
+      if article.css('section div div div div a span').present?
+        new_article.category_article = article.css('section div div div div a span').text
       end
       new_article.title = article.css('section div div div h1.title').text if article.css('section div div div h1.title').present?
       # new_article.author = article.css('div.article-head__author div em a').text
