@@ -57,7 +57,7 @@ module Articles
             if article.css('span.category-blog').present?
               new_article.category_article = article.css('span.category-blog').text
             end
-            new_article.title =  article.css('section div div div h1.title').text if article.css('section div div div h1.title').present?
+            new_article.title =  article.css('section div div div h1.title').text unless article.css('section div div div h1.title').nil?
 
             author_exist = if article.at('span.time-blog b').present?
                              Author.where(['lower(name) like ? ',
@@ -94,7 +94,7 @@ module Articles
               new_article.image = nil
             end
             new_article.status = 'pending'
-            new_article.save! unless new_article.title.nil?
+            new_article.save! 
             count += 1 if new_article.save
           end
           count

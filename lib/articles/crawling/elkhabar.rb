@@ -57,7 +57,7 @@ module Articles
             if article.css('span.category-blog').present?
               new_article.category_article = article.css('span.category-blog').text
             end
-            new_article.title = article.css('section div div div h1.title').text if article.css('section div div div h1.title').present?
+            new_article.title = article.css('section div div div h1.title').text unless article.css('section div div div h1.title').nil?
             # new_article.author = article.css('div.article-head__author div em a').text
 
             author_exist = if article.at('span.time-blog b').present?
@@ -102,7 +102,7 @@ module Articles
             # end
             # new_article.media_tags = tags_array.join(',')
             new_article.status = 'pending'
-            new_article.save! unless new_article.title.nil?
+            new_article.save!
             count += 1 if new_article.save
             # tag_check_and_save(tags_array) if media.tag_status == true
           end
